@@ -128,12 +128,16 @@ html {
 
 body {
   margin: 0;
+  background: #F7F7F7;
 }
 
 @theme {
   --font-poppins: "Poppins", "sans-serif";
 
   --color-primary: #fff;
+  --color-secondary: #00AD0C;
+  --color-neutral: #898989;
+  --color-blue: #0E53E9;
 }
 
 @layer base {
