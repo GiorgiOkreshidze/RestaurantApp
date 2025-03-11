@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
 
@@ -8,13 +10,17 @@ namespace SimpleLambdaFunction;
 
 public class Function
 {
-    public APIGatewayProxyResponse FunctionHandler(APIGatewayProxyRequest request, ILambdaContext context)
+    private readonly ApiHandler _apiHandler;
+    
+    public Function()
     {
-        return new APIGatewayProxyResponse
-        {
-            StatusCode = 200,
-            Body = "Hello world!",
-            Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
-        };
+        _apiHandler = new ApiHandler();
+    }
+    
+    public async Task<APIGatewayProxyResponse> FunctionHandler(APIGatewayProxyRequest request, ILambdaContext context)
+    {
+        context.Logger.LogInformation("Incoming serialized request: " + JsonSerializer.Serialize(request));
+
+        return await _apiHandler.HandleRequest(request, context);
     }
 }
