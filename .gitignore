@@ -1,0 +1,92 @@
+﻿# Ignore all files that start with a dot
+.*
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# General IDE directories and files
+.vscode/
+.idea/
+.vs/
+.history/ 
+*.swp
+*.suo
+*.iml
+*.bak
+*.tmp
+~$*.*
+
+# Log files
+*.log
+
+# Temporary files
+*.pid
+*.pid.lock
+*.tgz
+
+# Node.js common directories (if applicable globally)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build and cached directories
+dist/
+coverage/
+build/
+
+# System-specific artifacts
+*.stackdump
+*.seed
+
+# Ignore environment files globally
+.env
+.env.*
+.env.local
+
+# Ignore local settings or configuration files
+local.settings.json
+settings.local.json
+
+# Generated files
+*.lock
+*.map
+*.cache/
+*.min.*
+
+# Ignore symbolic links (if generated in root)
+*.lnk
+
+# Ignore macOS's application-specific files
+.AppleDouble
+.LSOverride
+
+# Global test-specific outputs
+/test-output/
+test-results/
+
+# Any domain-specific folder exclusions (if applicable across the entire project)
+elm-stuff/
+generated/
+
+# Python (if the team uses it in automation or other root configurations)
+*.pyc
+__pycache__/
+
+# Archives and compressed files
+*.zip
+*.tar
+*.gz
+*.bz2
+*.xz
+*.7z
+*.rar
+
+# Exclude frontend, backend, and automation-specific files/folders if not needed in version control globally
+automation-qa/.gitignore
+backend/.gitignore
+frontend/.gitignore
+automation-qa/temp-artifacts/
+backend/build-output/
+frontend/compiled-assets/
