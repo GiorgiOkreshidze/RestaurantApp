@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Amazon.Lambda.APIGatewayEvents;
 
 namespace SimpleLambdaFunction.Actions;
@@ -41,5 +42,31 @@ public class ActionUtils
             {
                 message = $"Bad request syntax or unsupported method. Request path: {path}. HTTP method: {method}"
             });
+    }
+
+    public static bool ValidateName(string name)
+    {
+        if (string.IsNullOrEmpty(name) || name.Length > 50)
+            return false;
+
+        string namePattern = @"^[a-zA-Z\-']+$";
+        return Regex.IsMatch(name, namePattern);
+    }
+
+    public static bool ValidateEmail(string email)
+    {
+        string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        return Regex.IsMatch(email, emailPattern);
+    }
+
+    public static bool ValidatePassword(string password)
+    {
+        if (string.IsNullOrEmpty(password) || password.Length < 8 || password.Length > 16)
+            return false;
+
+        return Regex.IsMatch(password, @"(?=.*[A-Z])") &&
+               Regex.IsMatch(password, @"(?=.*[a-z])") &&
+               Regex.IsMatch(password, @"(?=.*\d)") &&
+               Regex.IsMatch(password, @"(?=.*[!@#$%^&*()_+\-=[\]{};':""\\|,.<>/?])");
     }
 }

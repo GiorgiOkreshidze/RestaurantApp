@@ -4,6 +4,8 @@ namespace SimpleLambdaFunction.Services.Interfaces;
 
 public interface IAuthenticationService
 {
-    public Task<string> SignIn(string email, string password);
-    public Task SignUp(string firstName, string lastName, string email, string password);
+    Task<string> SignIn(string email, string password);
+    Task SignUp(string firstName, string lastName, string email, string password);
+    Task SignOut(string accessToken);
+    Task CheckEmailUniqueness(string email);
 }
