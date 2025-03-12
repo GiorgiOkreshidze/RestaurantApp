@@ -13,8 +13,8 @@ namespace SimpleLambdaFunction.Services;
 public class AuthenticationService : IAuthenticationService
 {
     private readonly AmazonCognitoIdentityProviderClient _cognitoClient;
-    private readonly string? _clientId = Environment.GetEnvironmentVariable("cup_client_id");
-    private readonly string? _userPoolId = Environment.GetEnvironmentVariable("cup_id");
+    private readonly string? _clientId = Environment.GetEnvironmentVariable("COGNITO_USER_POOL_CLIENT_ID");
+    private readonly string? _userPoolId = Environment.GetEnvironmentVariable("COGNITO_USER_POOL_ID");
 
     public AuthenticationService()
     {
