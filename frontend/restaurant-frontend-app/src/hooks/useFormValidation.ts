@@ -8,12 +8,12 @@ export const useFormValidation = (
   submitted: boolean
 ) => {
   const [errors, setErrors] = useState<ValidationErrors>({});
-  const nameRegex = /^[A-Za-z'-]{1,50}$/;
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*().,?_~])[A-Za-z\d!@#$%^&*().,?_~]{8,16}$/;
 
   useEffect(() => {
+    const nameRegex = /^[A-Za-z'-]{1,50}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*().,?_~])[A-Za-z\d!@#$%^&*().,?_~]{8,16}$/;
     if (submitted) {
       const newErrors: ValidationErrors = {};
       if (!state.name) newErrors.name = "Enter your name.";
@@ -37,8 +37,11 @@ export const useFormValidation = (
       else if (!passwordRegex.test(state.password))
         newErrors.password = "Invalid password.";
 
-      if (state.password !== state.confirmPassword)
+      if (!state.confirmPassword) {
+        newErrors.confirmPassword = "Confirm your password.";
+      } else if (state.password !== state.confirmPassword) {
         newErrors.confirmPassword = "Passwords do not match.";
+      }
 
       setErrors(newErrors);
     }

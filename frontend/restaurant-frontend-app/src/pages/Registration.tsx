@@ -7,6 +7,7 @@ import { Button } from "@/components/ui";
 import { RegistrationFields } from "@/types";
 import { useForm } from "@/hooks/useForm";
 import { useFormValidation } from "@/hooks/useFormValidation";
+import { useEffect } from "react";
 
 const initialState: RegistrationFields = {
   name: "",
@@ -16,9 +17,13 @@ const initialState: RegistrationFields = {
   confirmPassword: "",
 };
 
-const Registration = () => {
+export const Registration = () => {
   const { state, handleChange, onSubmit, submitted } = useForm(initialState);
   const errors = useFormValidation(state, submitted);
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   return (
     <Container>
@@ -80,6 +85,7 @@ const Registration = () => {
                 onChange={handleChange}
                 isConfirm
                 confirmValue={state.password}
+                error={errors.confirmPassword}
               />
             </div>
             <div className="mt-6">
@@ -106,4 +112,3 @@ const Registration = () => {
   );
 };
 
-export default Registration;

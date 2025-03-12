@@ -139,7 +139,10 @@ body {
   --color-neutral: #898989;
   --color-blue: #0e53e9;
   --color-green: #00ad0c;
+  --color-darkgreen: #008209;
+  --color-darkestgreen: #006907;
   --color-red: #b70b0b;
+  --color-yellow: #ffbb00;
 }
 
 @layer base {
