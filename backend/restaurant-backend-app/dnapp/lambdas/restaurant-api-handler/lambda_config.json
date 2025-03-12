@@ -18,12 +18,12 @@
   "env_variables": {
     "DYNAMODB_WAITERS_TABLE_NAME": "${waiters_table}",
     "COGNITO_USER_POOL_NAME": "${restaurant_userpool}",
-    "COGNITO_USER_POOL_ID": {
+    "cup_id": {
       "resource_name": "${restaurant_userpool}",
       "resource_type": "cognito_idp",
       "parameter": "id"
     },
-    "COGNITO_USER_POOL_CLIENT_ID": {
+    "cup_client_id": {
       "resource_name": "${restaurant_userpool}",
       "resource_type": "cognito_idp",
       "parameter": "client_id"
