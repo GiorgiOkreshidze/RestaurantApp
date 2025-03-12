@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
+using Function.Actions;
 using SimpleLambdaFunction.Actions;
 
 namespace SimpleLambdaFunction;
@@ -13,12 +14,14 @@ public class ApiHandler
     //Actions
     private readonly SignUpAction _signupAction;
     private readonly SignInAction _signInAction;
-    
+    private readonly SignOutAction _signOutAction;
+
     public ApiHandler()
     {
         // Init Actions
         _signupAction = new SignUpAction();
         _signInAction = new SignInAction();
+        _signOutAction = new SignOutAction();
     }
     
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -45,6 +48,12 @@ public class ApiHandler
                     "/signin", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "POST", _signInAction.Signin }
+                    }
+                },
+                 {
+                    "/signout", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "POST", _signOutAction.Signout } // Add Signout
                     }
                 }
             };
