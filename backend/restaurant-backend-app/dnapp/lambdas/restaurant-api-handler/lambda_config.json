@@ -8,9 +8,26 @@
   "memory": 128,
   "timeout": 100,
   "lambda_path": "lambdas\\restaurant-api-handler",
-  "dependencies": [],
+  "dependencies": [
+    {
+      "resource_name": "${restaurant_userpool}",
+      "resource_type": "cognito_idp"
+    }
+  ],
   "event_sources": [],
-  "env_variables": {},
+  "env_variables": {
+    "COGNITO_USER_POOL_NAME": "${restaurant_userpool}",
+    "COGNITO_USER_POOL_ID": {
+      "resource_name": "${restaurant_userpool}",
+      "resource_type": "cognito_idp",
+      "parameter": "id"
+    },
+    "COGNITO_USER_POOL_CLIET_ID": {
+      "resource_name": "${restaurant_userpool}",
+      "resource_type": "cognito_idp",
+      "parameter": "client_id"
+    }
+  },
   "publish_version": true,
   "alias": "${lambdas_alias_name}",
   "url_config": {},
