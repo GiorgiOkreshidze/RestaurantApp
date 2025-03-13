@@ -2,11 +2,9 @@
 using SimpleLambdaFunction.Services;
 using SimpleLambdaFunction.Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Authentication;
-using System.Text;
 using System.Threading.Tasks;
+using SimpleLambdaFunction.Actions;
 
 namespace Function.Actions
 {
@@ -23,44 +21,31 @@ namespace Function.Actions
         {
             try
             {
-                if (!request.Headers.TryGetValue("Authorization", out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+                if (!request.Headers.TryGetValue("Authorization", out var authHeader) || string.IsNullOrEmpty(authHeader))
                 {
-                    return new APIGatewayProxyResponse
-                    {
-                        StatusCode = 400,
-                        Body = "{\"message\": \"Missing access token\"}",
-                        Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-                    };
+                    return ActionUtils.FormatResponse(401, new { message = "Authorization header is missing" });
                 }
+                
+                var accessToken = authHeader.StartsWith("Bearer ") ? authHeader.Substring(7) : authHeader;
 
-                accessToken = accessToken.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase).Trim();
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    return ActionUtils.FormatResponse(401, new { message = "Access token is invalid or missing" });
+                }
 
                 await _authenticationService.SignOut(accessToken);
 
-                return new APIGatewayProxyResponse
-                {
-                    StatusCode = 200,
-                    Body = "{\"message\": \"User signed out successfully\"}",
-                    Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-                };
+                return ActionUtils.FormatResponse(200, new { message = "Successfully signed out" });
             }
             catch (AuthenticationException ex)
             {
-                return new APIGatewayProxyResponse
-                {
-                    StatusCode = 401,
-                    Body = $"{{\"message\": \"{ex.Message}\"}}",
-                    Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-                };
+                Console.WriteLine(ex);
+                return ActionUtils.FormatResponse(400, new { message = $"Sign-out failed: {ex.Message}" });
             }
             catch (Exception ex)
             {
-                return new APIGatewayProxyResponse
-                {
-                    StatusCode = 500,
-                    Body = $"{{\"message\": \"Internal Server Error: {ex.Message}\"}}",
-                    Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-                };
+                Console.WriteLine(ex);
+                return ActionUtils.FormatResponse(400, new { message = $"Sign-out failed: {ex.Message}" });
             }
         }
     }
