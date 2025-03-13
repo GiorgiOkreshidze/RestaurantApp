@@ -11,7 +11,7 @@ import { PURGE, REGISTER, REHYDRATE } from "redux-persist/es/constants";
 import { usersReducer } from "./slices/userSlice";
 
 const usersPersistConfig = {
-  key: "techGear:users",
+  key: "restaurant:users",
   storage: storage,
   whitelist: ["user"],
 };

@@ -14,7 +14,7 @@ export interface User {
 }
 
 export interface RegisterMutation {
-  name: string;
+  firstName: string;
   lastName: string;
   email: string;
   password: string;
@@ -35,4 +35,8 @@ export interface ValidationErrors {
   email?: string;
   password?: string;
   confirmPassword?: string;
+}
+
+export interface GlobalErrorMessage {
+  message: string;
 }

@@ -8,6 +8,9 @@ import { RegistrationFields } from "@/types";
 import { useForm } from "@/hooks/useForm";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { useEffect } from "react";
+import { Link } from "react-router";
+import { useSelector } from "react-redux";
+import { selectRegisterLoading } from "@/app/slices/userSlice";
 
 const initialState: RegistrationFields = {
   name: "",
@@ -20,6 +23,7 @@ const initialState: RegistrationFields = {
 export const Registration = () => {
   const { state, handleChange, onSubmit, submitted } = useForm(initialState);
   const errors = useFormValidation(state, submitted);
+  const isLoading = useSelector(selectRegisterLoading);
 
   useEffect(() => {
     console.log(errors);
@@ -89,14 +93,22 @@ export const Registration = () => {
               />
             </div>
             <div className="mt-6">
-              <Button className="bg-secondary w-full h-[56px] rounded-[8px] border">
-                Create an Account
+              <Button
+                className="bg-secondary w-full h-[56px] rounded-[8px] border flex items-center justify-center"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="animate-spin border-2 border-t-transparent border-white w-5 h-5 rounded-full"></span>
+                ) : (
+                  "Create an Account"
+                )}
               </Button>
+
               <p className="font-light text-xs mt-4">
                 Already have an account?{" "}
-                <a href="/login" className="text-blue font-bold ">
+                <Link className="text-blue font-bold " to={"/login"}>
                   Login{" "}
-                </a>
+                </Link>
                 instead
               </p>
             </div>
@@ -111,4 +123,3 @@ export const Registration = () => {
     </Container>
   );
 };
-
