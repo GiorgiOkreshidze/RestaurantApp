@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Input, Label } from "../ui";
+import { EyeIcon, OpenEyeIcon } from "../icons";
 
 interface Props {
   label: string;
@@ -9,6 +10,7 @@ interface Props {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isConfirm?: boolean;
   confirmValue?: string;
+  error?: string;
 }
 
 interface PasswordRequirements {
@@ -26,6 +28,7 @@ export const PasswordInput: React.FC<Props> = ({
   placeholder,
   onChange,
   isConfirm,
+  error,
   confirmValue,
 }) => {
   const [requirements, setRequirements] = useState<PasswordRequirements>({
@@ -35,8 +38,22 @@ export const PasswordInput: React.FC<Props> = ({
     special: false,
     length: false,
   });
-
+  const [strong, setStrong] = useState<string>("");
   const [isConfirmValid, setIsConfirmValid] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const fulfilledRequirements =
+      Object.values(requirements).filter(Boolean).length;
+
+    if (fulfilledRequirements >= 5) {
+      setStrong("strong");
+    } else if (fulfilledRequirements >= 3) {
+      setStrong("medium");
+    } else {
+      setStrong("weak");
+    }
+  }, [requirements]);
 
   useEffect(() => {
     if (!isConfirm) {
@@ -61,8 +78,8 @@ export const PasswordInput: React.FC<Props> = ({
   const getLabelStyle = (isValid: boolean) => {
     const baseStyle =
       "text-xs font-light before:content-[''] before:block before:w-[8px] before:h-[8px] before:rounded-full mt-1 flex items-center";
-    const validColor = "text-green-500 before:bg-green-500";
-    const invalidColor = "text-red-500 before:bg-red-500";
+    const validColor = "text-green before:bg-green";
+    const invalidColor = "text-red before:bg-red";
     const neutralColor = "text-neutral before:bg-neutral";
 
     if (value === "") return `${baseStyle} ${neutralColor}`;
@@ -75,7 +92,9 @@ export const PasswordInput: React.FC<Props> = ({
       "text-xs font-light before:content-[''] before:block before:w-[8px] before:h-[8px] before:rounded-full flex items-center";
     const validColor = "text-green before:bg-green";
     const invalidColor = "text-red before:bg-red";
-    const neutralColor = "text-neutral before:bg-neutral";
+    const neutralColor = !error
+      ? "text-neutral before:bg-neutral"
+      : "text-red before:bg-red";
 
     if (value === "") return `${baseStyle} ${neutralColor}`;
 
@@ -84,18 +103,50 @@ export const PasswordInput: React.FC<Props> = ({
 
   return (
     <div className="w-full mb-6">
-      <Label htmlFor={name} className="font-medium mb-1 leading-[24px]">
-        {label}
-      </Label>
-      <Input
-        id={name}
-        name={name}
-        type="password"
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-        className="h-[56px] w-full bg-primary"
-      />
+      <div className="flex justify-between items-center">
+        <Label htmlFor={name} className="font-medium mb-1 leading-[24px]">
+          {label}
+        </Label>
+        {!isConfirm && (
+          <p
+            className={`text-xs font-light mt-1 flex items-center transition-opacity duration-200 
+            ${value !== "" ? "opacity-100" : "opacity-0 hidden"}
+            ${
+              strong === "strong"
+                ? "text-green before:bg-green"
+                : strong === "medium"
+                ? "text-yellow before:bg-yellow"
+                : "text-red before:bg-red"
+            }
+              before:content-[''] before:block before:w-2 before:h-2 before:rounded-full before:mr-1`}
+          >
+            {strong === "strong"
+              ? "Strong"
+              : strong === "medium"
+              ? "Medium"
+              : "Weak"}
+          </p>
+        )}
+      </div>
+      <div className="relative">
+        <Input
+          id={name}
+          type={showPassword ? "text" : "password"}
+          name={name}
+          value={value}
+          placeholder={placeholder}
+          onChange={onChange}
+          className="h-[56px] w-full bg-primary "
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword((prev) => !prev)}
+          className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+        >
+          {showPassword ? <OpenEyeIcon /> : <EyeIcon />}{" "}
+          {/* Переключение иконки */}
+        </button>
+      </div>
       {isConfirm ? (
         <Label htmlFor={name} className={getConfirmStyle()}>
           Confirm password must match new password
