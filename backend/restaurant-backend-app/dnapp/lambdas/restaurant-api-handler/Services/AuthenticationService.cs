@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using Function.Exceptions;
 using System.Security.Authentication;
+using Function.Models;
 
 namespace SimpleLambdaFunction.Services;
 
@@ -59,7 +60,7 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    public async Task SignUp(string firstName, string lastName, string email, string password)
+    public async Task SignUp(string firstName, string lastName, string email, string password, Roles role = Roles.Customer)
     {
         var signUpRequest = new SignUpRequest
         {
@@ -83,6 +84,17 @@ public class AuthenticationService : IAuthenticationService
         };
 
         await _cognitoClient.AdminConfirmSignUpAsync(confirmRequest);
+
+        var updateAttributesRequest = new AdminUpdateUserAttributesRequest
+        {
+            UserPoolId = _userPoolId,
+            Username = email,
+            UserAttributes = new List<AttributeType>
+            {
+                new AttributeType { Name = "custom:role", Value = Roles.Customer.ToString() }
+            }
+        };
+        await _cognitoClient.AdminUpdateUserAttributesAsync(updateAttributesRequest);
     }
 
     public async Task SignOut(string accessToken)
