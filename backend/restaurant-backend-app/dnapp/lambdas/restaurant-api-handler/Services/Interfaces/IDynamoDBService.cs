@@ -8,5 +8,6 @@ namespace Function.Services.Interfaces
 {
     public interface IDynamoDBService
     {
+        public Task<bool> CheckIfEmailExistsInWaitersTable(string email);
     }
 }

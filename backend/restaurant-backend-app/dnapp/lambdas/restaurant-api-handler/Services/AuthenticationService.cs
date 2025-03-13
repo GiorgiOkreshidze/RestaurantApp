@@ -90,7 +90,7 @@ public class AuthenticationService : IAuthenticationService
             Username = email,
             UserAttributes = new List<AttributeType>
             {
-                new AttributeType { Name = "custom:role", Value = Roles.Customer.ToString() }
+                new AttributeType { Name = "custom:role", Value = role.ToString() }
             }
         };
         await _cognitoClient.AdminUpdateUserAttributesAsync(updateAttributesRequest);
