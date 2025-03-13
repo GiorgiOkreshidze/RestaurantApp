@@ -21,6 +21,16 @@ public class Function
     {
         context.Logger.LogInformation("Incoming serialized request: " + JsonSerializer.Serialize(request));
 
-        return await _apiHandler.HandleRequest(request, context);
+        var result = await _apiHandler.HandleRequest(request, context);
+
+        // I didn't found any examples/other solutions to add them on configuration.
+        result.Headers = new Dictionary<string, string>
+        {
+            { "Access-Control-Allow-Origin", "*" },
+            { "Access-Control-Allow-Methods", "GET,POST,OPTIONS" },
+            { "Access-Control-Allow-Headers", "Content-Type,Authorization" }
+        };
+
+        return result;
     }
 }
