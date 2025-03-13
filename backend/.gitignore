@@ -13,6 +13,7 @@ Thumbs.db
 *.userosscache
 *.sln.docstates
 *.snl
+*.sln
 
 # Rider
 .idea/
