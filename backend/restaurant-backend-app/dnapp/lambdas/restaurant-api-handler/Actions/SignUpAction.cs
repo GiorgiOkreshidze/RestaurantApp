@@ -6,15 +6,20 @@ using Amazon.Lambda.APIGatewayEvents;
 using SimpleLambdaFunction.Services;
 using SimpleLambdaFunction.Services.Interfaces;
 using Function.Exceptions;
+using Function.Services.Interfaces;
+using Function.Services;
+using Function.Models;
 
 namespace SimpleLambdaFunction.Actions;
 
 public class SignUpAction
 {
     private readonly IAuthenticationService _authenticationService;
+    private readonly IDynamoDBService _dynamoDBService;
     public SignUpAction()
     {
         _authenticationService = new AuthenticationService();
+        _dynamoDBService = new DynamoDBService();
     }
 
     public async Task<APIGatewayProxyResponse> Signup(APIGatewayProxyRequest request)
@@ -82,13 +87,28 @@ public class SignUpAction
                 });
             }
 
-            await _authenticationService.SignUp(firstName, lastName, email, password);
+            await SignUpUserWithRole(firstName, lastName, email, password);
+
             return ActionUtils.FormatResponse(200, new { message = $"User {email} was created" });
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
             return ActionUtils.FormatResponse(400, new { message = $"Signup failed: {ex.Message}" });
+        }
+    }
+
+    private async Task SignUpUserWithRole(string firstName, string lastName, string email, string password)
+    {
+        var isWaiter = await _dynamoDBService.CheckIfEmailExistsInWaitersTable(email);
+
+        if (isWaiter)
+        {
+            await _authenticationService.SignUp(firstName, lastName, email, password, Roles.Waiter);
+        }
+        else
+        {
+            await _authenticationService.SignUp(firstName, lastName, email, password);
         }
     }
 }

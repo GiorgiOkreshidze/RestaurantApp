@@ -27,7 +27,8 @@
       "resource_name": "${restaurant_userpool}",
       "resource_type": "cognito_idp",
       "parameter": "client_id"
-    }
+    },
+    "WAITERS_TABLE_EMAIL_INDEX_NAME": "${waiters_table_email_index_name}"
   },
   "publish_version": true,
   "alias": "${lambdas_alias_name}",

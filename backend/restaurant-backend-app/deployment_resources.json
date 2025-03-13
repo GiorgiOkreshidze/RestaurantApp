@@ -22,7 +22,6 @@
             "cognito-idp:ListUserPools",
             "cognito-idp:ListUserPoolClients",
             "cognito-idp:AdminRespondToAuthChallenge",
-
             "cognito-idp:AdminConfirmSignUp",
             "cognito-idp:SignUp",
             "cognito-idp:AdminUpdateUserAttributes"
@@ -120,7 +119,13 @@
     "hash_key_type": "S",
     "read_capacity": 1,
     "write_capacity": 1,
-    "global_indexes": [],
+    "global_indexes": [
+      {
+        "name": "${waiters_table_email_index_name}",
+        "index_key_name": "email",
+        "index_key_type": "S"
+      }
+    ],
     "autoscaling": [],
     "tags": {}
   }
