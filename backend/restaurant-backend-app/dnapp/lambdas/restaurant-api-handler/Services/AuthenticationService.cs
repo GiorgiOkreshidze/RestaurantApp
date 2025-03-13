@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider;
 using SimpleLambdaFunction.Services.Interfaces;
-using Amazon.Lambda.Core;
 using Amazon.CognitoIdentityProvider.Model;
 using System.Collections.Generic;
 using System;
@@ -22,7 +21,7 @@ public class AuthenticationService : IAuthenticationService
         _cognitoClient = new AmazonCognitoIdentityProviderClient();
     }
 
-    public async Task<string> SignIn(string email, string password)
+    public async Task<AdminInitiateAuthResponse> SignIn(string email, string password)
     {
         var authRequest = new AdminInitiateAuthRequest
         {
@@ -30,16 +29,16 @@ public class AuthenticationService : IAuthenticationService
             ClientId = _clientId,
             UserPoolId = _userPoolId,
             AuthParameters = new Dictionary<string, string>
-                    {
-                        { "USERNAME", email },
-                        { "PASSWORD", password }
-                    }
+            {
+                { "USERNAME", email },
+                { "PASSWORD", password }
+            }
         };
 
         try
         {
             var authResponse = await _cognitoClient.AdminInitiateAuthAsync(authRequest);
-            return authResponse.AuthenticationResult.IdToken;
+            return authResponse;
         }
         catch (UserNotFoundException)
         {
@@ -68,11 +67,11 @@ public class AuthenticationService : IAuthenticationService
             Username = email,
             Password = password,
             UserAttributes = new List<AttributeType>
-                    {
-                        new AttributeType { Name = "given_name", Value = firstName },
-                        new AttributeType { Name = "family_name", Value = lastName },
-                        new AttributeType { Name = "email", Value = email }
-                    }
+            {
+                new AttributeType { Name = "given_name", Value = firstName },
+                new AttributeType { Name = "family_name", Value = lastName },
+                new AttributeType { Name = "email", Value = email }
+            }
         };
 
         await _cognitoClient.SignUpAsync(signUpRequest);
@@ -105,6 +104,7 @@ public class AuthenticationService : IAuthenticationService
             {
                 AccessToken = accessToken
             };
+            
             await _cognitoClient.GlobalSignOutAsync(signOutRequest);
         }
         catch (Exception ex)
