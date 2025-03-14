@@ -53,11 +53,7 @@ public class SignInAction
             try
             {
                 var authResponse = await _authenticationService.SignIn(email, password);
-                return ActionUtils.FormatResponse(200, new
-                {
-                    accessToken = authResponse.AuthenticationResult.AccessToken,
-                    idToken = authResponse.AuthenticationResult.IdToken,
-                });
+                return ActionUtils.FormatResponse(200, authResponse);
             }
             catch (AuthenticationException ex)
             {

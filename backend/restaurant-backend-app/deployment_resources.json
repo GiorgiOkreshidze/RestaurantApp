@@ -24,7 +24,8 @@
             "cognito-idp:AdminRespondToAuthChallenge",
             "cognito-idp:AdminConfirmSignUp",
             "cognito-idp:SignUp",
-            "cognito-idp:AdminUpdateUserAttributes"
+            "cognito-idp:AdminUpdateUserAttributes",
+            "cognito-idp:RevokeToken"
           ],
           "Effect": "Allow",
           "Resource": "*"
@@ -103,7 +104,22 @@
       "/signout": {
         "enable_cors": true,
         "POST": {
-          "authorization_type": "NONE",
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "restaurant-api-handler",
+          "enable_proxy": true,
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/auth/refresh": {
+        "enable_cors": true,
+        "POST": {
+          "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "restaurant-api-handler",
           "enable_proxy": true,

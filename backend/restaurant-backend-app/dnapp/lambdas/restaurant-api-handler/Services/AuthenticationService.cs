@@ -21,7 +21,7 @@ public class AuthenticationService : IAuthenticationService
         _cognitoClient = new AmazonCognitoIdentityProviderClient();
     }
 
-    public async Task<AdminInitiateAuthResponse> SignIn(string email, string password)
+    public async Task<AuthResult> SignIn(string email, string password)
     {
         var authRequest = new AdminInitiateAuthRequest
         {
@@ -38,7 +38,15 @@ public class AuthenticationService : IAuthenticationService
         try
         {
             var authResponse = await _cognitoClient.AdminInitiateAuthAsync(authRequest);
-            return authResponse;
+            
+            var response = new AuthResult
+            {
+                IdToken = authResponse.AuthenticationResult.IdToken,
+                RefreshToken = authResponse.AuthenticationResult.RefreshToken,
+                ExpiresIn = authResponse.AuthenticationResult.ExpiresIn
+            };
+
+            return response;
         }
         catch (UserNotFoundException)
         {
@@ -96,16 +104,17 @@ public class AuthenticationService : IAuthenticationService
         await _cognitoClient.AdminUpdateUserAttributesAsync(updateAttributesRequest);
     }
 
-    public async Task SignOut(string accessToken)
+    public async Task SignOut(string refreshToken)
     {
         try
         {
-            var signOutRequest = new GlobalSignOutRequest
+            var revokeRequest = new RevokeTokenRequest
             {
-                AccessToken = accessToken
+                Token = refreshToken,
+                ClientId = _clientId
             };
-            
-            await _cognitoClient.GlobalSignOutAsync(signOutRequest);
+
+            await _cognitoClient.RevokeTokenAsync(revokeRequest);
         }
         catch (Exception ex)
         {
@@ -139,6 +148,43 @@ public class AuthenticationService : IAuthenticationService
         catch (Exception ex)
         {
             Console.WriteLine($"Error checking email uniqueness: {ex.Message}");
+        }
+    }
+
+    public async Task<AuthResult> RefreshToken(string refreshToken)
+    {
+        var authRequest = new AdminInitiateAuthRequest
+        {
+            AuthFlow = AuthFlowType.REFRESH_TOKEN_AUTH,
+            ClientId = _clientId,
+            UserPoolId = _userPoolId,
+            AuthParameters = new Dictionary<string, string>
+            {
+                { "REFRESH_TOKEN", refreshToken }
+            }
+        };
+
+        try
+        {
+            var response = await _cognitoClient.AdminInitiateAuthAsync(authRequest);
+
+            var authResult = new AuthResult
+            {
+                IdToken = response.AuthenticationResult.IdToken,
+                RefreshToken = response.AuthenticationResult.RefreshToken ?? refreshToken,
+                ExpiresIn = response.AuthenticationResult.ExpiresIn
+            };
+
+            return authResult;
+        }
+        catch (NotAuthorizedException ex)
+        {
+            throw new UnauthorizedAccessException("Invalid refresh token.", ex);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to refresh token in: {ex}");
+            throw;
         }
     }
 }
