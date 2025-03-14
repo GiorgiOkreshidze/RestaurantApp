@@ -15,6 +15,7 @@ public class ApiHandler
     private readonly SignUpAction _signupAction;
     private readonly SignInAction _signInAction;
     private readonly SignOutAction _signOutAction;
+    private readonly RefreshTokenAction _refreshTokenAction;
 
     public ApiHandler()
     {
@@ -22,6 +23,7 @@ public class ApiHandler
         _signupAction = new SignUpAction();
         _signInAction = new SignInAction();
         _signOutAction = new SignOutAction();
+        _refreshTokenAction = new RefreshTokenAction();
     }
     
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -53,7 +55,13 @@ public class ApiHandler
                  {
                     "/signout", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "POST", _signOutAction.Signout } // Add Signout
+                        { "POST", _signOutAction.Signout }
+                    }
+                },
+                 {
+                    "/auth/refresh", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "POST", _refreshTokenAction.RefreshToken }
                     }
                 }
             };

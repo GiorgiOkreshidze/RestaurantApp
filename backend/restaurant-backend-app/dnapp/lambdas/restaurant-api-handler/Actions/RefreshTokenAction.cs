@@ -1,25 +1,25 @@
-﻿using Amazon.Lambda.APIGatewayEvents;
+﻿using SimpleLambdaFunction.Services.Interfaces;
 using SimpleLambdaFunction.Services;
-using SimpleLambdaFunction.Services.Interfaces;
 using System;
-using System.Security.Authentication;
 using System.Threading.Tasks;
-using SimpleLambdaFunction.Actions;
-using System.Text.Json;
+using Amazon.Lambda.APIGatewayEvents;
 using Function.Models;
+using System.Text.Json;
+using SimpleLambdaFunction.Actions;
+using System.Security.Authentication;
 
 namespace Function.Actions
 {
-    class SignOutAction
+    public class RefreshTokenAction
     {
         private readonly IAuthenticationService _authenticationService;
 
-        public SignOutAction()
+        public RefreshTokenAction()
         {
             _authenticationService = new AuthenticationService();
         }
 
-        public async Task<APIGatewayProxyResponse> Signout(APIGatewayProxyRequest request)
+        public async Task<APIGatewayProxyResponse> RefreshToken(APIGatewayProxyRequest request)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace Function.Actions
                     return ActionUtils.FormatResponse(400, new { message = "Request body is missing" });
                 }
 
-                var requestBody = JsonSerializer.Deserialize<SignOutRequest>(request.Body,
+                var requestBody = JsonSerializer.Deserialize<RefreshTokenRequest>(request.Body,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (requestBody == null || string.IsNullOrEmpty(requestBody.RefreshToken))
@@ -36,19 +36,19 @@ namespace Function.Actions
                     return ActionUtils.FormatResponse(400, new { message = "Refresh token is missing" });
                 }
 
-                await _authenticationService.SignOut(requestBody.RefreshToken);
+                var tokenResponse = await _authenticationService.RefreshToken(requestBody.RefreshToken);
 
-                return ActionUtils.FormatResponse(200, new { message = "Successfully signed out" });
+                return ActionUtils.FormatResponse(200, tokenResponse);
             }
             catch (AuthenticationException ex)
             {
-                Console.WriteLine(ex);
-                return ActionUtils.FormatResponse(400, new { message = $"Sign-out failed: {ex.Message}" });
+                Console.WriteLine($"AuthenticationException: {ex.Message}");
+                return ActionUtils.FormatResponse(400, new { message = $"Token refresh failed: {ex.Message}" });
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                return ActionUtils.FormatResponse(400, new { message = $"Sign-out failed: {ex.Message}" });
+                Console.WriteLine($"Exception: {ex.Message}");
+                return ActionUtils.FormatResponse(500, new { message = "An unexpected error occurred" });
             }
         }
     }
