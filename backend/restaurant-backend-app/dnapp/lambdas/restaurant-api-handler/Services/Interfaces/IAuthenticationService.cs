@@ -1,6 +1,7 @@
 ﻿using Function.Models;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
+using System.Collections.Generic;
 
 namespace SimpleLambdaFunction.Services.Interfaces;
 
@@ -11,4 +12,5 @@ public interface IAuthenticationService
     Task SignOut(string accessToken);
     Task CheckEmailUniqueness(string email);
     Task<AuthResult> RefreshToken(string refreshToken);
+    Task<Dictionary<string, string>> GetUserDetailsAsync(string accessToken);
 }

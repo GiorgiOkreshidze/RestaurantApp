@@ -18,7 +18,7 @@ public class ApiHandler
     private readonly GetLocationsAction _getLocationsActions;
     private readonly GetPopularDishesAction _getPopularDishesAction;
     private readonly RefreshTokenAction _refreshTokenAction;
-
+    private readonly GetProfileAction _getProfileAction;
     public ApiHandler()
     {
         // Init Actions
@@ -28,6 +28,7 @@ public class ApiHandler
         _getLocationsActions = new GetLocationsAction();
         _getPopularDishesAction = new GetPopularDishesAction();
         _refreshTokenAction = new RefreshTokenAction();
+        _getProfileAction = new GetProfileAction();
     }
     
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -78,6 +79,12 @@ public class ApiHandler
                     "/dishes/popular", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getPopularDishesAction.GetPopularDishes }
+                    }
+                 },
+                {
+                    "/users/profile", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getProfileAction.GetProfile }
                     }
                 }
             };

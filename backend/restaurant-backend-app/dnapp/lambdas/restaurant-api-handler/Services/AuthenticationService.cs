@@ -7,6 +7,8 @@ using System;
 using Function.Exceptions;
 using System.Security.Authentication;
 using Function.Models;
+using System.Linq;
+using System.Text.Json;
 
 namespace SimpleLambdaFunction.Services;
 
@@ -151,6 +153,39 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
+    public async Task<Dictionary<string, string>> GetUserDetailsAsync(string accessToken)
+    {
+        try
+        {
+            var request = new GetUserRequest
+            {
+                AccessToken = accessToken
+            };
+
+            var response = await _cognitoClient.GetUserAsync(request);
+            Console.WriteLine("Cognito response received: " + JsonSerializer.Serialize(response));
+
+            var userAttributes = response.UserAttributes
+                .ToDictionary(attr => attr.Name, attr => attr.Value);
+
+            if (!userAttributes.ContainsKey("custom:role"))
+            {
+                userAttributes["custom:role"] = Roles.Customer.ToString();
+            }
+            return userAttributes;
+        }
+        catch (UserNotFoundException)
+        {
+            Console.WriteLine("User not found in Cognito.");
+            throw new Exception("User not found in Cognito.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching user details: {ex}");
+            throw;
+        }
+    }
+
     public async Task<AuthResult> RefreshToken(string refreshToken)
     {
         var authRequest = new AdminInitiateAuthRequest
@@ -163,7 +198,6 @@ public class AuthenticationService : IAuthenticationService
                 { "REFRESH_TOKEN", refreshToken }
             }
         };
-
         try
         {
             var response = await _cognitoClient.AdminInitiateAuthAsync(authRequest);
