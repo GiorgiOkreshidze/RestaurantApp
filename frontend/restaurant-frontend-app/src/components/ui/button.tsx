@@ -5,16 +5,16 @@ import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
 
 const buttonVariants = cva(
-  "inline-flex rounded min-w-[44px] cursor-pointer text-center w-full justify-center",
+  "inline-flex rounded min-w-[44px] cursor-pointer text-center w-full justify-center transition-all duration-300",
   {
     variants: {
       variant: {
         primary:
-          "bg-green-200 text-neutral-0 p-[1rem] hover:bg-green-300 active:bg-green-400",
+          "bg-green-200 text-neutral-0 p-[1rem] hover:bg-green-300 active:bg-green-400 ",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
         outline:
-          "border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
+          "border border-input border-green-200 bg-background shadow-xs text-green-200 hover:bg-accent hover:text-accent-foreground hover:bg-green-100 p-2 active:bg-green-200 active:text-neutral-0",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
@@ -31,7 +31,7 @@ const buttonVariants = cva(
       variant: "primary",
       // size: "default",
     },
-  },
+  }
 );
 
 function Button({

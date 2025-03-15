@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router";
 
 const formSchema = z.object({
   email: z
@@ -93,9 +94,11 @@ export default function LoginForm({
           <Button type="submit" className="mt-[64px]">
             Sign In
           </Button>
-          <Text className="mt-[16px]" variant="caption">
-            Don’t have an account? Create an Account
-          </Text>
+          <Link to="/signup">
+            <Text className="mt-[16px]" variant="caption">
+              Don’t have an account? Create an Account
+            </Text>
+          </Link>
         </div>
       </form>
     </Form>
