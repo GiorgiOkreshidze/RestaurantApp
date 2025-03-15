@@ -40,3 +40,6 @@ export interface ValidationErrors {
 export interface GlobalErrorMessage {
   message: string;
 }
+
+export interface LoginFormFields
+  extends Pick<UserFields, "email" | "password"> {}

@@ -11,6 +11,10 @@ export const Home = () => {
       <Link to="/signup" className="text-9xl text-red">
         Register
       </Link>
+      <br/>
+      <Link to="/signin" className="text-9xl text-red">
+        Login
+      </Link>
       <h3>
         Hello,{" "}
         <span className="text-red">
