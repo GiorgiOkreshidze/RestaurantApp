@@ -13,6 +13,7 @@ export const textVariants = cva("text-neutral-900", {
       caption: "text-[0.75rem]/[1rem] font-[300] text-neutral-400",
       link: "text-[0.75rem]/[1rem] font-[700] text-blue-400",
       buttonPrimary: "text-[0.875rem]/[1.5rem] font-[700]",
+      heroText: "text-[0.875rem]/[1.5rem] font-[300] ",
     },
   },
   defaultVariants: {
