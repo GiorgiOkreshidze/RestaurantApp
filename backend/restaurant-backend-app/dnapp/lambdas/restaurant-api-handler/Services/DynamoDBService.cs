@@ -1,5 +1,4 @@
-﻿using Amazon.CognitoIdentityProvider.Model;
-using Amazon.DynamoDBv2;
+﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
@@ -7,9 +6,8 @@ using Function.Models;
 using Function.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Function.Mappers;
 
 namespace Function.Services
 {
@@ -48,23 +46,9 @@ namespace Function.Services
         public async Task<List<Location>> GetListOfLocations()
         {
             var documentList = await ScanDynamoDBTableAsync(_locationsTableName);
-            return MapDocumentsToLocations(documentList);
+            return Mapper.MapDocumentsToLocations(documentList);
         }
-
-        private List<Location> MapDocumentsToLocations(List<Document> documentList)
-        {
-            return documentList.Select(doc => new Location
-            {
-                Id = doc.TryGetValue("id", out var id) ? id : "",
-                Address = doc.TryGetValue("address", out var address) ? address : "",
-                Description = doc.TryGetValue("description", out var description) ? description : "",
-                TotalCapacity = doc.TryGetValue("totalCapacity", out var totalCapacity) ? totalCapacity : "",
-                AverageOccupancy = doc.TryGetValue("averageOccupancy", out var averageOccupancy) ? averageOccupancy : "",
-                ImageUrl = doc.TryGetValue("imageUrl", out var imageUrl) ? imageUrl : "",
-                Rating = doc.TryGetValue("rating", out var rating) ? rating : ""
-            }).ToList();
-        }
-
+        
         private async Task<List<Document>> ScanDynamoDBTableAsync(string? tableName)
         {
             var table = Table.LoadTable(_dynamoDBClient, tableName);
