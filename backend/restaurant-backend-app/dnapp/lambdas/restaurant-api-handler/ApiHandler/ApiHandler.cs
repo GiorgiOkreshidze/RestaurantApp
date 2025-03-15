@@ -15,6 +15,7 @@ public class ApiHandler
     private readonly SignUpAction _signupAction;
     private readonly SignInAction _signInAction;
     private readonly SignOutAction _signOutAction;
+    private readonly GetLocationsAction _getLocationsActions;
     private readonly RefreshTokenAction _refreshTokenAction;
 
     public ApiHandler()
@@ -23,6 +24,7 @@ public class ApiHandler
         _signupAction = new SignUpAction();
         _signInAction = new SignInAction();
         _signOutAction = new SignOutAction();
+        _getLocationsActions = new GetLocationsAction();
         _refreshTokenAction = new RefreshTokenAction();
     }
     
@@ -62,6 +64,12 @@ public class ApiHandler
                     "/auth/refresh", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "POST", _refreshTokenAction.RefreshToken }
+                    }
+                },
+                 {
+                    "/locations", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getLocationsActions.GetLocations }
                     }
                 }
             };
