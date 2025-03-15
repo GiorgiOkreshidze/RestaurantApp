@@ -13,6 +13,8 @@ namespace Function.Services.Interfaces
 
         public Task<List<Location>> GetListOfLocations();
         
-        public Task<List<PopularDish>> GetListOfPopularDishes();
+        public Task<List<Dish>> GetListOfPopularDishes();
+        
+        public Task<List<Dish>> GetListOfSpecialityDishes(string locationId);
     }
 }

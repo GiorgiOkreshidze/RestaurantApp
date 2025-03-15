@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
@@ -19,6 +18,9 @@ public class ApiHandler
     private readonly GetPopularDishesAction _getPopularDishesAction;
     private readonly RefreshTokenAction _refreshTokenAction;
     private readonly GetProfileAction _getProfileAction;
+    private readonly GetSpecialityDishesAction _getSpecialityDishesAction;
+    
+    
     public ApiHandler()
     {
         // Init Actions
@@ -29,6 +31,7 @@ public class ApiHandler
         _getPopularDishesAction = new GetPopularDishesAction();
         _refreshTokenAction = new RefreshTokenAction();
         _getProfileAction = new GetProfileAction();
+        _getSpecialityDishesAction = new GetSpecialityDishesAction();
     }
     
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -85,6 +88,12 @@ public class ApiHandler
                     "/users/profile", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getProfileAction.GetProfile }
+                    }
+                },
+                {
+                    "/locations/{id}/speciality-dishes", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getSpecialityDishesAction.GetSpecialityDishes }
                     }
                 }
             };
