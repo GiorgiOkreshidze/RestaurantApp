@@ -6,6 +6,7 @@ namespace Function.Models
     {
         [JsonPropertyName("idToken")]
         public required string IdToken { get; set; }
+        
         [JsonPropertyName("refreshToken")]
         public required string RefreshToken { get; set; }
 
