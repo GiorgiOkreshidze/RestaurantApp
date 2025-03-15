@@ -9,6 +9,7 @@ using System.Security.Authentication;
 using Function.Models;
 using System.Linq;
 using System.Text.Json;
+using System.Security.Cryptography;
 
 namespace SimpleLambdaFunction.Services;
 
@@ -45,6 +46,7 @@ public class AuthenticationService : IAuthenticationService
             {
                 IdToken = authResponse.AuthenticationResult.IdToken,
                 RefreshToken = authResponse.AuthenticationResult.RefreshToken,
+                AccessToken = authResponse.AuthenticationResult.AccessToken,
                 ExpiresIn = authResponse.AuthenticationResult.ExpiresIn
             };
 
@@ -69,7 +71,7 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    public async Task SignUp(string firstName, string lastName, string email, string password, Roles role = Roles.Customer)
+    public async Task<AuthResult> SignUp(string firstName, string lastName, string email, string password, Roles role = Roles.Customer)
     {
         var signUpRequest = new SignUpRequest
         {
@@ -104,6 +106,7 @@ public class AuthenticationService : IAuthenticationService
             }
         };
         await _cognitoClient.AdminUpdateUserAttributesAsync(updateAttributesRequest);
+        return await SignIn(email, password);
     }
 
     public async Task SignOut(string refreshToken)
@@ -206,6 +209,7 @@ public class AuthenticationService : IAuthenticationService
             {
                 IdToken = response.AuthenticationResult.IdToken,
                 RefreshToken = response.AuthenticationResult.RefreshToken ?? refreshToken,
+                AccessToken = response.AuthenticationResult.AccessToken,
                 ExpiresIn = response.AuthenticationResult.ExpiresIn
             };
 

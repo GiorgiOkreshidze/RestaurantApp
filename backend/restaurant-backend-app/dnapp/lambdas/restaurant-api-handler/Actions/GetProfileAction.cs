@@ -9,6 +9,7 @@ using Amazon.Lambda.APIGatewayEvents;
 using SimpleLambdaFunction.Actions;
 using System.Security.Authentication;
 using System.Text.Json;
+using Function.Models;
 
 namespace Function.Actions
 {
@@ -42,15 +43,17 @@ namespace Function.Actions
                 var email = userDetails.GetValueOrDefault("email");
                 var role = userDetails.GetValueOrDefault("custom:role");
 
-                Console.WriteLine($"Extracted attributes - FirstName: {firstName}, LastName: {lastName}, Email: {email}, Role: {role}");
-                // Return profile data
-                return ActionUtils.FormatResponse(200, new
+                var profileInfo = new ProfileInfo
                 {
-                    firstName,
-                    lastName,
-                    email,
-                    role
-                });
+                    FirstName = firstName!,
+                    LastName = lastName!,
+                    Email = email!,
+                    Role = role!,
+                    ImageUrl = "Here should be s3 img url"
+                };
+
+                // Return profile data
+                return ActionUtils.FormatResponse(200, profileInfo);
             }
             catch (Exception ex)
             {
