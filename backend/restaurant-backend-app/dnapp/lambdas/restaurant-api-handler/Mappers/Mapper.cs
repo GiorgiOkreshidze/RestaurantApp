@@ -21,4 +21,16 @@ public class Mapper
             Rating = doc.TryGetValue("rating", out var rating) ? rating : ""
         }).ToList();
     }
+
+    public static List<PopularDish> MapDocumentsToPopularDishes(List<Document> documentList)
+    {
+        return documentList.Select(doc => new PopularDish
+        {
+            Id = doc.TryGetValue("id", out var id) ? id : "",
+            Name = doc.TryGetValue("name", out var name) ? name : "",
+            Price = doc.TryGetValue("price", out var price) ? price : "",
+            Weight = doc.TryGetValue("weight", out var weight) ? weight : "",
+            ImageUrl = doc.TryGetValue("imageUrl", out var imageUrl) ? imageUrl : "",
+        }).ToList();
+    }
 }

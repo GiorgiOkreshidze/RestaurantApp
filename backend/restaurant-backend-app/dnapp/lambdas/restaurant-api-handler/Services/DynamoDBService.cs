@@ -18,6 +18,7 @@ namespace Function.Services
         private readonly string? _waitersTableName = Environment.GetEnvironmentVariable("DYNAMODB_WAITERS_TABLE_NAME");
         private readonly string? _emailIndexName = Environment.GetEnvironmentVariable("WAITERS_TABLE_EMAIL_INDEX_NAME");
         private readonly string? _locationsTableName = Environment.GetEnvironmentVariable("DYNAMODB_LOCATIONS_TABLE_NAME");
+        private readonly string? _dishesTableName = Environment.GetEnvironmentVariable("DYNAMODB_DISHES_TABLE_NAME");
 
         public DynamoDBService()
         {
@@ -48,7 +49,13 @@ namespace Function.Services
             var documentList = await ScanDynamoDBTableAsync(_locationsTableName);
             return Mapper.MapDocumentsToLocations(documentList);
         }
-        
+
+        public async Task<List<PopularDish>> GetListOfPopularDishes()
+        {
+            var documentList = await ScanDynamoDBTableAsync(_dishesTableName);
+            return Mapper.MapDocumentsToPopularDishes(documentList);
+        }
+
         private async Task<List<Document>> ScanDynamoDBTableAsync(string? tableName)
         {
             var table = Table.LoadTable(_dynamoDBClient, tableName);

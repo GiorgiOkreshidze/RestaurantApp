@@ -16,6 +16,7 @@ public class ApiHandler
     private readonly SignInAction _signInAction;
     private readonly SignOutAction _signOutAction;
     private readonly GetLocationsAction _getLocationsActions;
+    private readonly GetPopularDishesAction _getPopularDishesAction;
     private readonly RefreshTokenAction _refreshTokenAction;
 
     public ApiHandler()
@@ -25,6 +26,7 @@ public class ApiHandler
         _signInAction = new SignInAction();
         _signOutAction = new SignOutAction();
         _getLocationsActions = new GetLocationsAction();
+        _getPopularDishesAction = new GetPopularDishesAction();
         _refreshTokenAction = new RefreshTokenAction();
     }
     
@@ -70,6 +72,12 @@ public class ApiHandler
                     "/locations", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getLocationsActions.GetLocations }
+                    }
+                },
+                {
+                    "/dishes/popular", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getPopularDishesAction.GetPopularDishes }
                     }
                 }
             };

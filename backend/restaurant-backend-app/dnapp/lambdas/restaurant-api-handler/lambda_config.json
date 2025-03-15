@@ -18,6 +18,7 @@
   "env_variables": {
     "DYNAMODB_WAITERS_TABLE_NAME": "${waiters_table}",
     "DYNAMODB_LOCATIONS_TABLE_NAME": "${locations_table}",
+    "DYNAMODB_DISHES_TABLE_NAME": "${dishes_table}",
     "COGNITO_USER_POOL_NAME": "${restaurant_userpool}",
     "COGNITO_USER_POOL_ID": {
       "resource_name": "${restaurant_userpool}",
