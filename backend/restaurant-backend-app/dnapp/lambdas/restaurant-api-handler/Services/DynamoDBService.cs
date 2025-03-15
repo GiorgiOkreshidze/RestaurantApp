@@ -6,6 +6,7 @@ using Function.Models;
 using Function.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Function.Mappers;
 
@@ -50,10 +51,27 @@ namespace Function.Services
             return Mapper.MapDocumentsToLocations(documentList);
         }
 
-        public async Task<List<PopularDish>> GetListOfPopularDishes()
+        public async Task<List<Dish>> GetListOfPopularDishes()
         {
             var documentList = await ScanDynamoDBTableAsync(_dishesTableName);
-            return Mapper.MapDocumentsToPopularDishes(documentList);
+            var filteredDishes = documentList
+                .Where(doc =>
+                    doc.TryGetValue("isPopular", out var isPopular) && 
+                    isPopular.AsBoolean())
+                .ToList();
+            return Mapper.MapDocumentsToDishes(filteredDishes);
+        }
+        
+        public async Task<List<Dish>> GetListOfSpecialityDishes(string locationId)
+        {
+            var documentList = await ScanDynamoDBTableAsync(_dishesTableName);
+            var filteredDocuments = documentList
+                .Where(doc => 
+                    doc.TryGetValue("locationId", out var docLocationId) && 
+                    docLocationId.ToString() == locationId)
+                .ToList();
+            
+            return Mapper.MapDocumentsToDishes(filteredDocuments);
         }
 
         private async Task<List<Document>> ScanDynamoDBTableAsync(string? tableName)

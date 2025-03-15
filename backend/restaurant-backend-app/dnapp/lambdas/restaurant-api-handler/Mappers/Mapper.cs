@@ -22,15 +22,17 @@ public class Mapper
         }).ToList();
     }
 
-    public static List<PopularDish> MapDocumentsToPopularDishes(List<Document> documentList)
+    public static List<Dish> MapDocumentsToDishes(List<Document> documentList)
     {
-        return documentList.Select(doc => new PopularDish
+        return documentList.Select(doc => new Dish
         {
             Id = doc.TryGetValue("id", out var id) ? id : "",
             Name = doc.TryGetValue("name", out var name) ? name : "",
             Price = doc.TryGetValue("price", out var price) ? price : "",
             Weight = doc.TryGetValue("weight", out var weight) ? weight : "",
             ImageUrl = doc.TryGetValue("imageUrl", out var imageUrl) ? imageUrl : "",
+            IsPopular = doc.TryGetValue("isPopular", out var isPopular) && isPopular.AsBoolean(),
+            LocationId = doc.TryGetValue("locationId", out var locationId) ? locationId : "",
         }).ToList();
     }
 }

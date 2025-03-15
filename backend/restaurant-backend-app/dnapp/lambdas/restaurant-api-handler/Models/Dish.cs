@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Amazon.DynamoDBv2.DataModel;
 
 namespace Function.Models;
 
-public class PopularDish
+public class Dish
 {
     [JsonPropertyName("id")]
     public string Id { get; set; }
@@ -18,4 +19,12 @@ public class PopularDish
     
     [JsonPropertyName("imageUrl")]
     public required string ImageUrl { get; set; }
+    
+    [DynamoDBProperty("isPopular")]
+    [JsonIgnore]
+    public bool IsPopular { get; set; }
+    
+    [DynamoDBProperty("locationId")]
+    [JsonIgnore]
+    public string? LocationId { get; set; }
 }
