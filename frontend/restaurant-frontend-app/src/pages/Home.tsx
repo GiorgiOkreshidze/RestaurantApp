@@ -1,26 +1,12 @@
 import { selectUser } from "@/app/slices/userSlice";
-import { useSelector } from "react-redux";
-import { Link } from "react-router";
+import { Dishes, Hero, Locations } from "@/components/shared";
 
 export const Home = () => {
-  const user = useSelector(selectUser);
-
   return (
-    <div>
-      <h1 className="text-9xl">Home page</h1>
-      <Link to="/signup" className="text-9xl text-red">
-        Register
-      </Link>
-      <br />
-      <Link to="/signin" className="text-9xl text-red">
-        Login
-      </Link>
-      <h3>
-        Hello,{" "}
-        <span className="text-red">
-          {user?.name} {user?.lastName}
-        </span>
-      </h3>
-    </div>
+    <>
+      <Hero />
+      <Dishes />
+      <Locations />
+    </>
   );
 };

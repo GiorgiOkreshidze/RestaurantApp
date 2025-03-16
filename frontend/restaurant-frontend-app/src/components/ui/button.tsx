@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
 
 const buttonVariants = cva(
-  "inline-flex rounded min-w-[44px] cursor-pointer text-center w-full justify-center items-center",
+  "inline-flex rounded min-w-[44px] cursor-pointer text-center w-full justify-center transition-all duration-300 items-center",
   {
     variants: {
       variant: {

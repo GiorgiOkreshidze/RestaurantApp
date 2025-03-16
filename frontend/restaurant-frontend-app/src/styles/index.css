@@ -186,12 +186,18 @@ body {
 
   --color-green-100: #e9ffea;
   --color-green-200: #00ad0c;
+  --color-green-100: #e9ffea;
+  --color-green-200: #00ad0c;
   --color-green-300: #008209;
   --color-green-400: #006907;
 
   --color-blue-100: #dee9ff;
   --color-blue-400: #0e53e9;
+  --color-blue-100: #dee9ff;
+  --color-blue-400: #0e53e9;
 
+  --color-orange-100: #fff2d4;
+  --color-orange-400: #ffae00;
   --color-orange-100: #fff2d4;
   --color-orange-400: #ffae00;
 
