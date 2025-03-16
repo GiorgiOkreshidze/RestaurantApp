@@ -1,4 +1,4 @@
-export { Container } from "./Container.tsx";
+export { Container } from "./Container";
 export { RegistrationInput } from "./RegistrationInput";
 export { Title } from "./Title";
 export { NavBar } from "./NavBar";
