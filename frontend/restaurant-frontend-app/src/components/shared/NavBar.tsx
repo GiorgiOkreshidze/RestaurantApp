@@ -1,6 +1,6 @@
 import { Container } from ".";
 import { Link, NavLink } from "react-router";
-import { Logo } from "../svg";
+import { Logo } from "@/components/icons/";
 import { Button, Text } from "../ui";
 
 export const NavBar = () => {

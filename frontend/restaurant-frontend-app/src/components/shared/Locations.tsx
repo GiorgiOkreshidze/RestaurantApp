@@ -1,4 +1,4 @@
-import { Container } from "./container";
+import { Container } from "./Container";
 import { LocationsCard, Text } from "../ui";
 import LocationImage from "../../assets/images/location.jpg";
 

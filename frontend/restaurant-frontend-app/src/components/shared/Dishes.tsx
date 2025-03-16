@@ -1,5 +1,4 @@
-
-import { Container } from "./container";
+import { Container } from "./Container";
 import { DishCard, Text } from "../ui";
 import DishImage from "../../assets/images/dish.png";
 
