@@ -52,8 +52,8 @@ public class SignInAction
 
             try
             {
-                var token = await _authenticationService.SignIn(email, password);
-                return ActionUtils.FormatResponse(200, new { accessToken = token });
+                var authResponse = await _authenticationService.SignIn(email, password);
+                return ActionUtils.FormatResponse(200, authResponse);
             }
             catch (AuthenticationException ex)
             {

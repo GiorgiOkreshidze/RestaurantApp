@@ -2,11 +2,11 @@
 using SimpleLambdaFunction.Services;
 using SimpleLambdaFunction.Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Authentication;
-using System.Text;
 using System.Threading.Tasks;
+using SimpleLambdaFunction.Actions;
+using System.Text.Json;
+using Function.Models;
 
 namespace Function.Actions
 {
@@ -23,44 +23,32 @@ namespace Function.Actions
         {
             try
             {
-                if (!request.Headers.TryGetValue("Authorization", out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+                if (string.IsNullOrEmpty(request.Body))
                 {
-                    return new APIGatewayProxyResponse
-                    {
-                        StatusCode = 400,
-                        Body = "{\"message\": \"Missing access token\"}",
-                        Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-                    };
+                    return ActionUtils.FormatResponse(400, new { message = "Request body is missing" });
                 }
 
-                accessToken = accessToken.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase).Trim();
+                var requestBody = JsonSerializer.Deserialize<SignOutRequest>(request.Body,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                await _authenticationService.SignOut(accessToken);
-
-                return new APIGatewayProxyResponse
+                if (requestBody == null || string.IsNullOrEmpty(requestBody.RefreshToken))
                 {
-                    StatusCode = 200,
-                    Body = "{\"message\": \"User signed out successfully\"}",
-                    Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-                };
+                    return ActionUtils.FormatResponse(400, new { message = "Refresh token is missing" });
+                }
+
+                await _authenticationService.SignOut(requestBody.RefreshToken);
+
+                return ActionUtils.FormatResponse(200, new { message = "Successfully signed out" });
             }
             catch (AuthenticationException ex)
             {
-                return new APIGatewayProxyResponse
-                {
-                    StatusCode = 401,
-                    Body = $"{{\"message\": \"{ex.Message}\"}}",
-                    Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-                };
+                Console.WriteLine(ex);
+                return ActionUtils.FormatResponse(400, new { message = $"Sign-out failed: {ex.Message}" });
             }
             catch (Exception ex)
             {
-                return new APIGatewayProxyResponse
-                {
-                    StatusCode = 500,
-                    Body = $"{{\"message\": \"Internal Server Error: {ex.Message}\"}}",
-                    Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-                };
+                Console.WriteLine(ex);
+                return ActionUtils.FormatResponse(400, new { message = $"Sign-out failed: {ex.Message}" });
             }
         }
     }
