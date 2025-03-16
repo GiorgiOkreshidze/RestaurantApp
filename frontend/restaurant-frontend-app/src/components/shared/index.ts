@@ -6,3 +6,5 @@ export { NavBar } from "./NavBar";
 export { Hero } from "./Hero";
 export { Dishes } from "./Dishes";
 export { Locations } from "./Locations";
+export { LocationHero } from "./LocationHero";
+export { Reviews } from "./Reviews";

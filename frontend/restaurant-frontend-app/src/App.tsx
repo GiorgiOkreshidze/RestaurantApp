@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router";
-import { Home,  Registration } from "./pages";
+import { Home, Location, Registration } from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
-import { Login } from "./pages/Login";
+// import { Login } from "./pages/Login";
 
 function App() {
   return (
@@ -15,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Registration />} />
+        <Route path="/locations/:id" element={<Location />} />
         <Route path="/signin" element={<Login />} />
       </Routes>
     </>
