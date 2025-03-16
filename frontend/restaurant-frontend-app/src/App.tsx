@@ -3,7 +3,6 @@ import { Home, Auth } from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
-import { Login } from "./pages/Login";
 
 function App() {
   return (

@@ -1,10 +1,10 @@
-export { Container } from "./Container";
 export { RegistrationInput } from "./RegistrationInput";
 export { Title } from "./Title";
 export { NavBar } from "./NavBar";
 export { Hero } from "./Hero";
 export { Dishes } from "./Dishes";
 export { Locations } from "./Locations";
-export { RegForm } from "./RegForm.tsx";
-export { LoginForm } from "./LoginForm.tsx";
-export { PasswordField } from "../ui/PasswordField.tsx";
+export { RegForm } from "./RegForm";
+export { LoginForm } from "./LoginForm";
+export { PasswordField } from "../ui/PasswordField";
+export { Container } from "./Container";

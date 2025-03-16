@@ -1,8 +1,4 @@
-import {
-  Container,
-  PasswordInput,
-  RegistrationInput,
-} from "@/components/shared";
+import { PasswordInput, RegistrationInput } from "@/components/shared";
 import { Button } from "@/components/ui";
 import { RegistrationFields } from "@/types";
 import { useForm } from "@/hooks/useForm";

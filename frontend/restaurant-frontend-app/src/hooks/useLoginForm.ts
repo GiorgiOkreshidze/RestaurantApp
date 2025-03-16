@@ -30,7 +30,7 @@ export const useLoginForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Success");
+    console.log(values);
   }
 
   return { form, onSubmit, formSchema };
