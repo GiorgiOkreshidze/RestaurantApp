@@ -12,4 +12,7 @@ export {
   FormMessage,
   FormField,
   FormFieldSet,
+  FormDescriptionCircled,
 } from "./Form";
+export { Link } from "./Link.tsx";
+export { PasswordField } from "./PasswordField.tsx";

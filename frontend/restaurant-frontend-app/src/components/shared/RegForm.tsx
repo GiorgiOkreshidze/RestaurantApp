@@ -1,0 +1,152 @@
+import { Button } from "@/components/ui/Button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormFieldSet,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Text,
+  Link,
+  FormDescriptionCircled,
+} from "@/components/ui/";
+import { ComponentProps } from "react";
+import { cn } from "@/lib/utils";
+import { useRegForm } from "@/hooks/useRegForm";
+import { PasswordField } from "../ui/PasswordField";
+
+export function RegForm({ className, ...props }: ComponentProps<"form">) {
+  const { form, onSubmit } = useRegForm();
+
+  return (
+    <Form {...form}>
+      <form
+        className={cn(className, "flex flex-col")}
+        onSubmit={form.handleSubmit(onSubmit)}
+        aria-labelledby="login-form-title"
+        {...props}
+      >
+        <Text variant="blockTitle" className="uppercase">
+          Let's get you started
+        </Text>
+        <Text variant="h2" tag="h1">
+          Create an Account
+        </Text>
+        <FormFieldSet className="flex flex-col">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field, formState }) => (
+              <FormItem className="mt-[2rem] md:mt-[4rem]">
+                <FormLabel>First Name</FormLabel>
+                <FormControl>
+                  <Input
+                    isInvalid={Boolean(formState.errors.firstName?.message)}
+                    placeholder="Enter your First Name"
+                    {...field}
+                  />
+                </FormControl>
+                {formState.errors.firstName?.message ? (
+                  <FormMessage />
+                ) : (
+                  <FormDescription>e.g. Jonson</FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field, formState }) => (
+              <FormItem className="mt-[1.5rem]">
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input
+                    isInvalid={Boolean(formState.errors.lastName?.message)}
+                    placeholder="Enter your Last Name"
+                    {...field}
+                  />
+                </FormControl>
+                {formState.errors.lastName?.message ? (
+                  <FormMessage />
+                ) : (
+                  <FormDescription>e.g. Doe</FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+        </FormFieldSet>
+        <FormFieldSet className="flex flex-col">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field, formState }) => (
+              <FormItem className="mt-[1.5rem]">
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    isInvalid={Boolean(formState.errors.email?.message)}
+                    placeholder="Enter your Email"
+                    {...field}
+                  />
+                </FormControl>
+                {formState.errors.email?.message ? (
+                  <FormMessage />
+                ) : (
+                  <FormDescription>e.g. username@domain.com</FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <FormItem className="mt-[1.5rem]">
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <PasswordField
+                    isInvalid={Boolean(fieldState.error)}
+                    placeholder="Enter your Password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescriptionCircled message="At least one uppercase letter required" />
+                <FormDescriptionCircled message="At least one lowercase letter required" />
+                <FormDescriptionCircled message="At least one number required" />
+                <FormDescriptionCircled message="At least one character required" />
+                <FormDescriptionCircled message="Password must be 8-16 characters long" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field, fieldState }) => (
+              <FormItem className="mt-[1.5rem]">
+                <FormLabel>Confirm New Password</FormLabel>
+                <FormControl>
+                  <PasswordField
+                    isInvalid={Boolean(fieldState.error?.message)}
+                    placeholder="Confirm New Password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescriptionCircled message="Confirm password must match new password" />
+              </FormItem>
+            )}
+          />
+        </FormFieldSet>
+        <Button type="submit" className="mt-[1.5rem]">
+          Sign In
+        </Button>
+        <Text className="mt-[16px]" variant="caption">
+          Already have an account? <Link href="signin">Login</Link> instead
+        </Text>
+      </form>
+    </Form>
+  );
+}

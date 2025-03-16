@@ -9,9 +9,9 @@ import {
   type FieldPath,
   type FieldValues,
 } from "react-hook-form";
-
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/Label";
+import { ComponentProps, createContext, useContext } from "react";
 
 const Form = FormProvider;
 
@@ -22,7 +22,7 @@ type FormFieldContextValue<
   name: TName;
 };
 
-const FormFieldContext = React.createContext<FormFieldContextValue>(
+const FormFieldContext = createContext<FormFieldContextValue>(
   {} as FormFieldContextValue,
 );
 
@@ -30,7 +30,7 @@ const FormFieldSet = ({
   className,
   children,
   ...props
-}: React.ComponentProps<"div">) => {
+}: ComponentProps<"div">) => {
   return (
     <div className={className} {...props} role="group">
       {children}
@@ -52,8 +52,8 @@ const FormField = <
 };
 
 const useFormField = () => {
-  const fieldContext = React.useContext(FormFieldContext);
-  const itemContext = React.useContext(FormItemContext);
+  const fieldContext = useContext(FormFieldContext);
+  const itemContext = useContext(FormItemContext);
   const { getFieldState, formState } = useFormContext();
 
   const fieldState = getFieldState(fieldContext.name, formState);
@@ -78,7 +78,7 @@ type FormItemContextValue = {
   id: string;
 };
 
-const FormItemContext = React.createContext<FormItemContextValue>(
+const FormItemContext = createContext<FormItemContextValue>(
   {} as FormItemContextValue,
 );
 
@@ -101,11 +101,10 @@ const FormLabel = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
 >(({ className, ...props }, ref) => {
   const { error, formItemId } = useFormField();
-
   return (
     <Label
       ref={ref}
-      className={cn(error && "text-destructive", className)}
+      className={cn(error && "text-destructive", className, "mb-[4px]")}
       htmlFor={formItemId}
       {...props}
     />
@@ -146,7 +145,7 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-[0.8rem] text-muted-foreground", className)}
+      className={cn("fontset-caption text-neutral-400 mt-[4px]", className)}
       {...props}
     />
   );
@@ -168,7 +167,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
+      className={cn("fontset-caption text-destructive mt-[4px]", className)}
       {...props}
     >
       {body}
@@ -176,6 +175,47 @@ const FormMessage = React.forwardRef<
   );
 });
 FormMessage.displayName = "FormMessage";
+
+const FormDescriptionCircled = ({
+  children,
+  message,
+  ...props
+}: ComponentProps<"p"> & {
+  message: string;
+}) => {
+  const { error, isDirty, isTouched } = useFormField();
+  const invalid_string = error?.types?.custom as string | string[];
+  let messages: string[] = [];
+  if (error) {
+    if (typeof invalid_string === "string") {
+      messages = [invalid_string];
+    } else if (error) {
+      messages = invalid_string;
+    }
+  }
+  let className = "";
+  let isValid = "text-green-200 before:bg-green-200";
+  let isInvalid = "text-destructive before:bg-destructive";
+  if (isDirty || isTouched) {
+    if (messages?.includes(message)) {
+      className = cn(className, isInvalid);
+    } else {
+      className = cn(className, isValid);
+    }
+  }
+
+  return (
+    <FormDescription
+      {...props}
+      className={cn(
+        "before:content-[''] before:w-[8px] before:h-[8px] before:rounded-full flex items-center gap-[0.5rem] before:bg-neutral-400 text-neutral-400",
+        className,
+      )}
+    >
+      {message}
+    </FormDescription>
+  );
+};
 
 export {
   useFormField,
@@ -187,4 +227,5 @@ export {
   FormMessage,
   FormFieldSet,
   FormField,
+  FormDescriptionCircled,
 };

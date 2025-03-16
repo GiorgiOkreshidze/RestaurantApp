@@ -2,32 +2,33 @@ import { ComponentProps, ElementType } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-export const textVariants = cva("text-neutral-900", {
+export const textVariants = cva("text-foreground", {
   variants: {
     variant: {
-      h1: "text-[1.5rem]/[2.5rem] font-[500]",
-      h2: "text-[1.5rem]/[2.5rem] font-[500]",
-      h3: "text-[1.125rem]/[2rem] font-[500]",
-      blockTitle: "text-[0.875rem]/[1.5rem] font-[300] uppercase",
-      bodyBold: "text-[0.875rem]/[1.5rem] font-[500]",
-      caption: "text-[0.75rem]/[1rem] font-[300] text-neutral-400",
-      link: "text-[0.75rem]/[1rem] font-[700] text-blue-400",
-      buttonPrimary: "text-[0.875rem]/[1.5rem] font-[700]",
+      h1: "fontset-h1",
+      h2: "fontset-h2",
+      h3: "fontset-h3",
+      blockTitle: "fontset-blockTitle",
+      body: "fontset-body",
+      bodyBold: "fontset-bodyBold",
+      caption: "fontset-caption",
+      link: "fontset-link",
+      buttonPrimary: "fontset-buttonPrimary",
     },
   },
   defaultVariants: {
-    // variant: "default",
+    variant: "body",
   },
 });
 
 const Text = ({
   className,
   variant,
-  as: Component = "p",
+  tag: Component = "p",
   ...props
 }: ComponentProps<"p"> &
   VariantProps<typeof textVariants> & {
-    as?: ElementType;
+    tag?: ElementType;
   }) => {
   return (
     <Component

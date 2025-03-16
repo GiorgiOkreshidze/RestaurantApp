@@ -1,4 +1,6 @@
-export { Container } from "./container";
+export { Container } from "./Container.tsx";
 export { RegistrationInput } from "./RegistrationInput";
-export { PasswordInput } from "./PasswordInput";
 export { Title } from "./Title";
+export { RegForm } from "./RegForm.tsx";
+export { LoginForm } from "./LoginForm.tsx";
+export { PasswordField } from "../ui/PasswordField.tsx";
