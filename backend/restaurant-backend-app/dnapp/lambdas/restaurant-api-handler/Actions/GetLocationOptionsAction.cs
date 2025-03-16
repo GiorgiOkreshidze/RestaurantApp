@@ -1,19 +1,17 @@
 ﻿using Function.Services.Interfaces;
 using Function.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
 using SimpleLambdaFunction.Actions;
 
 namespace Function.Actions
 {
-    public class GetLocationOptions
+    public class GetLocationOptionsAction
     {
         private readonly IDynamoDBService _dynamoDBService;
-        public GetLocationOptions()
+
+        public GetLocationOptionsAction()
         {
             _dynamoDBService = new DynamoDBService();
         }
@@ -22,7 +20,7 @@ namespace Function.Actions
         {
             try
             {
-                var locations = await _dynamoDBService.GetOptionsOfLocations();
+                var locations = await _dynamoDBService.GetLocationDropdownOptions();
                 return ActionUtils.FormatResponse(200, locations);
             }
             catch (Exception e)

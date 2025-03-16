@@ -74,13 +74,14 @@ namespace Function.Services
             return Mapper.MapDocumentsToDishes(filteredDocuments);
         }
 
-        public async Task<List<LocationOptions>> GetOptionsOfLocations()
+        public async Task<List<LocationOptions>> GetLocationDropdownOptions()
         {
             var request = new ScanRequest
             {
                 TableName = _locationsTableName,
                 ProjectionExpression = "id, address"
             };
+
             var locations = await _dynamoDBClient.ScanAsync(request);
 
             return locations.Items

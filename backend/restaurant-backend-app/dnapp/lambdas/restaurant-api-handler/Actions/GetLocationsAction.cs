@@ -15,6 +15,7 @@ namespace Function.Actions
     public class GetLocationsAction
     {
         private readonly IDynamoDBService _dynamoDBService;
+
         public GetLocationsAction()
         {
             _dynamoDBService = new DynamoDBService();

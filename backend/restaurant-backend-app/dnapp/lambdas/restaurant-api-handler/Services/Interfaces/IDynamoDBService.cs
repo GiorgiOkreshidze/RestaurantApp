@@ -13,7 +13,7 @@ namespace Function.Services.Interfaces
 
         public Task<List<Location>> GetListOfLocations();
 
-        Task<List<LocationOptions>> GetOptionsOfLocations();
+        Task<List<LocationOptions>> GetLocationDropdownOptions();
 
         public Task<List<Dish>> GetListOfPopularDishes();
         
