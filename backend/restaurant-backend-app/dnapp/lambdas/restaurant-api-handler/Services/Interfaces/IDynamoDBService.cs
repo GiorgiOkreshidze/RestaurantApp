@@ -12,7 +12,9 @@ namespace Function.Services.Interfaces
         public Task<bool> CheckIfEmailExistsInWaitersTable(string email);
 
         public Task<List<Location>> GetListOfLocations();
-        
+
+        Task<List<LocationOptions>> GetLocationDropdownOptions();
+
         public Task<List<Dish>> GetListOfPopularDishes();
         
         public Task<List<Dish>> GetListOfSpecialityDishes(string locationId);

@@ -19,8 +19,9 @@ public class ApiHandler
     private readonly RefreshTokenAction _refreshTokenAction;
     private readonly GetProfileAction _getProfileAction;
     private readonly GetSpecialityDishesAction _getSpecialityDishesAction;
-    
-    
+    private readonly GetLocationOptionsAction _getLocationOptionsAction;
+
+
     public ApiHandler()
     {
         // Init Actions
@@ -32,6 +33,7 @@ public class ApiHandler
         _refreshTokenAction = new RefreshTokenAction();
         _getProfileAction = new GetProfileAction();
         _getSpecialityDishesAction = new GetSpecialityDishesAction();
+        _getLocationOptionsAction = new GetLocationOptionsAction();
     }
     
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -94,6 +96,12 @@ public class ApiHandler
                     "/locations/{id}/speciality-dishes", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getSpecialityDishesAction.GetSpecialityDishes }
+                    }
+                },
+                      {
+                    "/locations/select-options", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getLocationOptionsAction.GetOptions }
                     }
                 }
             };

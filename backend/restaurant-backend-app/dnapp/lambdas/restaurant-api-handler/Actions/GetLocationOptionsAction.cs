@@ -1,31 +1,26 @@
 ﻿using Function.Services.Interfaces;
 using Function.Services;
-using SimpleLambdaFunction.Services.Interfaces;
-using SimpleLambdaFunction.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
 using SimpleLambdaFunction.Actions;
 
 namespace Function.Actions
 {
-    public class GetLocationsAction
+    public class GetLocationOptionsAction
     {
         private readonly IDynamoDBService _dynamoDBService;
 
-        public GetLocationsAction()
+        public GetLocationOptionsAction()
         {
             _dynamoDBService = new DynamoDBService();
         }
 
-        public async Task<APIGatewayProxyResponse> GetLocations(APIGatewayProxyRequest request)
+        public async Task<APIGatewayProxyResponse> GetOptions(APIGatewayProxyRequest request)
         {
             try
             {
-                var locations = await _dynamoDBService.GetListOfLocations();
+                var locations = await _dynamoDBService.GetLocationDropdownOptions();
                 return ActionUtils.FormatResponse(200, locations);
             }
             catch (Exception e)

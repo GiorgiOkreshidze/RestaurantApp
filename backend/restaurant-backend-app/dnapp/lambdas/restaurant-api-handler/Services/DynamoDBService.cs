@@ -74,6 +74,24 @@ namespace Function.Services
             return Mapper.MapDocumentsToDishes(filteredDocuments);
         }
 
+        public async Task<List<LocationOptions>> GetLocationDropdownOptions()
+        {
+            var request = new ScanRequest
+            {
+                TableName = _locationsTableName,
+                ProjectionExpression = "id, address"
+            };
+
+            var locations = await _dynamoDBClient.ScanAsync(request);
+
+            return locations.Items
+               .Select(item => new LocationOptions
+                {
+                   Id = item.ContainsKey("id") ? item["id"].S : "",
+                   Address = item.ContainsKey("address") ? item["address"].S : ""
+               }).ToList();
+        }
+
         private async Task<List<Document>> ScanDynamoDBTableAsync(string? tableName)
         {
             var table = Table.LoadTable(_dynamoDBClient, tableName);
