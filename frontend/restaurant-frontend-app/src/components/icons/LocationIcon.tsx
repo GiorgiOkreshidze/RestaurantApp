@@ -2,7 +2,7 @@ export interface Props {
   className?: string;
 }
 
-export const Location: React.FC<Props> = ({ className }) => {
+export const LocationIcon: React.FC<Props> = ({ className }) => {
   return (
     <svg
       className={className}

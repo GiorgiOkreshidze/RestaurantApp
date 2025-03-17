@@ -1,6 +1,6 @@
 import React from "react";
 import { Text } from "./Text";
-import { Location } from "../icons";
+import { LocationIcon } from "../icons";
 
 interface Props {
   name: string;
@@ -23,7 +23,7 @@ export const LocationsCard: React.FC<Props> = ({
       ></div>
       <div className="p-6">
         <div className="flex gap-2.5">
-          <Location className="stroke-green-200" />
+          <LocationIcon className="stroke-green-200" />
           <Text variant="bodyBold" className="mb-5">
             {name}
           </Text>
