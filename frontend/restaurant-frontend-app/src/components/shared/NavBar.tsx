@@ -18,13 +18,16 @@ export const NavBar = () => {
           </Link>
         </div>
         <div className="flex gap-4 ">
-          <NavLink to="/" className="[&.active]:text-green-200">
+          <NavLink
+            to="/"
+            className="[&.active]:text-green-200 [&.active]:border-b-2 [&.active]:border-green-200"
+          >
             <Text variant="h2" className="text-inherit">
               Main page
             </Text>
           </NavLink>
 
-          <NavLink to="/booking" className="[&.active]:text-green-200">
+          <NavLink to="/booking" className="[&.active]:text-green-200 [&.active]:border-b-2 [&.active]:border-green-200">
             <Text variant="h2" className="text-inherit">
               Book a Table
             </Text>

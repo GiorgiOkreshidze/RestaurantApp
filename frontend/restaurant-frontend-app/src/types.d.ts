@@ -40,3 +40,21 @@ export interface ValidationErrors {
 export interface GlobalErrorMessage {
   message: string;
 }
+
+export interface Dish {
+  name: string;
+  cost: string;
+  weight: string;
+  image: string;
+}
+
+export interface Review {
+  name: string;
+  date: string;
+  rating: number;
+  review: string;
+  image: string;
+}
+
+export interface LoginFormFields
+  extends Pick<UserFields, "email" | "password"> {}
