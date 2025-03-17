@@ -36,17 +36,9 @@ export const NavBar = () => {
             </Text>
           </NavLink>
         </div>
-        <div className="w-[80px] ml-auto">
-          <Button
-            variant="outline"
-            size="l"
-            className="w-[75px] px-2 text-green-200"
-          >
-            <Link to="/signin">
-              <Text variant="buttonPrimary" className="text-inherit">
-                Sign In
-              </Text>
-            </Link>
+        <div className="ml-auto">
+          <Button asChild variant="secondary" size="l">
+            <Link to="/signin">Sign&nbsp;In</Link>
           </Button>
         </div>
       </div>
