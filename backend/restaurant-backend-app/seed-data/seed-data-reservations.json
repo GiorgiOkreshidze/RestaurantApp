@@ -4,7 +4,7 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "res_001" },
-          "locationId": { "S": "672846d5c951184d705b65d7" },
+          "locationId": { "S": "loc_001" },
           "tableNumber": { "S": "1" },
           "date": { "S": "2021-12-31" },
           "guestsNumber": { "S": "4" },
@@ -14,7 +14,6 @@
           "feedbackId": { "S": "fb_001" },
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Confirmed" },
-          "timeSlot": { "S": "12:15 - 14:00" },
           "userInfo": { "S": "John Doe, john@example.com" }
         }
       }
@@ -23,7 +22,7 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "res_002" },
-          "locationId": { "S": "672846d5c951184d705b65d7" },
+          "locationId": { "S": "loc_002" },
           "tableNumber": { "S": "2" },
           "date": { "S": "2022-01-01" },
           "guestsNumber": { "S": "2" },
@@ -33,7 +32,6 @@
           "feedbackId": { "S": "fb_002" },
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Pending" },
-          "timeSlot": { "S": "18:00 - 20:00" },
           "userInfo": { "S": "Jane Smith, jane@example.com" }
         }
       }
@@ -42,7 +40,7 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "res_003" },
-          "locationId": { "S": "89a743b6f2d54932af5d8c7e" },
+          "locationId": { "S": "loc_003" },
           "tableNumber": { "S": "5" },
           "date": { "S": "2022-01-02" },
           "guestsNumber": { "S": "6" },
@@ -52,7 +50,6 @@
           "feedbackId": { "S": "fb_003" },
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Confirmed" },
-          "timeSlot": { "S": "19:30 - 21:30" },
           "userInfo": { "S": "Alice Johnson, alice@example.com" }
         }
       }
