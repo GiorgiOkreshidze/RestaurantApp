@@ -1,4 +1,4 @@
-import { Container } from ".";
+import { Container, UserMenu } from ".";
 import { Link, NavLink } from "react-router";
 import { Logo } from "@/components/icons/";
 import { Button, Text } from "../ui";
@@ -36,10 +36,11 @@ export const NavBar = () => {
             </Text>
           </NavLink>
         </div>
-        <div className="ml-auto">
+        <div className="flex ml-auto">
           <Button asChild variant="secondary" size="l">
             <Link to="/signin">Sign&nbsp;In</Link>
           </Button>
+          <UserMenu />
         </div>
       </div>
     </Container>

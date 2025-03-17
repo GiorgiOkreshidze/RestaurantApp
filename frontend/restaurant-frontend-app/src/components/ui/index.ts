@@ -1,4 +1,4 @@
-export { Button } from "./button";
+export { Button } from "./Button";
 export { Label } from "./label";
 export { Input } from "./input";
 export { Text } from "./Text";
@@ -16,5 +16,12 @@ export {
   FormFieldSet,
   FormDescriptionCircled,
 } from "./Form";
-export { Link } from "./Link.tsx";
-export { PasswordField } from "./PasswordField.tsx";
+export { Link } from "./Link";
+export { PasswordField } from "./PasswordField";
+export {
+  DropdownMenu,
+  DropdownMenuSeparator,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./DropdownMenu";
