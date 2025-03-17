@@ -1,0 +1,37 @@
+﻿{
+  "Tables": [
+    {
+      "PutRequest": {
+        "Item": {
+          "tableId": { "S": "table_001" },
+          "tableNumber": { "S": "1" },
+          "capacity": { "S": "4" },
+          "locationId": { "S": "loc_001" },
+          "locationAddress": { "S": "123 Main Street, New York, NY"  }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "tableId": { "S": "table_002" },
+          "tableNumber": { "S": "2" },
+          "capacity": { "S": "2" },
+          "locationId": { "S": "loc_002" },
+          "locationAddress": { "S": "456 Ocean Drive, Miami, FL" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "tableId": { "S": "table_003" },
+          "tableNumber": { "S": "6" },
+          "capacity": { "S": "4" },
+          "locationId": { "S": "loc_003" },
+          "locationAddress": { "S": "789 Mountain Road, Denver, CO" }
+        }
+      }
+    }
+  ]
+}
