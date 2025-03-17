@@ -13,6 +13,8 @@ const buttonVariants = cva(
           "bg-neutral-0 text-primary fontset-buttonPrimary hover:bg-primary-light active:bg-primary disabled:text-disabled",
         tertiary:
           "bg-transparent border-transparent text-foreground fontset-bodyBold hover:bg-transparent active:bg-primary-light text-disabled",
+        outline:
+          "border-[1px] border-solid border-green-200  bg-background shadow-sm hover:bg-accent hover:text-accent-foreground ",
       },
       size: {
         xl: "p-[1rem]",
@@ -24,7 +26,7 @@ const buttonVariants = cva(
       variant: "primary",
       size: "xl",
     },
-  },
+  }
 );
 
 function Button({

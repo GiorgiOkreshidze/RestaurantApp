@@ -44,7 +44,7 @@ export const ReviewsCard: React.FC<Props> = ({
       </div>
 
       <div>
-        <Text variant="heroText">{review}</Text>
+        <Text variant="blockTitle">{review}</Text>
       </div>
     </div>
   );

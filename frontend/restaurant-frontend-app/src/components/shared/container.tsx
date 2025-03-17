@@ -6,7 +6,7 @@ export const Container = ({ className, children }: ComponentProps<"div">) => {
     <div
       data-slot="container"
       className={cn(
-        "flex *:basis-full min-w-[360px] w-full mx-auto max-w-[1440px] p-[20px] md:py-[24px] md:px-[40px]",
+        " min-w-[360px] w-full mx-auto max-w-[1440px] p-[20px] md:py-[24px] md:px-[40px]",
         className,
       )}
     >

@@ -9,7 +9,7 @@ export const LocationHero = () => {
     <Container>
       <div className="flex gap-20 justify-between items-center">
         <div className="max-w-[340px]">
-          <Title variant="small" className="text-green-200 !text-5xl mb-6" />
+          <Title variant="navBarLogo" className="text-green-200 !text-5xl mb-6" />
 
           <div className="flex items-center justify-between mb-6">
             <div className="flex gap-2.5">
@@ -25,17 +25,17 @@ export const LocationHero = () => {
           </div>
 
           <div>
-            <Text variant="heroText" className="mb-3">
+            <Text variant="blockTitle" className="mb-3">
               Located on bustling Rustaveli Avenue, this branch offers a perfect
               mix of city energy and a cozy atmosphere.
             </Text>
-            <Text variant="heroText" className="mb-3">
+            <Text variant="blockTitle" className="mb-3">
               Known for our fresh, locally sourced dishes, we focus on health
               and sustainability, featuring Georgian cuisine with a modern
               twist. The menu includes vegetarian and vegan options, along with
               exclusive seasonal specials.
             </Text>
-            <Text variant="heroText" className="mb-10">
+            <Text variant="blockTitle" className="mb-10">
               With its spacious outdoor terrace, this location is ideal for both
               casual lunches and intimate dinners.
             </Text>

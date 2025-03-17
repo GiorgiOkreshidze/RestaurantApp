@@ -1,7 +1,7 @@
 import HeroImg from "../../assets/images/hero.jpg";
-import { Container } from "./Container";
 import { Title } from "./Title";
 import { Button, Text } from "../ui";
+import { Container } from "./container";
 
 export const Hero = () => {
   return (
