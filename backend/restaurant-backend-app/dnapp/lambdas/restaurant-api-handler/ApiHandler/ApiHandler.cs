@@ -23,6 +23,7 @@ public class ApiHandler
     private readonly GetLocationOptionsAction _getLocationOptionsAction;
     private readonly GetLocationFeedbacksAction _getLocationFeedbacksAction;
     private readonly CreateReservationAction _createReservationAction;
+    private readonly GetAvailableTablesAction _getAvailableTablesAction;
 
     public ApiHandler()
     {
@@ -38,6 +39,7 @@ public class ApiHandler
         _getLocationOptionsAction = new GetLocationOptionsAction();
         _createReservationAction = new CreateReservationAction();
         _getLocationFeedbacksAction = new GetLocationFeedbacksAction();
+        _getAvailableTablesAction = new GetAvailableTablesAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -106,8 +108,7 @@ public class ApiHandler
                     }
                 },
                 {
-                    "/locations/select-options",
-                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/locations/select-options", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getLocationOptionsAction.GetOptions }
                     }
@@ -124,7 +125,13 @@ public class ApiHandler
                     {
                         { "GET", _getLocationFeedbacksAction.GetLocationFeedbacks }
                     }
-                }
+                },
+                 {
+                    "/bookings/tables", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getAvailableTablesAction.GetAvailableTables }
+                    }
+                },
             };
 
         if (!actionEndpointMapping.TryGetValue(requestPath, out var resourceMethods) ||

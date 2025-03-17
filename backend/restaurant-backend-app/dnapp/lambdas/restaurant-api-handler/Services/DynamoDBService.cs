@@ -29,6 +29,8 @@ namespace Function.Services
         private readonly string? _locationFeedbacksDateIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_DATE_INDEX");
         private readonly string? _locationFeedbacksRatingIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_RATING_INDEX");
         private readonly string? _locationFeedbacksDateByTypeIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TYPE_DATE_INDEX");
+        private readonly string? _tablesTableName = Environment.GetEnvironmentVariable("DYNAMODB_TABLES_TABLE_NAME");
+        private readonly string? _reservationsTableName = Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_NAME");
 
         public DynamoDBService()
         {
@@ -302,6 +304,91 @@ namespace Function.Services
             return doc.ToAttributeMap();
         }
 
+        public async Task<List<ReservationInfo>> GetReservationsForDateAndLocation(string date, string locationAddress)
+        {
+            var table = Table.LoadTable(_dynamoDBClient, _reservationsTableName);
+
+            var scanFilter = new ScanFilter();
+            scanFilter.AddCondition("date", ScanOperator.Equal, date);
+
+            scanFilter.AddCondition("locationAddress", ScanOperator.Equal, locationAddress);
+            var search = table.Scan(scanFilter);
+            var reservations = new List<ReservationInfo>();
+
+            do
+            {
+                var documents = await search.GetNextSetAsync();
+                foreach (var document in documents)
+                {
+                    if (document["status"].AsString() != "cancelled") // Only consider active reservations
+                    {
+                        reservations.Add(new ReservationInfo
+                        {
+                            TableNumber = document["tableNumber"].AsString(),
+                            Date = document["date"].AsString(),
+                            TimeFrom = document["timeFrom"].AsString(),
+                            TimeTo = document["timeTo"].AsString(),
+                            GuestsNumber = document["guestsNumber"].AsString()
+                        });
+                    }
+                }
+            } while (!search.IsDone);
+
+            return reservations;
+        }
+
+        public async Task<List<RestaurantTable>> GetTablesForLocation(string locationId, int guests)
+        {
+            var table = Table.LoadTable(_dynamoDBClient, _tablesTableName);
+            var scanFilter = new ScanFilter();
+            scanFilter.AddCondition("locationId", ScanOperator.Equal, locationId);
+            scanFilter.AddCondition("capacity", ScanOperator.GreaterThanOrEqual, guests);
+            var search = table.Scan(scanFilter);
+            var tables = new List<RestaurantTable>();
+
+            do
+            {
+                var documents = await search.GetNextSetAsync();
+                foreach (var document in documents)
+                {
+                    tables.Add(new RestaurantTable
+                    {
+                        TableId = document["tableId"].AsString(),
+                        TableNumber = document["tableNumber"].AsString(),
+                        Capacity = document["capacity"].AsString(),
+                        LocationId = document["locationId"].AsString(),
+                        LocationAddress = document["locationAddress"].AsString(),
+                    });
+                }
+            } while (!search.IsDone) ;
+
+            return tables;
+        }
+        public async Task<LocationInfo?> GetLocationDetails(string locationId)
+        {
+            try
+            {
+                // Create table reference
+                var table = Table.LoadTable(_dynamoDBClient, "Locations");
+
+                // Perform get operation
+                var document = await table.GetItemAsync(locationId);
+                if (document == null)
+                    return null;
+
+                return new LocationInfo
+                {
+                    LocationId = locationId,
+                    Address = document["address"].AsString(),
+                    TotalCapacity = document["totalCapacity"].AsString(),
+                    AverageOccupancy = document["averageOccupancy"].AsString()
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
         private async Task<List<Document>> ScanDynamoDBTableAsync(string? tableName)
         {
             var table = Table.LoadTable(_dynamoDBClient, tableName);
