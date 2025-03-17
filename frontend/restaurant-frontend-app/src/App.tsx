@@ -1,9 +1,8 @@
 import { Route, Routes } from "react-router";
-import { Home, Location, Registration } from "./pages";
+import { Home, Auth, Location } from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
-// import { Login } from "./pages/Login";
 
 function App() {
   return (
@@ -14,9 +13,9 @@ function App() {
       </header>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Registration />} />
+        <Route path="/signin" element={<Auth />} />
+        <Route path="/signup" element={<Auth />} />
         <Route path="/locations/:id" element={<Location />} />
-        <Route path="/signin" element={<Login />} />
       </Routes>
     </>
   );

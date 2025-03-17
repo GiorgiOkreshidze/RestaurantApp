@@ -115,16 +115,16 @@ export const PasswordInput: React.FC<Props> = ({
               strong === "strong"
                 ? "text-green before:bg-green"
                 : strong === "medium"
-                ? "text-yellow before:bg-yellow"
-                : "text-red before:bg-red"
+                  ? "text-yellow before:bg-yellow"
+                  : "text-red before:bg-red"
             }
               before:content-[''] before:block before:w-2 before:h-2 before:rounded-full before:mr-1`}
           >
             {strong === "strong"
               ? "Strong"
               : strong === "medium"
-              ? "Medium"
-              : "Weak"}
+                ? "Medium"
+                : "Weak"}
           </p>
         )}
       </div>

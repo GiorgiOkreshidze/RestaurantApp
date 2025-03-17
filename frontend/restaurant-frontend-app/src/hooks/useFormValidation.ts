@@ -5,7 +5,7 @@ const existingEmails = ["test@example.com", "user@domain.com", "admin@site.ru"];
 
 export const useFormValidation = (
   state: RegistrationFields,
-  submitted: boolean
+  submitted: boolean,
 ) => {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
