@@ -7,6 +7,6 @@ export { Locations } from "./Locations";
 export { RegForm } from "./RegForm";
 export { LoginForm } from "./LoginForm";
 export { PasswordField } from "../ui/PasswordField";
-export { Container } from "./Container";
+export { Container } from "./container";
 export { LocationHero } from "./LocationHero";
 export { Reviews } from "./Reviews";

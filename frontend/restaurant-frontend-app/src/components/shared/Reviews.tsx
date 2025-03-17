@@ -44,7 +44,7 @@ export const Reviews = () => {
   return (
     <div>
       <Container>
-        <Text variant="h1" className="mb-10">
+        <Text variant="h2" className="mb-10">
           Customer Reviews
         </Text>
 

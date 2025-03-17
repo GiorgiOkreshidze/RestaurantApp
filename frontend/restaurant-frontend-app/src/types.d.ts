@@ -6,11 +6,13 @@ export interface UserFields {
 }
 
 export interface User {
-  id: string;
+  accessToken: string;
+  idToken: string;
+  refreshToken: string;
+
   name: string;
   lastName: string;
   email: string;
-  token: string;
 }
 
 export interface RegisterMutation {
@@ -55,6 +57,3 @@ export interface Review {
   review: string;
   image: string;
 }
-
-export interface LoginFormFields
-  extends Pick<UserFields, "email" | "password"> {}
