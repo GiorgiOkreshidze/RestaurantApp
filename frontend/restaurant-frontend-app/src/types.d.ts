@@ -6,9 +6,11 @@ export interface UserFields {
 }
 
 export interface User {
-  accessToken: string;
-  idToken: string;
-  refreshToken: string;
+  tokens: {
+    accessToken: string;
+    idToken: string;
+    refreshToken: string;
+  };
 
   name: string;
   lastName: string;
@@ -22,9 +24,22 @@ export interface RegisterMutation {
   password: string;
 }
 
+export interface LoginMutation {
+  email: string;
+  password: string;
+}
+
 export interface RegisterResponse {
   message: string;
-  user: User;
+  accessToken: string;
+  idToken: string;
+  refreshToken: string;
+}
+
+export interface LoginResponse {
+  accessToken: string;
+  idToken: string;
+  refreshToken: string;
 }
 
 export interface RegistrationFields extends UserFields {

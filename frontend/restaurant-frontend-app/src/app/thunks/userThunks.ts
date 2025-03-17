@@ -1,5 +1,7 @@
 import {
   GlobalErrorMessage,
+  LoginMutation,
+  LoginResponse,
   RegisterMutation,
   RegisterResponse,
 } from "@/types";
@@ -20,6 +22,26 @@ export const register = createAsyncThunk<
     if (isAxiosError(e) && e.response) {
       return rejectWithValue(e.response.data);
     }
+    throw e;
+  }
+});
+
+export const login = createAsyncThunk<
+  LoginResponse,
+  LoginMutation,
+  { rejectValue: GlobalErrorMessage }
+>("users/login", async (loginMutation, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.post<LoginResponse>(
+      serverRoute.signIn,
+      loginMutation
+    );
+    return response.data;
+  } catch (e) {
+    if (isAxiosError(e) && e.response && e.response.status === 422) {
+      return rejectWithValue(e.response.data);
+    }
+
     throw e;
   }
 });

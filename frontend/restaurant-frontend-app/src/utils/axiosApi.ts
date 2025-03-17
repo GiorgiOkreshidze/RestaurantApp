@@ -17,14 +17,14 @@ let refreshSubscribers: ((token: string) => void)[] = [];
 
 const refreshTokenRequest = async (store: Store<RootState>) => {
   try {
-    const refreshToken = store.getState().users.user?.refreshToken;
+    const refreshToken = store.getState().users.user?.tokens.refreshToken;
     const response = await axios.post(`${apiURL}/auth/refresh`, {
       refreshToken,
     });
     store.dispatch(setUser(response.data));
     return response.data.token;
   } catch (error) {
-    store.dispatch(logout()); 
+    store.dispatch(logout());
     throw error;
   }
 };
@@ -35,7 +35,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 
 const addInterceptors = (store: Store<RootState>) => {
   axiosApi.interceptors.request.use((config) => {
-    const token = store.getState().users.user?.accessToken;
+    const token = store.getState().users.user?.tokens.accessToken;
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }

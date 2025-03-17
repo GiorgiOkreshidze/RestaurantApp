@@ -1,8 +1,14 @@
+import { useAppDispatch } from "@/app/hooks";
+import { login } from "@/app/thunks/userThunks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { z } from "zod";
 
 export const useLoginForm = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const formSchema = z.object({
     email: z
       .string()
@@ -29,9 +35,15 @@ export const useLoginForm = () => {
     criteriaMode: "all",
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const result = await dispatch(login(values)).unwrap();
+      console.log("Login successful:", result);
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   return { form, onSubmit, formSchema };
 };
