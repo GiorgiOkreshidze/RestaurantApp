@@ -1,18 +1,20 @@
 import { User } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { login, register } from "../thunks/userThunks";
+import { getUserData, login, register } from "../thunks/userThunks";
 import { toast } from "react-toastify";
 
 interface UserState {
   user: User | null;
   registerLoading: boolean;
   loginLoading: boolean;
+  userDataLoading: boolean;
 }
 
 const initialState: UserState = {
   user: null,
   registerLoading: false,
   loginLoading: false,
+  userDataLoading: false,
 };
 
 export const userSlice = createSlice({
@@ -43,7 +45,6 @@ export const userSlice = createSlice({
           lastName: state.user?.lastName || "",
           email: state.user?.email || "",
         };
-
         toast.success(data.message);
       })
       .addCase(register.rejected, (state, { payload: errorResponse }) => {
@@ -70,6 +71,22 @@ export const userSlice = createSlice({
       })
       .addCase(login.rejected, (state) => {
         state.loginLoading = false;
+      });
+
+    builder
+      .addCase(getUserData.pending, (state) => {
+        state.userDataLoading = true;
+      })
+      .addCase(getUserData.fulfilled, (state, { payload: data }) => {
+        state.userDataLoading = false;
+        if (state.user) {
+          state.user.name = data.name;
+          state.user.lastName = data.lastName;
+          state.user.email = data.email;
+        }
+      })
+      .addCase(getUserData.rejected, (state) => {
+        state.userDataLoading = false;
       });
   },
   selectors: {

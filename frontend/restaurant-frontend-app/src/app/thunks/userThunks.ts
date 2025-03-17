@@ -4,6 +4,7 @@ import {
   LoginResponse,
   RegisterMutation,
   RegisterResponse,
+  UserDataResponse,
 } from "@/types";
 import axiosApi from "@/utils/axiosApi";
 import { serverRoute } from "@/utils/constants";
@@ -14,9 +15,10 @@ export const register = createAsyncThunk<
   RegisterResponse,
   RegisterMutation,
   { rejectValue: GlobalErrorMessage }
->("users/signup", async (registerMutation, { rejectWithValue }) => {
+>("users/signup", async (registerMutation, { rejectWithValue, dispatch }) => {
   try {
     const response = await axiosApi.post(serverRoute.signUp, registerMutation);
+    dispatch(getUserData());
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response) {
@@ -34,14 +36,29 @@ export const login = createAsyncThunk<
   try {
     const response = await axiosApi.post<LoginResponse>(
       serverRoute.signIn,
-      loginMutation
+      loginMutation,
     );
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response && e.response.status === 422) {
       return rejectWithValue(e.response.data);
     }
+    throw e;
+  }
+});
 
+export const getUserData = createAsyncThunk<
+  UserDataResponse,
+  void,
+  { rejectValue: GlobalErrorMessage }
+>("users/profile", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.get<UserDataResponse>(serverRoute.userData);
+    return response.data;
+  } catch (e) {
+    if (isAxiosError(e) && e.response && e.response.status === 422) {
+      return rejectWithValue(e.response.data);
+    }
     throw e;
   }
 });

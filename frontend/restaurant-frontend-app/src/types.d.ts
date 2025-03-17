@@ -42,6 +42,9 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
+export interface UserDataResponse
+  extends Pick<UserFields, "name" | "lastName" | "email"> {}
+
 export interface RegistrationFields extends UserFields {
   confirmPassword: string;
 }
