@@ -59,10 +59,21 @@ export interface GlobalErrorMessage {
 }
 
 export interface Dish {
+  id: string;
   name: string;
-  cost: string;
+  price: string;
   weight: string;
-  image: string;
+  imageUrl: string;
+}
+
+export interface Location {
+  id: string;
+  address: string;
+  description: string;
+  totalCapacity: string;
+  averageOccupancy: string;
+  imageUrl: string;
+  rating: string;
 }
 
 export interface Review {
