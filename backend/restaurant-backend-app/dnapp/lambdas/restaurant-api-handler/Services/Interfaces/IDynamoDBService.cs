@@ -23,6 +23,8 @@ namespace Function.Services.Interfaces
         public Task<Reservation> UpsertReservation(Reservation reservationRequest);
         
         public Task<Location> GetLocationById(string locationId);
+        
+        public Task<List<Reservation>> GetReservationsByDateLocationTable(string date, string locationAddress, string tableNumber);
 
         public Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters qeuryParameters);
     }
