@@ -16,6 +16,7 @@ export {
   FormFieldSet,
   FormDescriptionCircled,
 } from "./Form";
+export { CustomLink } from "./CustomLink";
 export { Link } from "./Link";
 export { PasswordField } from "./PasswordField";
 export {
