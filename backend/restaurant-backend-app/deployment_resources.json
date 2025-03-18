@@ -259,7 +259,7 @@
     "write_capacity": 1,
     "global_indexes": [
       {
-        "name": "${ix_waiters_email}",
+        "name": "${waiters_table_email_index_name}",
         "index_key_name": "email",
         "index_key_type": "S"
       }

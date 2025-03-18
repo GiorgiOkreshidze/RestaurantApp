@@ -16,12 +16,12 @@
   ],
   "event_sources": [],
   "env_variables": {
-    "DDB_WAITERS_TABLE": "${waiters_table}",
-    "DDB_LOCATIONS_TABLE": "${locations_table}",
-    "DDB_DISHES_TABLE": "${dishes_table}",
+    "DYNAMODB_WAITERS_TABLE_NAME": "${waiters_table}",
+    "DYNAMODB_LOCATIONS_TABLE_NAME": "${locations_table}",
+    "DYNAMODB_DISHES_TABLE_NAME": "${dishes_table}",
     "DYNAMODB_TABLES_TABLE_NAME": "${tables_table}",
     "DYNAMODB_RESERVATIONS_TABLE_NAME": "${reservations_table}",
-    "COGNITO_USER_POOL": "${restaurant_userpool}",
+    "COGNITO_USER_POOL_NAME": "${restaurant_userpool}",
     "COGNITO_USER_POOL_ID": {
       "resource_name": "${restaurant_userpool}",
       "resource_type": "cognito_idp",
@@ -32,7 +32,7 @@
       "resource_type": "cognito_idp",
       "parameter": "client_id"
     },
-    "DDB_WAITERS_EMAIL_INDEX": "${ix_waiters_email}",
+    "WAITERS_TABLE_EMAIL_INDEX_NAME": "${waiters_table_email_index_name}",
 
     "DDB_LOCATION_FEEDBACKS_TABLE": "${locationFeedback_table}",
     "DDB_LOCATION_FEEDBACKS_TYPE_RATING_INDEX": "${ix_locationFeedback_type_rating}",

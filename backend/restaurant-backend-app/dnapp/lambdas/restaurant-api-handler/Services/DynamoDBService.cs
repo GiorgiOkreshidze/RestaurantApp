@@ -19,10 +19,10 @@ namespace Function.Services
     {
         private readonly IDynamoDBContext _dynamoDBContext;
         private readonly AmazonDynamoDBClient _dynamoDBClient;
-        private readonly string? _waitersTableName = Environment.GetEnvironmentVariable("DDB_WAITERS_TABLE");
-        private readonly string? _emailIndexName = Environment.GetEnvironmentVariable("DDB_WAITERS_EMAIL_INDEX");
-        private readonly string? _locationsTableName = Environment.GetEnvironmentVariable("DDB_LOCATIONS_TABLE");
-        private readonly string? _dishesTableName = Environment.GetEnvironmentVariable("DDB_DISHES_TABLE");
+        private readonly string? _waitersTableName = Environment.GetEnvironmentVariable("DYNAMODB_WAITERS_TABLE_NAME");
+        private readonly string? _emailIndexName = Environment.GetEnvironmentVariable("WAITERS_TABLE_EMAIL_INDEX_NAME");
+        private readonly string? _locationsTableName = Environment.GetEnvironmentVariable("DYNAMODB_LOCATIONS_TABLE_NAME");
+        private readonly string? _dishesTableName = Environment.GetEnvironmentVariable("DYNAMODB_DISHES_TABLE_NAME");
         private readonly string? _reservationTableName = Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_NAME");
         private readonly string? _locationFeedbacksTableName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TABLE");
         private readonly string? _locationFeedbacksRatingByTypeIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TYPE_RATING_INDEX");
