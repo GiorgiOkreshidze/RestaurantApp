@@ -2,8 +2,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAppDispatch } from "@/app/hooks";
-import { register } from "@/app/thunks/userThunks";
+import { getUserData, register } from "@/app/thunks/userThunks";
 import { useNavigate } from "react-router";
+import { store } from "@/app/store";
 
 export const useRegForm = () => {
   const dispatch = useAppDispatch();
@@ -87,8 +88,15 @@ export const useRegForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      console.log(
+        "User and Token before request: ",
+        store.getState().users.user,
+      );
       const result = await dispatch(register(values)).unwrap();
       console.log("Registration successful:", result);
+      // console.log("State: ", store.getState().users.user);
+      await dispatch(getUserData()).unwrap();
+      console.log("User data have gotten successful:", result);
       navigate("/");
     } catch (error) {
       console.error("Registration failed:", error);

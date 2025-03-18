@@ -15,10 +15,9 @@ export const register = createAsyncThunk<
   RegisterResponse,
   RegisterMutation,
   { rejectValue: GlobalErrorMessage }
->("users/signup", async (registerMutation, { rejectWithValue, dispatch }) => {
+>("users/signup", async (registerMutation, { rejectWithValue }) => {
   try {
     const response = await axiosApi.post(serverRoute.signUp, registerMutation);
-    dispatch(getUserData());
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response) {

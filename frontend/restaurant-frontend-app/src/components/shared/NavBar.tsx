@@ -2,8 +2,12 @@ import { Container, UserMenu } from ".";
 import { Link, NavLink } from "react-router";
 import { Logo } from "@/components/icons/";
 import { Button, Text } from "../ui";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/app/slices/userSlice";
 
 export const NavBar = () => {
+  const user = useSelector(selectUser);
+
   return (
     <Container className="!py-3">
       <div className="grid grid-cols-[1fr_auto_1fr] items-center">
