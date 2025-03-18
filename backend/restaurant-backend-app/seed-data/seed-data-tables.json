@@ -3,7 +3,7 @@
     {
       "PutRequest": {
         "Item": {
-          "tableId": { "S": "table_001" },
+          "id": { "S": "table_001" },
           "tableNumber": { "S": "1" },
           "capacity": { "S": "4" },
           "locationId": { "S": "loc_001" },
@@ -14,7 +14,7 @@
     {
       "PutRequest": {
         "Item": {
-          "tableId": { "S": "table_002" },
+          "id": { "S": "table_002" },
           "tableNumber": { "S": "2" },
           "capacity": { "S": "2" },
           "locationId": { "S": "loc_002" },
@@ -25,7 +25,7 @@
     {
       "PutRequest": {
         "Item": {
-          "tableId": { "S": "table_003" },
+          "id": { "S": "table_003" },
           "tableNumber": { "S": "6" },
           "capacity": { "S": "4" },
           "locationId": { "S": "loc_003" },

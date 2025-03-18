@@ -20,6 +20,7 @@ namespace Function.Services
         private readonly string? _emailIndexName = Environment.GetEnvironmentVariable("WAITERS_TABLE_EMAIL_INDEX_NAME");
         private readonly string? _locationsTableName = Environment.GetEnvironmentVariable("DYNAMODB_LOCATIONS_TABLE_NAME");
         private readonly string? _dishesTableName = Environment.GetEnvironmentVariable("DYNAMODB_DISHES_TABLE_NAME");
+        private readonly string? _reservationTableName = Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_NAME");
 
         public DynamoDBService()
         {
@@ -72,6 +73,77 @@ namespace Function.Services
                 .ToList();
             
             return Mapper.MapDocumentsToDishes(filteredDocuments);
+        }
+
+        public async Task<Reservation> UpsertReservation(Reservation reservation)
+        {
+            try
+            {
+                var updateItemRequest = new UpdateItemRequest
+                {
+                    TableName = _reservationTableName,
+                    Key = new Dictionary<string, AttributeValue>
+                    {
+                        {
+                            "id", new AttributeValue { S = reservation.Id }
+                        }
+                    },
+                    UpdateExpression = "SET #date = :date, #feedbackId = :feedbackId, #guestsNumber = :guestsNumber, " +
+                                       "#locationAddress = :locationAddress, #preOrder = :preOrder, #status = :status, " +
+                                       "#tableNumber = :tableNumber, #timeFrom = :timeFrom, #timeTo = :timeTo, " +
+                                       "#timeSlot = :timeSlot, #userInfo = :userInfo",
+                    ExpressionAttributeNames = new Dictionary<string, string>
+                    {
+                        { "#date", "date" },
+                        { "#feedbackId", "feedbackId" },
+                        { "#guestsNumber", "guestsNumber" },
+                        { "#locationAddress", "locationAddress" },
+                        { "#preOrder", "preOrder" },
+                        { "#status", "status" },
+                        { "#tableNumber", "tableNumber" },
+                        { "#timeFrom", "timeFrom" },
+                        { "#timeTo", "timeTo" },
+                        { "#timeSlot", "timeSlot" },
+                        { "#userInfo", "userInfo" }
+                    },
+                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    {
+                        { ":date", new AttributeValue { S = reservation.Date } },
+                        { ":feedbackId", new AttributeValue { S = reservation.FeedbackId } },
+                        { ":guestsNumber", new AttributeValue { S = reservation.GuestsNumber } },
+                        { ":locationAddress", new AttributeValue { S = reservation.LocationAddress } },
+                        { ":preOrder", new AttributeValue { S = reservation.PreOrder } },
+                        { ":status", new AttributeValue { S = reservation.Status } },
+                        { ":tableNumber", new AttributeValue { S = reservation.TableNumber } },
+                        { ":timeFrom", new AttributeValue { S = reservation.TimeFrom } },
+                        { ":timeTo", new AttributeValue { S = reservation.TimeTo } },
+                        { ":timeSlot", new AttributeValue { S = reservation.TimeSlot } },
+                        { ":userInfo", new AttributeValue { S = reservation.UserInfo } }
+                    }
+                };
+
+                await _dynamoDBClient.UpdateItemAsync(updateItemRequest);
+                return reservation;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async Task<Location> GetLocationById(string locationId)
+        {
+            var documentList = await ScanDynamoDBTableAsync(_locationsTableName);
+            var locations = Mapper.MapDocumentsToLocations(documentList);
+            
+            var result = locations.FirstOrDefault(loc => loc.Id == locationId);
+            if (result == null)
+            {
+                throw new ArgumentException($"The location with {locationId} id is not found");
+            }
+
+            return result;
         }
 
         public async Task<List<LocationOptions>> GetLocationDropdownOptions()
