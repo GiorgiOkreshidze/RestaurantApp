@@ -88,15 +88,15 @@ export const useRegForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log(
-        "User and Token before request: ",
-        store.getState().users.user,
-      );
+      // console.log(
+      //   "User and Token before request: ",
+      //   store.getState().users.user,
+      // );
       const result = await dispatch(register(values)).unwrap();
       console.log("Registration successful:", result);
       // console.log("State: ", store.getState().users.user);
-      await dispatch(getUserData()).unwrap();
-      console.log("User data have gotten successful:", result);
+      // await dispatch(getUserData()).unwrap();
+      // console.log("User data has gotten successfully:", result);
       navigate("/");
     } catch (error) {
       console.error("Registration failed:", error);
