@@ -8,16 +8,23 @@ using Amazon.Lambda.APIGatewayEvents;
 using SimpleLambdaFunction.Actions;
 using Function.Models;
 using System.Globalization;
+using Amazon.Lambda.Core;
 
 namespace Function.Actions
 {
     public class GetAvailableTablesAction
     {
         private readonly IDynamoDBService _dynamoDBService;
+        private ILambdaContext? _context;
 
         public GetAvailableTablesAction()
         {
             _dynamoDBService = new DynamoDBService();
+        }
+
+        public void SetContext(ILambdaContext context)
+        {
+            _context = context;
         }
 
         public async Task<APIGatewayProxyResponse> GetAvailableTables(APIGatewayProxyRequest request)
@@ -34,10 +41,7 @@ namespace Function.Actions
                     return ActionUtils.FormatResponse(400, new { message = "Date parameter is required" });
                 }
 
-                if (!request.QueryStringParameters.TryGetValue("time", out var time))
-                {
-                    return ActionUtils.FormatResponse(400, new { message = "Time parameter is required" });
-                }
+                request.QueryStringParameters.TryGetValue("time", out var time);
 
                 int guests = 1;
 
@@ -51,26 +55,33 @@ namespace Function.Actions
                     return ActionUtils.FormatResponse(400, new { message = "Invalid date format. Use yyyy-MM-dd." });
                 }
 
-                if (guests < 1 || guests > 20) // Assuming a reasonable guest limit
+                if (guests < 1 || guests > 10) // Assuming a reasonable guest limit
                 {
-                    return ActionUtils.FormatResponse(400, new { message = "Guests must be between 1 and 20." });
+                    return ActionUtils.FormatResponse(400, new { message = "Guests must be between 1 and 10." });
                 }
 
-                if (!TimeSpan.TryParseExact(time, "hh\\:mm", CultureInfo.InvariantCulture, out var parsedTime))
+                if (!string.IsNullOrEmpty(time) && !TimeSpan.TryParseExact(time, "hh\\:mm", CultureInfo.InvariantCulture, out var parsedTime))
                 {
                     return ActionUtils.FormatResponse(400, new { message = "Invalid time format. Use hh:mm." });
                 }
 
+                _context?.Logger.LogInformation($"parameters: {guests}, {date}, {time}, {locationId},  ");
+
                 var locationDetails = await _dynamoDBService.GetLocationDetails(locationId);
 
-                 if (locationDetails == null)
+                _context?.Logger.LogInformation($"location: {locationDetails}  ");
+
+                if (locationDetails == null)
                  {
                     return ActionUtils.FormatResponse(404, new { message = "Location not found" });
                 }
 
                 var tables = await _dynamoDBService.GetTablesForLocation(locationId, guests);
+                _context?.Logger.LogInformation($"tables: {tables}  ");
 
                 var reservations = await _dynamoDBService.GetReservationsForDateAndLocation(date, locationDetails.Address);
+
+               _context?.Logger.LogInformation($"reservations: {reservations}  ");
 
                 var result = CalculateAvailableSlots(tables, reservations, locationDetails, time);
 
@@ -92,7 +103,7 @@ namespace Function.Actions
     List<RestaurantTable> tables,
     List<ReservationInfo> reservations,
     LocationInfo locationDetails,
-    string requestedTime)
+    string? requestedTime)
         {
             var result = new List<TableResponse>();
 

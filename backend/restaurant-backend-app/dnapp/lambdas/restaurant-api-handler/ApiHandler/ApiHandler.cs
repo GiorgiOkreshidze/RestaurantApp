@@ -47,6 +47,7 @@ public class ApiHandler
     {
         var requestPath = eventRequest.Resource;
         var methodName = eventRequest.HttpMethod;
+        _getAvailableTablesAction.SetContext(context);
 
         context.Logger.LogInformation("eventRequest.Resource: " + requestPath);
         context.Logger.LogInformation("eventRequest.HttpMethod: " + methodName);

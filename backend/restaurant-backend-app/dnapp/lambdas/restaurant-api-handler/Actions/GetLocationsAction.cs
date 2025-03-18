@@ -1,11 +1,6 @@
 ﻿using Function.Services.Interfaces;
 using Function.Services;
-using SimpleLambdaFunction.Services.Interfaces;
-using SimpleLambdaFunction.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
 using SimpleLambdaFunction.Actions;

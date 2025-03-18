@@ -6,8 +6,8 @@
           "id": { "S": "loc_001" },
           "address": { "S": "123 Main Street, New York, NY" },
           "description": { "S": "A spacious coworking space with modern amenities." },
-          "totalCapacity": { "S": "150" },
-          "averageOccupancy": { "S": "85" },
+          "totalCapacity": { "S": "22" },
+          "averageOccupancy": { "S": "12" },
           "imageUrl": { "S": "https://example.com/location1.jpg" },
           "rating": { "S": "4.5" }
         }
@@ -19,8 +19,8 @@
           "id": { "S": "loc_002" },
           "address": { "S": "456 Ocean Drive, Miami, FL" },
           "description": { "S": "A beachfront lounge with stunning views and great ambiance." },
-          "totalCapacity": { "S": "200" },
-          "averageOccupancy": { "S": "120" },
+          "totalCapacity": { "S": "22" },
+          "averageOccupancy": { "S": "15" },
           "imageUrl": { "S": "https://example.com/location2.jpg" },
           "rating": { "S": "4.8" }
         }
@@ -32,8 +32,8 @@
           "id": { "S": "loc_003" },
           "address": { "S": "789 Mountain Road, Denver, CO" },
           "description": { "S": "A cozy retreat in the mountains, perfect for remote work." },
-          "totalCapacity": { "S": "50" },
-          "averageOccupancy": { "S": "30" },
+          "totalCapacity": { "S": "30" },
+          "averageOccupancy": { "S": "20" },
           "imageUrl": { "S": "https://example.com/location3.jpg" },
           "rating": { "S": "4.7" }
         }

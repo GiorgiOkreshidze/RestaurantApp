@@ -320,7 +320,7 @@ namespace Function.Services
                 var documents = await search.GetNextSetAsync();
                 foreach (var document in documents)
                 {
-                    if (document["status"].AsString() != "cancelled") // Only consider active reservations
+                    if (document["status"].AsString() != "cancelled")
                     {
                         reservations.Add(new ReservationInfo
                         {
@@ -342,7 +342,7 @@ namespace Function.Services
             var table = Table.LoadTable(_dynamoDBClient, _tablesTableName);
             var scanFilter = new ScanFilter();
             scanFilter.AddCondition("locationId", ScanOperator.Equal, locationId);
-            scanFilter.AddCondition("capacity", ScanOperator.GreaterThanOrEqual, guests);
+            scanFilter.AddCondition("capacity", ScanOperator.GreaterThanOrEqual, guests.ToString());
             var search = table.Scan(scanFilter);
             var tables = new List<RestaurantTable>();
 
@@ -369,7 +369,7 @@ namespace Function.Services
             try
             {
                 // Create table reference
-                var table = Table.LoadTable(_dynamoDBClient, "Locations");
+                var table = Table.LoadTable(_dynamoDBClient, _locationsTableName);
 
                 // Perform get operation
                 var document = await table.GetItemAsync(locationId);

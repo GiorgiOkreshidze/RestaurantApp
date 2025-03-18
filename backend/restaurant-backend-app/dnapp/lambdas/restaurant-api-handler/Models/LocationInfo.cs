@@ -7,7 +7,7 @@ namespace Function.Models
         [JsonPropertyName("locationId")]
         public required string LocationId { get; set; }
 
-        [JsonPropertyName("addresss")]
+        [JsonPropertyName("address")]
         public required string Address { get; set; }
 
         [JsonPropertyName("totalCapacity")]
