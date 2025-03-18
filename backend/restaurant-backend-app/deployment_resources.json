@@ -151,7 +151,7 @@
       "/locations/select-options": {
         "enable_cors": true,
         "GET": {
-          "authorization_type": "authorizer",
+          "authorization_type": "NONE",
           "integration_type": "lambda",
           "lambda_name": "restaurant-api-handler",
           "enable_proxy": true,

@@ -149,14 +149,15 @@ namespace Function.Actions
 
      
 
-        private List<string> FilterAvailableTimeSlots(List<string> allSlots, List<ReservationInfo> reservations)
+        private List<TimeSlot> FilterAvailableTimeSlots(List<TimeSlot> allSlots, List<ReservationInfo> reservations)
         {
-            var availableSlots = new List<string>();
+            var availableSlots = new List<TimeSlot>();
 
             foreach (var slot in allSlots)
             {
-                var slotTime = TimeSpan.ParseExact(slot, "hh\\:mm", CultureInfo.InvariantCulture);
-                var slotEndTime = slotTime.Add(TimeSpan.FromMinutes(90));
+                var slotStartTime = TimeSpan.ParseExact(slot.Start, "hh\\:mm", CultureInfo.InvariantCulture);
+                var slotEndTime = TimeSpan.ParseExact(slot.End, "hh\\:mm", CultureInfo.InvariantCulture);
+
                 bool isAvailable = true;
 
                 foreach (var reservation in reservations)
@@ -164,7 +165,7 @@ namespace Function.Actions
                     var reservationStart = TimeSpan.ParseExact(reservation.TimeFrom, "hh\\:mm", CultureInfo.InvariantCulture);
                     var reservationEnd = TimeSpan.ParseExact(reservation.TimeTo, "hh\\:mm", CultureInfo.InvariantCulture);
 
-                    if (slotTime < reservationEnd && slotEndTime > reservationStart)
+                    if (slotStartTime < reservationEnd && slotEndTime > reservationStart)
                     {
                         isAvailable = false;
                         break;
@@ -181,36 +182,57 @@ namespace Function.Actions
         }
 
 
-        private List<string> FilterSlotsByRequestedTime(List<string> availableSlots, string requestedTime)
+        private List<TimeSlot> FilterSlotsByRequestedTime(List<TimeSlot> availableSlots, string requestedTime)
         {
             var requestedTimeSpan = TimeSpan.ParseExact(requestedTime, "hh\\:mm", CultureInfo.InvariantCulture);
 
             foreach (var slot in availableSlots)
             {
-                var slotTime = TimeSpan.ParseExact(slot, "hh\\:mm", CultureInfo.InvariantCulture);
-                var slotEndTime = slotTime.Add(TimeSpan.FromMinutes(90));
+                var slotTime = TimeSpan.ParseExact(slot.Start, "hh\\:mm", CultureInfo.InvariantCulture);
+                var slotEndTime = TimeSpan.ParseExact(slot.End, "hh\\:mm", CultureInfo.InvariantCulture);
 
                 // If the requested time falls within this slot's duration
                 if (requestedTimeSpan >= slotTime && requestedTimeSpan <= slotEndTime)
                 {
                     // Return only this slot
-                    return new List<string> { slot };
+                    return new List<TimeSlot> { slot };
                 }
             }
+            // If no exact match is found, check for the nearest slot within a 15-minute window
+    var nearestSlot = availableSlots
+        .Where(slot =>
+        {
+            var slotTime = TimeSpan.ParseExact(slot.Start, "hh\\:mm", CultureInfo.InvariantCulture);
+            var timeDifference = Math.Abs((slotTime - requestedTimeSpan).TotalMinutes);
+            return timeDifference <= 15; // Check if the slot is within 15 minutes of the requested time
+        })
+        .OrderBy(slot => Math.Abs((TimeSpan.ParseExact(slot.Start, "hh\\:mm", CultureInfo.InvariantCulture) - requestedTimeSpan).Ticks))
+        .FirstOrDefault();
 
+    // If a nearest slot is found, return it
+    if (nearestSlot != null)
+    {
+        return new List<TimeSlot> { nearestSlot };
+    }
             // If no slot contains the requested time, return empty list
-            return new List<string>();
+            return new List<TimeSlot>();
         }
 
-        private List<string> GeneratePredefinedTimeSlots()
+        private List<TimeSlot> GeneratePredefinedTimeSlots()
         {
-            var slots = new List<string>();
+            var slots = new List<TimeSlot>();
             var startTime = new TimeSpan(10, 30, 0); // 10:30 AM
             var endTime = new TimeSpan(22, 30, 0);   // 10:30 PM
 
             while (startTime <= endTime)
             {
-                slots.Add(startTime.ToString(@"hh\:mm"));
+                var slotEnd = startTime.Add(TimeSpan.FromMinutes(90));
+                slots.Add(new TimeSlot
+                {
+                    Start = startTime.ToString(@"hh\:mm"),
+                    End = slotEnd.ToString(@"hh\:mm")
+                });
+
                 startTime = startTime.Add(TimeSpan.FromMinutes(90 + 15)); // 90-minute slot + 15-minute gap
             }
 

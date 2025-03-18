@@ -10,7 +10,7 @@ namespace Function.Models
     public class TableResponse
     {
         [JsonPropertyName("availableSlots")]
-        public required List<string> AvailableSlots { get; set; }
+        public required List<TimeSlot> AvailableSlots { get; set; }
 
         [JsonPropertyName("capacity")]
         public required string Capacity { get; set; }

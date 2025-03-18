@@ -342,7 +342,7 @@ namespace Function.Services
             var table = Table.LoadTable(_dynamoDBClient, _tablesTableName);
             var scanFilter = new ScanFilter();
             scanFilter.AddCondition("locationId", ScanOperator.Equal, locationId);
-            scanFilter.AddCondition("capacity", ScanOperator.GreaterThanOrEqual, guests.ToString());
+            scanFilter.AddCondition("capacity", ScanOperator.GreaterThanOrEqual, guests);
             var search = table.Scan(scanFilter);
             var tables = new List<RestaurantTable>();
 
@@ -353,9 +353,9 @@ namespace Function.Services
                 {
                     tables.Add(new RestaurantTable
                     {
-                        TableId = document["tableId"].AsString(),
+                        Id = document["id"].AsString(),
                         TableNumber = document["tableNumber"].AsString(),
-                        Capacity = document["capacity"].AsString(),
+                        Capacity = document["capacity"].AsInt().ToString(),
                         LocationId = document["locationId"].AsString(),
                         LocationAddress = document["locationAddress"].AsString(),
                     });

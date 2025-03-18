@@ -4,8 +4,8 @@ namespace Function.Models
 {
     public class RestaurantTable
     {
-        [JsonPropertyName("tableId")]
-        public required string TableId { get; set; }
+        [JsonPropertyName("id")]
+        public required string Id { get; set; }
 
         [JsonPropertyName("tableNumber")]
         public required string TableNumber { get; set; }
