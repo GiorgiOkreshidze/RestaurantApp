@@ -148,7 +148,7 @@ body {
   --color-background: var(--color-neutral-100, #f7f7f7);
   --color-foreground: var(--color-neutral-900, #232323);
 
-  --color-disabled-foreground: var(--color-neutral-400, #898989);
+  --color-disabled: var(--color-neutral-400, #898989);
 
   --color-link-foreground: var(--color-blue-400, #0e53e9);
 

@@ -16,5 +16,5 @@ export {
   FormFieldSet,
   FormDescriptionCircled,
 } from "./Form";
-export { Link } from "./Link.tsx";
-export { PasswordField } from "./PasswordField.tsx";
+export { CustomLink } from "./CustomLink";
+export { PasswordField } from "./PasswordField";
