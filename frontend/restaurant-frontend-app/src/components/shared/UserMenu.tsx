@@ -2,40 +2,38 @@ import {
   DropdownMenu,
   DropdownMenuSeparator,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/";
-import { UserCircledIcon, UserIcon } from "../icons";
+import { LogOutIcon, UserCircledIcon, UserIcon } from "../icons";
 import { Text } from "../ui";
-import { Link } from "react-router";
+import { DropdownMenuLinkItem } from "../ui/DropdownMenu";
 
 export const UserMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="cursor-pointer">
-        <UserCircledIcon width={24} height={24} />
+        <UserCircledIcon className="size-[24px]" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="bg-neutral-0 p-[1.5rem] rounded border-none shadow-card"
+        className="bg-neutral-0 p-0 rounded border-none shadow-card"
       >
-        <DropdownMenuItem className="flex-col items-start">
-          <Link to="#first" className="cursor-pointer">
-            <Text variant="bodyBold">Johnson Doe (Customer)</Text>
-            <Text variant="caption">johnsondoe@nomail.com</Text>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="flex-col items-start">
-          <Link
-            to="#second"
-            className="flex items-center fontset-bodyBold cursor-pointer gap-[12px]"
-          >
-            <UserIcon className="size-[24px]" />
-            <Text variant="bodyBold">My Profile</Text>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="flex-col items-start"></DropdownMenuItem>
+        <DropdownMenuLinkItem
+          to="#first"
+          className="flex-col items-start gap-[0px]"
+        >
+          <Text variant="bodyBold">Johnson Doe (Customer)</Text>
+          <Text variant="caption">johnsondoe@nomail.com</Text>
+        </DropdownMenuLinkItem>
+        <DropdownMenuSeparator className="mx-[1.5rem]" />
+        <DropdownMenuLinkItem to="#second">
+          <UserIcon className="size-[24px]" />
+          <Text variant="bodyBold">My Profile</Text>
+        </DropdownMenuLinkItem>
+        <DropdownMenuLinkItem to="#third">
+          <LogOutIcon className="size-[24px]" />
+          <Text variant="bodyBold">My Profile</Text>
+        </DropdownMenuLinkItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

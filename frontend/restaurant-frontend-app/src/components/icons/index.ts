@@ -7,3 +7,4 @@ export { LocationIcon } from "./LocationIcon";
 export { StarIcon } from "./StarIcon";
 export { EmptyStar } from "./EmptyStar";
 export { UserIcon } from "./UserIcon";
+export { LogOutIcon } from "./LogOutIcon.tsx";
