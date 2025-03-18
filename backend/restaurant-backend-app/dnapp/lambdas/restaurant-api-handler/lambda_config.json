@@ -32,7 +32,13 @@
       "resource_type": "cognito_idp",
       "parameter": "client_id"
     },
-    "WAITERS_TABLE_EMAIL_INDEX_NAME": "${waiters_table_email_index_name}"
+    "WAITERS_TABLE_EMAIL_INDEX_NAME": "${waiters_table_email_index_name}",
+
+    "DDB_LOCATION_FEEDBACKS_TABLE": "${locationFeedback_table}",
+    "DDB_LOCATION_FEEDBACKS_TYPE_RATING_INDEX": "${ix_locationFeedback_type_rating}",
+    "DDB_LOCATION_FEEDBACKS_DATE_INDEX": "${ix_locationFeedback_date}",
+    "DDB_LOCATION_FEEDBACKS_RATING_INDEX": "${ix_locationFeedback_rating}",
+    "DDB_LOCATION_FEEDBACKS_TYPE_DATE_INDEX": "${ix_locationFeedback_type_date}"
   },
   "publish_version": true,
   "alias": "${lambdas_alias_name}",

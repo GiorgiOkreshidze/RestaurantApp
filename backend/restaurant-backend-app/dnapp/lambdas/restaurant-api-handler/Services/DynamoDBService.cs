@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Function.Mappers;
+using System.Text.Json;
+using System.Text;
+using Function.Models.Responses;
 
 namespace Function.Services
 {
@@ -21,6 +24,11 @@ namespace Function.Services
         private readonly string? _locationsTableName = Environment.GetEnvironmentVariable("DYNAMODB_LOCATIONS_TABLE_NAME");
         private readonly string? _dishesTableName = Environment.GetEnvironmentVariable("DYNAMODB_DISHES_TABLE_NAME");
         private readonly string? _reservationTableName = Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_NAME");
+        private readonly string? _locationFeedbacksTableName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TABLE");
+        private readonly string? _locationFeedbacksRatingByTypeIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TYPE_RATING_INDEX");
+        private readonly string? _locationFeedbacksDateIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_DATE_INDEX");
+        private readonly string? _locationFeedbacksRatingIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_RATING_INDEX");
+        private readonly string? _locationFeedbacksDateByTypeIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TYPE_DATE_INDEX");
 
         public DynamoDBService()
         {
@@ -162,6 +170,108 @@ namespace Function.Services
                    Id = item.ContainsKey("id") ? item["id"].S : "",
                    Address = item.ContainsKey("address") ? item["address"].S : ""
                }).ToList();
+        }
+
+
+        public async Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters queryParameters)
+        {
+            var request = BuildQueryRequest(queryParameters);
+
+            var response = await _dynamoDBClient.QueryAsync(request);
+
+            var nextToken = GetNextToken(response.LastEvaluatedKey);
+            
+            var feedbacks = response.Items.Select(item => Mapper.MapToLocationFeedbackResponse(item)).ToList();
+
+            return (feedbacks, nextToken);
+        }
+
+        private QueryRequest BuildQueryRequest(LocationFeedbackQueryParameters queryParameters)
+        {
+            var request = new QueryRequest
+            {
+                TableName = _locationFeedbacksTableName,
+                Limit = queryParameters.PageSize,
+                ScanIndexForward = queryParameters.SortDirection.ToLower() == "asc",
+                ExclusiveStartKey = queryParameters.NextPageToken != null ? DecodeToken(queryParameters.NextPageToken) : null
+            };
+
+            if (queryParameters.SortProperty.ToLower() == "date")
+            {
+                if (queryParameters.Type.HasValue)
+                {
+                    request.IndexName = _locationFeedbacksDateByTypeIndexName;
+                    request.KeyConditionExpression = "#pk = :locIdType";
+                    request.ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    {
+                        { ":locIdType", new AttributeValue { S = $"{queryParameters.LocationId}#{queryParameters.Type.Value.ToDynamoDBType()}" } }
+                    };
+                    request.ExpressionAttributeNames = new Dictionary<string, string>
+                    {
+                        {"#pk", "locationId#type"}
+                    };
+                }
+                else
+                {
+                    request.IndexName = _locationFeedbacksDateIndexName;
+                    request.KeyConditionExpression = "locationId = :locId";
+                    request.ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    {
+                        {":locId", new AttributeValue { S = queryParameters.LocationId }}
+                    };
+                }
+            }
+            else // sortProperty == "rating"
+            {
+                if (queryParameters.Type.HasValue)
+                {
+                    request.IndexName = _locationFeedbacksRatingByTypeIndexName;
+                    request.KeyConditionExpression = "#pk = :locIdType";
+                    request.ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    {
+                        { ":locIdType", new AttributeValue { S = $"{queryParameters.LocationId}#{queryParameters.Type.Value.ToDynamoDBType()}" } }
+                    };
+                    request.ExpressionAttributeNames = new Dictionary<string, string>
+                    {
+                        {"#pk", "locationId#type"}
+                    };
+                }
+                else
+                {
+                    request.IndexName = _locationFeedbacksRatingIndexName;
+                    request.KeyConditionExpression = "locationId = :locId";
+                    request.ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    {
+                        { ":locId", new AttributeValue { S = queryParameters.LocationId } }
+                    };
+                }
+            }
+
+            return request;
+        }
+
+        private string? GetNextToken(Dictionary<string, AttributeValue> lastEvaluatedKey)
+        {
+            if (lastEvaluatedKey != null && lastEvaluatedKey.Count > 0)
+            {
+                return EncodeToken(lastEvaluatedKey);
+            }
+            return null;
+        }
+
+        // Helper methods for token encoding/decoding
+        private string EncodeToken(Dictionary<string, AttributeValue> key)
+        {
+            var doc = Document.FromAttributeMap(key);
+            var json = doc.ToJson();
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+        }
+
+        private Dictionary<string, AttributeValue>? DecodeToken(string token)
+        {
+            var json = Encoding.UTF8.GetString(Convert.FromBase64String(token));
+            var doc = Document.FromJson(json);
+            return doc.ToAttributeMap();
         }
 
         private async Task<List<Document>> ScanDynamoDBTableAsync(string? tableName)

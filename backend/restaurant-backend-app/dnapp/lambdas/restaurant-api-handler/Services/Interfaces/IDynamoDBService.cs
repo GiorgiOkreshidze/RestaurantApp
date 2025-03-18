@@ -1,4 +1,5 @@
 ﻿using Function.Models;
+using Function.Models.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +23,7 @@ namespace Function.Services.Interfaces
         public Task<Reservation> UpsertReservation(Reservation reservationRequest);
         
         public Task<Location> GetLocationById(string locationId);
+
+        public Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters qeuryParameters);
     }
 }
