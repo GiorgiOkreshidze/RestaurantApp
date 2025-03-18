@@ -4,9 +4,9 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "loc_001" },
-          "address": { "S": "123 Main Street, New York, NY" },
+          "address": { "S": "48 Rustaveli Avenue" },
           "description": { "S": "A spacious coworking space with modern amenities." },
-          "totalCapacity": { "S": "22" },
+          "totalCapacity": { "S": "4" },
           "averageOccupancy": { "S": "12" },
           "imageUrl": { "S": "https://example.com/location1.jpg" },
           "rating": { "S": "4.5" }
@@ -17,10 +17,10 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "loc_002" },
-          "address": { "S": "456 Ocean Drive, Miami, FL" },
+          "address": { "S": "14 Baratashvili Street" },
           "description": { "S": "A beachfront lounge with stunning views and great ambiance." },
-          "totalCapacity": { "S": "22" },
-          "averageOccupancy": { "S": "15" },
+          "totalCapacity": { "S": "4" },
+          "averageOccupancy": { "S": "78" },
           "imageUrl": { "S": "https://example.com/location2.jpg" },
           "rating": { "S": "4.8" }
         }
@@ -30,10 +30,10 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "loc_003" },
-          "address": { "S": "789 Mountain Road, Denver, CO" },
+          "address": { "S": "14 Baratashvili Street" },
           "description": { "S": "A cozy retreat in the mountains, perfect for remote work." },
-          "totalCapacity": { "S": "30" },
-          "averageOccupancy": { "S": "20" },
+          "totalCapacity": { "S": "4" },
+          "averageOccupancy": { "S": "99" },
           "imageUrl": { "S": "https://example.com/location3.jpg" },
           "rating": { "S": "4.7" }
         }

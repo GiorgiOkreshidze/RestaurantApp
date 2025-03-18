@@ -41,6 +41,10 @@ namespace Function.Actions
                     return ActionUtils.FormatResponse(400, new { message = "Date parameter is required" });
                 }
 
+                var tbilisiOffset = TimeSpan.FromHours(4); // Tbilisi is UTC+4
+                var currentUtcTime = DateTime.UtcNow;
+                var currentTbilisiTime = currentUtcTime + tbilisiOffset;
+                var currentTbilisiDate = currentTbilisiTime.Date;
                 request.QueryStringParameters.TryGetValue("time", out var time);
 
                 int guests = 1;
@@ -53,6 +57,11 @@ namespace Function.Actions
                 if (!DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
                 {
                     return ActionUtils.FormatResponse(400, new { message = "Invalid date format. Use yyyy-MM-dd." });
+                }
+
+                if (parsedDate < currentTbilisiDate)
+                {
+                    return ActionUtils.FormatResponse(400, new { message = "Reservation date cannot be in the past." });
                 }
 
                 if (guests < 1 || guests > 10) // Assuming a reasonable guest limit
