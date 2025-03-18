@@ -9,6 +9,8 @@ import {
 } from "redux-persist";
 import { PURGE, REGISTER, REHYDRATE } from "redux-persist/es/constants";
 import { usersReducer } from "./slices/userSlice";
+import { dishesReducer } from "./slices/dishesSlice";
+import { locationsReducer } from "./slices/locationsSlice";
 
 const usersPersistConfig = {
   key: "restaurant:users",
@@ -18,6 +20,8 @@ const usersPersistConfig = {
 
 const rootReducer = combineReducers({
   users: persistReducer(usersPersistConfig, usersReducer),
+  dishes: dishesReducer,
+  locations: locationsReducer,
 });
 
 export const store = configureStore({
