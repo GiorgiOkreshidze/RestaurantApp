@@ -10,12 +10,13 @@ import {
   FormMessage,
   Input,
   Text,
-  Link,
+  CustomLink,
 } from "@/components/ui/";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { PasswordField } from "../ui/PasswordField";
 import { useLoginForm } from "@/hooks/useLoginForm";
+import { Link } from "react-router";
 
 export function LoginForm({ className, ...props }: ComponentProps<"form">) {
   const { form, onSubmit } = useLoginForm();
@@ -86,7 +87,10 @@ export function LoginForm({ className, ...props }: ComponentProps<"form">) {
           Sign In
         </Button>
         <Text className="mt-[16px]" variant="caption">
-          Don’t have an account? <Link href="signup">Create an Account</Link>
+          Don’t have an account?{" "}
+          <CustomLink asChild>
+            <Link to="/signup">Create an Account</Link>
+          </CustomLink>
         </Text>
       </form>
     </Form>

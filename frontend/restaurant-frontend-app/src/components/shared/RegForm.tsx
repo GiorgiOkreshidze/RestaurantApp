@@ -11,6 +11,7 @@ import {
   Text,
   FormDescriptionCircled,
   Button,
+  CustomLink,
 } from "@/components/ui/";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
@@ -143,16 +144,18 @@ export function RegForm({ className, ...props }: ComponentProps<"form">) {
           />
         </FormFieldSet>
         <Button type="submit" className="mt-[1.5rem]">
-          Sign In
+          Sign Up
         </Button>
         <Text className="mt-[16px]" variant="caption">
           Already have an account?{" "}
-          <Link
-            to="/signin"
-            className="fontset-link text-link-foreground underline"
-          >
-            Login
-          </Link>{" "}
+          <CustomLink asChild>
+            <Link
+              to="/signin"
+              className="fontset-link text-link-foreground underline"
+            >
+              Login
+            </Link>
+          </CustomLink>{" "}
           instead
         </Text>
       </form>
