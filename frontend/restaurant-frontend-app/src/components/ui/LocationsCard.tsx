@@ -23,7 +23,7 @@ export const LocationsCard: React.FC<Props> = ({ location }) => {
 
   return (
     <div
-      className="w-[432px] h-[256px] flex flex-col rounded-2xl shadow-[0_0_10px_4px_rgba(194,194,194,0.5)] transition-all duration-300 hover:scale-105 cursor-pointer"
+      className="flex flex-col rounded-2xl shadow-[0_0_10px_4px_rgba(194,194,194,0.5)] transition-all duration-300 hover:scale-105 cursor-pointer"
       onClick={onClick}
     >
       <div

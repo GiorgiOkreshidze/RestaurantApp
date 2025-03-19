@@ -9,7 +9,7 @@ export const Hero = () => {
       className="py-10 bg-center bg-cover bg-no-repeat"
       style={{ backgroundImage: `url(${HeroImg})` }}
     >
-      <Container className="p-0">
+      <Container>
         <div className="max-w-[340px]">
           <Title variant="navBarLogo" className="text-green-200 !text-5xl" />
           <Text variant="body" className=" text-neutral-0 mt-6 mb-3">

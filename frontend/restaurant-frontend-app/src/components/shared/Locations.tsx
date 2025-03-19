@@ -21,7 +21,7 @@ export const Locations: React.FC<Props> = ({
         {isLoading ? (
           <Loader2 className="size=[4rem]" />
         ) : (
-          <div className="flex gap-8">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
             {locations.map((item) => (
               <LocationsCard key={item.id} location={item} />
             ))}

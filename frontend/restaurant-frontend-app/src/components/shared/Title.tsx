@@ -6,7 +6,7 @@ const titleVariants = cva("", {
   variants: {
     variant: {
       big: "font-[700] text-[clamp(2rem,5vw,5rem)]/[1]",
-      navBarLogo: "font-[500]",
+      navBarLogo: "font-[500] text-[1.5rem]/[1]",
     },
   },
   defaultVariants: {

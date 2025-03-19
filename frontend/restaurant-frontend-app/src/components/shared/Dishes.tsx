@@ -23,7 +23,8 @@ export const Dishes: React.FC<Props> = ({
         {isLoading ? (
           <Loader2 className="size-[4rem]" />
         ) : (
-          <div className="flex gap-8">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
+            {/* <div className="flex flex-wrap gap-8"> */}
             {dishes.slice(0, 4).map((item, index) => (
               <DishCard
                 key={index}
