@@ -1,6 +1,6 @@
 import { Container, UserMenu } from ".";
 import { Link, NavLink } from "react-router";
-import { Logo } from "@/components/icons/";
+import { CartIcon, Logo } from "@/components/icons/";
 import { Button, Text } from "../ui";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
@@ -41,10 +41,20 @@ export const NavBar = () => {
           </NavLink>
         </div>
         <div className="flex ml-auto">
-          <Button asChild variant="secondary" size="l">
-            <Link to="/signin">Sign&nbsp;In</Link>
-          </Button>
-          <UserMenu />
+          {user ? (
+            <div className="flex items-stretch">
+              <Button asChild variant="tertiary" size="sm">
+                <Link to="#cart">
+                  <CartIcon className="size-[24px]" />
+                </Link>
+              </Button>
+              <UserMenu />
+            </div>
+          ) : (
+            <Button asChild variant="secondary" size="l">
+              <Link to="/signin">Sign&nbsp;In</Link>
+            </Button>
+          )}
         </div>
       </div>
     </Container>

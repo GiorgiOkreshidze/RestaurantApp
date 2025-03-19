@@ -1,6 +1,6 @@
 import { User } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { getUserData, login, register } from "../thunks/userThunks";
+import { getUserData, login, register, signout } from "../thunks/userThunks";
 import { toast } from "react-toastify";
 
 interface UserState {
@@ -8,6 +8,7 @@ interface UserState {
   registerLoading: boolean;
   loginLoading: boolean;
   userDataLoading: boolean;
+  signoutLoading: boolean;
 }
 
 const initialState: UserState = {
@@ -15,6 +16,7 @@ const initialState: UserState = {
   registerLoading: false,
   loginLoading: false,
   userDataLoading: false,
+  signoutLoading: false,
 };
 
 export const userSlice = createSlice({
@@ -87,6 +89,17 @@ export const userSlice = createSlice({
       })
       .addCase(getUserData.rejected, (state) => {
         state.userDataLoading = false;
+      });
+
+    builder
+      .addCase(signout.pending, (state) => {
+        state.signoutLoading = true;
+      })
+      .addCase(signout.fulfilled, (state) => {
+        state.signoutLoading = false;
+      })
+      .addCase(signout.rejected, (state) => {
+        state.signoutLoading = false;
       });
   },
   selectors: {

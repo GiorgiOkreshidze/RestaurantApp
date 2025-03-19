@@ -61,3 +61,20 @@ export const getUserData = createAsyncThunk<
     throw e;
   }
 });
+
+export const signout = createAsyncThunk<
+  void,
+  void,
+  { rejectValue: GlobalErrorMessage }
+>("signout", async (_, { rejectWithValue }) => {
+  try {
+    await axiosApi.post(serverRoute.signOut);
+    console.log("Logged out successfully");
+    return;
+  } catch (e) {
+    if (isAxiosError(e) && e.response && e.response.status === 422) {
+      return rejectWithValue(e.response.data);
+    }
+    throw e;
+  }
+});

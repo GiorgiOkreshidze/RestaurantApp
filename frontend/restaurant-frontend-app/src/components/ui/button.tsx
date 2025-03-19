@@ -13,7 +13,7 @@ const buttonVariants = cva(
         secondary:
           "bg-neutral-0 text-primary fontset-buttonPrimary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary border-[1px]",
         tertiary:
-          "bg-transparent text-foreground fontset-bodyBold hover:bg-transparent active:bg-primary-light text-disabled",
+          "bg-transparent text-foreground fontset-bodyBold hover:bg-neutral-200 active:bg-primary-light disabled:text-disabled",
       },
       size: {
         xl: "p-[1rem]",
