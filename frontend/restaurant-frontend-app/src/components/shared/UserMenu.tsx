@@ -30,12 +30,8 @@ export const UserMenu = () => {
         className="bg-neutral-0 p-0 shadow-card rounded border-none min-w-[216px]"
       >
         <DropdownMenuItem className="flex-col items-start gap-[0px]">
-          <Text variant="bodyBold">
-            {user && (user.name || user?.lastName)
-              ? `${user.name} ${user.lastName}`
-              : "Username"}
-          </Text>
-          <Text variant="caption">{user?.email || "email@site.com"}</Text>
+          <Text variant="bodyBold">{`${user?.name ?? ""} ${user?.lastName ?? ""} (${user?.role ?? ""})`}</Text>
+          <Text variant="caption">{user?.email ?? ""}</Text>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="mx-[1.5rem]" />
         <DropdownMenuItem asChild>

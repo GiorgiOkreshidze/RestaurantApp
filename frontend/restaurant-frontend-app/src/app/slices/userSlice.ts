@@ -46,6 +46,8 @@ export const userSlice = createSlice({
           name: state.user?.name || "",
           lastName: state.user?.lastName || "",
           email: state.user?.email || "",
+          role: state.user?.role || "",
+          imageUrl: state.user?.imageUrl || "",
         };
         toast.success(data.message);
       })
@@ -68,6 +70,8 @@ export const userSlice = createSlice({
             name: "",
             lastName: "",
             email: "",
+            role: "",
+            imageUrl: "",
           };
         }
       })

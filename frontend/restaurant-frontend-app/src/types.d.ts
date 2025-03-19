@@ -15,6 +15,8 @@ export interface User {
   name: string;
   lastName: string;
   email: string;
+  role: string;
+  imageUrl: string;
 }
 
 export interface RegisterMutation {
