@@ -4,7 +4,7 @@ import { ComponentProps } from "react";
 import { Slot } from "@radix-ui/react-slot";
 
 const buttonVariants = cva(
-  "inline-flex rounded min-w-[44px] cursor-pointer text-center w-full justify-center transition-all duration-300 items-center",
+  "inline-flex rounded min-w-[44px] cursor-pointer text-center w-full justify-center transition-all duration-300 items-center disabled:cursor-not-allowed",
   {
     variants: {
       variant: {

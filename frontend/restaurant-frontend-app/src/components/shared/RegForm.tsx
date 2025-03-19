@@ -18,9 +18,12 @@ import { cn } from "@/lib/utils";
 import { useRegForm } from "@/hooks/useRegForm";
 import { PasswordField } from "../ui/PasswordField";
 import { Link } from "react-router";
+import { useSelector } from "react-redux";
+import { selectRegisterLoading } from "@/app/slices/userSlice";
 
 export function RegForm({ className, ...props }: ComponentProps<"form">) {
   const { form, onSubmit } = useRegForm();
+  const isLoading = useSelector(selectRegisterLoading);
 
   return (
     <Form {...form}>
@@ -143,8 +146,12 @@ export function RegForm({ className, ...props }: ComponentProps<"form">) {
             )}
           />
         </FormFieldSet>
-        <Button type="submit" className="mt-[1.5rem]">
-          Sign Up
+        <Button type="submit" className="mt-[1.5rem]" disabled={isLoading}>
+          {isLoading ? (
+            <span className="animate-spin border-2 border-t-transparent border-white w-5 h-5 rounded-full"></span>
+          ) : (
+            "Sign Up"
+          )}
         </Button>
         <Text className="mt-[16px]" variant="caption">
           Already have an account?{" "}
