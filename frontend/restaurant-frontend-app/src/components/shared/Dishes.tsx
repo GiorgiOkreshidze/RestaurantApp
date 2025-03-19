@@ -1,7 +1,6 @@
 import { Container } from "./container";
-import { DishCard, Text } from "../ui";
+import { DishCard, Spinner, Text } from "../ui";
 import { Dish } from "@/types";
-import { Loader2 } from "lucide-react";
 
 interface Props {
   title: string;
@@ -21,7 +20,7 @@ export const Dishes: React.FC<Props> = ({
           {title}
         </Text>
         {isLoading ? (
-          <Loader2 className="size-[4rem]" />
+          <Spinner className="size-[50px]" />
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
             {/* <div className="flex flex-wrap gap-8"> */}

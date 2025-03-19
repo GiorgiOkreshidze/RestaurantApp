@@ -26,3 +26,4 @@ export {
   DropdownMenuTrigger,
 } from "./DropdownMenu";
 export { Badge } from "./Badge";
+export { Spinner } from "./Spinner";

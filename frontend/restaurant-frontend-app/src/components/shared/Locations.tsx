@@ -1,7 +1,6 @@
-import { LocationsCard, Text } from "../ui";
+import { LocationsCard, Spinner, Text } from "../ui";
 import { Container } from "./container";
 import { Location } from "@/types";
-import { Loader2 } from "lucide-react";
 
 interface Props {
   locations: Location[];
@@ -19,7 +18,7 @@ export const Locations: React.FC<Props> = ({
           Locations
         </Text>
         {isLoading ? (
-          <Loader2 className="size=[4rem]" />
+          <Spinner className="size-[50px]" />
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
             {locations.map((item) => (

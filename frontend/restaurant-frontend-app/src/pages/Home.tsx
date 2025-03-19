@@ -13,6 +13,7 @@ import {
   selectLocationsLoading,
 } from "@/app/slices/locationsSlice";
 import { getLocations } from "@/app/thunks/locationsThunks";
+import { Spinner } from "@/components/ui";
 
 export const Home = () => {
   const dispatch = useAppDispatch();
