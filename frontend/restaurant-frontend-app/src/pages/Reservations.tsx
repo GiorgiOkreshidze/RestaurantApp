@@ -1,5 +1,10 @@
-import { Container } from "@/components/shared";
+import { Container, PageTitle } from "@/components/shared";
 
 export const Reservations = () => {
-  return <Container></Container>;
+  return (
+    <>
+      <PageTitle />
+      <Container></Container>
+    </>
+  );
 };
