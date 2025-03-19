@@ -19,7 +19,7 @@ namespace Function.Services.Interfaces
         public Task<List<Dish>> GetListOfPopularDishes();
         
         public Task<List<Dish>> GetListOfSpecialityDishes(string locationId);
-        
+
         public Task<Reservation> UpsertReservation(Reservation reservationRequest);
         
         public Task<Location> GetLocationById(string locationId);
@@ -27,5 +27,11 @@ namespace Function.Services.Interfaces
         public Task<List<Reservation>> GetReservationsByDateLocationTable(string date, string locationAddress, string tableNumber);
 
         public Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters qeuryParameters);
+
+        Task<List<RestaurantTable>> GetTablesForLocation(string locationId, int guests);
+
+        Task<List<ReservationInfo>> GetReservationsForDateAndLocation(string date, string locationAddress);
+
+        Task<LocationInfo?> GetLocationDetails(string locationId);
     }
 }
