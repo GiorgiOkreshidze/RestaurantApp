@@ -14,6 +14,7 @@
             "dynamodb:DeleteItem",
             "dynamodb:Scan",
             "dynamodb:DescribeTable",
+            "dynamodb:UpdateItem",
             "cognito-idp:DescribeUserPool",
             "cognito-idp:GetUser",
             "cognito-idp:ListUsers",
@@ -145,7 +146,7 @@
           "responses": [],
           "integration_responses": [],
           "default_error_pattern": true
-          }
+        }
       },
       "/locations/select-options": {
         "enable_cors": true,
@@ -160,7 +161,7 @@
           "responses": [],
           "integration_responses": [],
           "default_error_pattern": true
-          }
+        }
       },
       "/users/profile": {
         "enable_cors": true,
@@ -193,6 +194,36 @@
         }
       },
       "/locations/{id}/speciality-dishes": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "restaurant-api-handler",
+          "enable_proxy": true,
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/reservations/client": {
+        "enable_cors": true,
+        "POST": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "restaurant-api-handler",
+          "enable_proxy": true,
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/locations/{id}/feedbacks": {
         "enable_cors": true,
         "GET": {
           "authorization_type": "NONE",
@@ -255,5 +286,66 @@
     "global_indexes": [],
     "autoscaling": [],
     "tags": {}
+  },
+  "${tables_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "id",
+    "hash_key_type": "S",
+    "read_capacity": 1,
+    "write_capacity": 1,
+    "global_indexes": [],
+    "autoscaling": [],
+    "tags": {}
+  },
+  "${reservations_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "id",
+    "hash_key_type": "S",
+    "read_capacity": 1,
+    "write_capacity": 1,
+    "global_indexes": [],
+    "autoscaling": [],
+    "tags": {}
+  },
+  "${locationFeedback_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "locationId",
+    "hash_key_type": "S",
+    "sort_key_name": "type#date",
+    "sort_key_type": "S",
+    "read_capacity": 1,
+    "write_capacity": 1,
+    "global_indexes": [
+      {
+        "name": "${ix_locationFeedback_type_date}",
+        "index_key_name": "locationId#type",
+        "index_key_type": "S",
+        "index_sort_key_name": "date",
+        "index_sort_key_type": "S"
+      },
+      {
+        "name": "${ix_locationFeedback_type_rating}",
+        "index_key_name": "locationId#type",
+        "index_key_type": "S",
+        "index_sort_key_name": "rate",
+        "index_sort_key_type": "N"
+      },
+      {
+        "name": "${ix_locationFeedback_date}",
+        "index_key_name": "locationId",
+        "index_key_type": "S",
+        "index_sort_key_name": "date",
+        "index_sort_key_type": "S"
+      },
+      {
+        "name": "${ix_locationFeedback_rating}",
+        "index_key_name": "locationId",
+        "index_key_type": "S",
+        "index_sort_key_name": "rate",
+        "index_sort_key_type": "N"
+      }
+    ],
+    "autoscaling": [],
+    "tags": {}
   }
-}
+}  

@@ -1,4 +1,5 @@
 ﻿using Function.Models;
+using Function.Models.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,13 @@ namespace Function.Services.Interfaces
         public Task<List<Dish>> GetListOfPopularDishes();
         
         public Task<List<Dish>> GetListOfSpecialityDishes(string locationId);
+        
+        public Task<Reservation> UpsertReservation(Reservation reservationRequest);
+        
+        public Task<Location> GetLocationById(string locationId);
+        
+        public Task<List<Reservation>> GetReservationsByDateLocationTable(string date, string locationAddress, string tableNumber);
+
+        public Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters qeuryParameters);
     }
 }

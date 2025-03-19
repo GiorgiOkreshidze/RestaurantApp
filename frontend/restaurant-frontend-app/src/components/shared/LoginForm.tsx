@@ -17,9 +17,12 @@ import { cn } from "@/lib/utils";
 import { PasswordField } from "../ui/PasswordField";
 import { useLoginForm } from "@/hooks/useLoginForm";
 import { Link } from "react-router";
+import { useSelector } from "react-redux";
+import { selectLoginLoading } from "@/app/slices/userSlice";
 
 export function LoginForm({ className, ...props }: ComponentProps<"form">) {
   const { form, onSubmit } = useLoginForm();
+  const isLoading = useSelector(selectLoginLoading);
 
   return (
     <Form {...form}>
@@ -83,8 +86,16 @@ export function LoginForm({ className, ...props }: ComponentProps<"form">) {
             }}
           />
         </FormFieldSet>
-        <Button type="submit" className="mt-[3rem] md:mt-[3rem]">
-          Sign In
+        <Button
+          type="submit"
+          className="mt-[3rem] md:mt-[3rem]"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <span className="animate-spin border-2 border-t-transparent border-white w-5 h-5 rounded-full"></span>
+          ) : (
+            "Sign In"
+          )}
         </Button>
         <Text className="mt-[16px]" variant="caption">
           Don’t have an account?{" "}

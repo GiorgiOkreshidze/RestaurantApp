@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Function.Actions;
+using Function.Services;
 using SimpleLambdaFunction.Actions;
 
 namespace SimpleLambdaFunction;
@@ -20,7 +21,8 @@ public class ApiHandler
     private readonly GetProfileAction _getProfileAction;
     private readonly GetSpecialityDishesAction _getSpecialityDishesAction;
     private readonly GetLocationOptionsAction _getLocationOptionsAction;
-
+    private readonly GetLocationFeedbacksAction _getLocationFeedbacksAction;
+    private readonly CreateReservationAction _createReservationAction;
 
     public ApiHandler()
     {
@@ -34,14 +36,16 @@ public class ApiHandler
         _getProfileAction = new GetProfileAction();
         _getSpecialityDishesAction = new GetSpecialityDishesAction();
         _getLocationOptionsAction = new GetLocationOptionsAction();
+        _createReservationAction = new CreateReservationAction();
+        _getLocationFeedbacksAction = new GetLocationFeedbacksAction();
     }
-    
+
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
         ILambdaContext context)
     {
         var requestPath = eventRequest.Resource;
         var methodName = eventRequest.HttpMethod;
-        
+
         context.Logger.LogInformation("eventRequest.Resource: " + requestPath);
         context.Logger.LogInformation("eventRequest.HttpMethod: " + methodName);
 
@@ -62,46 +66,63 @@ public class ApiHandler
                         { "POST", _signInAction.Signin }
                     }
                 },
-                 {
+                {
                     "/signout", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "POST", _signOutAction.Signout }
                     }
                 },
-                 {
+                {
                     "/auth/refresh", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "POST", _refreshTokenAction.RefreshToken }
                     }
                 },
-                 {
+                {
                     "/locations", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getLocationsActions.GetLocations }
                     }
                 },
                 {
-                    "/dishes/popular", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/dishes/popular",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getPopularDishesAction.GetPopularDishes }
                     }
-                 },
+                },
                 {
-                    "/users/profile", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/users/profile",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getProfileAction.GetProfile }
                     }
                 },
                 {
-                    "/locations/{id}/speciality-dishes", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/locations/{id}/speciality-dishes",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getSpecialityDishesAction.GetSpecialityDishes }
                     }
                 },
-                      {
-                    "/locations/select-options", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                {
+                    "/locations/select-options",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getLocationOptionsAction.GetOptions }
+                    }
+                },
+                {
+                    "/reservations/client",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "POST", _createReservationAction.CreateReservation }
+                    }
+                },
+                {
+                    "/locations/{id}/feedbacks", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getLocationFeedbacksAction.GetLocationFeedbacks }
                     }
                 }
             };

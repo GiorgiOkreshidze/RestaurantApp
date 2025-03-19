@@ -15,13 +15,13 @@ export const Dishes: React.FC<Props> = ({ title, dishes }) => {
           {title}
         </Text>
         <div className="flex gap-8">
-          {dishes.map((item, index) => (
+          {dishes.slice(0, 4).map((item, index) => (
             <DishCard
               key={index}
               name={item.name}
-              cost={item.cost}
+              price={item.price}
               weight={item.weight}
-              image={item.image}
+              imageUrl={item.imageUrl}
             />
           ))}
         </div>

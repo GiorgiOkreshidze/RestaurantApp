@@ -1,9 +1,10 @@
 import { Text } from "../ui";
 import { Container } from "./container";
 
-import ReviewImage from "../../assets/images/rock.jpg";
 import { Review } from "@/types";
 import { ReviewsCard } from "../ui/ReviewsCard";
+import ReviewImage from "../../assets/images/rock.jpg";
+import britneyImage from "../../assets/images/britney.png";
 
 const reviewsData: Review[] = [
   {
@@ -15,12 +16,12 @@ const reviewsData: Review[] = [
     image: ReviewImage,
   },
   {
-    name: "Rock",
+    name: "Britney",
     date: "Aug 6, 2024",
     rating: 3,
     review:
       "Absolutely loved this restaurant! The outdoor terrace was perfect for a relaxing evening, and the menu had so many fresh, healthy options. I’m vegetarian, and it’s great to see so many plant-based dishes with authentic Georgian flavors. Definitely coming back soon!",
-    image: ReviewImage,
+    image: britneyImage,
   },
   {
     name: "Rock",
@@ -31,12 +32,12 @@ const reviewsData: Review[] = [
     image: ReviewImage,
   },
   {
-    name: "Rock",
+    name: "Britney",
     date: "Aug 6, 2024",
     rating: 5,
     review:
       "Absolutely loved this restaurant! The outdoor terrace was perfect for a relaxing evening, and the menu had so many fresh, healthy options. I’m vegetarian, and it’s great to see so many plant-based dishes with authentic Georgian flavors. Definitely coming back soon!",
-    image: ReviewImage,
+    image: britneyImage,
   },
 ];
 

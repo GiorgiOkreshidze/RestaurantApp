@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Lambda.APIGatewayEvents;
 
 namespace SimpleLambdaFunction.Actions;
@@ -68,5 +69,16 @@ public class ActionUtils
                Regex.IsMatch(password, @"(?=.*[a-z])") &&
                Regex.IsMatch(password, @"(?=.*\d)") &&
                Regex.IsMatch(password, @"(?=.*[!@#$%^&*()_+\-=[\]{};':""\\|,.<>/?])");
+    }
+
+    public static string GetAccessToken(APIGatewayProxyRequest request)
+    {
+        if (!request.Headers.TryGetValue("X-Access-Token", out var accessTokenHeader) ||
+            string.IsNullOrEmpty(accessTokenHeader))
+        {
+            throw new UnauthorizedException("Access token is missing");
+        }
+
+        return accessTokenHeader.Trim();
     }
 }
