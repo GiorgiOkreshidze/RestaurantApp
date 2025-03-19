@@ -65,21 +65,21 @@ namespace Function.Services
             var documentList = await ScanDynamoDBTableAsync(_dishesTableName);
             var filteredDishes = documentList
                 .Where(doc =>
-                    doc.TryGetValue("isPopular", out var isPopular) && 
+                    doc.TryGetValue("isPopular", out var isPopular) &&
                     isPopular.AsBoolean())
                 .ToList();
             return Mapper.MapDocumentsToDishes(filteredDishes);
         }
-        
+
         public async Task<List<Dish>> GetListOfSpecialityDishes(string locationId)
         {
             var documentList = await ScanDynamoDBTableAsync(_dishesTableName);
             var filteredDocuments = documentList
-                .Where(doc => 
-                    doc.TryGetValue("locationId", out var docLocationId) && 
+                .Where(doc =>
+                    doc.TryGetValue("locationId", out var docLocationId) &&
                     docLocationId.ToString() == locationId)
                 .ToList();
-            
+
             return Mapper.MapDocumentsToDishes(filteredDocuments);
         }
 
@@ -144,8 +144,8 @@ namespace Function.Services
         {
             var documentList = await ScanDynamoDBTableAsync(_locationsTableName);
             var locations = Mapper.MapDocumentsToLocations(documentList);
-            
             var result = locations.FirstOrDefault(loc => loc.Id == locationId);
+            
             if (result == null)
             {
                 throw new ArgumentException($"The location with {locationId} id is not found");
@@ -165,11 +165,39 @@ namespace Function.Services
             var locations = await _dynamoDBClient.ScanAsync(request);
 
             return locations.Items
-               .Select(item => new LocationOptions
+                .Select(item => new LocationOptions
                 {
-                   Id = item.ContainsKey("id") ? item["id"].S : "",
-                   Address = item.ContainsKey("address") ? item["address"].S : ""
-               }).ToList();
+                    Id = item.ContainsKey("id") ? item["id"].S : "",
+                    Address = item.ContainsKey("address") ? item["address"].S : ""
+                }).ToList();
+        }
+
+        public async Task<List<Reservation>> GetReservationsByDateLocationTable(
+            string date,
+            string locationAddress,
+            string tableNumber
+        )
+        {
+            var request = new ScanRequest
+            {
+                TableName = _reservationTableName,
+                FilterExpression = "#d = :date AND locationAddress = :locationAddress AND tableNumber = :tableNumber",
+                ExpressionAttributeNames = new Dictionary<string, string>
+                {
+                    { "#d", "date" }
+                },
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { ":date", new AttributeValue { S = date } },
+                    { ":locationAddress", new AttributeValue { S = locationAddress } },
+                    { ":tableNumber", new AttributeValue { S = tableNumber } }
+                }
+            };
+            var response = await _dynamoDBClient.ScanAsync(request);
+
+            List<Reservation> reservations = Mapper.MapItemsToReservations(response.Items);
+
+            return reservations;
         }
 
 
