@@ -1,15 +1,29 @@
 import { Container, PageTitle, ReservationCard } from "@/components/shared";
-import { Reservation } from "@/types";
 import calendarCrossed from "@/assets/images/calendar-crossed.png";
 import { Button, Text } from "@/components/ui";
 import { Link } from "react-router";
+// import { useAppDispatch } from "@/app/hooks";
+// import { getReservations } from "@/app/thunks/reservationsThunks";
+// import { useEffect } from "react";
+// import { useSelector } from "react-redux";
+// import { selectReservations } from "@/app/slices/reservationsSlice";
+import { Reservation } from "@/types";
 
 export const Reservations = () => {
+  // const dispatch = useAppDispatch();
+  // const reservations = useSelector(selectReservations);
+
+  // useEffect(() => {
+  //   if (!reservations.length) {
+  //     dispatch(getReservations());
+  //   }
+  // }, [dispatch, reservations.length]);
+
   return (
     <>
       <PageTitle />
       <Container className="flex flex-col grow-1">
-        {reservations.length > 0 ? (
+        {reservations?.length > 0 ? (
           <div className="grow-1 content-start grid gap-[2rem] lg:grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">
             {reservations.map((reservation) => (
               <ReservationCard {...reservation} />
