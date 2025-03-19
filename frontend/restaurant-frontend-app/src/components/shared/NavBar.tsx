@@ -35,6 +35,14 @@ export const NavBar = () => {
               Book a Table
             </Text>
           </NavLink>
+          <NavLink
+            to="/reservations"
+            className="[&.active]:text-green-200 [&.active]:border-b-2 [&.active]:border-green-200"
+          >
+            <Text variant="h2" className="text-inherit">
+              Reservations
+            </Text>
+          </NavLink>
         </div>
         <div className="ml-auto">
           <Button asChild variant="secondary" size="l">
