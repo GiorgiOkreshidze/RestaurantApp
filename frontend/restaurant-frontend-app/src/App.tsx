@@ -3,11 +3,16 @@ import { Home, Auth, Location } from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
+import { useEffect } from "react";
 import { Reservations } from "./pages/Reservations";
 
 function App() {
   const location = useLocation();
   const hideNavBar = ["/signin", "/signup"].includes(location.pathname);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
 
   return (
     <>

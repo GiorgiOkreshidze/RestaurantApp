@@ -15,6 +15,8 @@ export interface User {
   name: string;
   lastName: string;
   email: string;
+  role: string;
+  imageUrl: string;
 }
 
 export interface RegisterMutation {
@@ -42,6 +44,9 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
+export interface UserDataResponse
+  extends Pick<UserFields, "name" | "lastName" | "email"> {}
+
 export interface RegistrationFields extends UserFields {
   confirmPassword: string;
 }
@@ -56,6 +61,10 @@ export interface ValidationErrors {
 
 export interface GlobalErrorMessage {
   message: string;
+}
+
+export interface signOutMutation {
+  refreshToken: string;
 }
 
 export interface Dish {

@@ -2,13 +2,9 @@
 using SimpleLambdaFunction.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
 using SimpleLambdaFunction.Actions;
-using System.Security.Authentication;
-using System.Text.Json;
 using Function.Models;
 
 namespace Function.Actions

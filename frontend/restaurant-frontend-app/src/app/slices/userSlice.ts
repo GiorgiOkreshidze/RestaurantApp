@@ -1,18 +1,22 @@
 import { User } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { login, register } from "../thunks/userThunks";
+import { getUserData, login, register, signout } from "../thunks/userThunks";
 import { toast } from "react-toastify";
 
 interface UserState {
   user: User | null;
   registerLoading: boolean;
   loginLoading: boolean;
+  userDataLoading: boolean;
+  signoutLoading: boolean;
 }
 
 const initialState: UserState = {
   user: null,
   registerLoading: false,
   loginLoading: false,
+  userDataLoading: false,
+  signoutLoading: false,
 };
 
 export const userSlice = createSlice({
@@ -42,8 +46,9 @@ export const userSlice = createSlice({
           name: state.user?.name || "",
           lastName: state.user?.lastName || "",
           email: state.user?.email || "",
+          role: state.user?.role || "",
+          imageUrl: state.user?.imageUrl || "",
         };
-
         toast.success(data.message);
       })
       .addCase(register.rejected, (state, { payload: errorResponse }) => {
@@ -65,11 +70,41 @@ export const userSlice = createSlice({
             name: "",
             lastName: "",
             email: "",
+            role: "",
+            imageUrl: "",
           };
         }
       })
       .addCase(login.rejected, (state) => {
         state.loginLoading = false;
+      });
+
+    builder
+      .addCase(getUserData.pending, (state) => {
+        state.userDataLoading = true;
+      })
+      .addCase(getUserData.fulfilled, (state, { payload: data }) => {
+        state.userDataLoading = false;
+        if (state.user) {
+          state.user.name = data.name;
+          state.user.lastName = data.lastName;
+          state.user.email = data.email;
+        }
+      })
+      .addCase(getUserData.rejected, (state) => {
+        state.userDataLoading = false;
+      });
+
+    builder
+      .addCase(signout.pending, (state) => {
+        state.signoutLoading = true;
+      })
+      .addCase(signout.fulfilled, (state) => {
+        state.signoutLoading = false;
+        state.user = null;
+      })
+      .addCase(signout.rejected, (state) => {
+        state.signoutLoading = false;
       });
   },
   selectors: {

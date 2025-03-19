@@ -29,6 +29,8 @@ namespace Function.Services
         private readonly string? _locationFeedbacksDateIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_DATE_INDEX");
         private readonly string? _locationFeedbacksRatingIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_RATING_INDEX");
         private readonly string? _locationFeedbacksDateByTypeIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TYPE_DATE_INDEX");
+        private readonly string? _tablesTableName = Environment.GetEnvironmentVariable("DYNAMODB_TABLES_TABLE_NAME");
+        private readonly string? _reservationsTableName = Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_NAME");
 
         public DynamoDBService()
         {
@@ -65,21 +67,21 @@ namespace Function.Services
             var documentList = await ScanDynamoDBTableAsync(_dishesTableName);
             var filteredDishes = documentList
                 .Where(doc =>
-                    doc.TryGetValue("isPopular", out var isPopular) && 
+                    doc.TryGetValue("isPopular", out var isPopular) &&
                     isPopular.AsBoolean())
                 .ToList();
             return Mapper.MapDocumentsToDishes(filteredDishes);
         }
-        
+
         public async Task<List<Dish>> GetListOfSpecialityDishes(string locationId)
         {
             var documentList = await ScanDynamoDBTableAsync(_dishesTableName);
             var filteredDocuments = documentList
-                .Where(doc => 
-                    doc.TryGetValue("locationId", out var docLocationId) && 
+                .Where(doc =>
+                    doc.TryGetValue("locationId", out var docLocationId) &&
                     docLocationId.ToString() == locationId)
                 .ToList();
-            
+
             return Mapper.MapDocumentsToDishes(filteredDocuments);
         }
 
@@ -144,8 +146,8 @@ namespace Function.Services
         {
             var documentList = await ScanDynamoDBTableAsync(_locationsTableName);
             var locations = Mapper.MapDocumentsToLocations(documentList);
-            
             var result = locations.FirstOrDefault(loc => loc.Id == locationId);
+            
             if (result == null)
             {
                 throw new ArgumentException($"The location with {locationId} id is not found");
@@ -165,11 +167,39 @@ namespace Function.Services
             var locations = await _dynamoDBClient.ScanAsync(request);
 
             return locations.Items
-               .Select(item => new LocationOptions
+                .Select(item => new LocationOptions
                 {
-                   Id = item.ContainsKey("id") ? item["id"].S : "",
-                   Address = item.ContainsKey("address") ? item["address"].S : ""
-               }).ToList();
+                    Id = item.ContainsKey("id") ? item["id"].S : "",
+                    Address = item.ContainsKey("address") ? item["address"].S : ""
+                }).ToList();
+        }
+
+        public async Task<List<Reservation>> GetReservationsByDateLocationTable(
+            string date,
+            string locationAddress,
+            string tableNumber
+        )
+        {
+            var request = new ScanRequest
+            {
+                TableName = _reservationTableName,
+                FilterExpression = "#d = :date AND locationAddress = :locationAddress AND tableNumber = :tableNumber",
+                ExpressionAttributeNames = new Dictionary<string, string>
+                {
+                    { "#d", "date" }
+                },
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { ":date", new AttributeValue { S = date } },
+                    { ":locationAddress", new AttributeValue { S = locationAddress } },
+                    { ":tableNumber", new AttributeValue { S = tableNumber } }
+                }
+            };
+            var response = await _dynamoDBClient.ScanAsync(request);
+
+            List<Reservation> reservations = Mapper.MapItemsToReservations(response.Items);
+
+            return reservations;
         }
 
 
@@ -274,6 +304,145 @@ namespace Function.Services
             return doc.ToAttributeMap();
         }
 
+        public async Task<List<ReservationInfo>> GetReservationsForDateAndLocation(string date, string locationAddress)
+        {
+            var table = Table.LoadTable(_dynamoDBClient, _reservationsTableName);
+
+            var scanFilter = new ScanFilter();
+            scanFilter.AddCondition("date", ScanOperator.Equal, date);
+
+            scanFilter.AddCondition("locationAddress", ScanOperator.Equal, locationAddress);
+            var search = table.Scan(scanFilter);
+            var reservations = new List<ReservationInfo>();
+
+            do
+            {
+                var documents = await search.GetNextSetAsync();
+                foreach (var document in documents)
+                {
+                    if (document["status"].AsString() != "cancelled")
+                    {
+                        reservations.Add(new ReservationInfo
+                        {
+                            TableNumber = document["tableNumber"].AsString(),
+                            Date = document["date"].AsString(),
+                            TimeFrom = document["timeFrom"].AsString(),
+                            TimeTo = document["timeTo"].AsString(),
+                            GuestsNumber = document["guestsNumber"].AsString()
+                        });
+                    }
+                }
+            } while (!search.IsDone);
+
+            return reservations;
+        }
+
+        public async Task<List<RestaurantTable>> GetTablesForLocation(string locationId, int guests)
+        {
+            var table = Table.LoadTable(_dynamoDBClient, _tablesTableName);
+            var scanFilter = new ScanFilter();
+            scanFilter.AddCondition("locationId", ScanOperator.Equal, locationId);
+            scanFilter.AddCondition("capacity", ScanOperator.GreaterThanOrEqual, guests);
+            var search = table.Scan(scanFilter);
+            var tables = new List<RestaurantTable>();
+
+            do
+            {
+                var documents = await search.GetNextSetAsync();
+                foreach (var document in documents)
+                {
+                    tables.Add(new RestaurantTable
+                    {
+                        Id = document["id"].AsString(),
+                        TableNumber = document["tableNumber"].AsString(),
+                        Capacity = document["capacity"].AsInt().ToString(),
+                        LocationId = document["locationId"].AsString(),
+                        LocationAddress = document["locationAddress"].AsString(),
+                    });
+                }
+            } while (!search.IsDone) ;
+
+            return tables;
+        }
+        public async Task<LocationInfo?> GetLocationDetails(string locationId)
+        {
+            try
+            {
+                // Create table reference
+                var table = Table.LoadTable(_dynamoDBClient, _locationsTableName);
+
+                // Perform get operation
+                var document = await table.GetItemAsync(locationId);
+                if (document == null)
+                    return null;
+
+                return new LocationInfo
+                {
+                    LocationId = locationId,
+                    Address = document["address"].AsString(),
+                    TotalCapacity = document["totalCapacity"].AsString(),
+                    AverageOccupancy = document["averageOccupancy"].AsString()
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<Reservation>> GetCustomerReservationsAsync(string info)
+        {
+            var request = new ScanRequest
+            {
+                TableName = _reservationTableName,
+                FilterExpression = "userInfo = :info",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                     { ":info", new AttributeValue { S = info } }
+                }
+            };
+            var response = await _dynamoDBClient.ScanAsync(request);
+
+            return Mapper.MapItemsToReservations(response.Items);
+        }
+
+        public async Task CancelReservation(string reservationId)
+        {
+            try
+            {
+                // Create delete request
+                var request = new UpdateItemRequest
+                {
+                    TableName = _reservationTableName,
+                    Key = new Dictionary<string, AttributeValue>
+              {
+                  { "id", new AttributeValue { S = reservationId } }
+              },
+                    UpdateExpression = "SET #status = :status",
+                    ExpressionAttributeNames = new Dictionary<string, string>
+      {
+          { "#status", "status" }
+      },
+                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+      {
+          { ":status", new AttributeValue { S = "Cancelled" } }
+      },
+                    ConditionExpression = "attribute_exists(id)"
+                };
+
+                // Execute delete operation
+                await _dynamoDBClient.UpdateItemAsync(request);
+            }
+            catch (ConditionalCheckFailedException)
+            {
+                throw new ArgumentException($"Reservation with ID {reservationId} not found");
+            }
+            catch (AmazonDynamoDBException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
         private async Task<List<Document>> ScanDynamoDBTableAsync(string? tableName)
         {
             var table = Table.LoadTable(_dynamoDBClient, tableName);

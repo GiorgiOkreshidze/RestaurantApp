@@ -23,6 +23,9 @@ public class ApiHandler
     private readonly GetLocationOptionsAction _getLocationOptionsAction;
     private readonly GetLocationFeedbacksAction _getLocationFeedbacksAction;
     private readonly CreateReservationAction _createReservationAction;
+    private readonly GetAvailableTablesAction _getAvailableTablesAction;
+    private readonly GetReservationsAction _getReservationsAction;
+    private readonly DeleteReservationAction _deleteReservationAction;
 
     public ApiHandler()
     {
@@ -38,6 +41,9 @@ public class ApiHandler
         _getLocationOptionsAction = new GetLocationOptionsAction();
         _createReservationAction = new CreateReservationAction();
         _getLocationFeedbacksAction = new GetLocationFeedbacksAction();
+        _getAvailableTablesAction = new GetAvailableTablesAction();
+        _getReservationsAction = new GetReservationsAction();
+        _deleteReservationAction = new DeleteReservationAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -45,6 +51,7 @@ public class ApiHandler
     {
         var requestPath = eventRequest.Resource;
         var methodName = eventRequest.HttpMethod;
+        _getAvailableTablesAction.SetContext(context);
 
         context.Logger.LogInformation("eventRequest.Resource: " + requestPath);
         context.Logger.LogInformation("eventRequest.HttpMethod: " + methodName);
@@ -106,8 +113,7 @@ public class ApiHandler
                     }
                 },
                 {
-                    "/locations/select-options",
-                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/locations/select-options", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getLocationOptionsAction.GetOptions }
                     }
@@ -124,7 +130,25 @@ public class ApiHandler
                     {
                         { "GET", _getLocationFeedbacksAction.GetLocationFeedbacks }
                     }
-                }
+                },
+                 {
+                    "/bookings/tables", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getAvailableTablesAction.GetAvailableTables }
+                    }
+                },
+                 {
+                    "/reservations", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getReservationsAction.GetReservations }
+                    }
+                },
+                 {
+                    "/reservations/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                       { "DELETE", _deleteReservationAction.DeleteReservation }
+                    }
+                },
             };
 
         if (!actionEndpointMapping.TryGetValue(requestPath, out var resourceMethods) ||

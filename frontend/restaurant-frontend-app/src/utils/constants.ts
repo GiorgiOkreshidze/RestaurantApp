@@ -7,5 +7,7 @@ export const serverRoute = {
   popularDishes: "dishes/popular",
   locations: "locations",
   specialityDishes: "speciality-dishes",
+  signOut: "signout",
+  userData: "users/profile",
   reservations: "reservations",
 };

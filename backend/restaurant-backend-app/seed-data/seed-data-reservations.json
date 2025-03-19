@@ -6,11 +6,11 @@
           "id": { "S": "res_001" },
           "locationId": { "S": "loc_001" },
           "tableNumber": { "S": "1" },
-          "date": { "S": "2021-12-31" },
+          "date": { "S": "2025-03-22" },
           "guestsNumber": { "S": "4" },
           "timeFrom": { "S": "12:15" },
-          "timeTo": { "S": "14:00" },
-          "locationAddress": { "S": "123 Main Street, New York, NY" },
+          "timeTo": { "S": "13:45" },
+          "locationAddress": { "S": "48 Rustaveli Avenue" },
           "feedbackId": { "S": "fb_001" },
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Confirmed" },
@@ -22,13 +22,31 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "res_002" },
+          "locationId": { "S": "loc_001" },
+          "tableNumber": { "S": "1" },
+          "date": { "S": "2025-03-22" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "17:30" },
+          "timeTo": { "S": "19:00" },
+          "locationAddress": { "S": "48 Rustaveli Avenue" },
+          "feedbackId": { "S": "fb_001" },
+          "preOrder": { "S": "Vegetarian Meal" },
+          "status": { "S": "Confirmed" },
+          "userInfo": { "S": "John Doe, john@example.com" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "res_003" },
           "locationId": { "S": "loc_002" },
-          "tableNumber": { "S": "2" },
-          "date": { "S": "2022-01-01" },
-          "guestsNumber": { "S": "2" },
-          "timeFrom": { "S": "18:00" },
-          "timeTo": { "S": "20:00" },
-          "locationAddress": { "S": "456 Ocean Drive, Miami, FL" },
+          "tableNumber": { "S": "3" },
+          "date": { "S": "2025-03-22" },
+          "guestsNumber": { "S": "6" },
+          "timeFrom": { "S": "21:00" },
+          "timeTo": { "S": "22:30" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
           "feedbackId": { "S": "fb_002" },
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Pending" },
@@ -39,14 +57,50 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "res_003" },
+          "id": { "S": "res_004" },
+          "locationId": { "S": "loc_002" },
+          "tableNumber": { "S": "1" },
+          "date": { "S": "2025-03-22" },
+          "guestsNumber": { "S": "2" },
+          "timeFrom": { "S": "19:15" },
+          "timeTo": { "S": "20:45" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
+          "feedbackId": { "S": "fb_002" },
+          "preOrder": { "S": "Steak Dinner" },
+          "status": { "S": "Pending" },
+          "userInfo": { "S": "Jane Smith, jane@example.com" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "res_005" },
           "locationId": { "S": "loc_003" },
-          "tableNumber": { "S": "5" },
-          "date": { "S": "2022-01-02" },
+          "tableNumber": { "S": "4" },
+          "date": { "S": "2025-03-22" },
           "guestsNumber": { "S": "6" },
-          "timeFrom": { "S": "19:30" },
-          "timeTo": { "S": "21:30" },
-          "locationAddress": { "S": "789 Mountain Road, Denver, CO" },
+          "timeFrom": { "S": "19:15" },
+          "timeTo": { "S": "20:45" },
+          "locationAddress": { "S": "9 Abashidze Street" },
+          "feedbackId": { "S": "fb_003" },
+          "preOrder": { "S": "Seafood Platter" },
+          "status": { "S": "Confirmed" },
+          "userInfo": { "S": "Alice Johnson, alice@example.com" }
+        }
+      }
+    },
+     {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "res_006" },
+          "locationId": { "S": "loc_003" },
+          "tableNumber": { "S": "1" },
+          "date": { "S": "2025-03-22" },
+          "guestsNumber": { "S": "5" },
+          "timeFrom": { "S": "21:00" },
+          "timeTo": { "S": "22:30" },
+          "locationAddress": { "S": "9 Abashidze Street" },
           "feedbackId": { "S": "fb_003" },
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Confirmed" },

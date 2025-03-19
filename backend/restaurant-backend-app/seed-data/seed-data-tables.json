@@ -5,9 +5,9 @@
         "Item": {
           "id": { "S": "table_001" },
           "tableNumber": { "S": "1" },
-          "capacity": { "S": "4" },
+          "capacity": { "N": "4" },
           "locationId": { "S": "loc_001" },
-          "locationAddress": { "S": "123 Main Street, New York, NY"  }
+          "locationAddress": { "S": "48 Rustaveli Avenue"  }
         }
       }
     },
@@ -16,9 +16,9 @@
         "Item": {
           "id": { "S": "table_002" },
           "tableNumber": { "S": "2" },
-          "capacity": { "S": "2" },
-          "locationId": { "S": "loc_002" },
-          "locationAddress": { "S": "456 Ocean Drive, Miami, FL" }
+          "capacity": { "N": "6" },
+          "locationId": { "S": "loc_001" },
+          "locationAddress": { "S": "48 Rustaveli Avenue"  }
         }
       }
     },
@@ -26,10 +26,109 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "table_003" },
-          "tableNumber": { "S": "6" },
-          "capacity": { "S": "4" },
+          "tableNumber": { "S": "3" },
+          "capacity": { "N": "2" },
+          "locationId": { "S": "loc_001" },
+          "locationAddress": { "S": "48 Rustaveli Avenue"  }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "table_004" },
+          "tableNumber": { "S": "4" },
+          "capacity": { "N": "10" },
+          "locationId": { "S": "loc_001" },
+          "locationAddress": { "S": "48 Rustaveli Avenue"  }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "table_005" },
+          "tableNumber": { "S": "1" },
+          "capacity": { "N": "2" },
+          "locationId": { "S": "loc_002" },
+          "locationAddress": { "S": "14 Baratashvili Street" }
+        }
+      }
+    },
+       {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "table_006" },
+          "tableNumber": { "S": "2" },
+          "capacity": { "N": "4" },
+          "locationId": { "S": "loc_002" },
+          "locationAddress": { "S": "14 Baratashvili Street" }
+        }
+      }
+    },
+       {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "table_007" },
+          "tableNumber": { "S": "3" },
+          "capacity": { "N": "6" },
+          "locationId": { "S": "loc_002" },
+          "locationAddress": { "S": "14 Baratashvili Street" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "table_008" },
+          "tableNumber": { "S": "4" },
+          "capacity": { "N": "10" },
+          "locationId": { "S": "loc_002" },
+          "locationAddress": { "S": "14 Baratashvili Street" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "table_009" },
+          "tableNumber": { "S": "1" },
+          "capacity": { "N": "6" },
           "locationId": { "S": "loc_003" },
-          "locationAddress": { "S": "789 Mountain Road, Denver, CO" }
+          "locationAddress": { "S": "9 Abashidze Street" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "table_010" },
+          "tableNumber": { "S": "2" },
+          "capacity": { "N": "4" },
+          "locationId": { "S": "loc_003" },
+          "locationAddress": { "S": "9 Abashidze Street" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "table_011" },
+          "tableNumber": { "S": "3" },
+          "capacity": { "N": "10" },
+          "locationId": { "S": "loc_003" },
+          "locationAddress": { "S": "9 Abashidze Street" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "table_012" },
+          "tableNumber": { "S": "4" },
+          "capacity": { "N": "10" },
+          "locationId": { "S": "loc_003" },
+          "locationAddress": { "S": "9 Abashidze Street" }
         }
       }
     }

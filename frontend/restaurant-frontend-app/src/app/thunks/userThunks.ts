@@ -1,9 +1,12 @@
+import { AppDispatch } from "./../store";
 import {
   GlobalErrorMessage,
   LoginMutation,
   LoginResponse,
   RegisterMutation,
   RegisterResponse,
+  signOutMutation,
+  UserDataResponse,
 } from "@/types";
 import axiosApi from "@/utils/axiosApi";
 import { serverRoute } from "@/utils/constants";
@@ -41,7 +44,40 @@ export const login = createAsyncThunk<
     if (isAxiosError(e) && e.response && e.response.status === 422) {
       return rejectWithValue(e.response.data);
     }
+    throw e;
+  }
+});
 
+export const getUserData = createAsyncThunk<
+  UserDataResponse,
+  void,
+  { rejectValue: GlobalErrorMessage }
+>("users/profile", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.get<UserDataResponse>(serverRoute.userData);
+    return response.data;
+  } catch (e) {
+    if (isAxiosError(e) && e.response && e.response.status === 422) {
+      return rejectWithValue(e.response.data);
+    }
+    throw e;
+  }
+});
+
+export const signout = createAsyncThunk<
+  void,
+  signOutMutation,
+  { rejectValue: GlobalErrorMessage; dispatch: AppDispatch }
+>("signout", async (signOutMutation, { rejectWithValue }) => {
+  try {
+    await axiosApi.post(serverRoute.signOut, signOutMutation);
+
+    console.log("Logged out successfully");
+    return;
+  } catch (e) {
+    if (isAxiosError(e) && e.response && e.response.status === 422) {
+      return rejectWithValue(e.response.data);
+    }
     throw e;
   }
 });

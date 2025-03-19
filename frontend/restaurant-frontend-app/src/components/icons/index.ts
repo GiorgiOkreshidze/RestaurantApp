@@ -1,9 +1,13 @@
+export { CartIcon } from "./CartIcon.tsx";
+export { UserCircledIcon } from "./UserCircledIcon.tsx";
 export { EyeIcon } from "./EyeIcon";
 export { OpenEyeIcon } from "./OpenEyeIcon";
 export { Logo } from "./Logo.tsx";
 export { LocationIcon } from "./LocationIcon";
 export { StarIcon } from "./StarIcon";
 export { EmptyStar } from "./EmptyStar";
+export { UserIcon } from "./UserIcon";
+export { LogOutIcon } from "./LogOutIcon.tsx";
 export { CalendarIcon } from "./CalendarIcon";
 export { ClockIcon } from "./ClockIcon";
 export { PeopleIcon } from "./PeopleIcon";

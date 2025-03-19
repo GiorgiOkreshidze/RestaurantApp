@@ -15,7 +15,7 @@ export const PasswordField = ({
       <Input type={type} {...props} />
       <Button
         variant="tertiary"
-        className="absolute w-auto px-[1.125rem] h-[calc(100%-2px)] right-[1px] top-[50%] translate-y-[-50%]"
+        className="absolute w-auto px-[1.125rem] h-[calc(100%-2px)] right-[1px] top-[50%] translate-y-[-50%] hover:bg-neutral-100"
         onClick={() => setShowPassword(!showPassword)}
       >
         {showPassword ? <EyeIcon /> : <OpenEyeIcon />}
