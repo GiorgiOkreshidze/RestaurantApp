@@ -389,6 +389,23 @@ namespace Function.Services
                 return null;
             }
         }
+
+        public async Task<List<Reservation>> GetCustomerReservationsAsync(string info)
+        {
+            var request = new ScanRequest
+            {
+                TableName = _reservationTableName,
+                FilterExpression = "userInfo = :info",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                     { ":info", new AttributeValue { S = info } }
+                }
+            };
+            var response = await _dynamoDBClient.ScanAsync(request);
+
+            return Mapper.MapItemsToReservations(response.Items);
+        }
+
         private async Task<List<Document>> ScanDynamoDBTableAsync(string? tableName)
         {
             var table = Table.LoadTable(_dynamoDBClient, tableName);
