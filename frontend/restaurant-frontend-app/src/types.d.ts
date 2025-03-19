@@ -63,6 +63,10 @@ export interface GlobalErrorMessage {
   message: string;
 }
 
+export interface signOutMutation {
+  refreshToken: string;
+}
+
 export interface Dish {
   id: string;
   name: string;

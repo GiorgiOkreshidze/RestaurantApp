@@ -101,6 +101,7 @@ export const userSlice = createSlice({
       })
       .addCase(signout.fulfilled, (state) => {
         state.signoutLoading = false;
+        state.user = null;
       })
       .addCase(signout.rejected, (state) => {
         state.signoutLoading = false;

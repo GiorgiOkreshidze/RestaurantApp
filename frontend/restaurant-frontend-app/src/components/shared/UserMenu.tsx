@@ -30,7 +30,9 @@ export const UserMenu = () => {
         className="bg-neutral-0 p-0 shadow-card rounded border-none min-w-[216px]"
       >
         <DropdownMenuItem className="flex-col items-start gap-[0px]">
-          <Text variant="bodyBold">{`${user?.name ?? ""} ${user?.lastName ?? ""} (${user?.role ?? ""})`}</Text>
+          <Text variant="bodyBold">{`${user?.name ?? ""} ${
+            user?.lastName ?? ""
+          } (${user?.role ?? ""})`}</Text>
           <Text variant="caption">{user?.email ?? ""}</Text>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="mx-[1.5rem]" />
@@ -40,7 +42,13 @@ export const UserMenu = () => {
             <Text variant="bodyBold">My Profile</Text>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => dispatch(signout()).unwrap()}>
+        <DropdownMenuItem
+          onClick={() =>
+            dispatch(
+              signout({ refreshToken: user?.tokens.refreshToken ?? "" })
+            ).unwrap()
+          }
+        >
           <LogOutIcon className="size-[24px] mr-[1rem]" />
           <Text variant="bodyBold">Sign Out</Text>
         </DropdownMenuItem>

@@ -13,7 +13,10 @@ const axiosApi: AxiosInstance = axios.create({
 });
 
 let isRefreshing = false;
-let refreshSubscribers: ((token: string) => void)[] = [];
+let refreshSubscribers: ((tokens: {
+  accessToken: string;
+  idToken: string;
+}) => void)[] = [];
 
 const refreshTokenRequest = async (store: Store<RootState>) => {
   try {
@@ -21,8 +24,13 @@ const refreshTokenRequest = async (store: Store<RootState>) => {
     const response = await axios.post(`${apiURL}/auth/refresh`, {
       refreshToken,
     });
+
     store.dispatch(setUser(response.data));
-    return response.data.token;
+
+    return {
+      accessToken: response.data.tokens.accessToken,
+      idToken: response.data.tokens.idToken,
+    };
   } catch (error) {
     store.dispatch(logout());
     throw error;
@@ -35,9 +43,13 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 
 const addInterceptors = (store: Store<RootState>) => {
   axiosApi.interceptors.request.use((config) => {
-    const token = store.getState().users.user?.tokens.accessToken;
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+    const user = store.getState().users.user;
+    if (user?.tokens) {
+      config.headers["Authorization"] = `Bearer ${user.tokens.idToken}`;
+      console.log(config.url);
+      if (config.url === "users/profile") {
+        config.headers["X-Access-Token"] = user.tokens.accessToken;
+      }
     }
     return config;
   });
@@ -56,8 +68,11 @@ const addInterceptors = (store: Store<RootState>) => {
       ) {
         if (isRefreshing) {
           return new Promise((resolve) => {
-            refreshSubscribers.push((token) => {
-              originalRequest.headers["Authorization"] = `Bearer ${token}`;
+            refreshSubscribers.push((tokens) => {
+              originalRequest.headers[
+                "Authorization"
+              ] = `Bearer ${tokens.idToken}`;
+              originalRequest.headers["X-Access-Token"] = tokens.accessToken;
               resolve(axiosApi(originalRequest));
             });
           });
@@ -67,12 +82,16 @@ const addInterceptors = (store: Store<RootState>) => {
         isRefreshing = true;
 
         try {
-          const newToken = await refreshTokenRequest(store);
-          refreshSubscribers.forEach((callback) => callback(newToken));
+          const newTokens = await refreshTokenRequest(store);
+          refreshSubscribers.forEach((callback) => callback(newTokens));
           refreshSubscribers = [];
           isRefreshing = false;
 
-          originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+          originalRequest.headers[
+            "Authorization"
+          ] = `Bearer ${newTokens.idToken}`;
+          originalRequest.headers["X-Access-Token"] = newTokens.accessToken;
+
           return axiosApi(originalRequest);
         } catch (err) {
           isRefreshing = false;
