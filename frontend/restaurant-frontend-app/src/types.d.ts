@@ -83,3 +83,17 @@ export interface Review {
   review: string;
   image: string;
 }
+
+export type ReservationStatus =
+  | "Reserved"
+  | "In Progress"
+  | "Canceled"
+  | "Finished";
+
+export interface Reservation {
+  location: string;
+  status: ReservationStatus;
+  date: string;
+  time: string;
+  guests: string;
+}

@@ -11,3 +11,5 @@ export { Container } from "./container";
 export { LocationHero } from "./LocationHero";
 export { Reviews } from "./Reviews";
 export { PageTitle } from "./PageTitle.tsx";
+export { Card } from "./Card.tsx";
+export { ReservationCard } from "./ReservationCard.tsx";

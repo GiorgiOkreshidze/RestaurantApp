@@ -18,3 +18,4 @@ export {
 } from "./Form";
 export { CustomLink } from "./CustomLink";
 export { PasswordField } from "./PasswordField";
+export { Badge } from "./Badge";

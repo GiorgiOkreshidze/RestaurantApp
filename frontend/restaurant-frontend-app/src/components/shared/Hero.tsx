@@ -21,7 +21,7 @@ export const Hero = () => {
             highlight the rich flavors of Georgian cuisine with a modern twist.
           </Text>
 
-          <Button>View Menu</Button>
+          <Button className="w-full">View Menu</Button>
         </div>
       </Container>
     </div>

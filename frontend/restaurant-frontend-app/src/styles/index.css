@@ -132,6 +132,13 @@ body {
   background: #f7f7f7;
   overflow-y: scroll;
   min-block-size: 100vh;
+  min-inline-size: 320px;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100vh;
 }
 
 @theme {
@@ -155,15 +162,20 @@ body {
   --color-destructive: var(--color-red-400, #d70c0c);
   --color-destructive-shadow: rgba(from var(--color-destructive) r g b / 0.2);
 
+  --color-card-background: var(--color-neutral-0, #ffffff);
+  --color-card-shadow: rgba(from #c2c2c2 r g b / 0.2);
+
   /* FONTS */
   /* In "tw-utilities.css" file */
 
   /* SHADOWS */
   --shadow-input-primary: 0 0 8px 0 var(--color-primary-shadow);
   --shadow-input-destructive: 0 0 8px 0 var(--color-destructive-shadow);
+  --shadow-card: 0 0 10px 4px var(--color-card-shadow);
 
   /* RADIUS */
-  --radius: 8px;
+  --radius: 0.5rem;
+  --radius-card: 1.5rem;
 
   /* ==================================== */
   /* OTHER VARIABLES */
@@ -181,18 +193,12 @@ body {
 
   --color-green-100: #e9ffea;
   --color-green-200: #00ad0c;
-  --color-green-100: #e9ffea;
-  --color-green-200: #00ad0c;
   --color-green-300: #008209;
   --color-green-400: #006907;
 
   --color-blue-100: #dee9ff;
   --color-blue-400: #0e53e9;
-  --color-blue-100: #dee9ff;
-  --color-blue-400: #0e53e9;
 
-  --color-orange-100: #fff2d4;
-  --color-orange-400: #ffae00;
   --color-orange-100: #fff2d4;
   --color-orange-400: #ffae00;
 

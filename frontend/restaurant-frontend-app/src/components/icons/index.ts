@@ -4,3 +4,6 @@ export { Logo } from "./Logo.tsx";
 export { LocationIcon } from "./LocationIcon";
 export { StarIcon } from "./StarIcon";
 export { EmptyStar } from "./EmptyStar";
+export { CalendarIcon } from "./CalendarIcon";
+export { ClockIcon } from "./ClockIcon";
+export { PeopleIcon } from "./PeopleIcon";

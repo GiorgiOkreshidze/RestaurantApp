@@ -14,7 +14,7 @@ export const PageTitle = () => {
           variant="h2"
           className="text-[clamp(1rem,5vw,1.5rem)] text-neutral-0 text-center"
         >
-          Hello, {user?.name} {user?.lastName} ({"{user.role}"})
+          Hello, {user?.name} {user?.lastName} {"Mr.Anderson"}
         </Text>
         <Logo variant="white" className="size-[68px]" />
       </Container>
