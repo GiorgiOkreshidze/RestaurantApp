@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useAppDispatch } from "@/app/hooks";
 import { register } from "@/app/thunks/userThunks";
 import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 export const useRegForm = () => {
   const dispatch = useAppDispatch();
@@ -84,6 +85,12 @@ export const useRegForm = () => {
     mode: "all",
     criteriaMode: "all",
   });
+
+  const passwordWatch = form.watch("password");
+
+  useEffect(() => {
+    form.trigger("confirmPassword");
+  }, [passwordWatch, form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
