@@ -406,6 +406,43 @@ namespace Function.Services
             return Mapper.MapItemsToReservations(response.Items);
         }
 
+        public async Task CancelReservation(string reservationId)
+        {
+            try
+            {
+                // Create delete request
+                var request = new UpdateItemRequest
+                {
+                    TableName = _reservationTableName,
+                    Key = new Dictionary<string, AttributeValue>
+              {
+                  { "id", new AttributeValue { S = reservationId } }
+              },
+                    UpdateExpression = "SET #status = :status",
+                    ExpressionAttributeNames = new Dictionary<string, string>
+      {
+          { "#status", "status" }
+      },
+                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+      {
+          { ":status", new AttributeValue { S = "Cancelled" } }
+      },
+                    ConditionExpression = "attribute_exists(id)"
+                };
+
+                // Execute delete operation
+                await _dynamoDBClient.UpdateItemAsync(request);
+            }
+            catch (ConditionalCheckFailedException)
+            {
+                throw new ArgumentException($"Reservation with ID {reservationId} not found");
+            }
+            catch (AmazonDynamoDBException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
         private async Task<List<Document>> ScanDynamoDBTableAsync(string? tableName)
         {
             var table = Table.LoadTable(_dynamoDBClient, tableName);
