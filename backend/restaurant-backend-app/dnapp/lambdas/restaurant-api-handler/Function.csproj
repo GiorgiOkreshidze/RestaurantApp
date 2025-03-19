@@ -14,6 +14,7 @@
         <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.2.0" />
         <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.7.407.6" />
         <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.405.38" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />
     </ItemGroup>
 
 </Project>

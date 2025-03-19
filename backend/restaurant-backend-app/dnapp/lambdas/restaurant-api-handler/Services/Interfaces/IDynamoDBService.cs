@@ -34,6 +34,6 @@ namespace Function.Services.Interfaces
 
         Task<LocationInfo?> GetLocationDetails(string locationId);
 
-        public Task<List<Reservation>> GetReservationsAsync();
+        public Task<List<Reservation>> GetCustomerReservationsAsync(string info);
     }
 }
