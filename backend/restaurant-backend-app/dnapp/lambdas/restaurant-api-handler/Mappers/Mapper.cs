@@ -6,6 +6,8 @@ using Amazon.DynamoDBv2.Model;
 using Function.Models.Responses;
 
 using Amazon.DynamoDBv2.Model;
+using System;
+using System.Globalization;
 
 namespace Function.Mappers;
 
@@ -56,6 +58,59 @@ public class Mapper
             PreOrder = item.TryGetValue("preOrder", out var preOrderValue) ? preOrderValue.S : string.Empty,
             UserInfo = item.TryGetValue("userInfo", out var userInfoValue) ? userInfoValue.S : string.Empty
         }).ToList();
+    }
+
+    public static List<Reservation> MapDocumentsToReservations(List<Document> documents)
+    {
+        return documents.Select(doc => new Reservation
+        {
+            Id = doc.TryGetValue("id", out var id) ? id : string.Empty,
+            Date = doc.TryGetValue("date", out var date) ? date : string.Empty,
+            GuestsNumber = doc.TryGetValue("guestsNumber", out var guestsNumber) ? guestsNumber : string.Empty,
+            LocationAddress = doc.TryGetValue("locationAddress", out var locationAddress) ? locationAddress : string.Empty,
+            TableNumber = doc.TryGetValue("tableNumber", out var tableNumber) ? tableNumber : string.Empty,
+            TimeFrom = doc.TryGetValue("timeFrom", out var timeFrom) ? timeFrom : string.Empty,
+            TimeTo = doc.TryGetValue("timeTo", out var timeTo) ? timeTo : string.Empty,
+            TimeSlot = doc.TryGetValue("timeSlot", out var timeSlot) ? timeSlot : string.Empty,
+            Status = doc.TryGetValue("status", out var status) ? status : string.Empty,
+            FeedbackId = doc.TryGetValue("feedbackId", out var feedbackId) ? feedbackId : string.Empty,
+            PreOrder = doc.TryGetValue("preOrder", out var preOrder) ? preOrder : string.Empty,
+            UserInfo = doc.TryGetValue("userInfo", out var userInfo) ? userInfo : string.Empty
+        }).ToList();
+    }
+
+    public static List<ReservationResponse> MapReservationsToReservationResponses(List<Reservation> reservations)
+    {
+        return reservations.Select(reservation => new ReservationResponse
+        {
+            Id = reservation.Id,
+            Date = reservation.Date,
+            GuestsNumber = reservation.GuestsNumber,
+            LocationAddress = reservation.LocationAddress,
+            TableNumber = reservation.TableNumber,
+            TimeSlot = reservation.TimeSlot,
+            Status = reservation.Status,
+            FeedbackId = reservation.FeedbackId,
+            PreOrder = reservation.PreOrder,
+            UserInfo = reservation.UserInfo,
+            EditableTill = CalculateEditableTill(reservation)
+        }).ToList();
+    }
+    private static string CalculateEditableTill(Reservation reservation)
+    {
+        var editableTillTime = "";
+
+        if (DateTime.TryParseExact(reservation.TimeFrom, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedTime))
+        {
+            // Subtract 30 minutes
+            DateTime newTime = parsedTime.AddMinutes(-30);
+            // Return the result in the same "HH:mm" format
+            editableTillTime = newTime.ToString("HH:mm");
+        }
+        
+        var editableTill = $"{reservation.Date} {editableTillTime}";
+
+        return editableTill;
     }
 
     public static LocationFeedbackResponse MapToLocationFeedbackResponse(Dictionary<string, AttributeValue> item)
