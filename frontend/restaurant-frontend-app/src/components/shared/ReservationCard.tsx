@@ -6,11 +6,16 @@ import { CalendarIcon, ClockIcon, LocationIcon, PeopleIcon } from "../icons";
 import { Reservation } from "@/types";
 
 export const ReservationCard = ({
-  location,
+  id,
+  feedbackId,
+  locationAddress,
   status,
   date,
-  time,
-  guests,
+  timeSlot,
+  guestsNumber,
+  preOrder,
+  tableNumber,
+  userInfo,
   children,
   ...props
 }: ComponentProps<"div"> & Reservation) => {

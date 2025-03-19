@@ -100,9 +100,14 @@ export type ReservationStatus =
   | "Finished";
 
 export interface Reservation {
-  location: string;
-  status: ReservationStatus;
   date: string;
-  time: string;
-  guests: string;
+  feedbackId: string;
+  guestsNumber: string;
+  id: string;
+  locationAddress: string;
+  preOrder: string;
+  status: string;
+  tableNumber: string;
+  timeSlot: string;
+  userInfo: string;
 }

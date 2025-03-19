@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAppDispatch } from "@/app/hooks";
-import { getUserData, register } from "@/app/thunks/userThunks";
+import { register } from "@/app/thunks/userThunks";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 
@@ -96,7 +96,7 @@ export const useRegForm = () => {
     try {
       const result = await dispatch(register(values)).unwrap();
       console.log("Registration successful:", result);
-      await dispatch(getUserData()).unwrap();
+      // await dispatch(getUserData()).unwrap();
       navigate("/");
     } catch (error) {
       console.error("Registration failed:", error);

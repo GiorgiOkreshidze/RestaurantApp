@@ -1,6 +1,5 @@
 import { ComponentProps } from "react";
 
-export const Logo = ({ ...props }: ComponentProps<"svg">) => {
 export function Logo({
   variant = "color",
   ...props
@@ -38,4 +37,4 @@ export function Logo({
       />
     </svg>
   );
-};
+}

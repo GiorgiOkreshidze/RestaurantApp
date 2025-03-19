@@ -3,15 +3,23 @@ import { Dishes, Hero, Locations } from "@/components/shared";
 import { useAppDispatch } from "@/app/hooks";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { selectPopularDishes } from "@/app/slices/dishesSlice";
+import {
+  selectDishesLoading,
+  selectPopularDishes,
+} from "@/app/slices/dishesSlice";
 import { getPopularDishes } from "@/app/thunks/dishesThunks";
-import { selectLocations } from "@/app/slices/locationsSlice";
+import {
+  selectLocations,
+  selectLocationsLoading,
+} from "@/app/slices/locationsSlice";
 import { getLocations } from "@/app/thunks/locationsThunks";
 
 export const Home = () => {
   const dispatch = useAppDispatch();
   const popularDishes = useSelector(selectPopularDishes);
+  const isDishesLoading = useSelector(selectDishesLoading);
   const locations = useSelector(selectLocations);
+  const isLocationsLoading = useSelector(selectLocationsLoading);
 
   useEffect(() => {
     if (!popularDishes.length) {
@@ -28,8 +36,12 @@ export const Home = () => {
   return (
     <>
       <Hero />
-      <Dishes title="Most Popular Dishes" dishes={popularDishes} />
-      <Locations locations={locations} />
+      <Dishes
+        isLoading={isDishesLoading}
+        title="Most Popular Dishes"
+        dishes={popularDishes}
+      />
+      <Locations isLoading={isLocationsLoading} locations={locations} />
     </>
   );
 };
