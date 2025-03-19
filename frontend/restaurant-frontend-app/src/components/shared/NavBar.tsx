@@ -1,9 +1,13 @@
-import { Container } from ".";
+import { Container, UserMenu } from ".";
 import { Link, NavLink } from "react-router";
-import { Logo } from "@/components/icons/";
+import { CartIcon, Logo } from "@/components/icons/";
 import { Button, Text } from "../ui";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/app/slices/userSlice";
 
 export const NavBar = () => {
+  const user = useSelector(selectUser);
+
   return (
     <Container className="!py-3">
       <div className="grid grid-cols-[1fr_auto_1fr] items-center">
@@ -36,10 +40,21 @@ export const NavBar = () => {
             </Text>
           </NavLink>
         </div>
-        <div className="ml-auto">
-          <Button asChild variant="secondary" size="l">
-            <Link to="/signin">Sign&nbsp;In</Link>
-          </Button>
+        <div className="flex ml-auto">
+          {user ? (
+            <div className="flex items-stretch">
+              <Button asChild variant="tertiary" size="sm">
+                <Link to="#cart">
+                  <CartIcon className="size-[24px]" />
+                </Link>
+              </Button>
+              <UserMenu />
+            </div>
+          ) : (
+            <Button asChild variant="secondary" size="l">
+              <Link to="/signin">Sign&nbsp;In</Link>
+            </Button>
+          )}
         </div>
       </div>
     </Container>

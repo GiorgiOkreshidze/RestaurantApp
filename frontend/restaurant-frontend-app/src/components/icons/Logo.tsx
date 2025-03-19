@@ -1,6 +1,6 @@
 import { ComponentProps } from "react";
 
-export function Logo({ ...props }: ComponentProps<"svg">) {
+export const Logo = ({ ...props }: ComponentProps<"svg">) => {
   return (
     <svg viewBox="0 0 417 417" {...props}>
       <path
@@ -17,4 +17,4 @@ export function Logo({ ...props }: ComponentProps<"svg">) {
       />
     </svg>
   );
-}
+};

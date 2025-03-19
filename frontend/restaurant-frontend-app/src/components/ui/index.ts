@@ -1,4 +1,4 @@
-export { Button } from "./button";
+export { Button } from "./Button";
 export { Label } from "./label";
 export { Input } from "./input";
 export { Text } from "./Text";
@@ -18,3 +18,10 @@ export {
 } from "./Form";
 export { CustomLink } from "./CustomLink";
 export { PasswordField } from "./PasswordField";
+export {
+  DropdownMenu,
+  DropdownMenuSeparator,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./DropdownMenu";

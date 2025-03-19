@@ -10,3 +10,4 @@ export { PasswordField } from "../ui/PasswordField";
 export { Container } from "./container";
 export { LocationHero } from "./LocationHero";
 export { Reviews } from "./Reviews";
+export { UserMenu } from "./UserMenu.tsx";
