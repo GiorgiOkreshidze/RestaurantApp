@@ -3,7 +3,6 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Link, LinkProps } from "react-router";
 
 export function DropdownMenu({
   ...props
@@ -73,7 +72,7 @@ export function DropdownMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "flex items-center gap-[0px] cursor-pointer hover:bg-neutral-100 focus:bg-neutral-100 active:bg-neutral-200 py-[1rem] px-[1.5rem] first-of-type:pt-[1.5rem] last-of-type:pb-[1.5rem] focus-within:outline-none",
+        "flex items-center gap-[0px] cursor-pointer hover:bg-neutral-100 focus:bg-neutral-100 active:bg-neutral-200 py-[1rem] px-[1.5rem] focus-within:outline-none last:pb-[1.5rem]",
         className,
       )}
       {...props}
@@ -176,7 +175,7 @@ export function DropdownMenuLabel({
       data-slot="dropdown-menu-label"
       data-inset={inset}
       className={cn(
-        "px-2 py-1.5 text-sm font-medium data-[inset]:pl-8",
+        "flex items-center gap-[0px] py-[1rem] px-[1.5rem] first-of-type:pt-[1.5rem] last-of-type:pb-[1.5rem]",
         className,
       )}
       {...props}

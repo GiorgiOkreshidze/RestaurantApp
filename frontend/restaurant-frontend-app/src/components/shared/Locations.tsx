@@ -4,6 +4,7 @@ import { Location } from "@/types";
 
 interface Props {
   locations: Location[];
+  isLoading: boolean;
 }
 
 export const Locations: React.FC<Props> = ({ locations }) => {
@@ -13,7 +14,7 @@ export const Locations: React.FC<Props> = ({ locations }) => {
         <Text variant="h2" className="mb-10">
           Locations
         </Text>
-        <div className="flex gap-8">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
           {locations.map((item) => (
             <LocationsCard key={item.id} location={item} />
           ))}

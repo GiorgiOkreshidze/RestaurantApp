@@ -38,8 +38,8 @@ export const useLoginForm = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const result = await dispatch(login(values)).unwrap();
-      const userData = await dispatch(getUserData()).unwrap();
       console.log("Login successful:", result);
+      const userData = await dispatch(getUserData()).unwrap();
       console.log("Userdata successful:", userData);
       navigate("/");
     } catch (error) {

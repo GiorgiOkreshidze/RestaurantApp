@@ -4,6 +4,7 @@ import { Dish } from "@/types";
 
 interface Props {
   title: string;
+  isLoading?: boolean;
   dishes: Dish[];
 }
 
@@ -14,7 +15,8 @@ export const Dishes: React.FC<Props> = ({ title, dishes }) => {
         <Text variant="h2" className="mb-10">
           {title}
         </Text>
-        <div className="flex gap-8">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
+          {/* <div className="flex flex-wrap gap-8"> */}
           {dishes.slice(0, 4).map((item, index) => (
             <DishCard
               key={index}

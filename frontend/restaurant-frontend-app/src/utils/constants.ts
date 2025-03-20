@@ -9,4 +9,5 @@ export const serverRoute = {
   specialityDishes: "speciality-dishes",
   signOut: "signout",
   userData: "users/profile",
+  reservations: "reservations",
 };

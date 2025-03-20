@@ -4,6 +4,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
 import { useEffect } from "react";
+import { Reservations } from "./pages/Reservations";
+import { Booking } from "./pages/Booking";
 
 function App() {
   const location = useLocation();
@@ -26,6 +28,8 @@ function App() {
         <Route path="/signin" element={<Auth />} />
         <Route path="/signup" element={<Auth />} />
         <Route path="/locations/:id" element={<Location />} />
+        <Route path="/reservations" element={<Reservations />} />
+        <Route path="/booking" element={<Booking />} />
       </Routes>
     </>
   );

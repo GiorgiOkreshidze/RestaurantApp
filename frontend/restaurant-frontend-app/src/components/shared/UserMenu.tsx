@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/";
 import { LogOutIcon, UserCircledIcon, UserIcon } from "../icons";
 import { Text } from "../ui";
-import { DropdownMenuItem } from "../ui/DropdownMenu";
+import { DropdownMenuItem, DropdownMenuLabel } from "../ui/DropdownMenu";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
 import { Link } from "react-router";
@@ -29,12 +29,13 @@ export const UserMenu = () => {
         align="end"
         className="bg-neutral-0 p-0 shadow-card rounded border-none min-w-[216px]"
       >
-        <DropdownMenuItem className="flex-col items-start gap-[0px]">
-          <Text variant="bodyBold">{`${user?.name ?? ""} ${
-            user?.lastName ?? ""
-          } (${user?.role ?? ""})`}</Text>
-          <Text variant="caption">{user?.email ?? ""}</Text>
-        </DropdownMenuItem>
+        <DropdownMenuLabel className="flex-col items-start gap-[0px]">
+          <Text variant="bodyBold">
+            {user?.firstName || ""} {user?.lastName || ""}{" "}
+            {user?.role ? `(${user.role})` : ""}
+          </Text>
+          <Text variant="caption">{user?.email}</Text>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator className="mx-[1.5rem]" />
         <DropdownMenuItem asChild>
           <Link to="#profile">
@@ -45,7 +46,7 @@ export const UserMenu = () => {
         <DropdownMenuItem
           onClick={() =>
             dispatch(
-              signout({ refreshToken: user?.tokens.refreshToken ?? "" })
+              signout({ refreshToken: user?.tokens.refreshToken ?? "" }),
             ).unwrap()
           }
         >

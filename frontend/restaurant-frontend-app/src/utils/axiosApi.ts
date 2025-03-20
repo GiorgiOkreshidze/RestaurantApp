@@ -9,7 +9,7 @@ import { apiURL } from "./constants";
 import { logout, setUser } from "@/app/slices/userSlice";
 
 const axiosApi: AxiosInstance = axios.create({
-  baseURL: apiURL,
+  baseURL: "https://k3pn4shr72.execute-api.eu-west-2.amazonaws.com/api",
 });
 
 let isRefreshing = false;
@@ -69,10 +69,10 @@ const addInterceptors = (store: Store<RootState>) => {
         if (isRefreshing) {
           return new Promise((resolve) => {
             refreshSubscribers.push((tokens) => {
-              originalRequest.headers[
-                "Authorization"
-              ] = `Bearer ${tokens.idToken}`;
-              originalRequest.headers["X-Amz-Security-Token"] = tokens.accessToken;
+              originalRequest.headers["Authorization"] =
+                `Bearer ${tokens.idToken}`;
+              originalRequest.headers["X-Amz-Security-Token"] =
+                tokens.accessToken;
               resolve(axiosApi(originalRequest));
             });
           });
@@ -87,10 +87,10 @@ const addInterceptors = (store: Store<RootState>) => {
           refreshSubscribers = [];
           isRefreshing = false;
 
-          originalRequest.headers[
-            "Authorization"
-          ] = `Bearer ${newTokens.idToken}`;
-          originalRequest.headers["X-Amz-Security-Token"] = newTokens.accessToken;
+          originalRequest.headers["Authorization"] =
+            `Bearer ${newTokens.idToken}`;
+          originalRequest.headers["X-Amz-Security-Token"] =
+            newTokens.accessToken;
 
           return axiosApi(originalRequest);
         } catch (err) {
@@ -100,7 +100,7 @@ const addInterceptors = (store: Store<RootState>) => {
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 };
 

@@ -37,7 +37,7 @@ export const login = createAsyncThunk<
   try {
     const response = await axiosApi.post<LoginResponse>(
       serverRoute.signIn,
-      loginMutation
+      loginMutation,
     );
     return response.data;
   } catch (e) {

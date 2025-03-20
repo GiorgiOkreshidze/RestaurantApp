@@ -27,6 +27,7 @@ export function LoginForm({ className, ...props }: ComponentProps<"form">) {
   return (
     <Form {...form}>
       <form
+        // autoComplete="on"
         className={cn(className, "flex flex-col")}
         onSubmit={form.handleSubmit(onSubmit)}
         aria-labelledby="login-form-title"

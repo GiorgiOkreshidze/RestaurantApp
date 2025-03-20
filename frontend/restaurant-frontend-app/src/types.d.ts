@@ -12,7 +12,7 @@ export interface User {
     refreshToken: string;
   };
 
-  name: string;
+  firstName: string;
   lastName: string;
   email: string;
   role: string;
@@ -44,8 +44,7 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
-export interface UserDataResponse
-  extends Pick<UserFields, "name" | "lastName" | "email"> {}
+export interface UserDataResponse extends Omit<User, "tokens"> {}
 
 export interface RegistrationFields extends UserFields {
   confirmPassword: string;
@@ -91,4 +90,23 @@ export interface Review {
   rating: number;
   review: string;
   image: string;
+}
+
+export type ReservationStatus =
+  | "Reserved"
+  | "In Progress"
+  | "Canceled"
+  | "Finished";
+
+export interface Reservation {
+  date: string;
+  feedbackId: string;
+  guestsNumber: string;
+  id: string;
+  locationAddress: string;
+  preOrder: string;
+  status: ReservationStatus;
+  tableNumber: string;
+  timeSlot: string;
+  userInfo: string;
 }

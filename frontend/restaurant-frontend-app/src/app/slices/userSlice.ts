@@ -37,18 +37,18 @@ export const userSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, { payload: data }) => {
         state.registerLoading = false;
-        state.user = {
-          tokens: {
-            accessToken: data.accessToken,
-            idToken: data.idToken,
-            refreshToken: data.refreshToken,
-          },
-          name: state.user?.name || "",
-          lastName: state.user?.lastName || "",
-          email: state.user?.email || "",
-          role: state.user?.role || "",
-          imageUrl: state.user?.imageUrl || "",
-        };
+        // state.user = {
+        //   tokens: {
+        //     accessToken: data.accessToken,
+        //     idToken: data.idToken,
+        //     refreshToken: data.refreshToken,
+        //   },
+        //   name: state.user?.name || "",
+        //   lastName: state.user?.lastName || "",
+        //   email: state.user?.email || "",
+        //   role: state.user?.role || "",
+        //   imageUrl: state.user?.imageUrl || "",
+        // };
         toast.success(data.message);
       })
       .addCase(register.rejected, (state, { payload: errorResponse }) => {
@@ -67,7 +67,7 @@ export const userSlice = createSlice({
         } else {
           state.user = {
             tokens: data,
-            name: "",
+            firstName: "",
             lastName: "",
             email: "",
             role: "",
@@ -86,9 +86,10 @@ export const userSlice = createSlice({
       .addCase(getUserData.fulfilled, (state, { payload: data }) => {
         state.userDataLoading = false;
         if (state.user) {
-          state.user.name = data.name;
+          state.user.firstName = data.firstName;
           state.user.lastName = data.lastName;
           state.user.email = data.email;
+          state.user.role = data.role;
         }
       })
       .addCase(getUserData.rejected, (state) => {

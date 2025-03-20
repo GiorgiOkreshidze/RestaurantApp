@@ -13,7 +13,7 @@ import {
   Button,
   CustomLink,
 } from "@/components/ui/";
-import { ComponentProps } from "react";
+import { ComponentProps, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useRegForm } from "@/hooks/useRegForm";
 import { PasswordField } from "../ui/PasswordField";
@@ -24,6 +24,7 @@ import { selectRegisterLoading } from "@/app/slices/userSlice";
 export function RegForm({ className, ...props }: ComponentProps<"form">) {
   const { form, onSubmit } = useRegForm();
   const isLoading = useSelector(selectRegisterLoading);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Form {...form}>
@@ -117,6 +118,8 @@ export function RegForm({ className, ...props }: ComponentProps<"form">) {
                   <PasswordField
                     isInvalid={Boolean(fieldState.error)}
                     placeholder="Enter your Password"
+                    showPassword={showPassword}
+                    setShowPassword={setShowPassword}
                     {...field}
                   />
                 </FormControl>
@@ -138,6 +141,8 @@ export function RegForm({ className, ...props }: ComponentProps<"form">) {
                   <PasswordField
                     isInvalid={Boolean(fieldState.error?.message)}
                     placeholder="Confirm New Password"
+                    showPassword={showPassword}
+                    setShowPassword={setShowPassword}
                     {...field}
                   />
                 </FormControl>

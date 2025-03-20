@@ -16,7 +16,7 @@ export const DishCard: React.FC<Props> = ({
   imageUrl,
 }) => {
   return (
-    <div className="w-[316px] h-[304px] p-6 rounded-3xl shadow-[0_0_10px_4px_rgba(194,194,194,0.5)] flex flex-col items-center transition-all duration-300 hover:scale-105 cursor-pointer">
+    <div className="p-6 rounded-3xl shadow-[0_0_10px_4px_rgba(194,194,194,0.5)] flex flex-col items-center transition-all duration-300 hover:scale-105 cursor-pointer">
       <img src={dishImage} alt={imageUrl} className="w-[196px] h-[196px]" />
       <Text variant="bodyBold" className="w-full mt-4">
         {name}

@@ -14,6 +14,8 @@ export const textVariants = cva("text-foreground", {
       caption: "fontset-caption",
       link: "fontset-link",
       buttonPrimary: "fontset-buttonPrimary",
+      buttonSecondary: "fontset-buttonSecondary",
+      navigation: "fontset-navigation",
     },
   },
   defaultVariants: {

@@ -8,3 +8,6 @@ export { StarIcon } from "./StarIcon";
 export { EmptyStar } from "./EmptyStar";
 export { UserIcon } from "./UserIcon";
 export { LogOutIcon } from "./LogOutIcon.tsx";
+export { CalendarIcon } from "./CalendarIcon";
+export { ClockIcon } from "./ClockIcon";
+export { PeopleIcon } from "./PeopleIcon";
