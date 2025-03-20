@@ -34,7 +34,7 @@ export const NavBar = () => {
               <UserMenu />
             </>
           ) : (
-            <Button variant="secondary" size="l" asChild>
+            <Button variant="secondary" size="l">
               <Link to="/signin">Sign&nbsp;In</Link>
             </Button>
           )}

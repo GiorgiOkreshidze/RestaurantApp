@@ -7,10 +7,7 @@ interface Props {
   isLoading: boolean;
 }
 
-export const Locations: React.FC<Props> = ({
-  isLoading = false,
-  locations,
-}) => {
+export const Locations: React.FC<Props> = ({ locations }) => {
   return (
     <div>
       <Container className="pb-[64px] !pt-0">

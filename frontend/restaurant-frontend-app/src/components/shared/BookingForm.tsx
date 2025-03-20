@@ -1,6 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { ClockIcon, LocationIcon, PeopleIcon } from "../icons";
-import { Button, Form, Text } from "../ui";
+import { Button, Text } from "../ui";
 import {
   DialogContent,
   DialogTitle,
@@ -26,7 +26,7 @@ export const BookingForm = ({
 }: ComponentProps<"form">) => {
   return (
     // <Form>
-    <div
+    <form
       className={cn(
         "flex items-center gap-[1rem] flex-wrap *:grow-1",
         className,
@@ -94,7 +94,7 @@ export const BookingForm = ({
         </Button>
       </div>
       <Button className="grow-1">Find&nbsp;a&nbsp;Table</Button>
-    </div>
+    </form>
     // </Form>
   );
 };

@@ -4,15 +4,11 @@ import { Dish } from "@/types";
 
 interface Props {
   title: string;
-  isLoading: boolean;
+  isLoading?: boolean;
   dishes: Dish[];
 }
 
-export const Dishes: React.FC<Props> = ({
-  isLoading = false,
-  title,
-  dishes,
-}) => {
+export const Dishes: React.FC<Props> = ({ title, dishes }) => {
   return (
     <div>
       <Container className="!py-[64px]">

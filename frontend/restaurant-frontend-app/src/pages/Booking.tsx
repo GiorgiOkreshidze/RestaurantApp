@@ -1,9 +1,4 @@
-import {
-  BookingCard,
-  BookingForm,
-  Container,
-  HeroWrapper,
-} from "@/components/shared";
+import { BookingForm, Container, HeroWrapper } from "@/components/shared";
 import { Text } from "@/components/ui";
 
 export const Booking = () => {
