@@ -41,6 +41,20 @@
           "locationId": { "S": "loc_003" }
         }
       }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "fb_004" },
+          "rate": { "S": "2" },
+          "comment": { "S": "Do not like it." },
+          "userName": { "S": "Lotty Johnson" },
+          "userAvatarUrl": { "S": "https://example.com/avatar4.jpg" },
+          "date": { "S": "2025-03-15T10:15:00Z" },
+          "type": { "S": "bad" },
+          "locationId": { "S": "loc_003" }
+        }
+      }
     }
   ]
 }

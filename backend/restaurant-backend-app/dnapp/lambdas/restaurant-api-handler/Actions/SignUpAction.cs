@@ -87,9 +87,9 @@ public class SignUpAction
                 });
             }
 
-            var authResponse = await SignUpUserWithRole(firstName, lastName, email, password);
+            var result = await SignUpUserWithRole(firstName, lastName, email, password);
 
-            return ActionUtils.FormatResponse(200, authResponse);
+            return ActionUtils.FormatResponse(200, result);
         }
         catch (Exception ex)
         {
@@ -98,17 +98,19 @@ public class SignUpAction
         }
     }
 
-    private async Task<AuthResult> SignUpUserWithRole(string firstName, string lastName, string email, string password)
+    private async Task<string> SignUpUserWithRole(string firstName, string lastName, string email, string password)
     {
         var isWaiter = await _dynamoDBService.CheckIfEmailExistsInWaitersTable(email);
 
         if (isWaiter)
         {
-            return await _authenticationService.SignUp(firstName, lastName, email, password, Roles.Waiter);
+            await _authenticationService.SignUp(firstName, lastName, email, password, Roles.Waiter);
         }
         else
         {
-            return await _authenticationService.SignUp(firstName, lastName, email, password);
+            await _authenticationService.SignUp(firstName, lastName, email, password);
         }
+
+        return "User Registered";
     }
 }

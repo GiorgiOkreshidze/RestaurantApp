@@ -1,0 +1,1 @@
+To open swagger locally you can paste content of openapi.json here: https://editor.swagger.io/
