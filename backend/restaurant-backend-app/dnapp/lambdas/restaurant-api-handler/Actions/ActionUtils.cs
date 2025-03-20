@@ -73,7 +73,7 @@ public class ActionUtils
 
     public static string GetAccessToken(APIGatewayProxyRequest request)
     {
-        if (!request.Headers.TryGetValue("X-Access-Token", out var accessTokenHeader) ||
+        if (!request.Headers.TryGetValue("x-amz-security-token", out var accessTokenHeader) ||
             string.IsNullOrEmpty(accessTokenHeader))
         {
             throw new UnauthorizedException("Access token is missing");
