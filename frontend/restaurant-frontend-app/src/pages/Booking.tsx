@@ -18,9 +18,7 @@ export const Booking = () => {
         </Text>
         <BookingForm className="mt-[40px]" />
       </HeroWrapper>
-      <Container>
-        <BookingCard></BookingCard>
-      </Container>
+      <Container>{/* <BookingCard></BookingCard> */}</Container>
     </>
   );
 };
