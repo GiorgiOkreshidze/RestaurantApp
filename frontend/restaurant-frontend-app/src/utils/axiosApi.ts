@@ -48,7 +48,7 @@ const addInterceptors = (store: Store<RootState>) => {
       config.headers["Authorization"] = `Bearer ${user.tokens.idToken}`;
       console.log(config.url);
       if (config.url === "users/profile") {
-        config.headers["X-Access-Token"] = user.tokens.accessToken;
+        config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
       }
     }
     return config;
@@ -69,10 +69,10 @@ const addInterceptors = (store: Store<RootState>) => {
         if (isRefreshing) {
           return new Promise((resolve) => {
             refreshSubscribers.push((tokens) => {
-              originalRequest.headers[
-                "Authorization"
-              ] = `Bearer ${tokens.idToken}`;
-              originalRequest.headers["X-Access-Token"] = tokens.accessToken;
+              originalRequest.headers["Authorization"] =
+                `Bearer ${tokens.idToken}`;
+              originalRequest.headers["X-Amz-Security-Token"] =
+                tokens.accessToken;
               resolve(axiosApi(originalRequest));
             });
           });
@@ -87,10 +87,10 @@ const addInterceptors = (store: Store<RootState>) => {
           refreshSubscribers = [];
           isRefreshing = false;
 
-          originalRequest.headers[
-            "Authorization"
-          ] = `Bearer ${newTokens.idToken}`;
-          originalRequest.headers["X-Access-Token"] = newTokens.accessToken;
+          originalRequest.headers["Authorization"] =
+            `Bearer ${newTokens.idToken}`;
+          originalRequest.headers["X-Amz-Security-Token"] =
+            newTokens.accessToken;
 
           return axiosApi(originalRequest);
         } catch (err) {
@@ -100,7 +100,7 @@ const addInterceptors = (store: Store<RootState>) => {
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 };
 

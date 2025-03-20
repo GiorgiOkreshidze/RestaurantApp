@@ -12,7 +12,7 @@ export interface User {
     refreshToken: string;
   };
 
-  name: string;
+  firstName: string;
   lastName: string;
   email: string;
   role: string;
@@ -44,8 +44,7 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
-export interface UserDataResponse
-  extends Pick<UserFields, "name" | "lastName" | "email"> {}
+export interface UserDataResponse extends Omit<User, "tokens"> {}
 
 export interface RegistrationFields extends UserFields {
   confirmPassword: string;

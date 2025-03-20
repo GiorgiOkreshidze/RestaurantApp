@@ -1,4 +1,4 @@
-import { ComponentProps, useState } from "react";
+import { ComponentProps, Dispatch, SetStateAction, useState } from "react";
 import { Button, Input } from ".";
 import { EyeIcon, OpenEyeIcon } from "../icons";
 
@@ -6,8 +6,12 @@ export const PasswordField = ({
   ...props
 }: ComponentProps<"input"> & {
   isInvalid: boolean;
+  showPassword?: boolean;
+  setShowPassword?: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordLocal, setShowPasswordLocal] = useState(false);
+  const showPassword = props.showPassword ?? showPasswordLocal;
+  const setShowPassword = props.setShowPassword ?? setShowPasswordLocal;
   const type = showPassword ? "text" : "password";
 
   return (

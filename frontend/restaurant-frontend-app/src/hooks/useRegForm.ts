@@ -96,7 +96,6 @@ export const useRegForm = () => {
     try {
       const result = await dispatch(register(values)).unwrap();
       console.log("Registration successful:", result);
-      // await dispatch(getUserData()).unwrap();
       navigate("/");
     } catch (error) {
       console.error("Registration failed:", error);
