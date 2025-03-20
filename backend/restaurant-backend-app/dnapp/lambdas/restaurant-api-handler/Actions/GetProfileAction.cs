@@ -22,7 +22,7 @@ namespace Function.Actions
         {
             try
             {
-                if (!request.Headers.TryGetValue("X-Access-Token", out var accessTokenHeader) ||
+                if (!request.Headers.TryGetValue("x-amz-security-token", out var accessTokenHeader) ||
             string.IsNullOrEmpty(accessTokenHeader))
                 {
                     return ActionUtils.FormatResponse(401, new { message = "Unauthorized: No access token found." });
