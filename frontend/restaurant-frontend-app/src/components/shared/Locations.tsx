@@ -1,4 +1,4 @@
-import { LocationsCard, Spinner, Text } from "../ui";
+import { LocationsCard, Text } from "../ui";
 import { Container } from "./container";
 import { Location } from "@/types";
 
@@ -17,17 +17,11 @@ export const Locations: React.FC<Props> = ({
         <Text variant="h2" className="mb-10">
           Locations
         </Text>
-        {isLoading ? (
-          <div className="flex justify-center">
-            <Spinner className="size-[50px]" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
-            {locations.map((item) => (
-              <LocationsCard key={item.id} location={item} />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
+          {locations.map((item) => (
+            <LocationsCard key={item.id} location={item} />
+          ))}
+        </div>
       </Container>
     </div>
   );
