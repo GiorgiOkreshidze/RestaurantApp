@@ -2,21 +2,22 @@ import { Container, PageTitle, ReservationCard } from "@/components/shared";
 import calendarCrossed from "@/assets/images/calendar-crossed.png";
 import { Button, Text } from "@/components/ui";
 import { Link } from "react-router";
-import { useEffect } from "react";
-import { getReservations } from "@/app/thunks/reservationsThunks";
-import { useSelector } from "react-redux";
-import { useAppDispatch } from "@/app/hooks";
-import { selectReservations } from "@/app/slices/reservationsSlice";
+// import { useEffect } from "react";
+// import { getReservations } from "@/app/thunks/reservationsThunks";
+// import { useSelector } from "react-redux";
+// import { useAppDispatch } from "@/app/hooks";
+// import { selectReservations } from "@/app/slices/reservationsSlice";
+import { Reservation } from "@/types";
 
 export const Reservations = () => {
-  const dispatch = useAppDispatch();
-  const reservations = useSelector(selectReservations);
+  // const dispatch = useAppDispatch();
+  // const reservations = useSelector(selectReservations);
 
-  useEffect(() => {
-    if (!reservations.length) {
-      dispatch(getReservations());
-    }
-  }, [dispatch, reservations.length]);
+  // useEffect(() => {
+  //   if (!reservations.length) {
+  //     dispatch(getReservations());
+  //   }
+  // }, [dispatch, reservations.length]);
 
   return (
     <>
@@ -58,65 +59,65 @@ export const Reservations = () => {
   );
 };
 
-// const reservations: Reservation[] = [
-//   {
-//     id: "1",
-//     feedbackId: "1",
-//     locationAddress: "48 Rustaveli Avenue",
-//     status: "Reserved",
-//     date: "Oct 14, 2024",
-//     timeSlot: "12:15 p.m. - 1:45 p.m.",
-//     guestsNumber: "10",
-//     preOrder: "1",
-//     tableNumber: "1",
-//     userInfo: "1",
-//   },
-//   {
-//     id: "2",
-//     feedbackId: "2",
-//     locationAddress: "14 Baratashvili Street",
-//     status: "Reserved",
-//     date: "Oct 16, 2024",
-//     timeSlot: "10:30 a.m. - 12:00 p.m.",
-//     guestsNumber: "10",
-//     preOrder: "2",
-//     tableNumber: "1",
-//     userInfo: "1",
-//   },
-//   {
-//     id: "3",
-//     feedbackId: "3",
-//     locationAddress: "14 Baratashvili Street",
-//     status: "In Progress",
-//     date: "Sep 14, 2024",
-//     timeSlot: "10:30 a.m. - 11:30 a.m.",
-//     guestsNumber: "5",
-//     preOrder: "3",
-//     tableNumber: "1",
-//     userInfo: "1",
-//   },
-//   {
-//     id: "4",
-//     feedbackId: "4",
-//     locationAddress: "14 Baratashvili Street",
-//     status: "Finished",
-//     date: "Jun 6, 2024",
-//     timeSlot: "10:30 a.m. - 11:30 a.m.",
-//     guestsNumber: "4",
-//     preOrder: "4",
-//     tableNumber: "1",
-//     userInfo: "1",
-//   },
-//   {
-//     id: "5",
-//     feedbackId: "5",
-//     locationAddress: "14 Baratashvili Street",
-//     status: "Canceled",
-//     date: "Mar 28, 2024",
-//     timeSlot: "10:30 a.m. - 11:30 a.m.",
-//     guestsNumber: "2",
-//     preOrder: "5",
-//     tableNumber: "1",
-//     userInfo: "1",
-//   },
-// ];
+const reservations: Reservation[] = [
+  {
+    id: "1",
+    feedbackId: "1",
+    locationAddress: "48 Rustaveli Avenue",
+    status: "Reserved",
+    date: "Oct 14, 2024",
+    timeSlot: "12:15 p.m. - 1:45 p.m.",
+    guestsNumber: "10",
+    preOrder: "1",
+    tableNumber: "1",
+    userInfo: "1",
+  },
+  {
+    id: "2",
+    feedbackId: "2",
+    locationAddress: "14 Baratashvili Street",
+    status: "Reserved",
+    date: "Oct 16, 2024",
+    timeSlot: "10:30 a.m. - 12:00 p.m.",
+    guestsNumber: "10",
+    preOrder: "2",
+    tableNumber: "1",
+    userInfo: "1",
+  },
+  {
+    id: "3",
+    feedbackId: "3",
+    locationAddress: "14 Baratashvili Street",
+    status: "In Progress",
+    date: "Sep 14, 2024",
+    timeSlot: "10:30 a.m. - 11:30 a.m.",
+    guestsNumber: "5",
+    preOrder: "3",
+    tableNumber: "1",
+    userInfo: "1",
+  },
+  {
+    id: "4",
+    feedbackId: "4",
+    locationAddress: "14 Baratashvili Street",
+    status: "Finished",
+    date: "Jun 6, 2024",
+    timeSlot: "10:30 a.m. - 11:30 a.m.",
+    guestsNumber: "4",
+    preOrder: "4",
+    tableNumber: "1",
+    userInfo: "1",
+  },
+  {
+    id: "5",
+    feedbackId: "5",
+    locationAddress: "14 Baratashvili Street",
+    status: "Canceled",
+    date: "Mar 28, 2024",
+    timeSlot: "10:30 a.m. - 11:30 a.m.",
+    guestsNumber: "2",
+    preOrder: "5",
+    tableNumber: "1",
+    userInfo: "1",
+  },
+];

@@ -1,7 +1,6 @@
 export { RegistrationInput } from "./RegistrationInput";
 export { Title } from "./Title";
 export { NavBar } from "./NavBar";
-export { Hero } from "./Hero";
 export { Dishes } from "./Dishes";
 export { Locations } from "./Locations";
 export { RegForm } from "./RegForm";
@@ -14,4 +13,6 @@ export { UserMenu } from "./UserMenu";
 export { PageTitle } from "./PageTitle";
 export { Card } from "./Card";
 export { ReservationCard } from "./ReservationCard";
-export { HeroCommon } from "./HeroCommon";
+export { HeroWrapper } from "./HeroWrapper";
+export { BookingForm } from "./BookingForm";
+export { CalendarField } from "./CalendarField";

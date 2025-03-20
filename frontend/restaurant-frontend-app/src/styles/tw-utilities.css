@@ -55,6 +55,12 @@
   font-weight: 700;
 }
 
+@utility fontset-buttonSecondary {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 500;
+}
+
 @utility fontset-navigation {
   font-size: 1.25rem; /* 20px */
   line-height: 2rem; /* 32px */

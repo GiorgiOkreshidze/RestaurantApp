@@ -20,7 +20,9 @@ export const Dishes: React.FC<Props> = ({
           {title}
         </Text>
         {isLoading ? (
-          <Spinner className="size-[50px]" />
+          <div className="flex justify-center">
+            <Spinner className="size-[50px]" />
+          </div>
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
             {/* <div className="flex flex-wrap gap-8"> */}

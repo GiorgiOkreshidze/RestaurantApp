@@ -25,7 +25,7 @@ export const ReservationCard = ({
         <div className="flex flex-col gap-[0.5rem]">
           <div className="flex items-center gap-[0.5rem]">
             <LocationIcon className="size-[16px]" />
-            <Text variant="bodyBold">{location}</Text>
+            <Text variant="bodyBold">{locationAddress}</Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <CalendarIcon className="size-[16px]" />
@@ -33,11 +33,11 @@ export const ReservationCard = ({
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <ClockIcon className="size-[16px]" />
-            <Text variant="bodyBold">{time}</Text>
+            <Text variant="bodyBold">{timeSlot}</Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <PeopleIcon className="size-[16px]" />
-            <Text variant="bodyBold">{guests} Guests</Text>
+            <Text variant="bodyBold">{guestsNumber} Guests</Text>
           </div>
         </div>
         <Badge status={status} className="text-nowrap">

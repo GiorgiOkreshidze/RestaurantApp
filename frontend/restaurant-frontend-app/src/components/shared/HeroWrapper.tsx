@@ -16,7 +16,7 @@ const heroVariants = cva("", {
   },
 });
 
-export const HeroCommon = ({
+export const HeroWrapper = ({
   className,
   children,
   variant,
@@ -25,13 +25,13 @@ export const HeroCommon = ({
   return (
     <div
       className={cn(
-        "min-h-[400px] py-[100px] bg-cover bg-no-repeat bg-center",
+        "min-h-[404px] py-[40px] bg-cover bg-no-repeat bg-center",
         heroVariants({ variant, className }),
       )}
       style={{ backgroundImage: `url(${HeroImg})` }}
       {...props}
     >
-      <Container>{children}</Container>
+      <Container className="!py-0">{children}</Container>
     </div>
   );
 };

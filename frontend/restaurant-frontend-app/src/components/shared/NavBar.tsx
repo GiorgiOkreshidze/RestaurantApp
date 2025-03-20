@@ -12,7 +12,7 @@ export const NavBar = () => {
   return (
     <Container className="!py-[0px]">
       <section className="grid justify-center py-[0.75rem] gap-[1rem] lg:grid-cols-[auto_1fr_auto]">
-        <div>
+        <div className="flex items-center">
           <Link to="/" className="inline-flex items-center gap-[0.75rem]">
             <Logo className="size-[48px]" />
             <Title variant="navBarLogo" />

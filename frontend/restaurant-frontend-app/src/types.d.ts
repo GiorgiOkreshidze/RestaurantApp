@@ -105,7 +105,7 @@ export interface Reservation {
   id: string;
   locationAddress: string;
   preOrder: string;
-  status: string;
+  status: ReservationStatus;
   tableNumber: string;
   timeSlot: string;
   userInfo: string;
