@@ -1,4 +1,9 @@
-import { BookingForm, Container, HeroWrapper } from "@/components/shared";
+import {
+  BookingCard,
+  BookingForm,
+  Container,
+  HeroWrapper,
+} from "@/components/shared";
 import { Text } from "@/components/ui";
 
 export const Booking = () => {
@@ -13,7 +18,9 @@ export const Booking = () => {
         </Text>
         <BookingForm className="mt-[40px]" />
       </HeroWrapper>
-      <Container></Container>
+      <Container>
+        <BookingCard></BookingCard>
+      </Container>
     </>
   );
 };

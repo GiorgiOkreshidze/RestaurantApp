@@ -16,3 +16,4 @@ export { ReservationCard } from "./ReservationCard";
 export { HeroWrapper } from "./HeroWrapper";
 export { BookingForm } from "./BookingForm";
 export { CalendarField } from "./CalendarField";
+export { BookingCard } from "./BookingCard";
