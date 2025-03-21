@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
@@ -8,6 +9,7 @@ using Function.Services.Interfaces;
 using SimpleLambdaFunction.Actions;
 using SimpleLambdaFunction.Services;
 using SimpleLambdaFunction.Services.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Function.Services;
 
@@ -42,6 +44,45 @@ public class CreateReservationAction
             if (int.TryParse(reservationRequest.GuestsNumber, out int guests) && guests > 10)
             {
                 throw new ArgumentException("The maximum number of guests allowed is 10");
+            }
+            if (string.IsNullOrEmpty(reservationRequest.Date))
+            {
+                throw new ArgumentException("Date is required.");
+            }
+
+            if (string.IsNullOrEmpty(reservationRequest.TimeFrom))
+            {
+                throw new ArgumentException("TimeFrom is required.");
+            }
+
+            if (string.IsNullOrEmpty(reservationRequest.TimeTo))
+            {
+                throw new ArgumentException("TimeTo is required.");
+            }
+
+            if (!DateTime.TryParseExact(reservationRequest.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                return ActionUtils.FormatResponse(400, new { message = "Invalid date format. Use yyyy-MM-dd." });
+            }
+
+            if (!TimeSpan.TryParseExact(reservationRequest.TimeFrom, "hh\\:mm", CultureInfo.InvariantCulture, out var parsedStartTime))
+            {
+                return ActionUtils.FormatResponse(400, new { message = "Invalid time format. Use hh:mm." });
+            }
+
+            if (!TimeSpan.TryParseExact(reservationRequest.TimeTo, "hh\\:mm", CultureInfo.InvariantCulture, out var parsedEndTime))
+            {
+                return ActionUtils.FormatResponse(400, new { message = "Invalid time format. Use hh:mm." });
+            }
+
+            var reservationDateTimeFrom = parsedDate.Add(parsedStartTime);
+            var reservationDateTimeTo = parsedDate.Add(parsedStartTime);
+
+            var currentUtcTime = DateTime.UtcNow;
+
+            if (reservationDateTimeFrom < currentUtcTime || reservationDateTimeTo < currentUtcTime)
+            {
+                throw new ArgumentException("Reservation date and time must be in the future.");
             }
 
             var location = await _dynamoDBService.GetLocationById(reservationRequest.LocationId);
@@ -91,6 +132,7 @@ public class CreateReservationAction
                 TimeTo = reservationRequest.TimeTo,
                 TimeSlot = reservationRequest.TimeFrom + " - " + reservationRequest.TimeTo,
                 UserInfo = fullName,
+                CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
             };
 
             var reservationResponse = await _dynamoDBService.UpsertReservation(reservation);

@@ -101,7 +101,7 @@ namespace Function.Services
                     UpdateExpression = "SET #date = :date, #feedbackId = :feedbackId, #guestsNumber = :guestsNumber, " +
                                        "#locationAddress = :locationAddress, #preOrder = :preOrder, #status = :status, " +
                                        "#tableNumber = :tableNumber, #timeFrom = :timeFrom, #timeTo = :timeTo, " +
-                                       "#timeSlot = :timeSlot, #userInfo = :userInfo",
+                                       "#timeSlot = :timeSlot, #userInfo = :userInfo, #createdAt = :createdAt",
                     ExpressionAttributeNames = new Dictionary<string, string>
                     {
                         { "#date", "date" },
@@ -114,7 +114,8 @@ namespace Function.Services
                         { "#timeFrom", "timeFrom" },
                         { "#timeTo", "timeTo" },
                         { "#timeSlot", "timeSlot" },
-                        { "#userInfo", "userInfo" }
+                        { "#userInfo", "userInfo" },
+                        { "#createdAt", "createdAt" }
                     },
                     ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                     {
@@ -128,7 +129,8 @@ namespace Function.Services
                         { ":timeFrom", new AttributeValue { S = reservation.TimeFrom } },
                         { ":timeTo", new AttributeValue { S = reservation.TimeTo } },
                         { ":timeSlot", new AttributeValue { S = reservation.TimeSlot } },
-                        { ":userInfo", new AttributeValue { S = reservation.UserInfo } }
+                        { ":userInfo", new AttributeValue { S = reservation.UserInfo } },
+                        { ":createdAt", new AttributeValue { S = reservation.CreatedAt } }
                     }
                 };
 

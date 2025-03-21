@@ -41,10 +41,8 @@ namespace Function.Actions
                     return ActionUtils.FormatResponse(400, new { message = "Date parameter is required" });
                 }
 
-                var tbilisiOffset = TimeSpan.FromHours(4); // Tbilisi is UTC+4
                 var currentUtcTime = DateTime.UtcNow;
-                var currentTbilisiTime = currentUtcTime + tbilisiOffset;
-                var currentTbilisiDate = currentTbilisiTime.Date;
+                var currentUtcDate = currentUtcTime.Date;
                 request.QueryStringParameters.TryGetValue("time", out var time);
 
                 int guests = 1;
@@ -59,7 +57,7 @@ namespace Function.Actions
                     return ActionUtils.FormatResponse(400, new { message = "Invalid date format. Use yyyy-MM-dd." });
                 }
 
-                if (parsedDate < currentTbilisiDate)
+                if (parsedDate < currentUtcDate)
                 {
                     return ActionUtils.FormatResponse(400, new { message = "Reservation date cannot be in the past." });
                 }
@@ -69,9 +67,20 @@ namespace Function.Actions
                     return ActionUtils.FormatResponse(400, new { message = "Guests must be between 1 and 10." });
                 }
 
-                if (!string.IsNullOrEmpty(time) && !TimeSpan.TryParseExact(time, "hh\\:mm", CultureInfo.InvariantCulture, out var parsedTime))
+                TimeSpan parsedTime = TimeSpan.Zero;
+                if (!string.IsNullOrEmpty(time))
                 {
-                    return ActionUtils.FormatResponse(400, new { message = "Invalid time format. Use hh:mm." });
+                if (!TimeSpan.TryParseExact(time, "hh\\:mm", CultureInfo.InvariantCulture, out parsedTime))
+                    {
+                        return ActionUtils.FormatResponse(400, new { message = "Invalid time format. Use hh:mm." });
+                    }
+
+                    var reservationDateTime = parsedDate.Add(parsedTime);
+
+                    if (reservationDateTime < currentUtcTime)
+                    {
+                        return ActionUtils.FormatResponse(400, new { message = "Reservation time cannot be in the past." });
+                    }
                 }
 
                 _context?.Logger.LogInformation($"parameters: {guests}, {date}, {time}, {locationId},  ");
@@ -109,10 +118,10 @@ namespace Function.Actions
 
 
         private List<TableResponse> CalculateAvailableSlots(
-    List<RestaurantTable> tables,
-    List<ReservationInfo> reservations,
-    LocationInfo locationDetails,
-    string? requestedTime)
+            List<RestaurantTable> tables,
+            List<ReservationInfo> reservations,
+            LocationInfo locationDetails,
+            string? requestedTime)
         {
             var result = new List<TableResponse>();
 
@@ -208,21 +217,21 @@ namespace Function.Actions
                 }
             }
             // If no exact match is found, check for the nearest slot within a 15-minute window
-    var nearestSlot = availableSlots
-        .Where(slot =>
-        {
-            var slotTime = TimeSpan.ParseExact(slot.Start, "hh\\:mm", CultureInfo.InvariantCulture);
-            var timeDifference = Math.Abs((slotTime - requestedTimeSpan).TotalMinutes);
-            return timeDifference <= 15; // Check if the slot is within 15 minutes of the requested time
-        })
-        .OrderBy(slot => Math.Abs((TimeSpan.ParseExact(slot.Start, "hh\\:mm", CultureInfo.InvariantCulture) - requestedTimeSpan).Ticks))
-        .FirstOrDefault();
+            var nearestSlot = availableSlots
+                .Where(slot =>
+                {
+                    var slotTime = TimeSpan.ParseExact(slot.Start, "hh\\:mm", CultureInfo.InvariantCulture);
+                    var timeDifference = Math.Abs((slotTime - requestedTimeSpan).TotalMinutes);
+                    return timeDifference <= 15; // Check if the slot is within 15 minutes of the requested time
+                 })
+                .OrderBy(slot => Math.Abs((TimeSpan.ParseExact(slot.Start, "hh\\:mm", CultureInfo.InvariantCulture) - requestedTimeSpan).Ticks))
+                .FirstOrDefault();
 
     // If a nearest slot is found, return it
-    if (nearestSlot != null)
-    {
-        return new List<TimeSlot> { nearestSlot };
-    }
+            if (nearestSlot != null)
+            {
+                return new List<TimeSlot> { nearestSlot };
+            }
             // If no slot contains the requested time, return empty list
             return new List<TimeSlot>();
         }
@@ -230,19 +239,20 @@ namespace Function.Actions
         private List<TimeSlot> GeneratePredefinedTimeSlots()
         {
             var slots = new List<TimeSlot>();
-            var startTime = new TimeSpan(10, 30, 0); // 10:30 AM
-            var endTime = new TimeSpan(22, 30, 0);   // 10:30 PM
+            var startTimeUtc = new TimeSpan(6, 30, 0); // 6:30 AM UTC (10:30 AM Tbilisi time)
+            var endTimeUtc = new TimeSpan(18, 30, 0);   // 6:30 PM UTC (10:30 PM Tbilisi time)
 
-            while (startTime <= endTime)
+            var currentTime = startTimeUtc;
+            while (currentTime <= endTimeUtc)
             {
-                var slotEnd = startTime.Add(TimeSpan.FromMinutes(90));
+                var slotEnd = currentTime.Add(TimeSpan.FromMinutes(90));
                 slots.Add(new TimeSlot
                 {
-                    Start = startTime.ToString(@"hh\:mm"),
+                    Start = currentTime.ToString(@"hh\:mm"),
                     End = slotEnd.ToString(@"hh\:mm")
                 });
 
-                startTime = startTime.Add(TimeSpan.FromMinutes(90 + 15)); // 90-minute slot + 15-minute gap
+                currentTime = currentTime.Add(TimeSpan.FromMinutes(90 + 15)); // 90-minute slot + 15-minute gap
             }
 
             return slots;
