@@ -46,4 +46,7 @@ public class Reservation
     
     [JsonIgnore]
     public string? WaiterEmail { get; set; }
+
+    [JsonPropertyName("createdAt")]
+    public required string CreatedAt { get; set; }
 }

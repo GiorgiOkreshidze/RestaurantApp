@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://q03v2fjbe5.execute-api.eu-west-2.amazonaws.com/{basePath}",
+      "url": "https://k69wt3w8n7.execute-api.eu-west-2.amazonaws.com/{basePath}",
       "description": "Development server",
       "variables": {
         "basePath": {
