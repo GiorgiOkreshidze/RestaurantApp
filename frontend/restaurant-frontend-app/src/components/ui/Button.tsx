@@ -28,7 +28,7 @@ const buttonVariants = cva(
   },
 );
 
-function Button({
+export function Button({
   className,
   variant,
   size,
@@ -58,5 +58,3 @@ function Button({
     </Comp>
   );
 }
-
-export { Button, buttonVariants };
