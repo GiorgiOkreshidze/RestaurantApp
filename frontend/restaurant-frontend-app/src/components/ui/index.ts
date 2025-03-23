@@ -1,4 +1,4 @@
-export { Button } from "./button";
+export { Button } from "./Button"
 export { Label } from "./label";
 export { Input } from "./input";
 export { Text } from "./Text";

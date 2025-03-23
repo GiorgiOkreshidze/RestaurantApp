@@ -212,8 +212,17 @@ body {
   * {
     /* @apply border-border outline-ring/50; */
   }
+
   body {
     /* @apply bg-background text-foreground; */
     font-family: var(--font-poppins);
   }
+}
+
+@utility fontset-h1 {
+  font-size: 3rem;
+  /* 48px */
+  line-height: 1;
+  /* 48px */
+  font-weight: 500;
 }
