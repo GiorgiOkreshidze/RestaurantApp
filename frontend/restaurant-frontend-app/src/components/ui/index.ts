@@ -1,4 +1,4 @@
-export { Button } from "./Button"
+export { Button } from "./Button";
 export { Label } from "./label";
 export { Input } from "./input";
 export { Text } from "./Text";
@@ -26,3 +26,10 @@ export {
   DropdownMenuTrigger,
 } from "./DropdownMenu";
 export { Badge } from "./Badge";
+export { Calendar } from "./Calendar";
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+} from "./Popover";

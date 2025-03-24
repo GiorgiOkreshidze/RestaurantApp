@@ -8,7 +8,7 @@ import {
   Dialog,
   DialogDescription,
   DialogHeader,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import {
   SelectTrigger,
   SelectRoot,

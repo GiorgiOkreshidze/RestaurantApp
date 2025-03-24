@@ -6,7 +6,7 @@ export { Locations } from "./Locations";
 export { RegForm } from "./RegForm";
 export { LoginForm } from "./LoginForm";
 export { PasswordField } from "@/components/ui/PasswordField";
-export { Container } from "./container";
+export { Container } from "./Container";
 export { LocationHero } from "./LocationHero";
 export { Reviews } from "./Reviews";
 export { UserMenu } from "./UserMenu";

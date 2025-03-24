@@ -177,7 +177,9 @@ body {
   --shadow-input-primary: 0 0 8px 0 var(--color-primary-shadow);
   --shadow-input-destructive: 0 0 8px 0 var(--color-destructive-shadow);
   --radius-input: 0.5rem;
+
   --color-accent: var(--color-neutral-100);
+  --color-popover: var(--color-neutral-0);
   
   /* FONTS */
   /* In "tw-utilities.css" file */

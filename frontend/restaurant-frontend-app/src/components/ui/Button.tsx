@@ -4,7 +4,7 @@ import { ComponentProps, JSX } from "react";
 import { Slot } from "@radix-ui/react-slot";
 
 export const buttonVariants = cva(
-  "grid grid-cols-[auto_auto_auto] rounded min-w-[44px] cursor-pointer text-center justify-center transition-all duration-300 items-center disabled:cursor-not-allowed",
+  "inline-flex rounded min-w-[44px] cursor-pointer text-center justify-center transition-all duration-300 items-center disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
@@ -15,7 +15,7 @@ export const buttonVariants = cva(
         tertiary:
           "bg-transparent text-foreground fontset-bodyBold hover:bg-neutral-200 active:bg-primary-light disabled:text-disabled",
         trigger:
-          "bg-neutral-0 text-foreground fontset-buttonSecondary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary border-[1px] gap-[0.75rem] text-start",
+          "grid grid-cols-[auto_1fr_auto] text-start bg-neutral-0 text-foreground fontset-buttonSecondary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary border-[1px] gap-[0.75rem]",
       },
       size: {
         xl: "p-[1rem]",

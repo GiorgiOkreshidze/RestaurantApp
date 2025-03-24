@@ -1,5 +1,5 @@
 import { Text } from "../ui";
-import { Container } from "./container";
+import { Container } from "./Container";
 
 import { Review } from "@/types";
 import { ReviewsCard } from "@/components/ui/ReviewsCard";

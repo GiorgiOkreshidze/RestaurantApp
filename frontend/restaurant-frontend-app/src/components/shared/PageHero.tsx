@@ -1,4 +1,4 @@
-import { Container } from "./container";
+import { Container } from "./Container";
 import HeroImg from "../../assets/images/hero.jpg";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
