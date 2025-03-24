@@ -11,7 +11,7 @@ interface Props {
 export const Dishes: React.FC<Props> = ({ title, dishes }) => {
   return (
     <div>
-      <Container className="!py-[64px]">
+      <Container className="py-[64px]">
         <Text variant="h2" className="mb-10">
           {title}
         </Text>

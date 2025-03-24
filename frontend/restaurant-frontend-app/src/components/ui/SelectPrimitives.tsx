@@ -4,7 +4,7 @@ import { CheckIcon, ChevronUpIcon } from "lucide-react";
 import { ChevronDownIcon } from "@/components/icons/";
 
 import { cn } from "@/lib/utils";
-import { Component, ComponentType, JSX } from "react";
+import { ComponentType } from "react";
 
 function SelectRoot({
   ...props

@@ -25,7 +25,7 @@ export const Location = () => {
   return (
     <>
       {/* Breadcrumbs, пока что захардкоженный */}
-      <Container className="py-0">
+      <Container>
         <div className="mb-8 flex items-center">
           <NavLink to={"/"}>
             <Text variant="caption"> Main Page &gt;</Text>

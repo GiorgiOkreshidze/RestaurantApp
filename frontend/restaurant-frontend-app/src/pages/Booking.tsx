@@ -18,7 +18,10 @@ export const Booking = () => {
         </Text>
         <BookingForm className="mt-[40px]" />
       </HeroWrapper>
-      <Container>
+      <Container className="py-[4rem]/[1.875rem]">
+        <Text variant="bodyBold" tag="p" className="">
+          # tables available
+        </Text>
         <ul className="grid gap-[2rem] lg:grid-cols-2">
           <BookingCard></BookingCard>
           <BookingCard></BookingCard>

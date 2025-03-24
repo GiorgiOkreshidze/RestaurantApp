@@ -31,7 +31,7 @@ export const HeroWrapper = ({
       style={{ backgroundImage: `url(${HeroImg})` }}
       {...props}
     >
-      <Container className="!py-0">{children}</Container>
+      <Container>{children}</Container>
     </div>
   );
 };

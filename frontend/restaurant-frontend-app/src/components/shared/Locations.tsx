@@ -10,7 +10,7 @@ interface Props {
 export const Locations: React.FC<Props> = ({ locations }) => {
   return (
     <div>
-      <Container className="pb-[64px] !pt-0">
+      <Container className="pb-[64px] pt-0">
         <Text variant="h2" className="mb-10">
           Locations
         </Text>

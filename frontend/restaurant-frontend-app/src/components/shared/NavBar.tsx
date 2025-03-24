@@ -11,7 +11,7 @@ export const NavBar = () => {
   const user = useSelector(selectUser);
 
   return (
-    <Container className="!py-[0px]">
+    <Container>
       <section className="grid justify-center py-[0.75rem] gap-[1rem] lg:grid-cols-[auto_1fr_auto]">
         <div className="flex items-center">
           <Link to="/" className="inline-flex items-center gap-[0.75rem]">
