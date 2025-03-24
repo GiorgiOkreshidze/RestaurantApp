@@ -15,7 +15,10 @@ export const BookingCardButton = ({
     <Button
       variant="secondary"
       size="l"
-      className={cn("flex justify-start gap-[0.5rem]", className)}
+      className={cn(
+        "flex justify-start gap-[0.5rem] whitespace-nowrap",
+        className,
+      )}
       {...props}
     >
       {icon ?? <ClockIcon className="size-[1rem]" />}

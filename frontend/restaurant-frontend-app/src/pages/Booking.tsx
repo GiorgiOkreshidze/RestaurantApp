@@ -1,4 +1,9 @@
-import { BookingCard, Container, HeroWrapper } from "@/components/shared";
+import {
+  BookingCard,
+  BookingForm,
+  Container,
+  HeroWrapper,
+} from "@/components/shared";
 import { Text } from "@/components/ui";
 
 export const Booking = () => {
@@ -11,7 +16,7 @@ export const Booking = () => {
         <Text variant="h1" tag="h1" className="text-primary">
           Book a Table
         </Text>
-        {/* <BookingForm className="mt-[40px]" /> */}
+        <BookingForm className="mt-[40px]" />
       </HeroWrapper>
       <Container>
         <ul className="grid gap-[2rem] lg:grid-cols-2">
