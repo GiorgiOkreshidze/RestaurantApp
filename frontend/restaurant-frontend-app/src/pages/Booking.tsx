@@ -1,6 +1,6 @@
 import {
   BookingCard,
-  BookingFilters,
+  BookingForm,
   PageBody,
   PageBodyHeader,
   PageHero,
@@ -17,7 +17,7 @@ export const Booking = () => {
         <Text variant="h1" tag="h1" className="text-primary mt-[1.375rem]">
           Book a Table
         </Text>
-        <BookingFilters className="mt-[2.5rem]" />
+        <BookingForm className="mt-[2.5rem]" />
       </PageHero>
       <PageBody>
         <PageBodyHeader>

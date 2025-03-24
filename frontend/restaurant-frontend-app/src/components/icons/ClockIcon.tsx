@@ -1,31 +1,14 @@
 import { cn } from "@/lib/utils";
-import { cva, VariantProps } from "class-variance-authority";
 import { ComponentProps } from "react";
 
-const clockIconVariants = cva("", {
-  variants: {
-    variant: {
-      primary: "stroke-primary",
-      foreground: "stroke-foreground",
-    },
-  },
-  defaultVariants: {
-    variant: "primary",
-  },
-});
-
-export const ClockIcon = ({
-  className,
-  variant,
-  ...props
-}: ComponentProps<"svg"> & VariantProps<typeof clockIconVariants>) => (
+export const ClockIcon = ({ className, ...props }: ComponentProps<"svg">) => (
   <svg
     width={16}
     height={16}
     viewBox="0 0 16 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className={cn(clockIconVariants({ variant, className }))}
+    className={cn("stroke-foreground", className)}
     {...props}
   >
     <g clipPath="url(#clip0_10183_13288)">

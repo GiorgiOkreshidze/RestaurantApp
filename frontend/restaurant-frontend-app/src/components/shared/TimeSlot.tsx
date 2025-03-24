@@ -21,7 +21,7 @@ export const TimeSlot = ({
       )}
       {...props}
     >
-      {icon ?? <ClockIcon className="size-[1rem]" />}
+      {icon ?? <ClockIcon className="size-[1rem] stroke-primary" />}
       <Text variant="bodyBold">{children}</Text>
     </Button>
   );

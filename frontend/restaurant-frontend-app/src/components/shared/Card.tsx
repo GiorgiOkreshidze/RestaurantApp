@@ -8,10 +8,7 @@ export const Card = ({
 }: ComponentProps<"div">) => {
   return (
     <div
-      className={cn(
-        "rounded-card bg-card-background shadow-card p-[1.5rem]",
-        className,
-      )}
+      className={cn("rounded-card bg-card shadow-card p-[1.5rem]", className)}
       {...props}
     >
       {children}

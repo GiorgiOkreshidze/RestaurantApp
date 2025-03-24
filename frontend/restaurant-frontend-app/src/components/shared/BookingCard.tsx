@@ -5,7 +5,7 @@ import { TimeSlot } from "./TimeSlot";
 
 export const BookingCard = () => {
   return (
-    <li className="@container bg-card-background rounded overflow-hidden shadow-card">
+    <li className="@container bg-card rounded overflow-hidden shadow-card">
       <article className="grid @max-[650px]:grid-rows-[200px_auto] @[650px]:grid-cols-[200px_1fr]">
         <div className="">
           <img

@@ -4,12 +4,12 @@ import { z } from "zod";
 // import { useAppDispatch } from "@/app/hooks";
 import { useNavigate } from "react-router";
 
-export const useBookingFilters = () => {
+export const useBookingForm = () => {
   // const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const formSchema = z.object({
-    location: z.string(),
+    location: z.string().nonempty(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

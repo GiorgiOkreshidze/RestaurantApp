@@ -8,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/";
 import { ChevronDownIcon } from "../icons";
 import { useState } from "react";
 
-export function DatePicker() {
+export function DatePicker({ className }: { className?: string }) {
   const [date, setDate] = useState<Date>();
 
   return (
@@ -17,10 +17,14 @@ export function DatePicker() {
         <Button
           variant="trigger"
           size="trigger"
-          className={cn("", !date && "text-muted-foreground")}
+          className={cn("", className, !date && "text-muted-foreground")}
         >
           <CalendarIcon className="size=[1.5rem]" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {date ? (
+            <span className="whitespace-nowrap">{format(date, "PPP")}</span>
+          ) : (
+            <span className="whitespace-nowrap">Pick a date</span>
+          )}
           <ChevronDownIcon />
         </Button>
       </PopoverTrigger>

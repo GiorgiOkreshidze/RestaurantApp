@@ -11,6 +11,7 @@ export const Select = ({
   placeholder,
   items,
   Icon,
+  className,
 }: {
   items: {
     id: string;
@@ -18,10 +19,11 @@ export const Select = ({
   }[];
   placeholder?: string;
   Icon?: ComponentType<{ className?: string }>;
+  className?: string;
 }) => {
   return (
     <SelectRoot>
-      <SelectTrigger Icon={Icon}>
+      <SelectTrigger Icon={Icon} className={className}>
         <SelectValue placeholder={placeholder ?? ""} />
       </SelectTrigger>
       <SelectContent>

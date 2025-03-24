@@ -166,7 +166,7 @@ body {
   --color-destructive: var(--color-red-400, #d70c0c);
   --color-destructive-shadow: rgba(from var(--color-destructive) r g b / 0.2);
 
-  --color-card-background: var(--color-neutral-0, #ffffff);
+  --color-card: var(--color-neutral-0, #ffffff);
   --color-card-shadow: rgba(from #c2c2c2 r g b / 0.2);
 
   /* INPUT */
