@@ -17,5 +17,5 @@ export { HeroWrapper } from "./HeroWrapper";
 export { BookingForm } from "./BookingForm";
 export { CalendarField } from "./CalendarField";
 export { BookingCard } from "./BookingCard";
-export { BookingCardButton } from "./BookingCardButton"
-export { Select } from "./Select"
+export { TimeSlot } from "./TimeSlot";
+export { Select } from "./Select";

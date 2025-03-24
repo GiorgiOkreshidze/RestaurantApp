@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
 
 export const LocationIcon = ({
@@ -6,7 +7,7 @@ export const LocationIcon = ({
 }: ComponentProps<"svg">) => {
   return (
     <svg
-      className={className}
+      className={cn("stroke-primary", className)}
       width="24"
       height="24"
       viewBox="0 0 24 24"

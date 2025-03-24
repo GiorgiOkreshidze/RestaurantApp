@@ -36,7 +36,7 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       className={cn(
-        "styleSet-input fontset-bodyBold flex items-center",
+        "styleSet-input fontset-bodyBold cursor-pointer flex items-center",
         // "text-start [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 *:data-[slot=select-value]:flex *:data-[slot=select-value]:gap-2 *:data-[slot=select-value]:items-center *:data-[slot=select-value]:line-clamp-1 aria-invalid:border-destructive aria-invalid:ring-destructive/20 bg-input-background flex items-center justify-between rounded shadow-input-primary px-[1.5rem] py-[1rem] gap-[1rem]",
         className,
       )}
@@ -44,7 +44,7 @@ function SelectTrigger({
     >
       {Icon && <Icon className="mr-[0.75rem] stroke-foreground" />}
       {children}
-      <SelectPrimitive.Icon className="ml-auto" asChild>
+      <SelectPrimitive.Icon className="ml-[0.75rem]" asChild>
         <ChevronDownIcon />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
@@ -109,8 +109,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        // "focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
-        "fontset-bodyBold hover:bg-green-100 outline-hidden py-[0.25rem] px-[0.5rem] focus:bg-green-100",
+        "fontset-bodyBold hover:bg-green-100 outline-hidden py-[0.25rem] px-[0.5rem] focus:bg-green-100 cursor-pointer",
         className,
       )}
       {...props}

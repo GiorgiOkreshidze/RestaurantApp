@@ -1,7 +1,7 @@
 import locationThumbnail from "../../assets/images/location-thumbnail.jpg";
 import { LocationIcon, PlusIcon } from "../icons";
 import { Text } from "../ui";
-import { BookingCardButton } from "./BookingCardButton";
+import { TimeSlot } from "./TimeSlot";
 
 export const BookingCard = () => {
   return (
@@ -25,13 +25,13 @@ export const BookingCard = () => {
           </div>
           <div className="grid gap-[0.5rem] @min-[400px]:grid-cols-2">
             {timeSlots.slice(0, 6).map((timeSlot, i) => (
-              <BookingCardButton
+              <TimeSlot
                 key={i}
                 icon={i < 5 ? undefined : <PlusIcon className="size-[1rem]" />}
                 className={i < 5 ? undefined : "place-self-start"}
               >
                 {i < 5 ? timeSlot : "Shaw all"}
-              </BookingCardButton>
+              </TimeSlot>
             ))}
           </div>
         </div>

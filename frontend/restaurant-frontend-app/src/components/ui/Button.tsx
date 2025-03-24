@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { ComponentProps, JSX } from "react";
 import { Slot } from "@radix-ui/react-slot";
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   "inline-flex rounded min-w-[44px] cursor-pointer text-center justify-center transition-all duration-300 items-center disabled:cursor-not-allowed",
   {
     variants: {

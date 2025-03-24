@@ -170,7 +170,7 @@ function SelectScrollDownButton({
 }
 
 export {
-  Select,
+  Select as SelectOriginDontUse,
   SelectContent,
   SelectGroup,
   SelectItem,

@@ -3,7 +3,7 @@ import { ClockIcon } from "../icons";
 import { Button, Text } from "../ui";
 import { cn } from "@/lib/utils";
 
-export const BookingCardButton = ({
+export const TimeSlot = ({
   children,
   className,
   icon,

@@ -14,7 +14,7 @@ const Input = ({
     <input
       type={type}
       className={cn(
-        "styleSet-input",
+        "w-full styleSet-input",
         // "text-foreground fontset-body p-[1rem] bg-neutral-0 w-full border border-neutral-200 rounded placeholder:text-neutral-400 hover:shadow-input-primary hover:border-transparent focus:border-primary outline-none disabled:text-disabled m-0",
         isInvalid && "styleSet-input-invalid",
         // "border-destructive hover:border-destructive hover:shadow-input-destructive focus:border-destructive",

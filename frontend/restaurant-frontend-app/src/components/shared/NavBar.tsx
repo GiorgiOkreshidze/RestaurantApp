@@ -5,6 +5,7 @@ import { Button } from "../ui";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
 import { ComponentProps } from "react";
+import { buttonVariants } from "../ui/Button";
 
 export const NavBar = () => {
   const user = useSelector(selectUser);
@@ -34,9 +35,12 @@ export const NavBar = () => {
               <UserMenu />
             </>
           ) : (
-            <Button variant="secondary" size="l">
-              <Link to="/signin">Sign&nbsp;In</Link>
-            </Button>
+            <Link
+              to="/signin"
+              className={buttonVariants({ variant: "secondary", size: "l" })}
+            >
+              Sign&nbsp;In
+            </Link>
           )}
         </div>
       </section>
