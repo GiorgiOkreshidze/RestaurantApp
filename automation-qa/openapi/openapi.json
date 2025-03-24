@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://k69wt3w8n7.execute-api.eu-west-2.amazonaws.com/{basePath}",
+      "url": "https://bc19bl6ydl.execute-api.eu-west-2.amazonaws.com/{basePath}",
       "description": "Development server",
       "variables": {
         "basePath": {
@@ -1182,6 +1182,17 @@
         "summary": "Create a new reservation",
         "description": "Reservation created/updated successfully, to update provide existing reservation id",
         "operationId": "createClientReservation",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-amz-security-token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The access token for the authenticated user"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {

@@ -1,9 +1,9 @@
-﻿using Function.Models;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Amazon.CognitoIdentityProvider.Model;
-using System.Collections.Generic;
+using Function.Models.Responses;
+using Function.Models.User;
 
-namespace SimpleLambdaFunction.Services.Interfaces;
+namespace Function.Services.Interfaces;
 
 public interface IAuthenticationService
 {

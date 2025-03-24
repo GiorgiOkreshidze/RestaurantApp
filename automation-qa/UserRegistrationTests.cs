@@ -11,7 +11,7 @@ namespace ApiTests
     public class UserRegistrationTests
     {
         private RestClient _client;
-        private const string BaseUrl = "https://j3xopx2m4g.execute-api.eu-west-2.amazonaws.com/api";
+        private const string BaseUrl = "https://1ytz73leak.execute-api.eu-west-2.amazonaws.com/api";
 
         [SetUp]
         public void Setup()
