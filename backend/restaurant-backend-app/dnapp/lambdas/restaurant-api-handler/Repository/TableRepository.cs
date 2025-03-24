@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Function.Models;
 using Function.Repository.Interfaces;
@@ -13,7 +12,6 @@ namespace Function.Repository;
 public class TableRepository : ITableRepository
 {
     private readonly AmazonDynamoDBClient _dynamoDBClient;
-    
     private readonly string? _tablesTableName = Environment.GetEnvironmentVariable("DYNAMODB_TABLES_TABLE_NAME");
     
     public TableRepository()

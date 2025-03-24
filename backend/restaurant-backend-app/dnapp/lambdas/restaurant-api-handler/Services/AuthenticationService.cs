@@ -66,18 +66,18 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    public async Task<AuthResult> SignUp(string firstName, string lastName, string email, string password, Roles role = Roles.Customer)
+    public async Task<AuthResult> SignUp(User user, string password, Roles role = Roles.Customer)
     {
         var signUpRequest = new SignUpRequest
         {
             ClientId = _clientId,
-            Username = email,
+            Username = user.Email,
             Password = password,
             UserAttributes =
             [
-                new AttributeType { Name = "given_name", Value = firstName },
-                new AttributeType { Name = "family_name", Value = lastName },
-                new AttributeType { Name = "email", Value = email }
+                new AttributeType { Name = "given_name", Value = user.FirstName },
+                new AttributeType { Name = "family_name", Value = user.LastName },
+                new AttributeType { Name = "email", Value = user.Email }
             ]
         };
 
@@ -86,7 +86,7 @@ public class AuthenticationService : IAuthenticationService
         var confirmRequest = new AdminConfirmSignUpRequest
         {
             UserPoolId = _userPoolId,
-            Username = email
+            Username = user.Email 
         };
 
         await _cognitoClient.AdminConfirmSignUpAsync(confirmRequest);
@@ -94,12 +94,12 @@ public class AuthenticationService : IAuthenticationService
         var updateAttributesRequest = new AdminUpdateUserAttributesRequest
         {
             UserPoolId = _userPoolId,
-            Username = email,
+            Username = user.Email ,
             UserAttributes = [new AttributeType { Name = "custom:role", Value = role.ToString() }]
         };
         
         await _cognitoClient.AdminUpdateUserAttributesAsync(updateAttributesRequest);
-        return await SignIn(email, password);
+        return await SignIn(user.Email , password);
     }
 
     public async Task SignOut(string refreshToken)

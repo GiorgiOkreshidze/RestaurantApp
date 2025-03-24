@@ -10,6 +10,7 @@ using Function.Actions.Feedbacks;
 using Function.Actions.Locations;
 using Function.Actions.Reservations;
 using Function.Actions.Tables;
+using Function.Actions.Users;
 
 namespace Function.ApiHandler;
 
@@ -30,6 +31,7 @@ public class ApiHandler
     private readonly GetAvailableTablesAction _getAvailableTablesAction;
     private readonly GetReservationsAction _getReservationsAction;
     private readonly DeleteReservationAction _deleteReservationAction;
+    private readonly GetAllUsersAction _getAllUsersAction;
 
     public ApiHandler()
     {
@@ -48,6 +50,7 @@ public class ApiHandler
         _getAvailableTablesAction = new GetAvailableTablesAction();
         _getReservationsAction = new GetReservationsAction();
         _deleteReservationAction = new DeleteReservationAction();
+        _getAllUsersAction = new GetAllUsersAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -152,6 +155,12 @@ public class ApiHandler
                        { "DELETE", _deleteReservationAction.DeleteReservationAsync }
                     }
                 },
+                {
+                    "/users", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getAllUsersAction.GetAllUsersAsync }
+                    }
+                }
             };
 
         if (!actionEndpointMapping.TryGetValue(requestPath, out var resourceMethods) ||

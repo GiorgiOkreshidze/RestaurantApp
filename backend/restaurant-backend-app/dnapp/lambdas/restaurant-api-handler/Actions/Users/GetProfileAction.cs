@@ -6,7 +6,7 @@ using Function.Models.User;
 using Function.Services;
 using Function.Services.Interfaces;
 
-namespace Function.Actions.Auth;
+namespace Function.Actions.Users;
 
 class GetProfileAction
 {

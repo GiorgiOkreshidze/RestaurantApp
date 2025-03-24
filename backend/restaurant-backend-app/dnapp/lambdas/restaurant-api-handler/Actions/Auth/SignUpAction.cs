@@ -13,11 +13,13 @@ public class SignUpAction
 {
     private readonly IAuthenticationService _authenticationService;
     private readonly IEmployeeService _employeeService;
+    private readonly IUserService _userService;
 
     public SignUpAction()
     {
         _authenticationService = new AuthenticationService();
         _employeeService = new EmployeeService();
+        _userService = new UserService();
     }
 
     public async Task<APIGatewayProxyResponse> Signup(APIGatewayProxyRequest request)
@@ -31,35 +33,43 @@ public class SignUpAction
         
         ActionUtils.ValidateRequiredParams(requiredParams, body);
 
-        var firstName = body["firstName"].GetString();
-        var lastName = body["lastName"].GetString();
-        var email = body["email"].GetString();
+        var user = new User
+        {
+            Id = Guid.NewGuid().ToString(),
+            FirstName = body["firstName"].GetString(),
+            LastName = body["lastName"].GetString(),
+            Email = body["email"].GetString(),
+            Role = Roles.Customer,
+            CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
+        };
         var password = body["password"].GetString();
         
-        ActionUtils.ValidateFullName(firstName);
-        ActionUtils.ValidateFullName(lastName);
-        ActionUtils.ValidateEmail(email);
+        ActionUtils.ValidateFullName(user.FirstName);
+        ActionUtils.ValidateFullName(user.LastName);
+        ActionUtils.ValidateEmail(user.Email);
         ActionUtils.ValidatePassword(password);
 
-        await _authenticationService.CheckEmailUniqueness(email);
+        await _authenticationService.CheckEmailUniqueness(user.Email);
 
-        var result = await SignUpUserWithRole(firstName, lastName, email, password);
+        var result = await SignUpUserWithRole(user, password);
         return ActionUtils.FormatResponse(200, new { message = result });
     }
 
-    private async Task<string> SignUpUserWithRole(string firstName, string lastName, string email, string password)
+    private async Task<string> SignUpUserWithRole(User user, string password)
     {
-        var isWaiter = await _employeeService.CheckIfEmailExistsInWaitersTableAsync(email);
+        var isWaiter = await _employeeService.CheckIfEmailExistsInWaitersTableAsync(user.Email);
 
         if (isWaiter)
         {
-            await _authenticationService.SignUp(firstName, lastName, email, password, Roles.Waiter);
+            await _authenticationService.SignUp(user, password, Roles.Waiter);
+            user.Role = Roles.Waiter;
         }
         else
         {
-            await _authenticationService.SignUp(firstName, lastName, email, password);
+            await _authenticationService.SignUp(user, password);
         }
-
+        
+        await _userService.AddUserAsync(user);
         return "User Registered";
     }
 }
