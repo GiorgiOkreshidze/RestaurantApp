@@ -1,4 +1,11 @@
-import { Dishes, PageHero, Locations, BrandTitle } from "@/components/shared";
+import {
+  Dishes,
+  PageHero,
+  Locations,
+  BrandTitle,
+  PageBody,
+  PageBodySection,
+} from "@/components/shared";
 import { useSelector } from "react-redux";
 import {
   selectDishesLoading,
@@ -32,12 +39,10 @@ export const Home = () => {
           <Button className="w-full mt-[2.5rem]">View Menu</Button>
         </div>
       </PageHero>
-      <Dishes
-        isLoading={isDishesLoading}
-        title="Most Popular Dishes"
-        dishes={popularDishes}
-      />
-      <Locations isLoading={isLocationsLoading} locations={locations} />
+      <PageBody>
+        <Dishes isLoading={isDishesLoading} dishes={popularDishes} />
+        <Locations isLoading={isLocationsLoading} locations={locations} />
+      </PageBody>
     </>
   );
 };

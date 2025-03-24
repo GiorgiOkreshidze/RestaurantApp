@@ -29,7 +29,7 @@ const FormSchema = z.object({
   }),
 });
 
-export const CalendarField = () => {
+const DatePicker = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });

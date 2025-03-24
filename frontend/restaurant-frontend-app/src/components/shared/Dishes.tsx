@@ -1,17 +1,18 @@
 import { DishCard, Text } from "../ui";
 import { Dish } from "@/types";
-import { PageBody } from "./PageBody";
+import { PageBodyHeader, PageBodySection } from "./PageBody";
 
 interface Props {
-  title: string;
   isLoading?: boolean;
   dishes: Dish[];
 }
 
-export const Dishes: React.FC<Props> = ({ title, dishes }) => {
+export const Dishes: React.FC<Props> = ({ dishes }) => {
   return (
-    <PageBody>
-      <Text>{title}</Text>
+    <PageBodySection>
+      <PageBodyHeader>
+        <Text variant="h2">Most Popular Dishes</Text>
+      </PageBodyHeader>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
         {dishes.slice(0, 4).map((item, index) => (
           <DishCard
@@ -23,6 +24,6 @@ export const Dishes: React.FC<Props> = ({ title, dishes }) => {
           />
         ))}
       </div>
-    </PageBody>
+    </PageBodySection>
   );
 };

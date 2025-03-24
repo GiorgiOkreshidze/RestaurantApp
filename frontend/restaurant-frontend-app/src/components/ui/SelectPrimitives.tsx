@@ -5,6 +5,7 @@ import { ChevronDownIcon } from "@/components/icons/";
 
 import { cn } from "@/lib/utils";
 import { ComponentType } from "react";
+import { Button } from "./Button";
 
 function SelectRoot({
   ...props
@@ -36,17 +37,20 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       className={cn(
-        "styleSet-input fontset-bodyBold cursor-pointer flex items-center",
+        "styleSet-input fontset-bodyBold cursor-pointer flex items-center *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:mr-[0.75rem]",
         // "text-start [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 *:data-[slot=select-value]:flex *:data-[slot=select-value]:gap-2 *:data-[slot=select-value]:items-center *:data-[slot=select-value]:line-clamp-1 aria-invalid:border-destructive aria-invalid:ring-destructive/20 bg-input-background flex items-center justify-between rounded shadow-input-primary px-[1.5rem] py-[1rem] gap-[1rem]",
         className,
       )}
       {...props}
+      asChild
     >
-      {Icon && <Icon className="mr-[0.75rem] stroke-foreground" />}
-      {children}
-      <SelectPrimitive.Icon className="ml-[0.75rem]" asChild>
-        <ChevronDownIcon />
-      </SelectPrimitive.Icon>
+      <Button variant="trigger" size="trigger">
+        {Icon && <Icon className="mr-[0.75rem] stroke-foreground" />}
+        {children}
+        <SelectPrimitive.Icon className="ml-auto" asChild>
+          <ChevronDownIcon />
+        </SelectPrimitive.Icon>
+      </Button>
     </SelectPrimitive.Trigger>
   );
 }
@@ -114,11 +118,11 @@ function SelectItem({
       )}
       {...props}
     >
-      <span className="absolute right-2 flex size-3.5 items-center justify-center">
+      {/* <span className="absolute right-2 flex size-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
           <CheckIcon className="size-4" />
         </SelectPrimitive.ItemIndicator>
-      </span>
+      </span> */}
       <SelectPrimitive.ItemText className="">
         {children}
       </SelectPrimitive.ItemText>

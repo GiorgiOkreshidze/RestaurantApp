@@ -16,19 +16,20 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/SelectPrimitives";
-import { CalendarField } from "./CalendarField";
+import { DatePicker } from "./DatePicker";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { useSelector } from "react-redux";
 import { selectLocations } from "@/app/slices/locationsSlice";
-import { useBookingForm } from "@/hooks/useBookingForm";
+import { useBookingFilters } from "@/hooks/useBookingFilters";
 import { Select } from "@/components/shared";
+import { SelectOriginDontUse } from "../ui/SelectOriginDontUse";
 
-export const BookingForm = ({
+export const BookingFilters = ({
   className,
   ...props
 }: ComponentProps<"form">) => {
-  const { form, onSubmit } = useBookingForm();
+  const { form, onSubmit } = useBookingFilters();
   const locations = useSelector(selectLocations);
 
   return (
@@ -46,7 +47,7 @@ export const BookingForm = ({
           placeholder="Location"
           Icon={LocationIcon}
         />
-        {/* <CalendarField /> */}
+        <DatePicker />
         {/* <Dialog>
           <DialogTrigger asChild>
             <Button

@@ -1,7 +1,8 @@
 import {
   BookingCard,
-  BookingForm,
+  BookingFilters,
   PageBody,
+  PageBodyHeader,
   PageHero,
 } from "@/components/shared";
 import { Text } from "@/components/ui";
@@ -16,10 +17,12 @@ export const Booking = () => {
         <Text variant="h1" tag="h1" className="text-primary mt-[1.375rem]">
           Book a Table
         </Text>
-        <BookingForm className="mt-[2.5rem]" />
+        <BookingFilters className="mt-[2.5rem]" />
       </PageHero>
       <PageBody>
-        <Text># tables available</Text>
+        <PageBodyHeader>
+          <Text variant="bodyBold"># tables available</Text>
+        </PageBodyHeader>
         <ul className="grid gap-[2rem] lg:grid-cols-2">
           <BookingCard></BookingCard>
           <BookingCard></BookingCard>

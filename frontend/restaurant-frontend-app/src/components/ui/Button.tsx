@@ -14,11 +14,14 @@ export const buttonVariants = cva(
           "bg-neutral-0 min-w-[103px] text-primary fontset-buttonPrimary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary border-[1px]",
         tertiary:
           "bg-transparent text-foreground fontset-bodyBold hover:bg-neutral-200 active:bg-primary-light disabled:text-disabled",
+        trigger:
+          "bg-neutral-0 text-foreground fontset-buttonSecondary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary border-[1px]",
       },
       size: {
         xl: "p-[1rem]",
         l: "py-[0.5rem] px-[0.75rem]",
         sm: "py-[0.25rem] px-[0.5rem]",
+        trigger: "py-[1rem] px-[1.5rem]",
       },
     },
     defaultVariants: {

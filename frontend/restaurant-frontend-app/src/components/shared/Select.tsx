@@ -25,6 +25,7 @@ export const Select = ({
         <SelectValue placeholder={placeholder ?? ""} />
       </SelectTrigger>
       <SelectContent>
+        <SelectItem value="null">{placeholder}</SelectItem>
         {items?.map((item, i) => (
           <SelectItem key={i} value={item.id}>
             {item.label}

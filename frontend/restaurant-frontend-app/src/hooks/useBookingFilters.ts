@@ -4,15 +4,13 @@ import { z } from "zod";
 // import { useAppDispatch } from "@/app/hooks";
 import { useNavigate } from "react-router";
 
-export const useBookingForm = () => {
+export const useBookingFilters = () => {
   // const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const formSchema = z
-    .object({
-      location: z
-        .string()
-    })
+  const formSchema = z.object({
+    location: z.string(),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
