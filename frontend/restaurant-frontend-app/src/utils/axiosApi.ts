@@ -9,7 +9,7 @@ import { apiURL } from "./constants";
 import { logout, setUser } from "@/app/slices/userSlice";
 
 const axiosApi: AxiosInstance = axios.create({
-  baseURL: "https://k3pn4shr72.execute-api.eu-west-2.amazonaws.com/api",
+  baseURL: apiURL,
 });
 
 let isRefreshing = false;

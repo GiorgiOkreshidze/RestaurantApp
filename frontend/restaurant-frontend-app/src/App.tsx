@@ -6,14 +6,36 @@ import { NavBar } from "./components/shared";
 import { useEffect } from "react";
 import { Reservations } from "./pages/Reservations";
 import { Booking } from "./pages/Booking";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "./app/hooks";
+import { selectPopularDishes } from "./app/slices/dishesSlice";
+import { selectLocations } from "./app/slices/locationsSlice";
+import { getPopularDishes } from "./app/thunks/dishesThunks";
+import { getLocations } from "./app/thunks/locationsThunks";
 
 function App() {
   const location = useLocation();
   const hideNavBar = ["/signin", "/signup"].includes(location.pathname);
+  const dispatch = useAppDispatch();
+  const popularDishes = useSelector(selectPopularDishes);
+  const locations = useSelector(selectLocations);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
+
+  useEffect(() => {
+    if (!popularDishes.length) {
+      dispatch(getPopularDishes());
+    }
+  }, [dispatch, popularDishes.length]);
+
+  useEffect(() => {
+    console.log("test");
+    if (!locations.length) {
+      dispatch(getLocations());
+    }
+  }, [dispatch, locations.length]);
 
   return (
     <>
