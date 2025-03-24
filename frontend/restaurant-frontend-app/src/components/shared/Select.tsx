@@ -5,25 +5,24 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/SelectPrimitives";
-import { JSX } from "react";
+import { ComponentType } from "react";
 
 export const Select = ({
-  placeholder = "",
+  placeholder,
   items,
-  renderIcon,
+  Icon,
 }: {
   items: {
     id: string;
     label: string;
   }[];
   placeholder?: string;
-  renderIcon?: () => JSX.Element;
+  Icon?: ComponentType<{ className?: string }>;
 }) => {
   return (
     <SelectRoot>
-      <SelectTrigger>
-        {renderIcon && renderIcon()}
-        <SelectValue placeholder={placeholder} />
+      <SelectTrigger Icon={Icon}>
+        <SelectValue placeholder={placeholder ?? ""} />
       </SelectTrigger>
       <SelectContent>
         {items?.map((item, i) => (

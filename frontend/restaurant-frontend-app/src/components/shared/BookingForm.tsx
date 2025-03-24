@@ -35,31 +35,19 @@ export const BookingForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn(
-          "flex items-center gap-[1rem] flex-wrap *:grow-1",
-          className,
-        )}
+        className={cn("flex items-center gap-[1rem]", className)}
         {...props}
       >
-        <Select />
-        <SelectRoot>
-          <SelectTrigger className="place-items-start grow-1 grid grid-cols-[auto_1fr_auto]">
-            <LocationIcon
-              color="var(--color-foreground)"
-              className="size-[24px]"
-            />
-            <SelectValue placeholder="Location" />
-          </SelectTrigger>
-          <SelectContent>
-            {locations?.map((location, i) => (
-              <SelectItem key={i} value={location.id}>
-                {location.address}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </SelectRoot>
-        {/* <CalendarField />
-        <Dialog>
+        <Select
+          items={locations.map((location) => ({
+            id: location.id,
+            label: location.address,
+          }))}
+          placeholder="Location"
+          Icon={LocationIcon}
+        />
+        {/* <CalendarField /> */}
+        {/* <Dialog>
           <DialogTrigger asChild>
             <Button
               variant="secondary"
@@ -119,3 +107,9 @@ const timeSlots = [
   "7:15 p.m. - 8:45 p.m",
   "9:00 p.m. - 10:30 p.m",
 ];
+
+// const locations = [
+//   { id: "1", label: "Hello 1" },
+//   { id: "2", label: "Hello 2" },
+//   { id: "3", label: "Hello 3" },
+// ];

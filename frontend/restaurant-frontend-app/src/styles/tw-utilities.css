@@ -84,47 +84,50 @@
 /* ==================================== */
 /* INPUT */
 /* ==================================== */
-@utility stylesSet-input {
-  inline-size: 100%;
+@utility styleSet-input {
   margin: 0;
   padding: 1rem;
 
-  color: var(--input-foreground-color);
+  color: var(--color-input-foreground);
   @apply fontset-body;
   
-  background-color: var(--input-background-color);
-  border: var(--input-border-width) var(--input-border-style) var(--input-border-color);
-  border-radius: var(--input-borderRadius);
+  background-color: var(--color-input-background);
+  border: 1px solid var(--color-neutral-200, #dadada);
+  border-radius: var(--radius-input);
 
   outline: none;
 
   &:hover {
     border-color: transparent;
-    box-shadow: var(--input-shadow-primary);
+    box-shadow: var(--shadow-input-primary);
   }
 
   &:disabled {
-    color: var(--input-foreground-color-disabled);
+    color: var(--color-input-foreground-disabled);
   }
 
   &:focus {
-    border-color: var(--input-border-color-primary);
+    border-color: var(--color-primary);
+  }
+
+  &:focus-within {
+    border-color: var(--color-primary);
   }
 
   &::placeholder {
-    color: var(--input-placeholder-color);
+    color: var(--color-input-placeholder);
   }
 }
 
-@utility stylesSet-input-invalid {
-  border-color: var(--input-border-color-desctuctive);
+@utility styleSet-input-invalid {
+  border-color: var(--color-destructive);
 
   &:hover {
-    border-color: var(--input-border-color-desctuctive);
-    box-shadow: var(--input-shadow-destructive);
+    border-color: var(--color-destructive);
+    box-shadow: var(--shadow-input-destructive);
   }
 
   &:focus {
-    border-color: var(--input-border-color-desctuctive);
+    border-color: var(--color-destructive);
   }
 }

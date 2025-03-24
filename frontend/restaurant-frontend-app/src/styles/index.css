@@ -170,19 +170,14 @@ body {
   --color-card-shadow: rgba(from #c2c2c2 r g b / 0.2);
 
   /* INPUT */
-  --input-background-color: var(--color-neutral-0, #ffffff);
-  --input-foreground-color: var(--color-foreground, #232323);
-  --input-foreground-color-disabled: var(--color-neutral-400, #898989);
-  --input-placeholder-color: var(--color-neutral-400, #898989);
-  --input-border-width: 1px;
-  --input-border-style: solid;
-  --input-border-color: var(--color-neutral-200, #dadada);
-  --input-border-color-primary: var(--color-primary);
-  --input-border-color-desctuctive: var(--color-destructive);
-  --input-borderRadius: var(--radius, 0.5rem);
-  --input-shadow-primary: 0 0 8px 0 var(--color-primary-shadow);
-  --input-shadow-destructive: 0 0 8px 0 var(--color-destructive-shadow);
-
+  --color-input-background: var(--color-neutral-0, #ffffff);
+  --color-input-foreground: var(--color-foreground, #232323);
+  --color-input-foreground-disabled: var(--color-neutral-400, #898989);
+  --color-input-placeholder: var(--color-neutral-400, #898989);
+  --shadow-input-primary: 0 0 8px 0 var(--color-primary-shadow);
+  --shadow-input-destructive: 0 0 8px 0 var(--color-destructive-shadow);
+  --radius-input: 0.5rem;
+  
   /* FONTS */
   /* In "tw-utilities.css" file */
 
