@@ -17,6 +17,8 @@ public class ReservationRepository : IReservationRepository
 
     private readonly string? _reservationsTableName =
         Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_NAME");
+    private readonly string? _reservationsTableLocationIndexName =
+        Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_LOCATION_INDEX");
 
     public ReservationRepository()
     {
@@ -75,13 +77,14 @@ public class ReservationRepository : IReservationRepository
     public async Task<List<Reservation>> GetReservationsByDateLocationTable(
         string date,
         string locationAddress,
-        string tableNumber
+        string tableId
     )
     {
+        //maybe use global index here as well? also dont forget to change seeding reserrvations json file adding tableNumbers
         var request = new ScanRequest
         {
             TableName = _reservationsTableName,
-            FilterExpression = "#d = :date AND locationAddress = :locationAddress AND tableNumber = :tableNumber",
+            FilterExpression = "#d = :date AND locationAddress = :locationAddress AND tableId = :tableId",
             ExpressionAttributeNames = new Dictionary<string, string>
             {
                 { "#d", "date" }
@@ -90,7 +93,7 @@ public class ReservationRepository : IReservationRepository
             {
                 { ":date", new AttributeValue { S = date } },
                 { ":locationAddress", new AttributeValue { S = locationAddress } },
-                { ":tableNumber", new AttributeValue { S = tableNumber } }
+                { ":tableId", new AttributeValue { S = tableId } }
             }
         };
         var response = await _dynamoDBClient.ScanAsync(request);
@@ -99,31 +102,35 @@ public class ReservationRepository : IReservationRepository
         return reservations;
     }
 
-    public async Task<List<ReservationInfo>> GetReservationsForDateAndLocation(string date, string locationAddress)
+    public async Task<List<ReservationInfo>> GetReservationsForDateAndLocation(string date, string locationId)
     {
         var reservations = new List<ReservationInfo>();
-        var table = Table.LoadTable(_dynamoDBClient, _reservationsTableName);
-        var scanFilter = new ScanFilter();
 
-        scanFilter.AddCondition("date", ScanOperator.Equal, date);
-        scanFilter.AddCondition("locationAddress", ScanOperator.Equal, locationAddress);
-        
-        var search = table.Scan(scanFilter);
-        
-        do
+        var queryRequest = new QueryRequest
         {
-            var documents = await search.GetNextSetAsync();
-            reservations.AddRange(from document in documents 
-                where document["status"].AsString() != "cancelled" 
-                select new ReservationInfo
-                {
-                    TableNumber = document["tableNumber"].AsString(),
-                    Date = document["date"].AsString(),
-                    TimeFrom = document["timeFrom"].AsString(),
-                    TimeTo = document["timeTo"].AsString(),
-                    GuestsNumber = document["guestsNumber"].AsString()
-                });
-        } while (!search.IsDone);
+            TableName = _reservationsTableName,
+            IndexName = _reservationsTableLocationIndexName,
+            KeyConditionExpression = "locationId = :locationId AND date = :date",
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+        {
+            { ":locationId", new AttributeValue { S = locationId } },
+            { ":date", new AttributeValue { S = date } }
+        }
+        };
+
+        var response = await _dynamoDBClient.QueryAsync(queryRequest);
+
+        reservations.AddRange(from document in response.Items
+                              where document["status"].S != "cancelled"
+                              select new ReservationInfo
+                              {
+                                  TableId = document["tableId"].S,
+                                  TableNumber = document["tableNumber"].S,
+                                  Date = document["date"].S,
+                                  TimeFrom = document["timeFrom"].S,
+                                  TimeTo = document["timeTo"].S,
+                                  GuestsNumber = document["guestsNumber"].S
+                              });
 
         return reservations;
     }

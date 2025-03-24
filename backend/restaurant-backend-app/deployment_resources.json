@@ -358,7 +358,15 @@
     "hash_key_type": "S",
     "read_capacity": 1,
     "write_capacity": 1,
-    "global_indexes": [],
+    "global_indexes": [
+       {
+        "name": "${tables_table_location_index_name}",
+        "index_key_name": "locationId",
+        "index_key_type": "S",
+        "index_sort_key_name": "capacity",
+        "index_sort_key_type": "N"
+      }
+    ],
     "autoscaling": [],
     "tags": {}
   },
@@ -368,7 +376,15 @@
     "hash_key_type": "S",
     "read_capacity": 1,
     "write_capacity": 1,
-    "global_indexes": [],
+    "global_indexes": [
+       {
+        "name": "${reservations_table_location_date_index}",
+        "index_key_name": "locationId",
+        "index_key_type": "S",
+        "index_sort_key_name": "date",
+        "index_sort_key_type": "S"
+    }
+    ],
     "autoscaling": [],
     "tags": {}
   },

@@ -20,8 +20,10 @@
     "DYNAMODB_LOCATIONS_TABLE_NAME": "${locations_table}",
     "DYNAMODB_DISHES_TABLE_NAME": "${dishes_table}",
     "DYNAMODB_TABLES_TABLE_NAME": "${tables_table}",
+    "DYNAMODB_TABLES_TABLE_LOCATION_INDEX": "${tables_table_location_index_name}",
     "DYNAMODB_RESERVATIONS_TABLE_NAME": "${reservations_table}",
     "DYNAMODB_USERS_TABLE_NAME": "${users_table}",
+    "DYNAMODB_RESERVATIONS_TABLE_LOCATION_INDEX": "${reservations_table_location_date_index}",
     "COGNITO_USER_POOL_NAME": "${restaurant_userpool}",
     "COGNITO_USER_POOL_ID": {
       "resource_name": "${restaurant_userpool}",

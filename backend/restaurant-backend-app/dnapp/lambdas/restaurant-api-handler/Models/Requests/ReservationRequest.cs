@@ -11,8 +11,8 @@ public class ReservationRequest
     [JsonPropertyName("locationId")]
     public required string LocationId { get; set; }
     
-    [JsonPropertyName("tableNumber")]
-    public required string TableNumber { get; set; }
+    [JsonPropertyName("tableId")]
+    public required string TableId { get; set; }
  
     [JsonPropertyName("date")]
     public required string Date { get; set; }

@@ -59,20 +59,4 @@ public class LocationRepository : ILocationRepository
 
         return result;
     }
-
-    public async Task<LocationInfo> GetLocationDetailsAsync(string locationId)
-    {
-        var table = Table.LoadTable(_dynamoDBClient, _locationsTableName);
-        var document = await table.GetItemAsync(locationId);
-            
-        if (document == null) throw new ResourceNotFoundException("Location detail not found");
-
-        return new LocationInfo
-        {
-            LocationId = locationId,
-            Address = document["address"].AsString(),
-            TotalCapacity = document["totalCapacity"].AsString(),
-            AverageOccupancy = document["averageOccupancy"].AsString()
-        };
-    }
 }
