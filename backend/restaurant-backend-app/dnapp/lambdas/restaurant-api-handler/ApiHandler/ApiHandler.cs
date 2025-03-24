@@ -4,10 +4,14 @@ using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Function.Actions;
-using Function.Services;
-using SimpleLambdaFunction.Actions;
+using Function.Actions.Auth;
+using Function.Actions.Dishes;
+using Function.Actions.Feedbacks;
+using Function.Actions.Locations;
+using Function.Actions.Reservations;
+using Function.Actions.Tables;
 
-namespace SimpleLambdaFunction;
+namespace Function.ApiHandler;
 
 public class ApiHandler
 {
@@ -51,7 +55,6 @@ public class ApiHandler
     {
         var requestPath = eventRequest.Resource;
         var methodName = eventRequest.HttpMethod;
-        _getAvailableTablesAction.SetContext(context);
 
         context.Logger.LogInformation("eventRequest.Resource: " + requestPath);
         context.Logger.LogInformation("eventRequest.HttpMethod: " + methodName);
@@ -76,7 +79,7 @@ public class ApiHandler
                 {
                     "/signout", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "POST", _signOutAction.Signout }
+                        { "POST", _signOutAction.SignOut }
                     }
                 },
                 {
@@ -88,14 +91,14 @@ public class ApiHandler
                 {
                     "/locations", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "GET", _getLocationsActions.GetLocations }
+                        { "GET", _getLocationsActions.GetLocationsAsync }
                     }
                 },
                 {
                     "/dishes/popular",
                     new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "GET", _getPopularDishesAction.GetPopularDishes }
+                        { "GET", _getPopularDishesAction.GetPopularDishesAsync }
                     }
                 },
                 {
@@ -109,20 +112,20 @@ public class ApiHandler
                     "/locations/{id}/speciality-dishes",
                     new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "GET", _getSpecialityDishesAction.GetSpecialityDishes }
+                        { "GET", _getSpecialityDishesAction.GetSpecialityDishesAsync }
                     }
                 },
                 {
                     "/locations/select-options", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "GET", _getLocationOptionsAction.GetOptions }
+                        { "GET", _getLocationOptionsAction.GetOptionsAsync }
                     }
                 },
                 {
                     "/reservations/client",
                     new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "POST", _createReservationAction.CreateReservation }
+                        { "POST", _createReservationAction.CreateReservationAsync }
                     }
                 },
                 {
@@ -140,13 +143,13 @@ public class ApiHandler
                  {
                     "/reservations", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "GET", _getReservationsAction.GetReservations }
+                        { "GET", _getReservationsAction.GetReservationsAsync }
                     }
                 },
                  {
                     "/reservations/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                       { "DELETE", _deleteReservationAction.DeleteReservation }
+                       { "DELETE", _deleteReservationAction.DeleteReservationAsync }
                     }
                 },
             };
