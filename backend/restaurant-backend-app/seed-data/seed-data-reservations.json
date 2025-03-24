@@ -8,13 +8,14 @@
           "tableNumber": { "S": "1" },
           "date": { "S": "2025-03-22" },
           "guestsNumber": { "S": "4" },
-          "timeFrom": { "S": "12:15" },
-          "timeTo": { "S": "13:45" },
+          "timeFrom": { "S": "08:15" },
+          "timeTo": { "S": "09:45" },
           "locationAddress": { "S": "48 Rustaveli Avenue" },
           "feedbackId": { "S": "fb_001" },
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "Temirlan Doe, temirlan@example.com" }
+          "userInfo": { "S": "Temirlan Doe, temirlan@example.com" },
+          "createdAt": { "S": "2025-03-08T10:15:00Z" }
         }
       }
     },
@@ -26,13 +27,14 @@
           "tableNumber": { "S": "1" },
           "date": { "S": "2025-03-22" },
           "guestsNumber": { "S": "4" },
-          "timeFrom": { "S": "17:30" },
-          "timeTo": { "S": "19:00" },
+          "timeFrom": { "S": "13:30" },
+          "timeTo": { "S": "15:00" },
           "locationAddress": { "S": "48 Rustaveli Avenue" },
           "feedbackId": { "S": "fb_001" },
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "Irina Doe, irina@example.com" }
+          "userInfo": { "S": "Irina Doe, irina@example.com" },
+          "createdAt": { "S": "2025-03-12T10:15:00Z" }
         }
       }
     },
@@ -44,13 +46,14 @@
           "tableNumber": { "S": "3" },
           "date": { "S": "2025-03-22" },
           "guestsNumber": { "S": "6" },
-          "timeFrom": { "S": "21:00" },
-          "timeTo": { "S": "22:30" },
+          "timeFrom": { "S": "17:00" },
+          "timeTo": { "S": "18:30" },
           "locationAddress": { "S": "14 Baratashvili Street" },
           "feedbackId": { "S": "fb_002" },
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "Giorgi Doe, giorgi@example.com" }
+          "userInfo": { "S": "Giorgi Doe, giorgi@example.com" },
+          "createdAt": { "S": "2025-03-09T10:15:00Z" }
         }
       }
     },
@@ -62,13 +65,14 @@
           "tableNumber": { "S": "1" },
           "date": { "S": "2025-03-22" },
           "guestsNumber": { "S": "2" },
-          "timeFrom": { "S": "19:15" },
-          "timeTo": { "S": "20:45" },
+          "timeFrom": { "S": "15:15" },
+          "timeTo": { "S": "16:45" },
           "locationAddress": { "S": "14 Baratashvili Street" },
           "feedbackId": { "S": "fb_002" },
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "Salome Doe, salome@example.com" }
+          "userInfo": { "S": "Salome Doe, salome@example.com" },
+          "createdAt": { "S": "2025-03-10T10:15:00Z" }
         }
       }
     },
@@ -80,13 +84,14 @@
           "tableNumber": { "S": "4" },
           "date": { "S": "2025-03-22" },
           "guestsNumber": { "S": "6" },
-          "timeFrom": { "S": "19:15" },
-          "timeTo": { "S": "20:45" },
+          "timeFrom": { "S": "15:15" },
+          "timeTo": { "S": "16:45" },
           "locationAddress": { "S": "9 Abashidze Street" },
           "feedbackId": { "S": "fb_003" },
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "Dora Doe, dora@example.com" }
+          "userInfo": { "S": "Dora Doe, dora@example.com" },
+          "createdAt": { "S": "2025-03-11T10:15:00Z" }
         }
       }
     },
@@ -98,13 +103,14 @@
           "tableNumber": { "S": "1" },
           "date": { "S": "2025-03-22" },
           "guestsNumber": { "S": "5" },
-          "timeFrom": { "S": "21:00" },
-          "timeTo": { "S": "22:30" },
+          "timeFrom": { "S": "17:00" },
+          "timeTo": { "S": "18:30" },
           "locationAddress": { "S": "9 Abashidze Street" },
           "feedbackId": { "S": "fb_003" },
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "Roman Doe, roman@example.com" }
+          "userInfo": { "S": "Roman Doe, roman@example.com" },
+          "createdAt": { "S": "2025-02-12T10:15:00Z" }
         }
       }
     }
