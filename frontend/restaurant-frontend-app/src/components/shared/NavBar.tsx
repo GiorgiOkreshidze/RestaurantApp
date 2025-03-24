@@ -1,4 +1,4 @@
-import { Container, Title, UserMenu } from ".";
+import { Container, BrandTitle, UserMenu } from ".";
 import { Link, NavLink } from "react-router";
 import { CartIcon, Logo } from "@/components/icons/";
 import { Button } from "../ui";
@@ -16,7 +16,7 @@ export const NavBar = () => {
         <div className="flex items-center">
           <Link to="/" className="inline-flex items-center gap-[0.75rem]">
             <Logo className="size-[48px]" />
-            <Title variant="navBarLogo" />
+            <BrandTitle variant="navBarLogo" />
           </Link>
         </div>
         <div className="flex flex-col justify-center items-center gap-[1rem] lg:flex-row lg:gap-[2rem]">

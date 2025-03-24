@@ -1,4 +1,4 @@
-import { Container, Title } from ".";
+import { Container, BrandTitle } from ".";
 import { LocationIcon, StarIcon } from "../icons";
 import { Button, Text } from "../ui";
 
@@ -12,7 +12,7 @@ export const LocationHero = () => {
     <Container>
       <div className="flex gap-20 justify-between ">
         <div className="min-w-[340px] flex flex-col">
-          <Title
+          <BrandTitle
             variant="navBarLogo"
             className="text-green-200 !text-5xl mb-6"
           />

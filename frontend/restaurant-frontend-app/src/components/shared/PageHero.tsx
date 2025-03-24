@@ -7,8 +7,8 @@ import { cva, VariantProps } from "class-variance-authority";
 const heroVariants = cva("", {
   variants: {
     variant: {
-      transparent: "",
-      dark: "bg-[var(--color-neutral-900)]/80 bg-blend-overlay",
+      transparent: "py-[40px]",
+      dark: "py-[98px] bg-[var(--color-neutral-900)]/80 bg-blend-overlay",
     },
   },
   defaultVariants: {
@@ -25,7 +25,7 @@ export const PageHero = ({
   return (
     <div
       className={cn(
-        "min-h-[404px] py-[40px] bg-cover bg-no-repeat bg-center",
+        "content-center min-h-[404px] bg-cover bg-no-repeat bg-center",
         heroVariants({ variant, className }),
       )}
       style={{ backgroundImage: `url(${HeroImg})` }}

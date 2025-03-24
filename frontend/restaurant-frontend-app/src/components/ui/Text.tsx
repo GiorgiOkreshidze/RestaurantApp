@@ -26,9 +26,9 @@ export const textVariants = cva("text-foreground", {
 const Text = ({
   className,
   variant,
-  tag: Component = "span",
+  tag: Component = "p",
   ...props
-}: ComponentProps<"span"> &
+}: ComponentProps<"p"> &
   VariantProps<typeof textVariants> & {
     tag?: ElementType;
   }) => {

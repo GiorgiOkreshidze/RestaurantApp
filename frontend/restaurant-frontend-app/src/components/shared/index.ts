@@ -1,5 +1,5 @@
 export { RegistrationInput } from "./RegistrationInput";
-export { Title } from "./Title";
+export { BrandTitle } from "./BrandTitle";
 export { NavBar } from "./NavBar";
 export { Dishes } from "./Dishes";
 export { Locations } from "./Locations";
@@ -19,3 +19,4 @@ export { CalendarField } from "./CalendarField";
 export { BookingCard } from "./BookingCard";
 export { TimeSlot } from "./TimeSlot";
 export { Select } from "./Select";
+export { PageBody } from "./PageBody";
