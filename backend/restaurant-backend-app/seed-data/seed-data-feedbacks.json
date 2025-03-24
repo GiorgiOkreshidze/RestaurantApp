@@ -1,16 +1,18 @@
 ﻿{
-  "Feedbacks": [
+  "LocationFeedbacks": [
     {
       "PutRequest": {
         "Item": {
           "id": { "S": "fb_001" },
-          "rate": { "S": "5" },
+          "rate": { "N": "5" },
           "comment": { "S": "Great place!" },
-          "userName": { "S": "John Doe" },
+          "userName": { "S": "Salome Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar1.jpg" },
           "date": { "S": "2025-03-17T12:00:00Z" },
-          "type": { "S": "positive" },
-          "locationId": { "S": "loc_001" }
+          "type": { "S": "SERVICE-QUALITY" },
+          "locationId": { "S": "loc_001" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-03-17T12:00:00Z" },
+          "locationId#type": { "S": "loc_001#SERVICE_QUALITY" }
         }
       }
     },
@@ -18,13 +20,15 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "fb_002" },
-          "rate": { "S": "4" },
+          "rate": { "N": "4" },
           "comment": { "S": "Nice experience, but a bit crowded." },
-          "userName": { "S": "Jane Smith" },
+          "userName": { "S": "Dora Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar2.jpg" },
           "date": { "S": "2025-03-16T14:30:00Z" },
-          "type": { "S": "neutral" },
-          "locationId": { "S": "loc_002" }
+          "type": { "S": "SERVICE-QUALITY" },
+          "locationId": { "S": "loc_002" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-03-16T14:30:00Z" },
+          "locationId#type": { "S": "loc_002#SERVICE_QUALITY" }
         }
       }
     },
@@ -32,13 +36,15 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "fb_003" },
-          "rate": { "S": "3" },
+          "rate": { "N": "3" },
           "comment": { "S": "Average experience." },
-          "userName": { "S": "Alice Johnson" },
+          "userName": { "S": "Roman Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar3.jpg" },
           "date": { "S": "2025-03-15T10:15:00Z" },
-          "type": { "S": "neutral" },
-          "locationId": { "S": "loc_003" }
+          "type": { "S": "CUISINE-EXPERIENCE" },
+          "locationId": { "S": "loc_003" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-03-15T10:15:00Z" },
+          "locationId#type": { "S": "loc_003#SERVICE_QUALITY" }
         }
       }
     },
@@ -46,13 +52,15 @@
       "PutRequest": {
         "Item": {
           "id": { "S": "fb_004" },
-          "rate": { "S": "2" },
+          "rate": { "N": "2" },
           "comment": { "S": "Do not like it." },
-          "userName": { "S": "Lotty Johnson" },
+          "userName": { "S": "Dora Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar4.jpg" },
-          "date": { "S": "2025-03-15T10:15:00Z" },
-          "type": { "S": "bad" },
-          "locationId": { "S": "loc_003" }
+          "date": { "S": "2025-03-20T10:15:00Z" },
+          "type": { "S": "CUISINE-EXPERIENCE" },
+          "locationId": { "S": "loc_003" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-03-20T10:15:00Z" },
+          "locationId#type": { "S": "loc_003#SERVICE_QUALITY" }
         }
       }
     }

@@ -14,7 +14,7 @@
           "feedbackId": { "S": "fb_001" },
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "John Doe, john@example.com" },
+          "userInfo": { "S": "Temirlan Doe, temirlan@example.com" },
           "createdAt": { "S": "2025-03-08T10:15:00Z" }
         }
       }
@@ -33,7 +33,7 @@
           "feedbackId": { "S": "fb_001" },
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "John Doe, john@example.com" },
+          "userInfo": { "S": "Irina Doe, irina@example.com" },
           "createdAt": { "S": "2025-03-12T10:15:00Z" }
         }
       }
@@ -52,7 +52,7 @@
           "feedbackId": { "S": "fb_002" },
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "Jane Smith, jane@example.com" },
+          "userInfo": { "S": "Giorgi Doe, giorgi@example.com" },
           "createdAt": { "S": "2025-03-09T10:15:00Z" }
         }
       }
@@ -71,7 +71,7 @@
           "feedbackId": { "S": "fb_002" },
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "Jane Smith, jane@example.com" },
+          "userInfo": { "S": "Salome Doe, salome@example.com" },
           "createdAt": { "S": "2025-03-10T10:15:00Z" }
         }
       }
@@ -90,12 +90,12 @@
           "feedbackId": { "S": "fb_003" },
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "Alice Johnson, alice@example.com" },
+          "userInfo": { "S": "Dora Doe, dora@example.com" },
           "createdAt": { "S": "2025-03-11T10:15:00Z" }
         }
       }
     },
-     {
+    {
       "PutRequest": {
         "Item": {
           "id": { "S": "res_006" },
@@ -109,7 +109,7 @@
           "feedbackId": { "S": "fb_003" },
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "Alice Johnson, alice@example.com" },
+          "userInfo": { "S": "Roman Doe, roman@example.com" },
           "createdAt": { "S": "2025-02-12T10:15:00Z" }
         }
       }
