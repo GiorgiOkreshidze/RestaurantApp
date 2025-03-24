@@ -36,18 +36,14 @@ function SelectTrigger({
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
-      className={cn(
-        "styleSet-input fontset-bodyBold cursor-pointer flex items-center *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:mr-[0.75rem]",
-        // "text-start [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 *:data-[slot=select-value]:flex *:data-[slot=select-value]:gap-2 *:data-[slot=select-value]:items-center *:data-[slot=select-value]:line-clamp-1 aria-invalid:border-destructive aria-invalid:ring-destructive/20 bg-input-background flex items-center justify-between rounded shadow-input-primary px-[1.5rem] py-[1rem] gap-[1rem]",
-        className,
-      )}
+      className={cn("*:data-[slot=select-value]:line-clamp-1", className)}
       {...props}
       asChild
     >
       <Button variant="trigger" size="trigger">
-        {Icon && <Icon className="mr-[0.75rem] stroke-foreground" />}
+        {Icon && <Icon className="shrink-0 stroke-foreground size-[1.5rem]" />}
         {children}
-        <SelectPrimitive.Icon className="ml-auto" asChild>
+        <SelectPrimitive.Icon className="shrink-0 ml-auto" asChild>
           <ChevronDownIcon />
         </SelectPrimitive.Icon>
       </Button>
