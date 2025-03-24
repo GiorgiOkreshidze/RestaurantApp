@@ -31,7 +31,6 @@ function App() {
   }, [dispatch, popularDishes.length]);
 
   useEffect(() => {
-    console.log("test");
     if (!locations.length) {
       dispatch(getLocations());
     }

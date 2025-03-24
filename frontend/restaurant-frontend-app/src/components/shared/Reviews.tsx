@@ -2,7 +2,7 @@ import { Text } from "../ui";
 import { Container } from "./container";
 
 import { Review } from "@/types";
-import { ReviewsCard } from "../ui/ReviewsCard";
+import { ReviewsCard } from "@/components/ui/ReviewsCard";
 import ReviewImage from "../../assets/images/rock.jpg";
 import britneyImage from "../../assets/images/britney.png";
 

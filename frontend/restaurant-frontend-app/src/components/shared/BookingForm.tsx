@@ -8,20 +8,21 @@ import {
   Dialog,
   DialogDescription,
   DialogHeader,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
 import {
   SelectTrigger,
-  Select,
+  SelectRoot,
   SelectContent,
   SelectValue,
   SelectItem,
-} from "../ui/Select";
+} from "@/components/ui/SelectPrimitives";
 import { CalendarField } from "./CalendarField";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { useSelector } from "react-redux";
 import { selectLocations } from "@/app/slices/locationsSlice";
 import { useBookingForm } from "@/hooks/useBookingForm";
+import { Select } from "@/components/shared";
 
 export const BookingForm = ({
   className,
@@ -40,7 +41,8 @@ export const BookingForm = ({
         )}
         {...props}
       >
-        <Select>
+        <Select />
+        <SelectRoot>
           <SelectTrigger className="place-items-start grow-1 grid grid-cols-[auto_1fr_auto]">
             <LocationIcon
               color="var(--color-foreground)"
@@ -54,12 +56,9 @@ export const BookingForm = ({
                 {location.address}
               </SelectItem>
             ))}
-            {/* <SelectItem value="1">48 Rustaveli Avenue</SelectItem>
-            <SelectItem value="2">14 Baratashvili Street</SelectItem>
-            <SelectItem value="3">9 Abashidze Street</SelectItem> */}
           </SelectContent>
-        </Select>
-        <CalendarField />
+        </SelectRoot>
+        {/* <CalendarField />
         <Dialog>
           <DialogTrigger asChild>
             <Button
@@ -105,7 +104,7 @@ export const BookingForm = ({
             +
           </Button>
         </div>
-        <Button className="grow-1">Find&nbsp;a&nbsp;Table</Button>
+        <Button className="grow-1">Find&nbsp;a&nbsp;Table</Button> */}
       </form>
     </Form>
   );

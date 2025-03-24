@@ -5,7 +5,7 @@ export { Dishes } from "./Dishes";
 export { Locations } from "./Locations";
 export { RegForm } from "./RegForm";
 export { LoginForm } from "./LoginForm";
-export { PasswordField } from "../ui/PasswordField";
+export { PasswordField } from "@/components/ui/PasswordField";
 export { Container } from "./container";
 export { LocationHero } from "./LocationHero";
 export { Reviews } from "./Reviews";
@@ -18,3 +18,4 @@ export { BookingForm } from "./BookingForm";
 export { CalendarField } from "./CalendarField";
 export { BookingCard } from "./BookingCard";
 export { BookingCardButton } from "./BookingCardButton"
+export { Select } from "./Select"

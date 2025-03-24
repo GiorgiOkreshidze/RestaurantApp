@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
-import { PasswordField } from "../ui/PasswordField";
+import { PasswordField } from "@/components/ui/PasswordField";
 import { useLoginForm } from "@/hooks/useLoginForm";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";

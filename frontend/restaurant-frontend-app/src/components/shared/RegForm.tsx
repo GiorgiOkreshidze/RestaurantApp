@@ -16,7 +16,7 @@ import {
 import { ComponentProps, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useRegForm } from "@/hooks/useRegForm";
-import { PasswordField } from "../ui/PasswordField";
+import { PasswordField } from "@/components/ui/PasswordField";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
 import { selectRegisterLoading } from "@/app/slices/userSlice";

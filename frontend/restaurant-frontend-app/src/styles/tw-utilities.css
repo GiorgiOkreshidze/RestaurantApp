@@ -79,3 +79,52 @@
 @utility dynamic-title-size {
   font-size: clamp(1rem, 5vw, 5rem);
 }
+
+
+/* ==================================== */
+/* INPUT */
+/* ==================================== */
+@utility stylesSet-input {
+  inline-size: 100%;
+  margin: 0;
+  padding: 1rem;
+
+  color: var(--input-foreground-color);
+  @apply fontset-body;
+  
+  background-color: var(--input-background-color);
+  border: var(--input-border-width) var(--input-border-style) var(--input-border-color);
+  border-radius: var(--input-borderRadius);
+
+  outline: none;
+
+  &:hover {
+    border-color: transparent;
+    box-shadow: var(--input-shadow-primary);
+  }
+
+  &:disabled {
+    color: var(--input-foreground-color-disabled);
+  }
+
+  &:focus {
+    border-color: var(--input-border-color-primary);
+  }
+
+  &::placeholder {
+    color: var(--input-placeholder-color);
+  }
+}
+
+@utility stylesSet-input-invalid {
+  border-color: var(--input-border-color-desctuctive);
+
+  &:hover {
+    border-color: var(--input-border-color-desctuctive);
+    box-shadow: var(--input-shadow-destructive);
+  }
+
+  &:focus {
+    border-color: var(--input-border-color-desctuctive);
+  }
+}
