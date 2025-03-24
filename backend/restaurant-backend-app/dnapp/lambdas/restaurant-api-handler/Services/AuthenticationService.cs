@@ -1,17 +1,18 @@
-﻿using System.Threading.Tasks;
-using Amazon.CognitoIdentityProvider;
-using SimpleLambdaFunction.Services.Interfaces;
-using Amazon.CognitoIdentityProvider.Model;
+﻿using System;
 using System.Collections.Generic;
-using System;
-using Function.Exceptions;
-using System.Security.Authentication;
-using Function.Models;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text.Json;
-using System.Security.Cryptography;
+using System.Threading.Tasks;
+using Amazon.CognitoIdentityProvider;
+using Amazon.CognitoIdentityProvider.Model;
+using Function.Exceptions;
+using Function.Models.Responses;
+using Function.Models.User;
+using Function.Services.Interfaces;
+using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
 
-namespace SimpleLambdaFunction.Services;
+namespace Function.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
@@ -41,7 +42,6 @@ public class AuthenticationService : IAuthenticationService
         try
         {
             var authResponse = await _cognitoClient.AdminInitiateAuthAsync(authRequest);
-            
             var response = new AuthResult
             {
                 IdToken = authResponse.AuthenticationResult.IdToken,
@@ -54,7 +54,7 @@ public class AuthenticationService : IAuthenticationService
         }
         catch (UserNotFoundException)
         {
-            throw new AuthenticationException("We could not find an account matching the email.");
+            throw new ResourceNotFoundException("We could not find an account matching the email.");
         }
         catch (NotAuthorizedException)
         {
@@ -63,11 +63,6 @@ public class AuthenticationService : IAuthenticationService
         catch (TooManyRequestsException)
         {
             throw new AuthenticationException("Your account is temporarily locked due to multiple failed login attempts. Please try again later.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to log in: {ex}");
-            throw;
         }
     }
 
@@ -78,12 +73,12 @@ public class AuthenticationService : IAuthenticationService
             ClientId = _clientId,
             Username = email,
             Password = password,
-            UserAttributes = new List<AttributeType>
-            {
+            UserAttributes =
+            [
                 new AttributeType { Name = "given_name", Value = firstName },
                 new AttributeType { Name = "family_name", Value = lastName },
                 new AttributeType { Name = "email", Value = email }
-            }
+            ]
         };
 
         await _cognitoClient.SignUpAsync(signUpRequest);
@@ -100,59 +95,37 @@ public class AuthenticationService : IAuthenticationService
         {
             UserPoolId = _userPoolId,
             Username = email,
-            UserAttributes = new List<AttributeType>
-            {
-                new AttributeType { Name = "custom:role", Value = role.ToString() }
-            }
+            UserAttributes = [new AttributeType { Name = "custom:role", Value = role.ToString() }]
         };
+        
         await _cognitoClient.AdminUpdateUserAttributesAsync(updateAttributesRequest);
         return await SignIn(email, password);
     }
 
     public async Task SignOut(string refreshToken)
     {
-        try
+        var revokeRequest = new RevokeTokenRequest
         {
-            var revokeRequest = new RevokeTokenRequest
-            {
-                Token = refreshToken,
-                ClientId = _clientId
-            };
+            Token = refreshToken,
+            ClientId = _clientId
+        };
 
-            await _cognitoClient.RevokeTokenAsync(revokeRequest);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to log out: {ex}");
-            throw new AuthenticationException("Logout failed. Please try again.");
-        }
+        await _cognitoClient.RevokeTokenAsync(revokeRequest);
     }
 
     public async Task CheckEmailUniqueness(string email)
     {
-        try
+        var listUsersRequest = new ListUsersRequest
         {
-            // Try to find existing user by email
-            var listUsersRequest = new ListUsersRequest
-            {
-                UserPoolId = _userPoolId,
-                Filter = $"email = \"{email}\""
-            };
+            UserPoolId = _userPoolId,
+            Filter = $"email = \"{email}\""
+        };
 
-            var response = await _cognitoClient.ListUsersAsync(listUsersRequest);
+        var response = await _cognitoClient.ListUsersAsync(listUsersRequest);
 
-            if (response.Users.Count > 0)
-            {
-                throw new UserExistsException($"User with email {email} already exists");
-            }
-        }
-        catch (UserExistsException)
+        if (response.Users.Count != 0)
         {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error checking email uniqueness: {ex.Message}");
+            throw new ResourceAlreadyExistsException($"User with email {email} already exists");
         }
     }
 
@@ -179,13 +152,7 @@ public class AuthenticationService : IAuthenticationService
         }
         catch (UserNotFoundException)
         {
-            Console.WriteLine("User not found in Cognito.");
-            throw new Exception("User not found in Cognito.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fetching user details: {ex}");
-            throw;
+            throw new ResourceNotFoundException("User not found in Cognito.");
         }
     }
 
@@ -201,6 +168,7 @@ public class AuthenticationService : IAuthenticationService
                 { "REFRESH_TOKEN", refreshToken }
             }
         };
+        
         try
         {
             var response = await _cognitoClient.AdminInitiateAuthAsync(authRequest);
@@ -217,12 +185,7 @@ public class AuthenticationService : IAuthenticationService
         }
         catch (NotAuthorizedException ex)
         {
-            throw new UnauthorizedAccessException("Invalid refresh token.", ex);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to refresh token in: {ex}");
-            throw;
+            throw new UnauthorizedException("Invalid refresh token.", ex);
         }
     }
 }

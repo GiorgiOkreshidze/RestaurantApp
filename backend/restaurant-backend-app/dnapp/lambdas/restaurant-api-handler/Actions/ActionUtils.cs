@@ -5,9 +5,9 @@ using System.Text.RegularExpressions;
 using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Lambda.APIGatewayEvents;
 
-namespace SimpleLambdaFunction.Actions;
+namespace Function.Actions;
 
-public class ActionUtils
+public static class ActionUtils
 {
     public static APIGatewayProxyResponse FormatResponse(int code, object response)
     {
@@ -22,53 +22,60 @@ public class ActionUtils
         };
     }
     
-    public static List<string> ValidateRequestParams(string[] expected, Dictionary<string, JsonElement> received)
+    public static void ValidateRequiredParams(string[] requiredParams, Dictionary<string, JsonElement> body)
     {
-        var missing = new List<string>();
-        foreach (var param in expected)
-        {
-            if (!received.ContainsKey(param))
-            {
-                missing.Add(param);
-            }
-        }
+        var missingParams = ValidateRequestParams(requiredParams, body);
 
-        return missing;
+        if (missingParams.Count > 0)
+        {
+            throw new ArgumentException($"Missing required parameters: {string.Join(", ", missingParams)}");
+        }
+    }
+    
+    public static void ValidateRequestBody(string requestBody)
+    {
+        if (string.IsNullOrEmpty(requestBody))
+        {
+            throw new ArgumentException("Request body is missing");
+        }
     }
     
     public static APIGatewayProxyResponse InvalidEndpoint(string path, string method)
     {
-        return FormatResponse(400,
-            new
-            {
-                message = $"Bad request syntax or unsupported method. Request path: {path}. HTTP method: {method}"
-            });
+        throw new ArgumentException( $"Bad request syntax or unsupported method. Request path: {path}. HTTP method: {method}");
     }
 
-    public static bool ValidateName(string name)
+    public static void ValidateFullName(string name)
     {
-        if (string.IsNullOrEmpty(name) || name.Length > 50)
-            return false;
+        const string namePattern = @"^[a-zA-Z\-']+$";
 
-        string namePattern = @"^[a-zA-Z\-']+$";
-        return Regex.IsMatch(name, namePattern);
+        if (string.IsNullOrEmpty(name) || name.Length > 50 || !Regex.IsMatch(name, namePattern))
+            throw new ArgumentException(
+                "First name and last name must be up to 50 characters. Only Latin letters, hyphens, and apostrophes are allowed.");
     }
 
-    public static bool ValidateEmail(string email)
+    public static void ValidateEmail(string? email)
     {
         string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        return Regex.IsMatch(email, emailPattern);
+
+        if (string.IsNullOrEmpty(email) || !Regex.IsMatch(email, emailPattern))
+        {
+            throw new ArgumentException(
+                "Email must be in following format test@email.com");
+        }
     }
 
-    public static bool ValidatePassword(string password)
+    public static void ValidatePassword(string? password)
     {
-        if (string.IsNullOrEmpty(password) || password.Length < 8 || password.Length > 16)
-            return false;
-
-        return Regex.IsMatch(password, @"(?=.*[A-Z])") &&
-               Regex.IsMatch(password, @"(?=.*[a-z])") &&
-               Regex.IsMatch(password, @"(?=.*\d)") &&
-               Regex.IsMatch(password, @"(?=.*[!@#$%^&*()_+\-=[\]{};':""\\|,.<>/?])");
+        if (string.IsNullOrEmpty(password) || password.Length < 8 || password.Length > 16 ||
+            !Regex.IsMatch(password, @"(?=.*[A-Z])") ||
+            !Regex.IsMatch(password, @"(?=.*[a-z])") ||
+            !Regex.IsMatch(password, @"(?=.*\d)") ||
+            !Regex.IsMatch(password, @"(?=.*[!@#$%^&*()_+\-=[\]{};':""\\|,.<>/?])"))
+        {
+            throw new ArgumentException(
+                "Password must be 8-16 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.");
+        }
     }
 
     public static string GetAccessToken(APIGatewayProxyRequest request)
@@ -80,5 +87,19 @@ public class ActionUtils
         }
 
         return accessTokenHeader.Trim();
+    }
+    
+    private static List<string> ValidateRequestParams(string[] expected, Dictionary<string, JsonElement> received)
+    {
+        var missing = new List<string>();
+        foreach (var param in expected)
+        {
+            if (!received.ContainsKey(param))
+            {
+                missing.Add(param);
+            }
+        }
+
+        return missing;
     }
 }
