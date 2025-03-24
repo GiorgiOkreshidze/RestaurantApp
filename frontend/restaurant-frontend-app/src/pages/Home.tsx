@@ -1,5 +1,5 @@
 // import { selectUser } from "@/app/slices/userSlice";
-import { Dishes, HeroWrapper, Locations, Title } from "@/components/shared";
+import { Dishes, PageHero, Locations, Title } from "@/components/shared";
 import { useSelector } from "react-redux";
 import {
   selectDishesLoading,
@@ -19,7 +19,7 @@ export const Home = () => {
 
   return (
     <>
-      <HeroWrapper>
+      <PageHero>
         <div className="max-w-[340px]">
           <Title variant="navBarLogo" className="text-green-200 !text-5xl" />
           <Text variant="body" className=" text-neutral-0 mt-6 mb-3">
@@ -32,7 +32,7 @@ export const Home = () => {
           </Text>
           <Button className="w-full">View Menu</Button>
         </div>
-      </HeroWrapper>
+      </PageHero>
       <Dishes
         isLoading={isDishesLoading}
         title="Most Popular Dishes"

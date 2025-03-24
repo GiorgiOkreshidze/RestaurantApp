@@ -4,7 +4,7 @@ import { Text } from "../ui";
 import { Logo } from "../icons";
 import { Container } from "./container";
 
-export const PageTitle = () => {
+export const PageHeading = () => {
   const user = useSelector(selectUser);
 
   return (

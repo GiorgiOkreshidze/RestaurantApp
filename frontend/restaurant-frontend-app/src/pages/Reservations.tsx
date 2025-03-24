@@ -1,4 +1,4 @@
-import { Container, PageTitle, ReservationCard } from "@/components/shared";
+import { Container, PageHeading, ReservationCard } from "@/components/shared";
 import calendarCrossed from "@/assets/images/calendar-crossed.png";
 import { Button, Text } from "@/components/ui";
 import { Link } from "react-router";
@@ -21,7 +21,7 @@ export const Reservations = () => {
 
   return (
     <>
-      <PageTitle />
+      <PageHeading />
       <Container className="flex flex-col grow-1">
         {reservations?.length > 0 ? (
           <div className="grow-1 content-start grid gap-[2rem] lg:grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">

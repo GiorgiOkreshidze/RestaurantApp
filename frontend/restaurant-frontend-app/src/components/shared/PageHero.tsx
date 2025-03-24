@@ -16,7 +16,7 @@ const heroVariants = cva("", {
   },
 });
 
-export const HeroWrapper = ({
+export const PageHero = ({
   className,
   children,
   variant,
