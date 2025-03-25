@@ -37,18 +37,6 @@ export const userSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, { payload: data }) => {
         state.registerLoading = false;
-        // state.user = {
-        //   tokens: {
-        //     accessToken: data.accessToken,
-        //     idToken: data.idToken,
-        //     refreshToken: data.refreshToken,
-        //   },
-        //   name: state.user?.name || "",
-        //   lastName: state.user?.lastName || "",
-        //   email: state.user?.email || "",
-        //   role: state.user?.role || "",
-        //   imageUrl: state.user?.imageUrl || "",
-        // };
         toast.success(data.message);
       })
       .addCase(register.rejected, (state, { payload: errorResponse }) => {

@@ -4,27 +4,17 @@ import { DatePicker } from "./DatePicker";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { useBookingForm } from "@/hooks/useBookingForm";
-import { TimeSlotsDialog, GuestsNumber, Select } from "@/components/shared";
+import { GuestsNumber, Select } from "@/components/shared";
 import { useSelector } from "react-redux";
 import { selectLocations } from "@/app/slices/locationsSlice";
-import { selectTables } from "@/app/slices/tablesSlice";
 
 export const BookingForm = ({
   className,
   ...props
 }: ComponentProps<"form">) => {
   const locations = useSelector(selectLocations);
-  const {
-    locationId,
-    setLocationId,
-    date,
-    setDate,
-    guestsNumber,
-    setGuestsNumber,
-    onSubmit,
-  } = useBookingForm();
-  const tables = useSelector(selectTables);
-
+  const { locationId, setLocationId, date, setDate, onSubmit } =
+    useBookingForm();
   return (
     <form
       onSubmit={onSubmit}
@@ -50,7 +40,7 @@ export const BookingForm = ({
         <Text variant="buttonSecondary">Time</Text>
         <ChevronDownIcon className="text-foreground ml-auto" />
       </Button>
-      <GuestsNumber value={guestsNumber} setValue={setGuestsNumber} />
+      <GuestsNumber />
       <Button type="submit" className="md:max-xl:col-span-2">
         Find&nbsp;a&nbsp;Table
       </Button>

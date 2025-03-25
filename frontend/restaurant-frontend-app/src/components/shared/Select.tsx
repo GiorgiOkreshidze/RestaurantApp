@@ -26,7 +26,7 @@ export const Select = ({
   setValue: (value: string | null) => void;
 }) => {
   const handleChange = (value: string) => {
-    if (value === "reset") {
+    if (value === "null") {
       setValue(null);
     } else {
       setValue(value);
@@ -39,7 +39,7 @@ export const Select = ({
         <SelectValue placeholder={placeholder ?? ""} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="reset">Location</SelectItem>
+        <SelectItem value="null">Location</SelectItem>
         {items?.map((item, i) => (
           <SelectItem key={i} value={item.id}>
             {item.label}

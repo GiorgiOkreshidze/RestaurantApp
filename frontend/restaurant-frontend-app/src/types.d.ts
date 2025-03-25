@@ -114,7 +114,7 @@ export interface Reservation {
 export interface Table {
   tableId: string;
   capacity: string;
-  availableTimes: string[];
+  availableSlots: string[];
   locationAddress: string;
   locationId: string;
   tableNumber: string;
@@ -125,4 +125,10 @@ export interface GetTablesParams {
   locationId: string;
   guests?: string;
   time?: string;
+}
+
+export interface BookingFilters {
+  locationId: string | null;
+  dateTime: string;
+  guestsNumber: number;
 }

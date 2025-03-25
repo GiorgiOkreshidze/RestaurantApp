@@ -1,9 +1,16 @@
+import { Table } from "@/types";
 import locationThumbnail from "../../assets/images/location-thumbnail.jpg";
 import { LocationIcon, PlusIcon } from "../icons";
 import { Text } from "../ui";
 import { TimeSlot } from "./TimeSlot";
 
-export const BookingCard = () => {
+export const TableCard = ({
+  locationAddress,
+  tableNumber,
+  capacity,
+  availableSlots,
+  date,
+}: Table & { date: string }) => {
   return (
     <li className="@container bg-card rounded overflow-hidden shadow-card">
       <article className="grid @max-[650px]:grid-rows-[200px_auto] @[650px]:grid-cols-[200px_1fr]">
@@ -17,21 +24,24 @@ export const BookingCard = () => {
           <div className="flex flex-col gap-[1rem]">
             <Text variant="bodyBold" className="flex items-center gap-[0.5rem]">
               <LocationIcon className="size-[16px]" />
-              <span>48 Rustaveli Avenue</span>
-              <span className="ml-auto">Table #</span>
+              <span>{locationAddress}</span>
+              <span className="ml-auto">Table {tableNumber}</span>
             </Text>
-            <Text variant="bodyBold">Table seating capacity: 4 people</Text>
-            <Text variant="bodyBold">7 slots available for Oct 14, 2024:</Text>
+            <Text variant="bodyBold">
+              Table seating capacity: {capacity} people
+            </Text>
+            <Text variant="bodyBold">
+              {availableSlots.length} slots available for {date}:
+            </Text>
           </div>
           <div className="grid gap-[0.5rem] @min-[400px]:grid-cols-2">
-            {timeSlots.slice(0, 6).map((timeSlot, i) => (
+            {availableSlots.slice(0, 6).map((timeSlotData, i) => (
               <TimeSlot
                 key={i}
                 icon={i < 5 ? undefined : <PlusIcon className="size-[1rem]" />}
                 className={i < 5 ? undefined : "place-self-start"}
-              >
-                {i < 5 ? timeSlot : "Shaw all"}
-              </TimeSlot>
+                data={timeSlotData}
+              />
             ))}
             {/* <TimeSlotsDialog /> */}
           </div>
@@ -41,7 +51,7 @@ export const BookingCard = () => {
   );
 };
 
-const timeSlots = [
+const availableSlotsMock = [
   "10:30 a.m. - 12:00 p.m",
   "12:15 p.m. - 1:45 p.m",
   "2:00 p.m. - 3:30 p.m",

@@ -1,31 +1,15 @@
 import { cn } from "@/lib/utils";
 import { MinusIcon, PeopleIcon, PlusIcon } from "../icons";
 import { Button, Text } from "../ui";
+import { useBookingForm } from "@/hooks/useBookingForm";
 
-export const GuestsNumber = ({
-  className,
-  value,
-  setValue,
-}: {
-  className?: string;
-  value: number | null;
-  setValue: (value: number) => void;
-}) => {
-  const handleIncrease = () => {
-    if (value === null || value >= 10) return;
-    setValue(value + 1);
-  };
-
-  const handleDecrease = () => {
-    if (value === null || value <= 0) return;
-    setValue(value - 1);
-  };
-
+export const GuestsNumber = () => {
+  const { guestsNumber, increaseGuestsNumber, decreaseGuestsNumber } =
+    useBookingForm();
   return (
     <div
       className={cn(
         "flex gap-[0.5rem] justify-between py-[0.75rem] px-[1.5rem] bg-card rounded",
-        className,
       )}
     >
       <div className="flex items-center gap-[0.5rem]">
@@ -37,16 +21,16 @@ export const GuestsNumber = ({
           variant="secondary"
           size="sm"
           className="min-w-[40px]"
-          onClick={handleDecrease}
+          onClick={decreaseGuestsNumber}
         >
           <MinusIcon className="size-[1.5rem]" />
         </Button>
-        <span className="min-w-[2ch] text-center">{value}</span>
+        <span className="min-w-[2ch] text-center">{guestsNumber}</span>
         <Button
           variant="secondary"
           size="sm"
           className=" min-w-[40px]"
-          onClick={handleIncrease}
+          onClick={increaseGuestsNumber}
         >
           <PlusIcon className="size-[1.5rem]" />
         </Button>

@@ -16,7 +16,7 @@ export { ReservationCard } from "./ReservationCard";
 export { PageHero } from "./PageHero";
 export { BookingForm } from "./BookingForm";
 export { DatePicker } from "./DatePicker";
-export { BookingCard } from "./BookingCard";
+export { TableCard } from "./TableCard";
 export { TimeSlot } from "./TimeSlot";
 export { Select } from "./Select";
 export { PageBody } from "./PageBody";

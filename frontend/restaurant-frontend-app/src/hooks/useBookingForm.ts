@@ -1,26 +1,36 @@
 import { useAppDispatch } from "@/app/hooks";
-import { getTables } from "@/app/thunks/tablesThunk";
-import { format } from "date-fns";
-import { parseAsInteger, useQueryState } from "nuqs";
-import { FormEvent, useEffect } from "react";
+import { selectFilters, setFilters } from "@/app/slices/bookingSlice";
+import { set, getDate, getMonth, getYear } from "date-fns";
+import { FormEvent } from "react";
+import { useSelector } from "react-redux";
 
 export const useBookingForm = () => {
-  const [locationId, setLocationId] = useQueryState("locationId");
-  const [date, setDate] = useQueryState("date", {
-    defaultValue: format(Date.now(), "PP"),
-  });
-  const [guestsNumber, setGuestsNumber] = useQueryState(
-    "guestsNumber",
-    parseAsInteger.withDefault(2),
-  );
   const dispatch = useAppDispatch();
+  const filters = useSelector(selectFilters);
+  const { locationId, dateTime, guestsNumber } = useSelector(selectFilters);
+  const date = new Date(dateTime);
 
-  useEffect(() => {
-    (async () => {
-      if (!locationId) return;
-      await dispatch(getTables({ locationId, date }));
-    })();
-  }, [locationId]);
+  const setLocationId = (locationId: string | null) => {
+    dispatch(setFilters({ ...filters, locationId }));
+  };
+
+  const setDate = (dateParam: Date | undefined) => {
+    const newDate = set(dateTime, {
+      year: getYear(dateParam ?? Date.now()),
+      month: getMonth(dateParam ?? Date.now()),
+      date: getDate(dateParam ?? Date.now()),
+    }).toString();
+    dispatch(setFilters({ ...filters, dateTime: newDate }));
+  };
+
+  const increaseGuestsNumber = () => {
+    if (guestsNumber >= 10) return;
+    dispatch(setFilters({ ...filters, guestsNumber: guestsNumber + 1 }));
+  };
+  const decreaseGuestsNumber = () => {
+    if (guestsNumber <= 0) return;
+    dispatch(setFilters({ ...filters, guestsNumber: guestsNumber - 1 }));
+  };
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -38,8 +48,9 @@ export const useBookingForm = () => {
     setLocationId,
     date,
     setDate,
-    onSubmit,
     guestsNumber,
-    setGuestsNumber,
+    increaseGuestsNumber,
+    decreaseGuestsNumber,
+    onSubmit,
   };
 };

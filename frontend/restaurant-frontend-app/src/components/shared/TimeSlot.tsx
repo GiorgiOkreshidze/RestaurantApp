@@ -7,9 +7,11 @@ export const TimeSlot = ({
   children,
   className,
   icon,
+  data,
   ...props
 }: ComponentProps<"button"> & {
   icon?: JSX.Element;
+  data: { start: string; end: string };
 }) => {
   return (
     <Button

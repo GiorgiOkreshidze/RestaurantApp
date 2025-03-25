@@ -10,7 +10,7 @@ export const getTables = createAsyncThunk<
   { rejectValue: GlobalErrorMessage }
 >("booking/tables", async (params, { rejectWithValue }) => {
   try {
-    const response = await axiosApi.get(serverRoute.popularDishes, {
+    const response = await axiosApi.get(serverRoute.tables, {
       params: {
         date: params.date,
         locationId: params.locationId,
