@@ -2,7 +2,25 @@ import { cn } from "@/lib/utils";
 import { MinusIcon, PeopleIcon, PlusIcon } from "../icons";
 import { Button, Text } from "../ui";
 
-export const GuestsNumber = ({ className }: { className?: string }) => {
+export const GuestsNumber = ({
+  className,
+  value,
+  setValue,
+}: {
+  className?: string;
+  value: number | null;
+  setValue: (value: number) => void;
+}) => {
+  const handleIncrease = () => {
+    if (value === null || value >= 10) return;
+    setValue(value + 1);
+  };
+
+  const handleDecrease = () => {
+    if (value === null || value <= 0) return;
+    setValue(value - 1);
+  };
+
   return (
     <div
       className={cn(
@@ -15,11 +33,21 @@ export const GuestsNumber = ({ className }: { className?: string }) => {
         <Text variant="buttonSecondary">Guests</Text>
       </div>
       <div className="flex items-center gap-[0.5rem]">
-        <Button variant="secondary" size="sm" className="min-w-[40px]">
+        <Button
+          variant="secondary"
+          size="sm"
+          className="min-w-[40px]"
+          onClick={handleDecrease}
+        >
           <MinusIcon className="size-[1.5rem]" />
         </Button>
-        <span>10</span>
-        <Button variant="secondary" size="sm" className=" min-w-[40px]">
+        <span>{value}</span>
+        <Button
+          variant="secondary"
+          size="sm"
+          className=" min-w-[40px]"
+          onClick={handleIncrease}
+        >
           <PlusIcon className="size-[1.5rem]" />
         </Button>
       </div>

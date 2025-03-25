@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router";
 import { Provider } from "react-redux";
 import { store } from "./app/store.ts";
 import { addInterceptors } from "./utils/axiosApi.ts";
+import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 
 addInterceptors(store);
 
@@ -13,7 +14,9 @@ createRoot(document.getElementById("root")!).render(
   // <StrictMode>
   <BrowserRouter>
     <Provider store={store}>
-      <App />
+      <NuqsAdapter>
+        <App />
+      </NuqsAdapter>
     </Provider>
   </BrowserRouter>,
   // </StrictMode>,

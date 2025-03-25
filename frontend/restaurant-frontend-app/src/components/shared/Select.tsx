@@ -12,6 +12,8 @@ export const Select = ({
   items,
   Icon,
   className,
+  value,
+  setValue,
 }: {
   items: {
     id: string;
@@ -20,14 +22,25 @@ export const Select = ({
   placeholder?: string;
   Icon?: ComponentType<{ className?: string }>;
   className?: string;
+  value?: string | null;
+  setValue: (value: string | null) => void;
 }) => {
+  const handleChange = (value: string) => {
+    console.log(value);
+    if (value === "reset") {
+      setValue(null);
+    } else {
+      setValue(value);
+    }
+  };
+
   return (
-    <SelectRoot>
+    <SelectRoot value={value ?? ""} onValueChange={handleChange}>
       <SelectTrigger Icon={Icon} className={className}>
         <SelectValue placeholder={placeholder ?? ""} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="null">{placeholder}</SelectItem>
+        <SelectItem value="reset">Location</SelectItem>
         {items?.map((item, i) => (
           <SelectItem key={i} value={item.id}>
             {item.label}

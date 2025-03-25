@@ -1,35 +1,36 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-// import { useAppDispatch } from "@/app/hooks";
-import { useNavigate } from "react-router";
+import { format } from "date-fns";
+import { parseAsInteger, useQueryState } from "nuqs";
+import { useEffect } from "react";
 
 export const useBookingForm = () => {
-  // const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-  const formSchema = z.object({
-    location: z.string().nonempty(),
+  const [locationId, setLocationId] = useQueryState("locationId");
+  const [date, setDate] = useQueryState("date", {
+    defaultValue: format(Date.now(), "PPP"),
   });
+  const [guestsNumber, setGuestsNumber] = useQueryState(
+    "guestsNumber",
+    parseAsInteger.withDefault(2),
+  );
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      location: "",
-    },
-    mode: "all",
-    criteriaMode: "all",
-  });
+  useEffect(() => {}, [locationId, date]);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async () => {
     try {
       // const result = await dispatch(register(values)).unwrap();
-      // console.log("Registration successful:", result);
-      navigate("/signin");
+      console.log("Form submit");
+      // navigate("/signin");
     } catch (error) {
       console.error("Registration failed:", error);
     }
   };
 
-  return { form, onSubmit, formSchema };
+  return {
+    locationId,
+    setLocationId,
+    date,
+    setDate,
+    onSubmit,
+    guestsNumber,
+    setGuestsNumber,
+  };
 };
