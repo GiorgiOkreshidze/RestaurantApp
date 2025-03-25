@@ -25,6 +25,8 @@ namespace Function.Models.Responses
         public required string Status { get; set; }
         [JsonPropertyName("tableNumber")]
         public required string TableNumber { get; set; }
+        [JsonPropertyName("timeFrom")]
+        public required string TimeFrom { get; set; }
         [JsonPropertyName("timeSlot")]
         public required string TimeSlot { get; set; }
         [JsonPropertyName("userInfo")]
