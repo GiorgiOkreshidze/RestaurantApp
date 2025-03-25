@@ -58,10 +58,12 @@ public class UserRepository : IUserRepository
         return result;
     }
 
-    public async Task<List<User>> GetAllUsersAsync()
+    public async Task<List<User>> GetAllCustomersAsync()
     {
         var documentList = await DynamoDbUtils.ScanDynamoDbTableAsync(_dynamoDBClient, _usersTableName);
 
-        return Mapper.MapDocumentsToUsers(documentList);
+        return Mapper.MapDocumentsToUsers(documentList)
+            .Where(user => user.Role == Roles.Customer)
+            .ToList();
     }
 }

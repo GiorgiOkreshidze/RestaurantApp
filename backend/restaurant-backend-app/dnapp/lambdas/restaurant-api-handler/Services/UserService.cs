@@ -26,8 +26,8 @@ public class UserService : IUserService
         return await _userRepository.GetUserByIdAsync(userId);
     }
 
-    public async Task<List<User>> GetAllUsersAsync()
+    public async Task<List<User>> GetAllCustomersAsync()
     {
-        return await _userRepository.GetAllUsersAsync();
+        return await _userRepository.GetAllCustomersAsync();
     }
 }

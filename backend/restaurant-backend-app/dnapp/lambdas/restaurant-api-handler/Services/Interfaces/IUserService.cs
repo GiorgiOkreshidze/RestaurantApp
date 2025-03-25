@@ -8,5 +8,5 @@ public interface IUserService
 {
     Task<User> AddUserAsync(User user);
     Task<User> GetUserByIdAsync(string userId);
-    Task<List<User>> GetAllUsersAsync();
+    Task<List<User>> GetAllCustomersAsync();
 }

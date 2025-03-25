@@ -10,16 +10,16 @@ using Function.Services.Interfaces;
 
 namespace Function.Actions.Users;
 
-public class GetAllUsersAction
+public class GetAllCustomersAction
 {
     private readonly IUserService _userService;
 
-    public GetAllUsersAction()
+    public GetAllCustomersAction()
     {
         _userService = new UserService();
     }
 
-    public async Task<APIGatewayProxyResponse> GetAllUsersAsync(APIGatewayProxyRequest request)
+    public async Task<APIGatewayProxyResponse> GetAllCustomersAsync(APIGatewayProxyRequest request)
     {
         request.Headers.TryGetValue("Authorization", out var idToken);
 
@@ -49,7 +49,7 @@ public class GetAllUsersAction
         }
         
         
-        var users = await _userService.GetAllUsersAsync();
+        var users = await _userService.GetAllCustomersAsync();
         
         return ActionUtils.FormatResponse(200, users);
     }

@@ -31,7 +31,7 @@ public class ApiHandler
     private readonly GetAvailableTablesAction _getAvailableTablesAction;
     private readonly GetReservationsAction _getReservationsAction;
     private readonly DeleteReservationAction _deleteReservationAction;
-    private readonly GetAllUsersAction _getAllUsersAction;
+    private readonly GetAllCustomersAction _getAllCustomersAction;
 
     public ApiHandler()
     {
@@ -50,7 +50,7 @@ public class ApiHandler
         _getAvailableTablesAction = new GetAvailableTablesAction();
         _getReservationsAction = new GetReservationsAction();
         _deleteReservationAction = new DeleteReservationAction();
-        _getAllUsersAction = new GetAllUsersAction();
+        _getAllCustomersAction = new GetAllCustomersAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -158,7 +158,7 @@ public class ApiHandler
                 {
                     "/users", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "GET", _getAllUsersAction.GetAllUsersAsync }
+                        { "GET", _getAllCustomersAction.GetAllCustomersAsync }
                     }
                 }
             };

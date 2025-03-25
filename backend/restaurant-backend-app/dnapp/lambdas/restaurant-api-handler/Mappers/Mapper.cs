@@ -142,7 +142,7 @@ public class Mapper
             doc.TryGetValue("locationId", out var locationId);
             doc.TryGetValue("createdAt", out var createdAt);
 
-            Enum.TryParse<Roles>(roleStr, out var parsedRole); // Try parsing role
+            Enum.TryParse<Roles>(roleStr, out var parsedRole);
 
             return new User
             {
@@ -150,7 +150,7 @@ public class Mapper
                 FirstName = firstName ?? "",
                 LastName = lastName ?? "",
                 Email = email ?? "",
-                Role = parsedRole,  // Assign the parsed role
+                Role = parsedRole,
                 LocationId = locationId ?? "",
                 CreatedAt = createdAt ?? ""
             };
