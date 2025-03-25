@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Function.Models;
+using Function.Models.Reservations;
+using Function.Models.User;
 using Function.Models.Requests;
 
 namespace Function.Services.Interfaces;
@@ -8,6 +10,6 @@ namespace Function.Services.Interfaces;
 public interface IReservationService
 {
     Task<Reservation> UpsertReservationAsync(ReservationRequest reservationRequest, string fullName);
-    Task<List<Reservation>> GetCustomerReservationsAsync(string info);
+    Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParameters, string info, Roles role);
     Task CancelReservationAsync(string reservationId);
 }

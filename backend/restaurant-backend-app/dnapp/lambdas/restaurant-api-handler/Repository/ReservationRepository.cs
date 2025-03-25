@@ -7,6 +7,7 @@ using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Function.Mappers;
 using Function.Models;
+using Function.Models.Reservations;
 using Function.Repository.Interfaces;
 
 namespace Function.Repository;
@@ -145,17 +146,84 @@ public class ReservationRepository : IReservationRepository
         return reservations;
     }
 
-    public async Task<List<Reservation>> GetCustomerReservationsAsync(string info)
+    public async Task<List<Reservation>> GetCustomerReservationsAsync(ReservationsQueryParameters queryParams, string info)
     {
+        var conditions = new List<string> { "userInfo = :info"};
+        var expressionAttributeValues = new Dictionary<string, AttributeValue>
+        {
+            { ":info", new AttributeValue { S = info } }
+        };
+        var expressionAttributeNames = new Dictionary<string, string>();
+
+        if (!string.IsNullOrEmpty(queryParams.Date))
+        {
+            conditions.Add("#dt = :date"); // Use placeholder #dt instead of "date"
+            expressionAttributeValues.Add(":date", new AttributeValue { S = queryParams.Date });
+            expressionAttributeNames.Add("#dt", "date");
+        }
+        if (!string.IsNullOrEmpty(queryParams.TimeFrom))
+        {
+            conditions.Add("timeFrom = :timeFrom");
+            expressionAttributeValues.Add(":timeFrom", new AttributeValue { S = queryParams.TimeFrom });
+        }
+        if (!string.IsNullOrEmpty(queryParams.TableNumber))
+        {
+            conditions.Add("tableNumber = :tableNumber");
+            expressionAttributeValues.Add(":tableNumber", new AttributeValue { S = queryParams.TableNumber });
+        }
+
+        var filterExpression = string.Join(" AND ", conditions);
+
         var request = new ScanRequest
         {
             TableName = _reservationsTableName,
-            FilterExpression = "userInfo = :info",
-            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-            {
-                { ":info", new AttributeValue { S = info } }
-            }
+            FilterExpression = filterExpression,
+            ExpressionAttributeValues = expressionAttributeValues,
+            ExpressionAttributeNames = expressionAttributeNames
         };
+
+        var response = await _dynamoDBClient.ScanAsync(request);
+
+        return Mapper.MapItemsToReservations(response.Items);
+    }
+
+    public async Task<List<Reservation>> GetWaiterReservationsAsync(ReservationsQueryParameters queryParams, string info)
+    {
+        var waitersEmail = info.Split(",")[1].Trim();
+        var conditions = new List<string> { "waiterEmail = :waiterEmail" };
+        var expressionAttributeValues = new Dictionary<string, AttributeValue>
+        {
+            { ":waiterEmail", new AttributeValue { S = waitersEmail } }
+        };
+        var expressionAttributeNames = new Dictionary<string, string>();
+
+        if (!string.IsNullOrEmpty(queryParams.Date))
+        {
+            conditions.Add("#dt = :date"); // Use placeholder #dt instead of "date"
+            expressionAttributeValues.Add(":date", new AttributeValue { S = queryParams.Date });
+            expressionAttributeNames.Add("#dt", "date");
+        }
+        if (!string.IsNullOrEmpty(queryParams.TimeFrom))
+        {
+            conditions.Add("timeFrom = :timeFrom");
+            expressionAttributeValues.Add(":timeFrom", new AttributeValue { S = queryParams.TimeFrom });
+        }
+        if (!string.IsNullOrEmpty(queryParams.TableNumber))
+        {
+            conditions.Add("tableNumber = :tableNumber");
+            expressionAttributeValues.Add(":tableNumber", new AttributeValue { S = queryParams.TableNumber });
+        }
+
+        var filterExpression = string.Join(" AND ", conditions);
+
+        var request = new ScanRequest
+        {
+            TableName = _reservationsTableName,
+            FilterExpression = filterExpression,
+            ExpressionAttributeValues = expressionAttributeValues,
+            ExpressionAttributeNames = expressionAttributeNames
+        };
+
         var response = await _dynamoDBClient.ScanAsync(request);
 
         return Mapper.MapItemsToReservations(response.Items);
@@ -191,4 +259,6 @@ public class ReservationRepository : IReservationRepository
             throw new Exceptions.ResourceNotFoundException("Reservation not found");
         }
     }
+
+    
 }

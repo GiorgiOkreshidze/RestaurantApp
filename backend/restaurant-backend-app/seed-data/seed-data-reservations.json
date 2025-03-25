@@ -17,6 +17,7 @@
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Canceled" },
           "userInfo": { "S": "Temirlan Doe, temirlan@example.com" },
+          "waiterEmail": { "S": "laydyGaga98@example.com" },
           "createdAt": { "S": "2025-03-08T10:15:00Z" }
         }
       }
@@ -38,6 +39,7 @@
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Reserved" },
           "userInfo": { "S": "Irina Doe, irina@example.com" },
+          "waiterEmail": { "S": "johnyDepp007@example.com" },
           "createdAt": { "S": "2025-03-12T10:15:00Z" }
         }
       }
@@ -59,6 +61,7 @@
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Reserved" },
           "userInfo": { "S": "Giorgi Doe, giorgi@example.com" },
+          "waiterEmail": { "S": "kylieJenner69@example.com" },
           "createdAt": { "S": "2025-03-09T10:15:00Z" }
         }
       }
@@ -80,6 +83,7 @@
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Reserved" },
           "userInfo": { "S": "Salome Doe, salome@example.com" },
+          "waiterEmail": { "S": "laydyGaga98@example.com" },
           "createdAt": { "S": "2025-03-10T10:15:00Z" }
         }
       }
@@ -101,6 +105,7 @@
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Canceled" },
           "userInfo": { "S": "Dora Doe, dora@example.com" },
+          "waiterEmail": { "S": "johnyDepp007@example.com" },
           "createdAt": { "S": "2025-03-11T10:15:00Z" }
         }
       }
@@ -122,6 +127,7 @@
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Canceled" },
           "userInfo": { "S": "Roman Doe, roman@example.com" },
+          "waiterEmail": { "S": "kylieJenner69@example.com" },
           "createdAt": { "S": "2025-02-12T10:15:00Z" }
         }
       }
