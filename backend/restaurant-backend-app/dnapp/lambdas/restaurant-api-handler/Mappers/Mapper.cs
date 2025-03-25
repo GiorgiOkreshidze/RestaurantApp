@@ -97,6 +97,7 @@ public class Mapper
             LocationAddress = reservation.LocationAddress,
             TableNumber = reservation.TableNumber,
             TimeSlot = reservation.TimeSlot,
+            TimeFrom = reservation.TimeFrom,
             Status = reservation.Status,
             FeedbackId = reservation.FeedbackId,
             PreOrder = reservation.PreOrder,

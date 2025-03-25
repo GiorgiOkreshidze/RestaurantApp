@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Function.Models;
+using Function.Models.Reservations;
+using Function.Models.User;
 using Function.Models.Requests;
 using Function.Repository;
 using Function.Repository.Interfaces;
@@ -135,6 +137,11 @@ public class ReservationService : IReservationService
             UserInfo = user.FirstName + " " + user.LastName,
             CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
         };
+
+        return await _reservationRepository.UpsertReservation(reservation);
+    }
+
+    public async Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParams,  string info, Roles role)
         var reservationExists = await _reservationRepository.ReservationExistsAsync(reservation.Id);
         
         if (!reservationExists)
@@ -149,9 +156,16 @@ public class ReservationService : IReservationService
         return await _reservationRepository.UpsertReservationAsync(reservation);
     }
 
-    public async Task<List<Reservation>> GetCustomerReservationsAsync(string info)
+    public async Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParams,  string info, Roles role)
     {
-        return await _reservationRepository.GetCustomerReservationsAsync(info);
+        if (role == Roles.Customer)
+        {
+            return await _reservationRepository.GetCustomerReservationsAsync(queryParams, info);
+        }
+        else
+        {
+            return await _reservationRepository.GetWaiterReservationsAsync(queryParams, info);
+        }   
     }
 
     public async Task CancelReservationAsync(string reservationId)
