@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Function.Actions;
 using Function.Models;
+using Function.Models.Requests;
 using Function.Models.Reservations;
 using Function.Repository;
 using Function.Repository.Interfaces;
 using Function.Services.Interfaces;
+using SimpleLambdaFunction.Repository;
 
 namespace Function.Services;
 
@@ -15,16 +18,20 @@ public class TableService : ITableService
 {
     private readonly ITableRepository _tableRepository;
     private readonly IReservationRepository _reservationRepository;
+    private readonly ILocationRepository _locationRepository;
 
     public TableService()
     {
-        _reservationRepository = new ReservationRepository();    
+        _reservationRepository = new ReservationRepository();
+        _tableRepository = new TableRepository();
+        _locationRepository = new LocationRepository();
     }
 
     public async Task<List<TableResponse>> GetAvailableTablesAsync(string locationId, string date, string? time, int guests)
     {
-        var tables = await _tableRepository.GetTablesForLocationAsync(locationId, guests);
-        var reservations = await _reservationRepository.GetReservationsForDateAndLocation(date, locationId);
+        var location = await _locationRepository.GetLocationByIdAsync(locationId);
+        var tables = await _tableRepository.GetTablesForLocationAsync(location.Id, guests);
+        var reservations = await _reservationRepository.GetReservationsForDateAndLocation(date, location.Id);
         var result = CalculateAvailableSlots(tables, reservations, time);
         var tablesWithSlots = result.Where(t => t.AvailableSlots.Count != 0).ToList();
         return tablesWithSlots;
@@ -39,7 +46,7 @@ public class TableService : ITableService
 
         foreach (var table in tables)
         {
-            var allTimeSlots = GeneratePredefinedTimeSlots();
+            var allTimeSlots = ActionUtils.GeneratePredefinedTimeSlots();
             var tableReservations = reservations
                 .Where(r => r.TableId == table.Id)
                 .ToList();
@@ -131,28 +138,5 @@ public class TableService : ITableService
 
         // If the nearest slot is found, return it, // If no slot contains the requested time, return empty list
         return nearestSlot != null ? [nearestSlot] : [];
-    }
-
-    private List<TimeSlot> GeneratePredefinedTimeSlots()
-    {
-        var slots = new List<TimeSlot>();
-        var startTimeUtc = new TimeSpan(6, 30, 0); // 6:30 AM UTC (10:30 AM Tbilisi time)
-        var endTimeUtc = new TimeSpan(18, 30, 0); // 6:30 PM UTC (10:30 PM Tbilisi time)
-        var currentTime = startTimeUtc;
-
-        while (currentTime <= endTimeUtc)
-        {
-            var slotEnd = currentTime.Add(TimeSpan.FromMinutes(90));
-
-            slots.Add(new TimeSlot
-            {
-                Start = currentTime.ToString(@"hh\:mm"),
-                End = slotEnd.ToString(@"hh\:mm")
-            });
-
-            currentTime = currentTime.Add(TimeSpan.FromMinutes(90 + 15)); // 90-minute slot + 15-minute gap
-        }
-
-        return slots;
     }
 }

@@ -36,19 +36,22 @@ public class ReservationRepository : IReservationRepository
                     "id", new AttributeValue { S = reservation.Id }
                 }
             },
-            UpdateExpression = "SET #date = :date, #feedbackId = :feedbackId, #guestsNumber = :guestsNumber, " +
-                               "#locationAddress = :locationAddress, #preOrder = :preOrder, #status = :status, " +
-                               "#tableNumber = :tableNumber, #timeFrom = :timeFrom, #timeTo = :timeTo, " +
+            UpdateExpression = "SET #createdAt = :createdAt, #date = :date, #feedbackId = :feedbackId, #guestsNumber = :guestsNumber, " +
+                               "#locationAddress = :locationAddress, #locationId = :locationId, #preOrder = :preOrder, #status = :status, " +
+                               "#tableNumber = :tableNumber, #tableId = :tableId, #timeFrom = :timeFrom, #timeTo = :timeTo, " +
                                "#timeSlot = :timeSlot, #userInfo = :userInfo",
             ExpressionAttributeNames = new Dictionary<string, string>
             {
+                { "#createdAt", "createdAt" },
                 { "#date", "date" },
                 { "#feedbackId", "feedbackId" },
                 { "#guestsNumber", "guestsNumber" },
                 { "#locationAddress", "locationAddress" },
+                { "#locationId", "locationId" },
                 { "#preOrder", "preOrder" },
                 { "#status", "status" },
                 { "#tableNumber", "tableNumber" },
+                { "#tableId", "tableId" },
                 { "#timeFrom", "timeFrom" },
                 { "#timeTo", "timeTo" },
                 { "#timeSlot", "timeSlot" },
@@ -56,13 +59,16 @@ public class ReservationRepository : IReservationRepository
             },
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
+                { ":createdAt", new AttributeValue { S = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ") } },
                 { ":date", new AttributeValue { S = reservation.Date } },
                 { ":feedbackId", new AttributeValue { S = reservation.FeedbackId } },
                 { ":guestsNumber", new AttributeValue { S = reservation.GuestsNumber } },
                 { ":locationAddress", new AttributeValue { S = reservation.LocationAddress } },
+                { ":locationId", new AttributeValue { S = reservation.LocationId } },
                 { ":preOrder", new AttributeValue { S = reservation.PreOrder } },
                 { ":status", new AttributeValue { S = reservation.Status } },
                 { ":tableNumber", new AttributeValue { S = reservation.TableNumber } },
+                { ":tableId", new AttributeValue { S = reservation.TableId } },
                 { ":timeFrom", new AttributeValue { S = reservation.TimeFrom } },
                 { ":timeTo", new AttributeValue { S = reservation.TimeTo } },
                 { ":timeSlot", new AttributeValue { S = reservation.TimeSlot } },
@@ -110,7 +116,11 @@ public class ReservationRepository : IReservationRepository
         {
             TableName = _reservationsTableName,
             IndexName = _reservationsTableLocationIndexName,
-            KeyConditionExpression = "locationId = :locationId AND date = :date",
+            KeyConditionExpression = "locationId = :locationId AND #date = :date",
+            ExpressionAttributeNames = new Dictionary<string, string>
+            {
+                { "#date", "date" }
+            },
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
         {
             { ":locationId", new AttributeValue { S = locationId } },

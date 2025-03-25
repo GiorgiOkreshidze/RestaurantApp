@@ -30,7 +30,11 @@ public class TableRepository : ITableRepository
         {
             TableName = _tablesTableName,
             IndexName = _tablesTableLocationIndex,
-            KeyConditionExpression = "locationId = :locationId AND capacity >= :guests",
+            KeyConditionExpression = "locationId = :locationId AND #capacity >= :guests",
+            ExpressionAttributeNames = new Dictionary<string, string>
+        {
+            { "#capacity", "capacity" }
+        },
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
         {
             { ":locationId", new AttributeValue { S = locationId } },
@@ -76,7 +80,7 @@ public class TableRepository : ITableRepository
         {
             Id = response.Item["id"].S,
             TableNumber = response.Item["tableNumber"].S,
-            Capacity = response.Item["capacity"].S,
+            Capacity = response.Item["capacity"].N,
             LocationId = response.Item["locationId"].S,
             LocationAddress = response.Item["locationAddress"].S
         };
