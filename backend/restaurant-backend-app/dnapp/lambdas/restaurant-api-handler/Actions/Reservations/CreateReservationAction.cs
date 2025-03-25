@@ -86,57 +86,8 @@ public class CreateReservationAction
             throw new ArgumentException("Reservation date and time must be in the future.");
         }
 
-        var location = await _locationService.GetLocationByIdAsync(reservationRequest.LocationId);
-
-        var existingReservations = await _reservationService.GetReservationsByDateLocationTable(
-            reservationRequest.Date,
-            location.Address,
-            reservationRequest.TableNumber);
-
-        var newTimeFrom = TimeSpan.Parse(reservationRequest.TimeFrom);
-        var newTimeTo = TimeSpan.Parse(reservationRequest.TimeTo);
-
-        foreach (var existingReservation in existingReservations)
-        {
-            var existingTimeFrom = TimeSpan.Parse(existingReservation.TimeFrom);
-            var existingTimeTo = TimeSpan.Parse(existingReservation.TimeTo);
-
-            // Check if the time slots overlap
-            if (newTimeFrom < existingTimeTo &&
-                newTimeTo > existingTimeFrom &&
-                existingReservation.UserInfo != fullName)
-            {
-                throw new ArgumentException(
-                    $"Table #{reservationRequest.TableNumber} at location " +
-                    $"{location.Address} is already booked during the requested time period."
-                );
-            }
-        }
-
-        var reservationId = Guid.NewGuid().ToString();
-        
-        if (reservationRequest.Id != null)
-        {
-            reservationId = reservationRequest.Id;
-        }
-
-        var reservation = new Reservation
-        {
-            Id = reservationId,
-            Date = reservationRequest.Date,
-            FeedbackId = "NOT IMPLEMENTED YET AND ISN'T REQUIRED",
-            GuestsNumber = reservationRequest.GuestsNumber,
-            LocationAddress = location.Address,
-            PreOrder = "NOT IMPLEMENTED YET",
-            Status = Status.Reserved.ToString(),
-            TableNumber = reservationRequest.TableNumber,
-            TimeFrom = reservationRequest.TimeFrom,
-            TimeTo = reservationRequest.TimeTo,
-            TimeSlot = reservationRequest.TimeFrom + " - " + reservationRequest.TimeTo,
-            UserInfo = fullName,
-            CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
-        };
-        var reservationResponse = await _reservationService.UpsertReservationAsync(reservation);
+      
+        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, fullName);
 
         return ActionUtils.FormatResponse(200, reservationResponse);
     }

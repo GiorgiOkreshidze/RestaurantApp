@@ -3,7 +3,7 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "loc_001" },
+          "id": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "address": { "S": "48 Rustaveli Avenue" },
           "description": { "S": "A spacious coworking space with modern amenities." },
           "totalCapacity": { "S": "4" },
@@ -16,7 +16,7 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "loc_002" },
+          "id": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
           "address": { "S": "14 Baratashvili Street" },
           "description": { "S": "A beachfront lounge with stunning views and great ambiance." },
           "totalCapacity": { "S": "4" },
@@ -29,7 +29,7 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "loc_003" },
+          "id": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
           "address": { "S": "14 Baratashvili Street" },
           "description": { "S": "A cozy retreat in the mountains, perfect for remote work." },
           "totalCapacity": { "S": "4" },

@@ -20,16 +20,22 @@ public class Reservation
     
     [JsonPropertyName("locationAddress")]
     public required string LocationAddress { get; set; }
-    
+
+    [JsonPropertyName("locationId")]
+    public required string LocationId { get; set; }
+
     [JsonPropertyName("preOrder")]
     public required string PreOrder { get; set; }
     
     [JsonPropertyName("status")]
     public required string Status { get; set; }
 
+    [JsonPropertyName("tableId")]
+    public required string TableId { get; set; }
+
     [JsonPropertyName("tableNumber")]
     public required string TableNumber { get; set; }
-    
+
     [JsonPropertyName("timeFrom")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] 
     public required string TimeFrom { get; set; }

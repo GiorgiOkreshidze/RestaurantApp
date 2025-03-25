@@ -3,64 +3,64 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "fb_001" },
+          "id": { "S": "2f0b7f9c-9bde-4b75-9612-7431d4058f8b" },
           "rate": { "N": "5" },
           "comment": { "S": "Great place!" },
           "userName": { "S": "Salome Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar1.jpg" },
           "date": { "S": "2025-03-17T12:00:00Z" },
           "type": { "S": "SERVICE-QUALITY" },
-          "locationId": { "S": "loc_001" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "type#date": { "S": "SERVICE_QUALITY#2025-03-17T12:00:00Z" },
-          "locationId#type": { "S": "loc_001#SERVICE_QUALITY" }
+          "locationId#type": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99#SERVICE_QUALITY" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "fb_002" },
+          "id": { "S": "6e6a173e-67c5-43e8-a0a5-2810833cf248" },
           "rate": { "N": "4" },
           "comment": { "S": "Nice experience, but a bit crowded." },
           "userName": { "S": "Dora Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar2.jpg" },
           "date": { "S": "2025-03-16T14:30:00Z" },
           "type": { "S": "SERVICE-QUALITY" },
-          "locationId": { "S": "loc_002" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
           "type#date": { "S": "SERVICE_QUALITY#2025-03-16T14:30:00Z" },
-          "locationId#type": { "S": "loc_002#SERVICE_QUALITY" }
+          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#SERVICE_QUALITY" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "fb_003" },
+          "id": { "S": "b8e7c75a-bd92-44ef-8cf0-6e5f01d158db" },
           "rate": { "N": "3" },
           "comment": { "S": "Average experience." },
           "userName": { "S": "Roman Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar3.jpg" },
           "date": { "S": "2025-03-15T10:15:00Z" },
           "type": { "S": "CUISINE-EXPERIENCE" },
-          "locationId": { "S": "loc_003" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
           "type#date": { "S": "SERVICE_QUALITY#2025-03-15T10:15:00Z" },
-          "locationId#type": { "S": "loc_003#SERVICE_QUALITY" }
+          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#SERVICE_QUALITY" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "fb_004" },
+          "id": { "S": "f31c20cb-b2be-4e7b-9228-ff315497487b" },
           "rate": { "N": "2" },
           "comment": { "S": "Do not like it." },
           "userName": { "S": "Dora Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar4.jpg" },
           "date": { "S": "2025-03-20T10:15:00Z" },
           "type": { "S": "CUISINE-EXPERIENCE" },
-          "locationId": { "S": "loc_003" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
           "type#date": { "S": "SERVICE_QUALITY#2025-03-20T10:15:00Z" },
-          "locationId#type": { "S": "loc_003#SERVICE_QUALITY" }
+          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#SERVICE_QUALITY" }
         }
       }
     }

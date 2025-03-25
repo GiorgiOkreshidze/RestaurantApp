@@ -4,6 +4,9 @@ namespace Function.Models
 {
     public class ReservationInfo
     {
+        [JsonPropertyName("tableId")]
+        public required string TableId { get; set; }
+
         [JsonPropertyName("tableNumber")]
         public required string TableNumber { get; set; }
 
@@ -16,7 +19,7 @@ namespace Function.Models
         [JsonPropertyName("timeTo")]
         public required string TimeTo { get; set; }
 
-        [JsonPropertyName("GuestNumber")]
+        [JsonPropertyName("guestNumber")]
         public required string GuestsNumber { get; set; }
     }
 }

@@ -25,14 +25,4 @@ public class LocationService : ILocationService
     {
         return await _locationRepository.GetLocationDropdownOptionsAsync();
     }
-
-    public async Task<Location> GetLocationByIdAsync(string locationId)
-    {
-        return await _locationRepository.GetLocationByIdAsync(locationId);
-    }
-
-    public async Task<LocationInfo> GetLocationDetailsAsync(string locationId)
-    {
-        return await _locationRepository.GetLocationDetailsAsync(locationId);
-    }
 }

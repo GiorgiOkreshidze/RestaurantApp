@@ -3,10 +3,10 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_001" },
+          "id": { "S": "04ba5b37-8fbd-4f5f-8354-0b75078a790a" },
           "tableNumber": { "S": "1" },
           "capacity": { "N": "4" },
-          "locationId": { "S": "loc_001" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "locationAddress": { "S": "48 Rustaveli Avenue"  }
         }
       }
@@ -14,10 +14,10 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_002" },
+          "id": { "S": "dc80f954-df0c-457d-a938-26671f0dad47" },
           "tableNumber": { "S": "2" },
           "capacity": { "N": "6" },
-          "locationId": { "S": "loc_001" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "locationAddress": { "S": "48 Rustaveli Avenue"  }
         }
       }
@@ -25,10 +25,10 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_003" },
+          "id": { "S": "075312b0-6267-4dc6-ae96-28597231964e" },
           "tableNumber": { "S": "3" },
           "capacity": { "N": "2" },
-          "locationId": { "S": "loc_001" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "locationAddress": { "S": "48 Rustaveli Avenue"  }
         }
       }
@@ -36,10 +36,10 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_004" },
+          "id": { "S": "84405cfd-c7f5-4f67-9eef-496485065b1f" },
           "tableNumber": { "S": "4" },
           "capacity": { "N": "10" },
-          "locationId": { "S": "loc_001" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "locationAddress": { "S": "48 Rustaveli Avenue"  }
         }
       }
@@ -47,10 +47,10 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_005" },
+          "id": { "S": "c25f24b6-f305-4cd7-a6b6-54f126794c78" },
           "tableNumber": { "S": "1" },
           "capacity": { "N": "2" },
-          "locationId": { "S": "loc_002" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
           "locationAddress": { "S": "14 Baratashvili Street" }
         }
       }
@@ -58,10 +58,10 @@
        {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_006" },
+          "id": { "S": "9f9e2205-dc13-438b-802e-5824ad1889eb" },
           "tableNumber": { "S": "2" },
           "capacity": { "N": "4" },
-          "locationId": { "S": "loc_002" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
           "locationAddress": { "S": "14 Baratashvili Street" }
         }
       }
@@ -69,10 +69,10 @@
        {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_007" },
+          "id": { "S": "07095e7b-5cc9-40d2-a1d8-65aecdf5a2d9" },
           "tableNumber": { "S": "3" },
           "capacity": { "N": "6" },
-          "locationId": { "S": "loc_002" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
           "locationAddress": { "S": "14 Baratashvili Street" }
         }
       }
@@ -80,10 +80,10 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_008" },
+          "id": { "S": "b8801e52-ba42-463e-b5cd-68c4604e223e" },
           "tableNumber": { "S": "4" },
           "capacity": { "N": "10" },
-          "locationId": { "S": "loc_002" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
           "locationAddress": { "S": "14 Baratashvili Street" }
         }
       }
@@ -91,10 +91,10 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_009" },
+          "id": { "S": "42f7291d-0997-4e74-8740-880533094881" },
           "tableNumber": { "S": "1" },
           "capacity": { "N": "6" },
-          "locationId": { "S": "loc_003" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
           "locationAddress": { "S": "9 Abashidze Street" }
         }
       }
@@ -102,10 +102,10 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_010" },
+          "id": { "S": "d7561080-cc9b-497d-ad38-88f264efbbfc" },
           "tableNumber": { "S": "2" },
           "capacity": { "N": "4" },
-          "locationId": { "S": "loc_003" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
           "locationAddress": { "S": "9 Abashidze Street" }
         }
       }
@@ -113,10 +113,10 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_011" },
+          "id": { "S": "146bc291-2926-4a0b-90a2-a54975d2cbba" },
           "tableNumber": { "S": "3" },
           "capacity": { "N": "10" },
-          "locationId": { "S": "loc_003" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
           "locationAddress": { "S": "9 Abashidze Street" }
         }
       }
@@ -124,10 +124,10 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "table_012" },
+          "id": { "S": "604acc18-d0f6-4d0d-af5c-b14a9aeaa559" },
           "tableNumber": { "S": "4" },
           "capacity": { "N": "10" },
-          "locationId": { "S": "loc_003" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
           "locationAddress": { "S": "9 Abashidze Street" }
         }
       }
