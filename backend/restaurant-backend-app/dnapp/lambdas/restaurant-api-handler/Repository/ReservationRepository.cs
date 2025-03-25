@@ -39,7 +39,7 @@ public class ReservationRepository : IReservationRepository
             UpdateExpression = "SET #createdAt = :createdAt, #date = :date, #feedbackId = :feedbackId, #guestsNumber = :guestsNumber, " +
                                "#locationAddress = :locationAddress, #locationId = :locationId, #preOrder = :preOrder, #status = :status, " +
                                "#tableNumber = :tableNumber, #tableId = :tableId, #timeFrom = :timeFrom, #timeTo = :timeTo, " +
-                               "#timeSlot = :timeSlot, #userInfo = :userInfo, #waiterId = :waiterId",
+                               "#timeSlot = :timeSlot, #userInfo = :userInfo, #userEmail = :userEmail, #waiterId = :waiterId",
             ExpressionAttributeNames = new Dictionary<string, string>
             {
                 { "#createdAt", "createdAt" },
@@ -56,7 +56,8 @@ public class ReservationRepository : IReservationRepository
                 { "#timeTo", "timeTo" },
                 { "#timeSlot", "timeSlot" },
                 { "#userInfo", "userInfo" },
-                { "#waiterId", "waiterId" }
+                { "#waiterId", "waiterId" },
+                { "#userEmail", "userEmail" }
             },
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
@@ -74,7 +75,8 @@ public class ReservationRepository : IReservationRepository
                 { ":timeTo", new AttributeValue { S = reservation.TimeTo } },
                 { ":timeSlot", new AttributeValue { S = reservation.TimeSlot } },
                 { ":userInfo", new AttributeValue { S = reservation.UserInfo } },
-                { ":waiterId", new AttributeValue { S = reservation.WaiterId } }
+                { ":waiterId", new AttributeValue { S = reservation.WaiterId } },
+                { ":userEmail", new AttributeValue  { S = reservation.UserEmail } }
             }
         };
 

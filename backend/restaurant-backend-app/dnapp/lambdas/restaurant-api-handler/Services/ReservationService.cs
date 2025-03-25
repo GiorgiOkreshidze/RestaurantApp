@@ -9,10 +9,10 @@ using Function.Repository;
 using Function.Repository.Interfaces;
 using Function.Services.Interfaces;
 using SimpleLambdaFunction.Repository;
-using Function.Exceptions;
 using Function.Actions;
-using Function.Models.Reservations;
-using System.Linq;
+using Amazon.CognitoIdentityProvider.Model;
+using Function.Models.User;
+using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
 
 namespace Function.Services;
 
@@ -31,8 +31,16 @@ public class ReservationService : IReservationService
         _waiterRepository = new WaiterRepository();
     }
 
-    public async Task<Reservation> UpsertReservationAsync(ReservationRequest reservationRequest, string fullName)
+    public async Task<Reservation> UpsertReservationAsync(ReservationRequest reservationRequest, User user)
     {
+        //Available UTC time slots:
+        // 06:30 - 08:00
+        // 08:15 - 09:45
+        // 10:00 - 11:30
+        // 11:45 - 13:15
+        // 13:30 - 15:00
+        // 15:15 - 16:45
+        // 17:00 - 18:30
         var predefinedSlots = ActionUtils.GeneratePredefinedTimeSlots();
 
         // Parse requested times
@@ -58,11 +66,6 @@ public class ReservationService : IReservationService
             throw new ArgumentException("Reservation must exactly match one of the predefined time slots.");
         }
         
-        if (await _reservationRepository.ReservationExistsAsync(reservation.Id))
-        {
-            await ValidateModificationPermissions(reservation, requestingUser);
-        }
-
         var location = await _locationRepository.GetLocationByIdAsync(reservationRequest.LocationId);
 
         var existingReservations = await _reservationRepository.GetReservationsByDateLocationTable(
@@ -74,11 +77,11 @@ public class ReservationService : IReservationService
         {
             var existingTimeFrom = TimeSpan.Parse(existingReservation.TimeFrom);
             var existingTimeTo = TimeSpan.Parse(existingReservation.TimeTo);
-
+            
             // Check if the time slots overlap
-            if (newTimeFrom < existingTimeTo &&
-                newTimeTo > existingTimeFrom &&
-                existingReservation.UserInfo != fullName)
+            if (newTimeFrom <= existingTimeTo &&
+                newTimeTo >= existingTimeFrom &&
+                existingReservation.UserEmail != user.Email)
             {
                 throw new ArgumentException(
                     $"Table #{reservationRequest.Id} at location " +
@@ -87,11 +90,6 @@ public class ReservationService : IReservationService
             }
         }
         
-        if (!await _reservationRepository.ReservationExistsAsync(reservation.Id))
-        {
-            reservation.WaiterId = await GetLeastBusyWaiter(reservation.LocationId, reservation.Date);
-        }
-
         var reservationId = Guid.NewGuid().ToString();
 
         if (reservationRequest.Id != null)
@@ -133,13 +131,23 @@ public class ReservationService : IReservationService
             TimeFrom = reservationRequest.TimeFrom,
             TimeTo = reservationRequest.TimeTo,
             TimeSlot = reservationRequest.TimeFrom + " - " + reservationRequest.TimeTo,
-            UserInfo = fullName,
+            UserEmail = user.Email,
+            UserInfo = user.FirstName + " " + user.LastName,
             CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
         };
-
+        var reservationExists = await _reservationRepository.ReservationExistsAsync(reservation.Id);
+        
+        if (!reservationExists)
+        {
+            reservation.WaiterId = await GetLeastBusyWaiter(reservation.LocationId, reservation.Date);
+        }
+        else
+        {
+            await ValidateModificationPermissions(reservation, user);
+        }
+        
         return await _reservationRepository.UpsertReservationAsync(reservation);
     }
-
 
     public async Task<List<Reservation>> GetCustomerReservationsAsync(string info)
     {
@@ -168,21 +176,23 @@ public class ReservationService : IReservationService
             .FirstOrDefault().Key ?? throw new Exception($"No waiters available for location ID: {locationId} after counting reservations");
     }
 
-    private async Task ValidateModificationPermissions(Reservation reservation, string requestingUser)
+    private async Task ValidateModificationPermissions(Reservation newReservation, User user)
     {
-        var existingReservation = await _reservationRepository.GetReservationByIdAsync(reservation.Id);
-        
+        var existingReservation = await _reservationRepository.GetReservationByIdAsync(newReservation.Id);
+
         // Check if user is either the customer or assigned waiter
-        if (requestingUser != existingReservation.UserInfo && 
-            requestingUser != existingReservation.WaiterId)
+        if (user.Email != existingReservation.UserEmail && user.Id != existingReservation.WaiterId)
         {
-            throw new UnauthorizedAccessException("Only the customer or assigned waiter can modify this reservation");
+            throw new UnauthorizedException("Only the customer or assigned waiter can modify this reservation");
         }
+        
+        newReservation.WaiterId = existingReservation.WaiterId;
+        newReservation.UserEmail = existingReservation.UserEmail;
 
         // Check 30-minute lock
         var reservationDateTime = DateTime.ParseExact(
-            existingReservation.Date, 
-            "yyyy-MM-dd", 
+            existingReservation.Date,
+            "yyyy-MM-dd",
             CultureInfo.InvariantCulture
         ).Add(TimeSpan.Parse(existingReservation.TimeFrom));
 

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Lambda.APIGatewayEvents;
-using Function.Models;
 using Function.Models.Requests;
 using Function.Services;
 using Function.Services.Interfaces;
@@ -14,14 +14,14 @@ namespace Function.Actions.Reservations;
 public class CreateReservationAction
 {
     private readonly IAuthenticationService _authenticationService;
-    private readonly ILocationService _locationService;
     private readonly IReservationService _reservationService;
+    private readonly IUserService _userService;
 
     public CreateReservationAction()
     {
         _authenticationService = new AuthenticationService();
-        _locationService = new LocationService();
         _reservationService = new ReservationService();
+        _userService = new UserService();
     }
 
     public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProxyRequest request)
@@ -29,16 +29,21 @@ public class CreateReservationAction
         var accessToken = ActionUtils.GetAccessToken(request);
         var userInfo = await _authenticationService.GetUserDetailsAsync(accessToken);
         var reservationRequest = JsonSerializer.Deserialize<ReservationRequest>(request.Body);
-        var firstName = userInfo.GetValueOrDefault("given_name");
-        var lastName = userInfo.GetValueOrDefault("family_name");
-        var fullName = $"{firstName} {lastName}";
+        var email = userInfo.GetValueOrDefault("email");
         
         if (reservationRequest == null)
         {
             throw new ArgumentException("Reservation request body was null");
         }
 
-        if (int.TryParse(reservationRequest.GuestsNumber, out int guests) && guests > 10)
+        if (email == null)
+        {
+            throw new UnauthorizedException("User is not registered");
+        }
+        
+        var user = await _userService.GetUserByEmailAsync(email);
+
+        if (int.TryParse(reservationRequest.GuestsNumber, out var guests) && guests > 10)
         {
             throw new ArgumentException("The maximum number of guests allowed is 10");
         }
@@ -85,7 +90,7 @@ public class CreateReservationAction
             throw new ArgumentException("Reservation date and time must be in the future.");
         }
         
-        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, fullName);
+        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, user);
 
         return ActionUtils.FormatResponse(200, reservationResponse);
     }

@@ -24,9 +24,6 @@ public class Reservation
     [JsonPropertyName("locationAddress")]
     public required string LocationAddress { get; set; }
 
-    [JsonPropertyName("locationId")]
-    public required string LocationId { get; set; }
-
     [JsonPropertyName("preOrder")]
     public required string PreOrder { get; set; }
     
@@ -52,6 +49,9 @@ public class Reservation
     
     [JsonPropertyName("userInfo")]
     public required string UserInfo { get; set; }
+    
+    [JsonPropertyName("userEmail")]
+    public string? UserEmail { get; set; }
     
     [JsonPropertyName("waiterId")]
     [JsonIgnore]

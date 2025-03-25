@@ -3,30 +3,30 @@
   {
     "PutRequest": {
       "Item": {
-        "id": { "S": "waiter_001" },
+        "id": { "S": "aab435b8-0ad1-4d7e-b0e9-205e913ca91c" },
         "email": { "S": "laydyGaga98@example.com" },
         "role": { "S": "Waiter" },
-        "locationId": { "S": "loc_001" }
+        "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" }
       }
     }
   },
   {
     "PutRequest": {
       "Item": {
-        "id": { "S": "waiter_002" },
+        "id": { "S": "b6a81989-b253-47ef-88eb-c1dcb017fc8d" },
         "email": { "S": "johnyDepp007@example.com" },
         "role": { "S": "Waiter" },
-        "locationId": { "S": "loc_001" }
+        "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" }
       }
     }
   },
   {
     "PutRequest": {
       "Item": {
-        "id": { "S": "waiter_003" },
+        "id": { "S": "fa2df8b1-c558-42b4-a409-0b2970806a43" },
         "email": { "S": "kylieJenner69@example.com" },
         "role": { "S": "Waiter" },
-        "locationId": { "S": "loc_002" }
+        "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" }
       }
     }
   }

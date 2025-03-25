@@ -58,7 +58,8 @@ public class Mapper
             FeedbackId = item.TryGetValue("feedbackId", out var feedbackIdValue) ? feedbackIdValue.S : string.Empty,
             PreOrder = item.TryGetValue("preOrder", out var preOrderValue) ? preOrderValue.S : string.Empty,
             UserInfo = item.TryGetValue("userInfo", out var userInfoValue) ? userInfoValue.S : string.Empty,
-            CreatedAt = item.TryGetValue("createdAt", out var createAtValue) ? createAtValue.S : string.Empty
+            CreatedAt = item.TryGetValue("createdAt", out var createAtValue) ? createAtValue.S : string.Empty,
+            UserEmail = item.TryGetValue("userEmail", out var userEmailValue) ? userEmailValue.S : string.Empty,
         }).ToList();
     }
 
@@ -82,6 +83,7 @@ public class Mapper
             UserInfo = doc.TryGetValue("userInfo", out var userInfo) ? userInfo : string.Empty,
             CreatedAt = doc.TryGetValue("createdAt", out var createAtValue) ? createAtValue : string.Empty,
             WaiterId = doc.TryGetValue("waiterId", out var waiterId) ? waiterId : string.Empty,
+            UserEmail = doc.TryGetValue("userEmail", out var userEmail) ? userEmail : string.Empty,
         }).ToList();
     }
 

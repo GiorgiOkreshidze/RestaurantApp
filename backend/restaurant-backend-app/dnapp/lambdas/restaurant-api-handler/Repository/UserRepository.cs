@@ -45,13 +45,13 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task<User> GetUserByIdAsync(string userId)
+    public async Task<User> GetUserByEmailAsync(string email)
     {
         var documentList = await DynamoDbUtils.ScanDynamoDbTableAsync(_dynamoDBClient, _usersTableName);
         var users = Mapper.MapDocumentsToUsers(documentList);
-        var result = users.FirstOrDefault(user => user.Id == userId);
+        var result = users.FirstOrDefault(user => user.Email == email);
 
-        if (result == null) throw new ResourceNotFoundException($"The location with {userId} id is not found");
+        if (result == null) throw new ResourceNotFoundException($"The user with email: {email} is not found");
 
         return result;
     }
