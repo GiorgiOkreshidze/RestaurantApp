@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Function.Models.User;
 using Function.Repository;
 using Function.Repository.Interfaces;
 using Function.Services.Interfaces;
@@ -15,8 +16,8 @@ public class EmployeeService : IEmployeeService
         _employeeRepository = new EmployeeRepository();
     }
     
-    public async Task<bool> CheckIfEmailExistsInWaitersTableAsync(string email)
+    public async Task<EmployeeInfo?> GetEmployeeInfoByEmailAsync(string email)
     {
-        return await _employeeRepository.CheckIfEmailExistsInWaitersTableAsync(email);
+        return await _employeeRepository.GetEmployeeInfoByEmailAsync(email);
     }
 }

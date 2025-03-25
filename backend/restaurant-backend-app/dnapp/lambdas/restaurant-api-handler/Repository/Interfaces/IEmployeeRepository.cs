@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Function.Models.User;
 
 namespace Function.Repository.Interfaces;
 
 public interface IEmployeeRepository
 {
-    Task<bool> CheckIfEmailExistsInWaitersTableAsync(string email);
+    Task<EmployeeInfo?> GetEmployeeInfoByEmailAsync(string email);
 }
