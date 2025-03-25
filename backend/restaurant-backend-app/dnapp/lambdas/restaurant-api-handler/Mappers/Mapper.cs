@@ -4,10 +4,9 @@ using Amazon.DynamoDBv2.DocumentModel;
 using System.Linq;
 using Amazon.DynamoDBv2.Model;
 using Function.Models.Responses;
-
-using Amazon.DynamoDBv2.Model;
 using System;
 using System.Globalization;
+using Function.Models.User;
 
 namespace Function.Mappers;
 
@@ -129,5 +128,32 @@ public class Mapper
             LocationId = item.TryGetValue("locationId", out var locationId) ? locationId.S : ""
         };
         return feedback;
+    }
+    
+    public static List<User> MapDocumentsToUsers(List<Document> documentList)
+    {
+        return documentList.Select(doc => 
+        {
+            doc.TryGetValue("id", out var id);
+            doc.TryGetValue("firstName", out var firstName);
+            doc.TryGetValue("lastName", out var lastName);
+            doc.TryGetValue("email", out var email);
+            doc.TryGetValue("role", out var roleStr);
+            doc.TryGetValue("locationId", out var locationId);
+            doc.TryGetValue("createdAt", out var createdAt);
+
+            Enum.TryParse<Roles>(roleStr, out var parsedRole);
+
+            return new User
+            {
+                Id = id ?? "",
+                FirstName = firstName ?? "",
+                LastName = lastName ?? "",
+                Email = email ?? "",
+                Role = parsedRole,
+                LocationId = locationId ?? "",
+                CreatedAt = createdAt ?? ""
+            };
+        }).ToList();
     }
 }
