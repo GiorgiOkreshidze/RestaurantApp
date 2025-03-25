@@ -26,7 +26,6 @@ export const Select = ({
   setValue: (value: string | null) => void;
 }) => {
   const handleChange = (value: string) => {
-    console.log(value);
     if (value === "reset") {
       setValue(null);
     } else {

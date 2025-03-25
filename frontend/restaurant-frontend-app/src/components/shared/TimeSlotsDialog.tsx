@@ -1,3 +1,4 @@
+import { useBookingForm } from "@/hooks/useBookingForm";
 import { ChevronDownIcon, ClockIcon } from "../icons";
 import { Button, Text } from "../ui";
 import {
@@ -7,18 +8,42 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/";
+} from "../ui";
+import { Tooltip } from "./Tooltip";
 
-export const AvailableSlotsDialog = ({ className }: { className?: string }) => {
+export const TimeSlotsDialog = ({ className }: { className?: string }) => {
+  const { locationId, date } = useBookingForm();
+  let message = "Please select ";
+  if (!locationId) {
+    message = message.concat('"Location"');
+  }
+  if (!date && !locationId) {
+    message = message.concat(' and "Date"');
+  } else if (!date) {
+    message = message.concat('"Date"');
+  }
+  message = message.concat(" first");
+
   return (
     <Dialog>
-      <DialogTrigger className={className} asChild>
-        <Button variant="trigger" size="trigger">
-          <ClockIcon className="size-[24px]" />
-          <Text variant="buttonSecondary">Time</Text>
-          <ChevronDownIcon className="text-foreground ml-auto" />
-        </Button>
-      </DialogTrigger>
+      <Tooltip
+        message={message}
+        delayDuration={0}
+        disabled={Boolean(locationId && date)}
+        asChild
+      >
+        <DialogTrigger
+          className={className}
+          asChild
+          disabled={!locationId || !date}
+        >
+          <Button variant="trigger" size="trigger">
+            <ClockIcon className="size-[24px]" />
+            <Text variant="buttonSecondary">Time</Text>
+            <ChevronDownIcon className="text-foreground ml-auto" />
+          </Button>
+        </DialogTrigger>
+      </Tooltip>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Available slots</DialogTitle>

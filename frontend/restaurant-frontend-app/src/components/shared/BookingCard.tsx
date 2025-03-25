@@ -33,6 +33,7 @@ export const BookingCard = () => {
                 {i < 5 ? timeSlot : "Shaw all"}
               </TimeSlot>
             ))}
+            {/* <TimeSlotsDialog /> */}
           </div>
         </div>
       </article>

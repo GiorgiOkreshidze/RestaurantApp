@@ -41,7 +41,7 @@ export const GuestsNumber = ({
         >
           <MinusIcon className="size-[1.5rem]" />
         </Button>
-        <span>{value}</span>
+        <span className="min-w-[2ch] text-center">{value}</span>
         <Button
           variant="secondary"
           size="sm"

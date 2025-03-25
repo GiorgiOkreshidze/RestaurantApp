@@ -54,7 +54,7 @@ const NavBarLink = ({
 }: ComponentProps<"a"> & { to: string }) => {
   return (
     <NavLink
-      className="fontset-navigation text-foreground border-b-[2px] border-transparent hover:border-b-foreground [&.active]:text-primary [&.active]:border-b-primary [&.active]:cursor-default"
+      className="fontset-navigation text-foreground border-b-[2px] border-transparent hover:border-b-foreground [&.active]:text-primary [&.active]:border-b-primary"
       {...props}
     >
       {children}

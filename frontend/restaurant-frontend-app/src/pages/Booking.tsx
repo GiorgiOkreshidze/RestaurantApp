@@ -1,3 +1,4 @@
+import { selectTables } from "@/app/slices/tablesSlice";
 import {
   BookingCard,
   BookingForm,
@@ -6,8 +7,10 @@ import {
   PageHero,
 } from "@/components/shared";
 import { Text } from "@/components/ui";
+import { useSelector } from "react-redux";
 
 export const Booking = () => {
+  const tables = useSelector(selectTables);
   return (
     <>
       <PageHero variant="dark" className="flex flex-col justify-center">
@@ -24,9 +27,9 @@ export const Booking = () => {
           <Text variant="bodyBold"># tables available</Text>
         </PageBodyHeader>
         <ul className="grid gap-[2rem] lg:grid-cols-2">
-          <BookingCard></BookingCard>
-          <BookingCard></BookingCard>
-          <BookingCard></BookingCard>
+          {tables?.map((table) => (
+            <BookingCard />
+          ))}
         </ul>
       </PageBody>
     </>

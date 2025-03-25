@@ -110,3 +110,19 @@ export interface Reservation {
   timeSlot: string;
   userInfo: string;
 }
+
+export interface Table {
+  tableId: string;
+  capacity: string;
+  availableTimes: string[];
+  locationAddress: string;
+  locationId: string;
+  tableNumber: string;
+}
+
+export interface GetTablesParams {
+  date: string;
+  locationId: string;
+  guests?: string;
+  time?: string;
+}

@@ -11,7 +11,11 @@ export function DatePicker({
   className,
   value,
   setValue,
-}: { className?: string; value: string; setValue: (value: string) => void }) {
+}: {
+  className?: string;
+  value: string;
+  setValue: (value: string | null) => void;
+}) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -28,8 +32,8 @@ export function DatePicker({
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={value ? new Date(value) : new Date()}
-          onSelect={(date) => setValue(date ? format(date, "PP") : "")}
+          selected={value ? new Date(value) : undefined}
+          onSelect={(date) => setValue(date ? format(date, "PP") : null)}
           initialFocus
         />
       </PopoverContent>

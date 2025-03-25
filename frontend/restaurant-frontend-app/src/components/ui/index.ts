@@ -45,3 +45,9 @@ export {
   DialogTitle,
   DialogTrigger,
 } from "./Dialog";
+export {
+  TooltipRoot,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "./TooltipPrimitives";
