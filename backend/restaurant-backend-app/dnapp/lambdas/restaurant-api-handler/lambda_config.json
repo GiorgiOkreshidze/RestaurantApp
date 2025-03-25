@@ -16,7 +16,7 @@
   ],
   "event_sources": [],
   "env_variables": {
-    "DYNAMODB_WAITERS_TABLE_NAME": "${waiters_table}",
+    "DYNAMODB_EMPLOYEE_INFO_TABLE_NAME": "${employee_info_table}",
     "DYNAMODB_LOCATIONS_TABLE_NAME": "${locations_table}",
     "DYNAMODB_DISHES_TABLE_NAME": "${dishes_table}",
     "DYNAMODB_TABLES_TABLE_NAME": "${tables_table}",
@@ -35,7 +35,7 @@
       "resource_type": "cognito_idp",
       "parameter": "client_id"
     },
-    "WAITERS_TABLE_EMAIL_INDEX_NAME": "${waiters_table_email_index_name}",
+    "EMPLOYEE_INFO_TABLE_EMAIL_INDEX_NAME": "${employee_info_table_email_index_name}",
 
     "DDB_LOCATION_FEEDBACKS_TABLE": "${locationFeedback_table}",
     "DDB_LOCATION_FEEDBACKS_TYPE_RATING_INDEX": "${ix_locationFeedback_type_rating}",

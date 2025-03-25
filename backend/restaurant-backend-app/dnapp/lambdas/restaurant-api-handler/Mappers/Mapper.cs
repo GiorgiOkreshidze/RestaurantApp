@@ -80,7 +80,8 @@ public class Mapper
             FeedbackId = doc.TryGetValue("feedbackId", out var feedbackId) ? feedbackId : string.Empty,
             PreOrder = doc.TryGetValue("preOrder", out var preOrder) ? preOrder : string.Empty,
             UserInfo = doc.TryGetValue("userInfo", out var userInfo) ? userInfo : string.Empty,
-            CreatedAt = doc.TryGetValue("createdAt", out var createAtValue) ? createAtValue : string.Empty
+            CreatedAt = doc.TryGetValue("createdAt", out var createAtValue) ? createAtValue : string.Empty,
+            WaiterId = doc.TryGetValue("waiterId", out var waiterId) ? waiterId : string.Empty,
         }).ToList();
     }
 
