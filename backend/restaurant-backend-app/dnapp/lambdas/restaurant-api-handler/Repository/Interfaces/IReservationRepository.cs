@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Function.Models;
 
@@ -6,9 +7,12 @@ namespace Function.Repository.Interfaces;
 
 public interface IReservationRepository
 {
-    Task<Reservation> UpsertReservation(Reservation reservation);
+    Task<Reservation> UpsertReservationAsync(Reservation reservation);
     Task<List<Reservation>> GetReservationsByDateLocationTable(string date, string locationAddress, string tableNumber);
     Task<List<ReservationInfo>> GetReservationsForDateAndLocation(string date, string locationId);
     Task<List<Reservation>> GetCustomerReservationsAsync(string info);
     Task CancelReservation(string reservationId);
+    Task<int> GetWaiterReservationCountAsync(string waiterId, string date);
+    Task<bool> ReservationExistsAsync(string reservationId);
+    Task<Reservation> GetReservationByIdAsync(string reservationId);
 }

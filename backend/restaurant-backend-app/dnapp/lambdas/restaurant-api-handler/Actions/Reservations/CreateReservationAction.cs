@@ -78,15 +78,13 @@ public class CreateReservationAction
 
         var reservationDateTimeFrom = parsedDate.Add(parsedStartTime);
         var reservationDateTimeTo = parsedDate.Add(parsedStartTime);
-
         var currentUtcTime = DateTime.UtcNow;
 
         if (reservationDateTimeFrom < currentUtcTime || reservationDateTimeTo < currentUtcTime)
         {
             throw new ArgumentException("Reservation date and time must be in the future.");
         }
-
-      
+        
         var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, fullName);
 
         return ActionUtils.FormatResponse(200, reservationResponse);

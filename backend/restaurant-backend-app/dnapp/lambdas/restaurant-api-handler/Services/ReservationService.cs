@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Function.Models;
 using Function.Models.Requests;
@@ -19,13 +21,14 @@ public class ReservationService : IReservationService
     private readonly IReservationRepository _reservationRepository;
     private readonly ILocationRepository _locationRepository;
     private readonly ITableRepository _tableRepository;
-
+    private readonly IWaiterRepository _waiterRepository;
 
     public ReservationService()
     {
         _reservationRepository = new ReservationRepository();
         _locationRepository = new LocationRepository();
         _tableRepository = new TableRepository();
+        _waiterRepository = new WaiterRepository();
     }
 
     public async Task<Reservation> UpsertReservationAsync(ReservationRequest reservationRequest, string fullName)
@@ -54,6 +57,11 @@ public class ReservationService : IReservationService
         {
             throw new ArgumentException("Reservation must exactly match one of the predefined time slots.");
         }
+        
+        if (await _reservationRepository.ReservationExistsAsync(reservation.Id))
+        {
+            await ValidateModificationPermissions(reservation, requestingUser);
+        }
 
         var location = await _locationRepository.GetLocationByIdAsync(reservationRequest.LocationId);
 
@@ -77,6 +85,11 @@ public class ReservationService : IReservationService
                     $"{location.Address} is already booked during the requested time period."
                 );
             }
+        }
+        
+        if (!await _reservationRepository.ReservationExistsAsync(reservation.Id))
+        {
+            reservation.WaiterId = await GetLeastBusyWaiter(reservation.LocationId, reservation.Date);
         }
 
         var reservationId = Guid.NewGuid().ToString();
@@ -124,7 +137,7 @@ public class ReservationService : IReservationService
             CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
         };
 
-        return await _reservationRepository.UpsertReservation(reservation);
+        return await _reservationRepository.UpsertReservationAsync(reservation);
     }
 
 
@@ -136,5 +149,46 @@ public class ReservationService : IReservationService
     public async Task CancelReservationAsync(string reservationId)
     {
         await _reservationRepository.CancelReservation(reservationId);
+    }
+    
+    private async Task<string> GetLeastBusyWaiter(string locationId, string date) // Change parameter to locationId
+    {
+        var waiters = await _waiterRepository.GetWaitersByLocationAsync(locationId);
+        
+        var reservationCounts = new Dictionary<string, int>();
+
+        foreach (var waiter in waiters)
+        {
+            var count = await _reservationRepository.GetWaiterReservationCountAsync(waiter.Id, date);
+            reservationCounts[waiter.Id] = count;
+        }
+
+        return reservationCounts
+            .OrderBy(x => x.Value)
+            .FirstOrDefault().Key ?? throw new Exception($"No waiters available for location ID: {locationId} after counting reservations");
+    }
+
+    private async Task ValidateModificationPermissions(Reservation reservation, string requestingUser)
+    {
+        var existingReservation = await _reservationRepository.GetReservationByIdAsync(reservation.Id);
+        
+        // Check if user is either the customer or assigned waiter
+        if (requestingUser != existingReservation.UserInfo && 
+            requestingUser != existingReservation.WaiterId)
+        {
+            throw new UnauthorizedAccessException("Only the customer or assigned waiter can modify this reservation");
+        }
+
+        // Check 30-minute lock
+        var reservationDateTime = DateTime.ParseExact(
+            existingReservation.Date, 
+            "yyyy-MM-dd", 
+            CultureInfo.InvariantCulture
+        ).Add(TimeSpan.Parse(existingReservation.TimeFrom));
+
+        if (DateTime.UtcNow > reservationDateTime.AddMinutes(-30))
+        {
+            throw new ArgumentException("Reservations cannot be modified within 30 minutes of start time");
+        }
     }
 }

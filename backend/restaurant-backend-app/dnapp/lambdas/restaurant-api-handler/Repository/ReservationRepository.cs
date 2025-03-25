@@ -25,7 +25,7 @@ public class ReservationRepository : IReservationRepository
         _dynamoDBClient = new AmazonDynamoDBClient();
     }
 
-    public async Task<Reservation> UpsertReservation(Reservation reservation)
+    public async Task<Reservation> UpsertReservationAsync(Reservation reservation)
     {
         var updateItemRequest = new UpdateItemRequest
         {
@@ -39,7 +39,7 @@ public class ReservationRepository : IReservationRepository
             UpdateExpression = "SET #createdAt = :createdAt, #date = :date, #feedbackId = :feedbackId, #guestsNumber = :guestsNumber, " +
                                "#locationAddress = :locationAddress, #locationId = :locationId, #preOrder = :preOrder, #status = :status, " +
                                "#tableNumber = :tableNumber, #tableId = :tableId, #timeFrom = :timeFrom, #timeTo = :timeTo, " +
-                               "#timeSlot = :timeSlot, #userInfo = :userInfo",
+                               "#timeSlot = :timeSlot, #userInfo = :userInfo, #waiterId = :waiterId",
             ExpressionAttributeNames = new Dictionary<string, string>
             {
                 { "#createdAt", "createdAt" },
@@ -55,7 +55,8 @@ public class ReservationRepository : IReservationRepository
                 { "#timeFrom", "timeFrom" },
                 { "#timeTo", "timeTo" },
                 { "#timeSlot", "timeSlot" },
-                { "#userInfo", "userInfo" }
+                { "#userInfo", "userInfo" },
+                { "#waiterId", "waiterId" }
             },
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
@@ -72,7 +73,8 @@ public class ReservationRepository : IReservationRepository
                 { ":timeFrom", new AttributeValue { S = reservation.TimeFrom } },
                 { ":timeTo", new AttributeValue { S = reservation.TimeTo } },
                 { ":timeSlot", new AttributeValue { S = reservation.TimeSlot } },
-                { ":userInfo", new AttributeValue { S = reservation.UserInfo } }
+                { ":userInfo", new AttributeValue { S = reservation.UserInfo } },
+                { ":waiterId", new AttributeValue { S = reservation.WaiterId } }
             }
         };
 
@@ -190,5 +192,59 @@ public class ReservationRepository : IReservationRepository
         {
             throw new Exceptions.ResourceNotFoundException("Reservation not found");
         }
+    }
+
+    public async Task<int> GetWaiterReservationCountAsync(string waiterId, string date)
+    {
+        if (string.IsNullOrEmpty(waiterId))
+            throw new ArgumentException("Waiter ID cannot be null or empty");
+        
+        var request = new ScanRequest
+        {
+            TableName = _reservationsTableName,
+            FilterExpression = "waiterId = :waiterId AND #date = :date",
+            ExpressionAttributeNames = new Dictionary<string, string>
+            {
+                { "#date", "date" } // "Date" is a reserved keyword in DynamoDB
+            },
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":waiterId", new AttributeValue { S = waiterId } },
+                { ":date", new AttributeValue { S = date } }
+            }
+        };
+
+        var response = await _dynamoDBClient.ScanAsync(request);
+        return response.Items.Count;
+    }
+
+    public async Task<bool> ReservationExistsAsync(string reservationId)
+    {
+        if (string.IsNullOrEmpty(reservationId))
+            return false;
+
+        var request = new GetItemRequest
+        {
+            TableName = _reservationsTableName,
+            Key = new Dictionary<string, AttributeValue>
+            {
+                { "id", new AttributeValue { S = reservationId } }
+            },
+            ProjectionExpression = "id" // We only need to check existence
+        };
+
+        var response = await _dynamoDBClient.GetItemAsync(request);
+        return response.Item != null && response.Item.Count > 0;
+    }
+
+    public async Task<Reservation> GetReservationByIdAsync(string reservationId)
+    {
+        var documentList = await DynamoDbUtils.ScanDynamoDbTableAsync(_dynamoDBClient, _reservationsTableName);
+        var reservations = Mapper.MapDocumentsToReservations(documentList);
+        var result = reservations.FirstOrDefault(loc => loc.Id == reservationId);
+
+        if (result == null) throw new ResourceNotFoundException($"The location with {reservationId} id is not found");
+
+        return result;
     }
 }
