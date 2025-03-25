@@ -138,10 +138,6 @@ public class ReservationService : IReservationService
             CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
         };
 
-        return await _reservationRepository.UpsertReservation(reservation);
-    }
-
-    public async Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParams,  string info, Roles role)
         var reservationExists = await _reservationRepository.ReservationExistsAsync(reservation.Id);
         
         if (!reservationExists)
