@@ -32,11 +32,9 @@ public class UserRepository : IUserRepository
                 { "lastName", new AttributeValue { S = user.LastName }},
                 { "email", new AttributeValue { S = user.Email }},
                 { "role", new AttributeValue { S = user.Role.ToString() }},
-                { "locationId", new AttributeValue { S = user.LocationId }},
                 { "createdAt", new AttributeValue { S = user.CreatedAt }},
             }
         };
-        
         
         if (!string.IsNullOrEmpty(user.LocationId))
         {
