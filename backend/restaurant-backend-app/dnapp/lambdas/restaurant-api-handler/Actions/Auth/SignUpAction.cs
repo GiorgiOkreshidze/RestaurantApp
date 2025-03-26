@@ -57,16 +57,19 @@ public class SignUpAction
 
     private async Task<string> SignUpUserWithRole(User user, string password)
     {
-        var isWaiter = await _employeeService.CheckIfEmailExistsInWaitersTableAsync(user.Email);
 
-        if (isWaiter)
+        var employeeInfo = await _employeeService.GetEmployeeInfoByEmailAsync(user.Email);
+
+        if (employeeInfo == null)
         {
-            await _authenticationService.SignUp(user, password, Roles.Waiter);
-            user.Role = Roles.Waiter;
+            Console.WriteLine("User with email not found in employeeInfo table, so its just regular customer");
+            await _authenticationService.SignUp(user, password);
         }
         else
         {
-            await _authenticationService.SignUp(user, password);
+            await _authenticationService.SignUp(user, password, Roles.Waiter);
+            user.LocationId = employeeInfo.LocationId;
+            user.Role = Roles.Waiter;
         }
         
         await _userService.AddUserAsync(user);

@@ -3,5 +3,7 @@
 public enum Roles
 {
     Customer,
-    Waiter
+    Waiter,
+    Admin,
+    Unknown
 }
