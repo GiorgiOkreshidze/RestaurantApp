@@ -21,13 +21,13 @@ export const getLocations = createAsyncThunk<
 });
 
 export const getSpecialityDishes = createAsyncThunk<
-  Dish[], 
-  string, 
-  { rejectValue: GlobalErrorMessage } 
+  Dish[],
+  string,
+  { rejectValue: GlobalErrorMessage }
 >("locations/getSpecialityDishes", async (id, { rejectWithValue }) => {
   try {
     const response = await axiosApi.get(
-      `${serverRoute.locations}/${id}/${serverRoute.specialityDishes}`
+      `${serverRoute.locations}/${id}/${serverRoute.specialityDishes}`,
     );
     return response.data;
   } catch (e) {

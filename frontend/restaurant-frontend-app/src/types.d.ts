@@ -101,7 +101,7 @@ export type ReservationStatus =
 export interface Reservation {
   date: string;
   feedbackId: string;
-  guestsNumber: string;
+  guests: string;
   id: string;
   locationAddress: string;
   preOrder: string;
@@ -109,4 +109,26 @@ export interface Reservation {
   tableNumber: string;
   timeSlot: string;
   userInfo: string;
+}
+
+export interface Table {
+  tableId: string;
+  capacity: string;
+  availableSlots: { start: string; end: string }[];
+  locationAddress: string;
+  locationId: string;
+  tableNumber: string;
+}
+
+export interface GetTablesParams {
+  date: string;
+  locationId: string;
+  guests?: string;
+  time?: string;
+}
+
+export interface BookingFilters {
+  locationId: string;
+  dateTime: string;
+  guests: number;
 }

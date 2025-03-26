@@ -12,7 +12,7 @@ export const ReservationCard = ({
   status,
   date,
   timeSlot,
-  guestsNumber,
+  guests: guestsNumber,
   preOrder,
   tableNumber,
   userInfo,
@@ -32,7 +32,7 @@ export const ReservationCard = ({
             <Text variant="bodyBold">{date}</Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
-            <ClockIcon className="size-[16px]" />
+            <ClockIcon className="size-[16px] stroke-primary" />
             <Text variant="bodyBold">{timeSlot}</Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">

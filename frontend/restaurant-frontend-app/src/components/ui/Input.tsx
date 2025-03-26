@@ -14,9 +14,8 @@ const Input = ({
     <input
       type={type}
       className={cn(
-        "text-foreground fontset-body p-[1rem] bg-neutral-0 w-full border border-neutral-200 rounded placeholder:text-neutral-400 hover:shadow-input-primary hover:border-transparent focus:border-primary outline-none disabled:text-disabled m-0",
-        isInvalid &&
-          "border-destructive hover:border-destructive hover:shadow-input-destructive focus:border-destructive",
+        "w-full styleSet-input",
+        isInvalid && "styleSet-input-invalid",
         className,
       )}
       ref={ref}

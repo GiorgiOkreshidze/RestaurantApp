@@ -10,4 +10,5 @@ export const serverRoute = {
   signOut: "signout",
   userData: "users/profile",
   reservations: "reservations",
+  tables: "bookings/tables",
 };

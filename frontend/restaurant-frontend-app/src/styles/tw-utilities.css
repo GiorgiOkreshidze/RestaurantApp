@@ -67,9 +67,67 @@
   font-weight: 500;
 }
 
+@utility kitty {
+  font-size: 1.25rem; /* 20px */
+  line-height: 2rem; /* 32px */
+  font-weight: 500;
+}
+
 /* ==================================== */
 /* FONT-SIZE */
 /* ==================================== */
 @utility dynamic-title-size {
   font-size: clamp(1rem, 5vw, 5rem);
+}
+
+
+/* ==================================== */
+/* INPUT */
+/* ==================================== */
+@utility styleSet-input {
+  margin: 0;
+  padding: 1rem;
+
+  color: var(--color-input-foreground);
+  @apply fontset-body;
+  
+  background-color: var(--color-input-background);
+  border: 1px solid var(--color-neutral-200, #dadada);
+  border-radius: var(--radius-input);
+
+  outline: none;
+
+  &:hover {
+    border-color: transparent;
+    box-shadow: var(--shadow-input-primary);
+  }
+
+  &:disabled {
+    color: var(--color-input-foreground-disabled);
+  }
+
+  &:focus {
+    border-color: var(--color-primary);
+  }
+
+  &:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  &::placeholder {
+    color: var(--color-input-placeholder);
+  }
+}
+
+@utility styleSet-input-invalid {
+  border-color: var(--color-destructive);
+
+  &:hover {
+    border-color: var(--color-destructive);
+    box-shadow: var(--shadow-input-destructive);
+  }
+
+  &:focus {
+    border-color: var(--color-destructive);
+  }
 }

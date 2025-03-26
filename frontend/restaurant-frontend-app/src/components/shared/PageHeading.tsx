@@ -2,9 +2,9 @@ import { selectUser } from "@/app/slices/userSlice";
 import { useSelector } from "react-redux";
 import { Text } from "../ui";
 import { Logo } from "../icons";
-import { Container } from "./container";
+import { Container } from "./Container";
 
-export const PageTitle = () => {
+export const PageHeading = () => {
   const user = useSelector(selectUser);
 
   return (
