@@ -1,9 +1,8 @@
-import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/";
 import { Calendar } from "@/components/ui/";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/";
-import { ChevronDownIcon } from "../icons";
+import { CalendarIcon, ChevronDownIcon } from "../icons";
 import { format } from "date-fns";
 
 export function DatePicker({
@@ -23,7 +22,7 @@ export function DatePicker({
           size="trigger"
           className={cn("", className, !value && "text-muted-foreground")}
         >
-          <CalendarIcon className="size=[1.5rem]" />
+          <CalendarIcon className="size-[1.5rem]" />
           <span className="whitespace-nowrap">
             {format(value, "PP") || "Pick a date"}
           </span>
@@ -36,6 +35,7 @@ export function DatePicker({
           selected={value}
           onSelect={(date) => setValue(date)}
           initialFocus
+          disabled={{ before: new Date() }}
         />
       </PopoverContent>
     </Popover>

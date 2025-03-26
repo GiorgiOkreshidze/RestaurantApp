@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 export const Booking = () => {
   const tables = useSelector(selectTables);
   const { date } = useBookingForm();
+
   return (
     <>
       <PageHero variant="dark" className="flex flex-col justify-center">
@@ -26,11 +27,11 @@ export const Booking = () => {
       </PageHero>
       <PageBody>
         <PageBodyHeader>
-          <Text variant="bodyBold"># tables available</Text>
+          <Text variant="bodyBold">{tables.length} tables available</Text>
         </PageBodyHeader>
         <ul className="grid gap-[2rem] lg:grid-cols-2">
           {tables?.map((table, i) => (
-            <TableCard key={i} date={date} {...table} />
+            <TableCard key={i} date={date} table={table} />
           ))}
         </ul>
       </PageBody>

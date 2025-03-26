@@ -1,6 +1,6 @@
 export { Button } from "./Button";
 export { Label } from "./label";
-export { Input } from "./input";
+export { Input } from "./Input";
 export { Text } from "./Text";
 export { DishCard } from "./DishCard";
 export { LocationsCard } from "./LocationsCard";

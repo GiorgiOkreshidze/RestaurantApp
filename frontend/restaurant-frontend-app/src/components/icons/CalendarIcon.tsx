@@ -1,6 +1,10 @@
+import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
 
-export const CalendarIcon = ({ ...props }: ComponentProps<"svg">) => {
+export const CalendarIcon = ({
+  className,
+  ...props
+}: ComponentProps<"svg">) => {
   return (
     <svg
       width={16}
@@ -8,6 +12,7 @@ export const CalendarIcon = ({ ...props }: ComponentProps<"svg">) => {
       viewBox="0 0 16 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={cn("stroke-foreground", className)}
       {...props}
     >
       <path

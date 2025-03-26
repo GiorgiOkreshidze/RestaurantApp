@@ -4,7 +4,7 @@ import { Button, Text } from "../ui";
 import { useBookingForm } from "@/hooks/useBookingForm";
 
 export const GuestsNumber = () => {
-  const { guestsNumber, increaseGuestsNumber, decreaseGuestsNumber } =
+  const { guests, increaseGuestsNumber, decreaseGuestsNumber } =
     useBookingForm();
   return (
     <div
@@ -25,7 +25,7 @@ export const GuestsNumber = () => {
         >
           <MinusIcon className="size-[1.5rem]" />
         </Button>
-        <span className="min-w-[2ch] text-center">{guestsNumber}</span>
+        <span className="min-w-[2ch] text-center">{guests}</span>
         <Button
           variant="secondary"
           size="sm"

@@ -12,7 +12,7 @@ export const ReservationCard = ({
   status,
   date,
   timeSlot,
-  guestsNumber,
+  guests: guestsNumber,
   preOrder,
   tableNumber,
   userInfo,

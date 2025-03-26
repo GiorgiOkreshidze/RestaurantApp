@@ -3,14 +3,11 @@ import locationThumbnail from "../../assets/images/location-thumbnail.jpg";
 import { LocationIcon, PlusIcon } from "../icons";
 import { Text } from "../ui";
 import { TimeSlot } from "./TimeSlot";
+import { format } from "date-fns";
+import { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";
 
-export const TableCard = ({
-  locationAddress,
-  tableNumber,
-  capacity,
-  availableSlots,
-  date,
-}: Table & { date: string }) => {
+export const TableCard = ({ table, date }: { table: Table; date: Date }) => {
+  const { availableSlots, locationAddress, capacity, tableNumber } = table;
   return (
     <li className="@container bg-card rounded overflow-hidden shadow-card">
       <article className="grid @max-[650px]:grid-rows-[200px_auto] @[650px]:grid-cols-[200px_1fr]">
@@ -31,19 +28,20 @@ export const TableCard = ({
               Table seating capacity: {capacity} people
             </Text>
             <Text variant="bodyBold">
-              {availableSlots.length} slots available for {date}:
+              {availableSlots.length} slots available for {format(date, "PP")}:
             </Text>
           </div>
           <div className="grid gap-[0.5rem] @min-[400px]:grid-cols-2">
-            {availableSlots.slice(0, 6).map((timeSlotData, i) => (
-              <TimeSlot
-                key={i}
-                icon={i < 5 ? undefined : <PlusIcon className="size-[1rem]" />}
-                className={i < 5 ? undefined : "place-self-start"}
-                data={timeSlotData}
-              />
-            ))}
-            {/* <TimeSlotsDialog /> */}
+            {availableSlots.length > 0 && (
+              <AvailableTimeSlotsDialog table={table}>
+                <TimeSlot
+                  icon={<PlusIcon className="size-[1rem]" />}
+                  className="place-self-start"
+                >
+                  Show all
+                </TimeSlot>
+              </AvailableTimeSlotsDialog>
+            )}
           </div>
         </div>
       </article>

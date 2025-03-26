@@ -38,15 +38,15 @@ function SelectTrigger({
       data-slot="select-trigger"
       className={cn("*:data-[slot=select-value]:line-clamp-1", className)}
       {...props}
-      asChild
     >
-      <Button variant="trigger" size="trigger">
+      {children}
+      {/* <Button variant="trigger" size="trigger">
         {Icon && <Icon className="shrink-0 stroke-foreground size-[1.5rem]" />}
         {children}
         <SelectPrimitive.Icon className="shrink-0 ml-auto" asChild>
           <ChevronDownIcon />
         </SelectPrimitive.Icon>
-      </Button>
+      </Button> */}
     </SelectPrimitive.Trigger>
   );
 }
