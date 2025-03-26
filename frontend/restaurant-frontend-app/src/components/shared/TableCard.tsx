@@ -5,7 +5,7 @@ import { Text } from "../ui";
 import { TimeSlot } from "./TimeSlot";
 import { format } from "date-fns";
 import { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";
-import { ReservationDialog } from "./ReservationDialog";
+import { MakeReservationDialog } from "./MakeReservationDialog";
 import { timeStringFrom24hTo12h } from "@/utils/dateTime";
 
 export const TableCard = ({ table, date }: { table: Table; date: Date }) => {
@@ -35,7 +35,7 @@ export const TableCard = ({ table, date }: { table: Table; date: Date }) => {
           </div>
           <div className="grid gap-[0.5rem] @min-[400px]:grid-cols-2">
             {availableSlots.slice(0, 5).map((slot, i) => (
-              <ReservationDialog table={table} key={i}>
+              <MakeReservationDialog table={table} key={i}>
                 <TimeSlot
                   key={slot.start + slot.end}
                   icon={<ClockIcon className="size-[1rem] stroke-primary" />}
@@ -43,7 +43,7 @@ export const TableCard = ({ table, date }: { table: Table; date: Date }) => {
                   {timeStringFrom24hTo12h(slot.start)} -{" "}
                   {timeStringFrom24hTo12h(slot.end)}
                 </TimeSlot>
-              </ReservationDialog>
+              </MakeReservationDialog>
             ))}
             {availableSlots.length > 5 && (
               <AvailableTimeSlotsDialog table={table}>

@@ -8,13 +8,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui";
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import { Table } from "@/types";
 import { format } from "date-fns";
 import { GuestsNumber, TimePicker } from ".";
 import { useMakeReservationForm } from "@/hooks/useMakeReservationForm";
 
-export const ReservationDialog = ({
+export const MakeReservationDialog = ({
   children,
   className,
   table,

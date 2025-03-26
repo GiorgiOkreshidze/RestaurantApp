@@ -65,6 +65,19 @@ export const BookingForm = ({
         />
         <DatePicker value={date} setValue={setDate} className="w-full" />
         <TimePicker date={date} setDate={setTime} />
+        {/* <Select
+          items={locations.map((location) => ({
+            id: location.id,
+            label: location.address,
+          }))}
+          placeholder="Location"
+          value={locationId}
+          setValue={(id) => {
+            setLocationId(id);
+            onChange(id);
+          }}
+          className="w-full"
+        /> */}
         <GuestsNumber
           guests={guests}
           increase={increaseGuestsNumber}
