@@ -1,19 +1,29 @@
 import { cn } from "@/lib/utils";
 import { MinusIcon, PeopleIcon, PlusIcon } from "../icons";
 import { Button, Text } from "../ui";
-import { useBookingForm } from "@/hooks/useBookingForm";
+import { ComponentProps } from "react";
 
-export const GuestsNumber = () => {
-  const { guests, increaseGuestsNumber, decreaseGuestsNumber } =
-    useBookingForm();
+export const GuestsNumber = ({
+  guests,
+  increase,
+  decrease,
+  className,
+  ...props
+}: ComponentProps<"div"> & {
+  guests: number;
+  increase: () => void;
+  decrease: () => void;
+}) => {
   return (
     <div
       className={cn(
-        "flex gap-[0.5rem] justify-between py-[0.75rem] px-[1.5rem] bg-card rounded",
+        "styleSet-input flex gap-[0.5rem] justify-between py-[0.75rem] px-[1.5rem] bg-card rounded",
+        className,
       )}
+      {...props}
     >
       <div className="flex items-center gap-[0.5rem]">
-        <PeopleIcon className="size-[24px]" />
+        <PeopleIcon className="size-[24px] stroke-primary" />
         <Text variant="buttonSecondary">Guests</Text>
       </div>
       <div className="flex items-center gap-[0.5rem]">
@@ -21,16 +31,18 @@ export const GuestsNumber = () => {
           variant="secondary"
           size="sm"
           className="min-w-[40px]"
-          onClick={decreaseGuestsNumber}
+          onClick={decrease}
         >
           <MinusIcon className="size-[1.5rem]" />
         </Button>
-        <span className="min-w-[2ch] text-center">{guests}</span>
+        <span className="min-w-[2ch] text-center fontset-buttonSecondary">
+          {guests}
+        </span>
         <Button
           variant="secondary"
           size="sm"
           className=" min-w-[40px]"
-          onClick={increaseGuestsNumber}
+          onClick={increase}
         >
           <PlusIcon className="size-[1.5rem]" />
         </Button>

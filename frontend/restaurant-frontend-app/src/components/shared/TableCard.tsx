@@ -1,10 +1,12 @@
 import { Table } from "@/types";
 import locationThumbnail from "../../assets/images/location-thumbnail.jpg";
-import { LocationIcon, PlusIcon } from "../icons";
+import { ClockIcon, LocationIcon, PlusIcon } from "../icons";
 import { Text } from "../ui";
 import { TimeSlot } from "./TimeSlot";
 import { format } from "date-fns";
 import { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";
+import { ReservationDialog } from "./ReservationDialog";
+import { timeStringFrom24hTo12h } from "@/utils/dateTime";
 
 export const TableCard = ({ table, date }: { table: Table; date: Date }) => {
   const { availableSlots, locationAddress, capacity, tableNumber } = table;
@@ -32,7 +34,18 @@ export const TableCard = ({ table, date }: { table: Table; date: Date }) => {
             </Text>
           </div>
           <div className="grid gap-[0.5rem] @min-[400px]:grid-cols-2">
-            {availableSlots.length > 0 && (
+            {availableSlots.slice(0, 5).map((slot, i) => (
+              <ReservationDialog table={table} key={i}>
+                <TimeSlot
+                  key={slot.start + slot.end}
+                  icon={<ClockIcon className="size-[1rem] stroke-primary" />}
+                >
+                  {timeStringFrom24hTo12h(slot.start)} -{" "}
+                  {timeStringFrom24hTo12h(slot.end)}
+                </TimeSlot>
+              </ReservationDialog>
+            ))}
+            {availableSlots.length > 5 && (
               <AvailableTimeSlotsDialog table={table}>
                 <TimeSlot
                   icon={<PlusIcon className="size-[1rem]" />}

@@ -26,7 +26,7 @@ import { dateObjectToYYYY_MM_DD, dateObjectToHH_MM } from "@/utils/dateTime";
 export const useBookingForm = () => {
   const dispatch = useAppDispatch();
   const filters = useSelector(selectFilters);
-  const { locationId, dateTime, guests } = useSelector(selectFilters);
+  const { locationId, dateTime, guests } = filters;
   const date = new Date(dateTime);
 
   const setLocationId = (locationId: string | null) => {

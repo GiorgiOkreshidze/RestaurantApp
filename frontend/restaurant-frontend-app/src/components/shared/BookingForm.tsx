@@ -15,8 +15,18 @@ export const BookingForm = ({
   ...props
 }: ComponentProps<"form">) => {
   const locations = useSelector(selectLocations);
-  const { locationId, setLocationId, date, setDate, onSubmit, form, setTime } =
-    useBookingForm();
+  const {
+    locationId,
+    setLocationId,
+    date,
+    setDate,
+    onSubmit,
+    form,
+    setTime,
+    guests,
+    increaseGuestsNumber,
+    decreaseGuestsNumber,
+  } = useBookingForm();
   const filters = useSelector(selectFilters);
   // console.log(filters);
   return (
@@ -55,7 +65,11 @@ export const BookingForm = ({
         />
         <DatePicker value={date} setValue={setDate} className="w-full" />
         <TimePicker date={date} setDate={setTime} />
-        <GuestsNumber />
+        <GuestsNumber
+          guests={guests}
+          increase={increaseGuestsNumber}
+          decrease={decreaseGuestsNumber}
+        />
         <Button type="submit" className="md:max-xl:col-span-2">
           Find&nbsp;a&nbsp;Table
         </Button>

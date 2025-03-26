@@ -26,3 +26,4 @@ export { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";
 export { GuestsNumber } from "./GuestsNumber";
 export { Tooltip } from "./Tooltip";
 export { TimePicker } from "./TimePicker";
+export { ReservationDialog } from "./ReservationDialog";
