@@ -1,4 +1,4 @@
-import { Container, PageTitle, ReservationCard } from "@/components/shared";
+import { Container, PageHeading, ReservationCard } from "@/components/shared";
 import calendarCrossed from "@/assets/images/calendar-crossed.png";
 import { Button, Text } from "@/components/ui";
 import { Link } from "react-router";
@@ -21,7 +21,7 @@ export const Reservations = () => {
 
   return (
     <>
-      <PageTitle />
+      <PageHeading />
       <Container className="flex flex-col grow-1">
         {reservations?.length > 0 ? (
           <div className="grow-1 content-start grid gap-[2rem] lg:grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">
@@ -67,7 +67,7 @@ const reservations: Reservation[] = [
     status: "Reserved",
     date: "Oct 14, 2024",
     timeSlot: "12:15 p.m. - 1:45 p.m.",
-    guestsNumber: "10",
+    guests: "10",
     preOrder: "1",
     tableNumber: "1",
     userInfo: "1",
@@ -79,7 +79,7 @@ const reservations: Reservation[] = [
     status: "Reserved",
     date: "Oct 16, 2024",
     timeSlot: "10:30 a.m. - 12:00 p.m.",
-    guestsNumber: "10",
+    guests: "10",
     preOrder: "2",
     tableNumber: "1",
     userInfo: "1",
@@ -91,7 +91,7 @@ const reservations: Reservation[] = [
     status: "In Progress",
     date: "Sep 14, 2024",
     timeSlot: "10:30 a.m. - 11:30 a.m.",
-    guestsNumber: "5",
+    guests: "5",
     preOrder: "3",
     tableNumber: "1",
     userInfo: "1",
@@ -103,7 +103,7 @@ const reservations: Reservation[] = [
     status: "Finished",
     date: "Jun 6, 2024",
     timeSlot: "10:30 a.m. - 11:30 a.m.",
-    guestsNumber: "4",
+    guests: "4",
     preOrder: "4",
     tableNumber: "1",
     userInfo: "1",
@@ -115,7 +115,7 @@ const reservations: Reservation[] = [
     status: "Canceled",
     date: "Mar 28, 2024",
     timeSlot: "10:30 a.m. - 11:30 a.m.",
-    guestsNumber: "2",
+    guests: "2",
     preOrder: "5",
     tableNumber: "1",
     userInfo: "1",

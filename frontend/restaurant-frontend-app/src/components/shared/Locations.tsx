@@ -1,6 +1,6 @@
 import { LocationsCard, Text } from "../ui";
-import { Container } from "./container";
 import { Location } from "@/types";
+import { PageBodyHeader, PageBodySection } from "./PageBody";
 
 interface Props {
   locations: Location[];
@@ -9,17 +9,15 @@ interface Props {
 
 export const Locations: React.FC<Props> = ({ locations }) => {
   return (
-    <div>
-      <Container className="pb-[64px] !pt-0">
-        <Text variant="h2" className="mb-10">
-          Locations
-        </Text>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
-          {locations.map((item) => (
-            <LocationsCard key={item.id} location={item} />
-          ))}
-        </div>
-      </Container>
-    </div>
+    <PageBodySection>
+      <PageBodyHeader>
+        <Text variant="h2">Locations</Text>
+      </PageBodyHeader>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
+        {locations.map((item) => (
+          <LocationsCard key={item.id} location={item} />
+        ))}
+      </div>
+    </PageBodySection>
   );
 };

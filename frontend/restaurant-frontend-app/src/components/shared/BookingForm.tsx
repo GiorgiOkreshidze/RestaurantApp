@@ -1,110 +1,81 @@
-import { ChevronDown } from "lucide-react";
-import { ClockIcon, LocationIcon, PeopleIcon } from "../icons";
-import { Button, Text } from "../ui";
-import {
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-  Dialog,
-  DialogDescription,
-  DialogHeader,
-} from "../ui/dialog";
-import {
-  SelectTrigger,
-  Select,
-  SelectContent,
-  SelectValue,
-  SelectItem,
-} from "../ui/Select";
-import { CalendarField } from "./CalendarField";
+import { Button } from "../ui";
+import { DatePicker } from "./DatePicker";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
+import { useBookingForm } from "@/hooks/useBookingForm";
+import { GuestsNumber, Select } from "@/components/shared";
+import { useSelector } from "react-redux";
+import { selectLocations } from "@/app/slices/locationsSlice";
+import { TimePicker } from "./TimePicker";
+import { Form, FormField, FormItem, FormMessage } from "@/components/ui/";
+import { selectFilters } from "@/app/slices/bookingSlice";
 
 export const BookingForm = ({
   className,
   ...props
 }: ComponentProps<"form">) => {
+  const locations = useSelector(selectLocations);
+  const { locationId, setLocationId, date, setDate, onSubmit, form, setTime } =
+    useBookingForm();
+  const filters = useSelector(selectFilters);
+  // console.log(filters);
   return (
-    // <Form>
-    <form
-      className={cn(
-        "flex items-center gap-[1rem] flex-wrap *:grow-1",
-        className,
-      )}
-      {...props}
-    >
-      <Select>
-        <SelectTrigger className="place-items-start grow-1 grid grid-cols-[auto_1fr_auto]">
-          <LocationIcon
-            color="var(--color-foreground)"
-            className="size-[24px]"
-          />
-          <SelectValue placeholder="Location" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="1">48 Rustaveli Avenue</SelectItem>
-          <SelectItem value="2">14 Baratashvili Street</SelectItem>
-          <SelectItem value="3">9 Abashidze Street</SelectItem>
-        </SelectContent>
-      </Select>
-      <CalendarField />
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            variant="secondary"
-            className="grow-1 flex items-center justify-start gap-[0.5rem] justify-starttext-foreground fontset-buttonSecondary"
-          >
-            <ClockIcon className="size-[24px]" />
-            <Text variant="buttonSecondary">Time</Text>
-            <ChevronDown className="text-foreground ml-auto" />
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Available slots</DialogTitle>
-            <DialogDescription>
-              There are 7 slots available at 48 Rustaveli Avenue, Table 1, for
-              October 14, 2024
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-2 gap-[0.5rem]">
-            {timeSlots.map((value, i) => (
-              <Button
-                variant="secondary"
-                size="sm"
-                key={i}
-                className="font-normal text-foreground flex gap-[0.5rem] justify-start fontset-bodyBold"
-              >
-                <ClockIcon />
-                {value}
-              </Button>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
-      <div className="flex gap-[1rem] items-center py-[0.75rem] px-[1.5rem] bg-card-background rounded">
-        <PeopleIcon className="size-[24px]" />
-        <Text variant="buttonSecondary">Guests</Text>
-        <Button variant="secondary" size="sm" className="min-w-[40px]">
-          -
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={cn(
+          "grid gap-[1rem] md:grid-cols-2 xl:grid-cols-[2fr_repeat(4,minmax(max-content,1fr))] items-start",
+          className,
+        )}
+        {...props}
+      >
+        <FormField
+          control={form.control}
+          name="locationId"
+          render={({ field: { onChange } }) => {
+            return (
+              <FormItem>
+                <Select
+                  items={locations.map((location) => ({
+                    id: location.id,
+                    label: location.address,
+                  }))}
+                  placeholder="Location"
+                  value={locationId}
+                  setValue={(id) => {
+                    setLocationId(id);
+                    onChange(id);
+                  }}
+                  className="w-full"
+                />
+                <FormMessage className="bg-red-100 rounded-[4px] p-[0.5rem]" />
+              </FormItem>
+            );
+          }}
+        />
+        <DatePicker value={date} setValue={setDate} className="w-full" />
+        <TimePicker date={date} setDate={setTime} />
+        <GuestsNumber />
+        <Button type="submit" className="md:max-xl:col-span-2">
+          Find&nbsp;a&nbsp;Table
         </Button>
-        <span>10</span>
-        <Button variant="secondary" size="sm" className=" min-w-[40px]">
-          +
-        </Button>
-      </div>
-      <Button className="grow-1">Find&nbsp;a&nbsp;Table</Button>
-    </form>
-    // </Form>
+      </form>
+    </Form>
   );
 };
 
-const timeSlots = [
-  "10:30 a.m. - 12:00 p.m",
-  "12:15 p.m. - 1:45 p.m",
-  "2:00 p.m. - 3:30 p.m",
-  "3:45 p.m. - 5:15 p.m",
-  "5:30 p.m. - 7:00 p.m",
-  "7:15 p.m. - 8:45 p.m",
-  "9:00 p.m. - 10:30 p.m",
-];
+// const timeSlotsMock = [
+//   "10:30 a.m. - 12:00 p.m",
+//   "12:15 p.m. - 1:45 p.m",
+//   "2:00 p.m. - 3:30 p.m",
+//   "3:45 p.m. - 5:15 p.m",
+//   "5:30 p.m. - 7:00 p.m",
+//   "7:15 p.m. - 8:45 p.m",
+//   "9:00 p.m. - 10:30 p.m",
+// ];
+
+// const locationsMock = [
+//   { id: "1", address: "Hello 1" },
+//   { id: "2", address: "Hello 2" },
+//   { id: "3", address: "Hello 3" },
+// ];

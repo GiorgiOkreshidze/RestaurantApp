@@ -1,6 +1,6 @@
-export { Button } from "./button";
+export { Button } from "./Button";
 export { Label } from "./label";
-export { Input } from "./input";
+export { Input } from "./Input";
 export { Text } from "./Text";
 export { DishCard } from "./DishCard";
 export { LocationsCard } from "./LocationsCard";
@@ -26,3 +26,28 @@ export {
   DropdownMenuTrigger,
 } from "./DropdownMenu";
 export { Badge } from "./Badge";
+export { Calendar } from "./Calendar";
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+} from "./Popover";
+export {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "./Dialog";
+export {
+  TooltipRoot,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "./TooltipPrimitives";

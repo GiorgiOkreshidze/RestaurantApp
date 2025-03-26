@@ -7,7 +7,10 @@ import {
 } from "@/components/ui/";
 import { LogOutIcon, UserCircledIcon, UserIcon } from "../icons";
 import { Text } from "../ui";
-import { DropdownMenuItem, DropdownMenuLabel } from "../ui/DropdownMenu";
+import {
+  DropdownMenuItem,
+  DropdownMenuLabel,
+} from "@/components/ui/DropdownMenu";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
 import { Link } from "react-router";

@@ -1,4 +1,4 @@
-import { Container } from "./container";
+import { Container } from "./Container";
 import HeroImg from "../../assets/images/hero.jpg";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
@@ -7,8 +7,8 @@ import { cva, VariantProps } from "class-variance-authority";
 const heroVariants = cva("", {
   variants: {
     variant: {
-      transparent: "",
-      dark: "bg-[var(--color-neutral-900)]/80 bg-blend-overlay",
+      transparent: "py-[40px]",
+      dark: "py-[98px] bg-[var(--color-neutral-900)]/80 bg-blend-overlay",
     },
   },
   defaultVariants: {
@@ -16,7 +16,7 @@ const heroVariants = cva("", {
   },
 });
 
-export const HeroWrapper = ({
+export const PageHero = ({
   className,
   children,
   variant,
@@ -25,13 +25,13 @@ export const HeroWrapper = ({
   return (
     <div
       className={cn(
-        "min-h-[404px] py-[40px] bg-cover bg-no-repeat bg-center",
+        "content-center min-h-[404px] bg-cover bg-no-repeat bg-center",
         heroVariants({ variant, className }),
       )}
       style={{ backgroundImage: `url(${HeroImg})` }}
       {...props}
     >
-      <Container className="!py-0">{children}</Container>
+      <Container>{children}</Container>
     </div>
   );
 };

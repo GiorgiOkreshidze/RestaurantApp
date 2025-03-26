@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { ComponentProps, JSX } from "react";
 import { Slot } from "@radix-ui/react-slot";
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   "inline-flex rounded min-w-[44px] cursor-pointer text-center justify-center transition-all duration-300 items-center disabled:cursor-not-allowed",
   {
     variants: {
@@ -14,11 +14,14 @@ const buttonVariants = cva(
           "bg-neutral-0 min-w-[103px] text-primary fontset-buttonPrimary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary border-[1px]",
         tertiary:
           "bg-transparent text-foreground fontset-bodyBold hover:bg-neutral-200 active:bg-primary-light disabled:text-disabled",
+        trigger:
+          "grid grid-cols-[auto_1fr_auto] text-start bg-neutral-0 text-foreground fontset-buttonSecondary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary border-[1px] gap-[0.75rem] disabled:text-disabled disabled:bg-neutral-200 disabled:border-transparent",
       },
       size: {
         xl: "p-[1rem]",
         l: "py-[0.5rem] px-[0.75rem]",
         sm: "py-[0.25rem] px-[0.5rem]",
+        trigger: "py-[1rem] px-[1.5rem]",
       },
     },
     defaultVariants: {
@@ -28,7 +31,7 @@ const buttonVariants = cva(
   },
 );
 
-function Button({
+export function Button({
   className,
   variant,
   size,
@@ -58,5 +61,3 @@ function Button({
     </Comp>
   );
 }
-
-export { Button, buttonVariants };
