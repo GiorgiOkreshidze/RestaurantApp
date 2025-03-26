@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Amazon.DynamoDBv2.DataModel;
 
-namespace Function.Models;
+namespace Function.Models.Dishes;
 
 public class Dish
 {
