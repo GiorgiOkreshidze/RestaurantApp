@@ -32,6 +32,8 @@ public class ApiHandler
     private readonly GetReservationsAction _getReservationsAction;
     private readonly DeleteReservationAction _deleteReservationAction;
     private readonly GetAllCustomersAction _getAllCustomersAction;
+    private readonly GetAllDishesAction _getalldishesaction;
+    private readonly GetDishByIdAction _getDishByIdAction;
 
     public ApiHandler()
     {
@@ -51,6 +53,8 @@ public class ApiHandler
         _getReservationsAction = new GetReservationsAction();
         _deleteReservationAction = new DeleteReservationAction();
         _getAllCustomersAction = new GetAllCustomersAction();
+        _getalldishesaction = new GetAllDishesAction();
+        _getDishByIdAction = new GetDishByIdAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -105,6 +109,20 @@ public class ApiHandler
                     }
                 },
                 {
+                    "/dishes",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getalldishesaction.GetAllDishesAsync }
+                    }
+                },
+                {
+                    "/dishes/{id}",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getDishByIdAction.GetDishByIdAsync }
+                    }
+                },
+                {
                     "/users/profile",
                     new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
@@ -119,7 +137,8 @@ public class ApiHandler
                     }
                 },
                 {
-                    "/locations/select-options", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/locations/select-options",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getLocationOptionsAction.GetOptionsAsync }
                     }
@@ -132,27 +151,30 @@ public class ApiHandler
                     }
                 },
                 {
-                    "/locations/{id}/feedbacks", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/locations/{id}/feedbacks",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getLocationFeedbacksAction.GetLocationFeedbacks }
                     }
                 },
-                 {
-                    "/bookings/tables", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                {
+                    "/bookings/tables",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getAvailableTablesAction.GetAvailableTables }
                     }
                 },
-                 {
+                {
                     "/reservations", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getReservationsAction.GetReservationsAsync }
                     }
                 },
-                 {
-                    "/reservations/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                {
+                    "/reservations/{id}",
+                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                       { "DELETE", _deleteReservationAction.DeleteReservationAsync }
+                        { "DELETE", _deleteReservationAction.DeleteReservationAsync }
                     }
                 },
                 {
