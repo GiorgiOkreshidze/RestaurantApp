@@ -43,7 +43,6 @@ export const useMakeReservationForm = ({
     try {
       const data = await dispatch(
         upsertClientReservation({
-          // id: reservation?.id ?? "",
           ...(reservation?.id && { id: reservation.id }),
           locationId: bookingForm.locationId,
           date: dateObjectToYYYY_MM_DD(bookingForm.date),
@@ -63,7 +62,12 @@ export const useMakeReservationForm = ({
 
   const onCancelReservation = async () => {
     if (!reservation) return;
-    await dispatch(deleteClientReservation(reservation.id));
+    try {
+      await dispatch(deleteClientReservation(reservation.id)).unwrap();
+      console.log("Reservation deleted");
+    } catch (error) {
+      console.log("Reservation deleting failed:", error);
+    }
   };
 
   return {
