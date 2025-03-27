@@ -7,24 +7,25 @@ public class Dish
 {
     [JsonPropertyName("id")]
     public string Id { get; set; }
-    
-    [JsonPropertyName("name")]
+
+    [JsonPropertyName("name")] 
     public required string Name { get; set; }
-    
-    [JsonPropertyName("price")]
+
+    [JsonPropertyName("price")] 
     public required string Price { get; set; }
-    
-    [JsonPropertyName("weight")]
+
+    [JsonPropertyName("testData")] 
+    public int TestData { get; set; }
+
+    [JsonPropertyName("weight")] 
     public required string Weight { get; set; }
-    
-    [JsonPropertyName("imageUrl")]
+
+    [JsonPropertyName("imageUrl")] 
     public required string ImageUrl { get; set; }
-    
-    [DynamoDBProperty("isPopular")]
+
     [JsonIgnore]
     public bool IsPopular { get; set; }
-    
-    [DynamoDBProperty("locationId")]
+
     [JsonIgnore]
     public string? LocationId { get; set; }
 }
