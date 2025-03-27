@@ -8,9 +8,8 @@ export const dateObjectToYYYY_MM_DD = (date: Date) => {
   return format(date.toUTCString(), "yyyy-MM-dd");
 };
 
-export const dateObjectToHH_MM = (date: Date) => {
-  console.log(date);
-  const newDate = format(date.toUTCString(), "HH:mm");
-  console.log(newDate);
+export const convertDateToUIFormat = (date: string) => {
+  const dateObject = parse(date, "yyyy-MM-dd", new Date());
+  const newDate = format(dateObject, "PP");
   return newDate;
 };

@@ -1,14 +1,31 @@
-import { useState } from "react";
+import { useAppDispatch } from "@/app/hooks";
+import { FormEvent, useState } from "react";
+import { UseBookingForm } from "./useBookingForm";
+import { dateObjectToYYYY_MM_DD } from "@/utils/dateTime";
+import { Reservation, Table } from "@/types";
+import {
+  deleteClientReservation,
+  upsertClientReservation,
+} from "@/app/thunks/bookingThunk";
+import { toast } from "react-toastify";
 
 export const useMakeReservationForm = ({
-  defaultGuests,
-  maxCapacity,
-  timeFrom,
-}: { defaultGuests: number; maxCapacity: number; timeFrom: Date }) => {
-  const [guestsNumber, setGuests] = useState(defaultGuests);
+  table,
+  bookingForm,
+  onSuccessCallback,
+  reservation,
+}: {
+  table: Table;
+  bookingForm: UseBookingForm;
+  onSuccessCallback: (reservation: Reservation) => void;
+  reservation: Reservation | null;
+}) => {
+  const dispatch = useAppDispatch();
+  const [guestsNumber, setGuests] = useState(bookingForm.guests);
+  const [time, setTime] = useState(bookingForm.time);
 
   const increaseGuestsNumber = () => {
-    if (guestsNumber >= maxCapacity) return;
+    if (guestsNumber >= Number(table.capacity)) return;
     setGuests(guestsNumber + 1);
   };
 
@@ -17,5 +34,45 @@ export const useMakeReservationForm = ({
     setGuests(guestsNumber - 1);
   };
 
-  return { guestsNumber, increaseGuestsNumber, decreaseGuestsNumber };
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!time) {
+      toast.error("Select 'Time'");
+      return;
+    }
+    try {
+      const data = await dispatch(
+        upsertClientReservation({
+          // id: reservation?.id ?? "",
+          ...(reservation?.id && { id: reservation.id }),
+          locationId: bookingForm.locationId,
+          date: dateObjectToYYYY_MM_DD(bookingForm.date),
+          timeFrom: time.split("-")[0],
+          timeTo: time.split("-")[1],
+          tableNumber: table.tableNumber,
+          guestsNumber: String(guestsNumber),
+          tableId: table.tableId,
+        }),
+      ).unwrap();
+      console.log("Reservation created");
+      onSuccessCallback(data);
+    } catch (error) {
+      console.error("Reservation creating failed:", error);
+    }
+  };
+
+  const onCancelReservation = async () => {
+    if (!reservation) return;
+    await dispatch(deleteClientReservation(reservation.id));
+  };
+
+  return {
+    guestsNumber,
+    increaseGuestsNumber,
+    decreaseGuestsNumber,
+    time,
+    setTime,
+    onSubmit,
+    onCancelReservation,
+  };
 };

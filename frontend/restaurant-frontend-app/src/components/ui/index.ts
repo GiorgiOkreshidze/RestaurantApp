@@ -51,3 +51,4 @@ export {
   TooltipContent,
   TooltipProvider,
 } from "./TooltipPrimitives";
+export { Spinner } from "./Spinner.tsx";

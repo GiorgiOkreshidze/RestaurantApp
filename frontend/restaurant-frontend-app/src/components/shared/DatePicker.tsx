@@ -12,7 +12,7 @@ export function DatePicker({
 }: {
   className?: string;
   value: Date;
-  setValue: (date?: Date) => void;
+  setValue: (date: Date) => void;
 }) {
   return (
     <Popover>
@@ -33,7 +33,7 @@ export function DatePicker({
         <Calendar
           mode="single"
           selected={value}
-          onSelect={(date) => setValue(date)}
+          onSelect={(date) => setValue(date ? date : value)}
           initialFocus
           disabled={{ before: new Date() }}
         />

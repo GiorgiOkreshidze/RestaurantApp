@@ -40,9 +40,9 @@ export const Spinner = ({ ...props }: ComponentProps<"svg">) => {
         />
       </radialGradient>
       <circle
-        // transform-origin="center"
+        transform-origin="center"
         fill="none"
-        stroke="url(#a12)"
+        stroke="var(--color-primary, #00ad0c)"
         strokeWidth={15}
         strokeLinecap="round"
         strokeDasharray="200 1000"
@@ -63,7 +63,7 @@ export const Spinner = ({ ...props }: ComponentProps<"svg">) => {
         />
       </circle>
       <circle
-        // transform-origin="center"
+        transform-origin="center"
         fill="none"
         opacity={0.2}
         stroke="var(--color-primary, #00ad0c)"

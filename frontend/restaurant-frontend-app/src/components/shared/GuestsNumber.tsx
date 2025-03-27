@@ -23,7 +23,7 @@ export const GuestsNumber = ({
       {...props}
     >
       <div className="flex items-center gap-[0.5rem]">
-        <PeopleIcon className="size-[24px] stroke-primary" />
+        <PeopleIcon className="size-[24px]" />
         <Text variant="buttonSecondary">Guests</Text>
       </div>
       <div className="flex items-center gap-[0.5rem]">

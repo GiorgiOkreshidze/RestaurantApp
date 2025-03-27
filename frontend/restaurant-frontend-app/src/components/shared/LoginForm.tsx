@@ -98,7 +98,7 @@ export function LoginForm({ className, ...props }: ComponentProps<"form">) {
           )}
         </Button>
         <Text className="mt-[16px]" variant="caption">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <CustomLink asChild>
             <Link to="/signup">Create an Account</Link>
           </CustomLink>

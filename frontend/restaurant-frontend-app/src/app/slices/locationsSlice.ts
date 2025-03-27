@@ -1,12 +1,18 @@
-import { Dish, Location } from "@/types";
+import { Dish, Location, SelectOption } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { getLocations, getSpecialityDishes } from "../thunks/locationsThunks";
+import {
+  getLocations,
+  getSelectOptions,
+  getSpecialityDishes,
+} from "../thunks/locationsThunks";
 
 interface locationsState {
   locations: Location[];
   oneLocation: Location | null;
   specialityDishes: Dish[];
   locationsLoading: boolean;
+  selectOptions: SelectOption[];
+  selectOptionsLoading: boolean;
 }
 
 const initialState: locationsState = {
@@ -14,6 +20,8 @@ const initialState: locationsState = {
   oneLocation: null,
   specialityDishes: [],
   locationsLoading: false,
+  selectOptions: [],
+  selectOptionsLoading: false,
 };
 
 export const locationsSlice = createSlice({
@@ -48,12 +56,26 @@ export const locationsSlice = createSlice({
       .addCase(getSpecialityDishes.rejected, (state) => {
         state.locationsLoading = false;
       });
+
+    builder
+      .addCase(getSelectOptions.pending, (state) => {
+        state.selectOptionsLoading = true;
+      })
+      .addCase(getSelectOptions.fulfilled, (state, { payload: data }) => {
+        state.selectOptionsLoading = false;
+        state.selectOptions = data;
+      })
+      .addCase(getSelectOptions.rejected, (state) => {
+        state.selectOptionsLoading = false;
+      });
   },
   selectors: {
     selectLocations: (state) => state.locations,
     selectOneLocation: (state) => state.oneLocation,
     selectSpecialityDishes: (state) => state.specialityDishes,
     selectLocationsLoading: (state) => state.locationsLoading,
+    selectSelectOptions: (state) => state.selectOptions,
+    selectSelectOptionsLoading: (state) => state.selectOptionsLoading,
   },
 });
 
@@ -64,4 +86,6 @@ export const {
   selectOneLocation,
   selectSpecialityDishes,
   selectLocationsLoading,
+  selectSelectOptions,
+  selectSelectOptionsLoading,
 } = locationsSlice.selectors;

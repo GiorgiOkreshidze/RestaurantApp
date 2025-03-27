@@ -1,10 +1,10 @@
 import { selectTables } from "@/app/slices/bookingSlice";
 import {
-  TableCard,
   BookingForm,
   PageBody,
   PageBodyHeader,
   PageHero,
+  TableCard,
 } from "@/components/shared";
 import { Text } from "@/components/ui";
 import { useBookingForm } from "@/hooks/useBookingForm";
@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 
 export const Booking = () => {
   const tables = useSelector(selectTables);
-  const { date } = useBookingForm();
+  const bookingForm = useBookingForm();
 
   return (
     <>
@@ -23,7 +23,7 @@ export const Booking = () => {
         <Text variant="h1" tag="h1" className="text-primary mt-[1.375rem]">
           Book a Table
         </Text>
-        <BookingForm className="mt-[2.5rem]" />
+        <BookingForm className="mt-[2.5rem]" bookingForm={bookingForm} />
       </PageHero>
       <PageBody>
         <PageBodyHeader>
@@ -31,7 +31,7 @@ export const Booking = () => {
         </PageBodyHeader>
         <ul className="grid gap-[2rem] lg:grid-cols-2">
           {tables?.map((table, i) => (
-            <TableCard key={i} date={date} table={table} />
+            <TableCard key={i} bookingForm={bookingForm} table={table} />
           ))}
         </ul>
       </PageBody>

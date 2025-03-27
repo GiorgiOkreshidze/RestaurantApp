@@ -10,5 +10,8 @@ export const serverRoute = {
   signOut: "signout",
   userData: "users/profile",
   reservations: "reservations",
+  upsertClientReservation: "reservations/client",
+  deleteClientReservation: "reservations/client",
+  selectOptions: "locations/select-options",
   tables: "bookings/tables",
 };

@@ -1,6 +1,4 @@
-import { useBookingForm } from "@/hooks/useBookingForm";
 import { ClockIcon } from "../icons";
-import { Button } from "../ui";
 import {
   Dialog,
   DialogContent,
@@ -13,25 +11,27 @@ import { ReactElement } from "react";
 import { Table } from "@/types";
 import { timeStringFrom24hTo12h } from "@/utils/dateTime";
 import { format } from "date-fns";
+import { MakeReservationDialog } from "./MakeReservationDialog";
+import { TimeSlot } from "./TimeSlot";
+import { UseBookingForm } from "@/hooks/useBookingForm";
 
 export const AvailableTimeSlotsDialog = ({
   children,
   className,
   table,
+  date,
+  bookingForm,
 }: {
   children: ReactElement;
   className?: string;
   table: Table;
+  date: Date;
+  bookingForm: UseBookingForm;
 }) => {
-  const { locationId, date } = useBookingForm();
   const { availableSlots, locationAddress, tableNumber } = table;
   return (
     <Dialog>
-      <DialogTrigger
-        className={className}
-        asChild
-        disabled={!locationId || !date}
-      >
+      <DialogTrigger className={className} asChild>
         {children}
       </DialogTrigger>
       <DialogContent>
@@ -46,17 +46,20 @@ export const AvailableTimeSlotsDialog = ({
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-[0.5rem] mt-[1rem]">
-          {availableSlots.map((slot, i) => (
-            <Button
-              variant="secondary"
-              size="sm"
+          {availableSlots.slice(0, 5).map((slot, i) => (
+            <MakeReservationDialog
+              table={table}
               key={i}
-              className="font-normal text-foreground flex gap-[0.5rem] justify-start fontset-bodyBold"
+              bookingForm={bookingForm}
             >
-              <ClockIcon />
-              {timeStringFrom24hTo12h(slot.start)} -{" "}
-              {timeStringFrom24hTo12h(slot.end)}
-            </Button>
+              <TimeSlot
+                key={slot.start + slot.end}
+                icon={<ClockIcon className="size-[1rem] stroke-primary" />}
+              >
+                {timeStringFrom24hTo12h(slot.start)} -{" "}
+                {timeStringFrom24hTo12h(slot.end)}
+              </TimeSlot>
+            </MakeReservationDialog>
           ))}
         </div>
       </DialogContent>
