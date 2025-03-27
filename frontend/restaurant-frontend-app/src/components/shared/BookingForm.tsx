@@ -31,6 +31,7 @@ export const BookingForm = ({
     locationTimeSlots,
     locationTimeSlotsLoading,
   } = bookingForm;
+
   return (
     <form
       onSubmit={onSubmit}
@@ -52,7 +53,6 @@ export const BookingForm = ({
         Icon={() => <LocationIcon />}
         loading={selectOptionsLoading}
       />
-
       <DatePicker value={date} setValue={setDate} className="w-full" />
 
       <TimeSlotPicker
@@ -62,13 +62,11 @@ export const BookingForm = ({
         loading={locationTimeSlotsLoading}
         selectedDate={date}
       />
-
       <GuestsNumber
         guests={guests}
         increase={increaseGuests}
         decrease={decreaseGuests}
       />
-
       <Button type="submit" className="md:max-xl:col-span-2">
         Find&nbsp;a&nbsp;Table
       </Button>

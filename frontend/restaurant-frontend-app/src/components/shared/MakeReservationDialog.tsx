@@ -26,19 +26,21 @@ export const MakeReservationDialog = ({
   className,
   table,
   bookingForm,
+  ownTimeSlot,
 }: {
   children: ReactElement;
   className?: string;
   table: Table;
   bookingForm: UseBookingForm;
+  ownTimeSlot: string;
 }) => {
   const { locationAddress, tableNumber, capacity } = table;
   const { date, locationTimeSlots, locationTimeSlotsLoading } = bookingForm;
   const reservation = useSelector(selectReservation);
   const [createdReservation, setCreatedReservation] =
     useState<Reservation | null>(null);
-  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const [isCurrentDialogOpen, setIsCurrentDialogOpen] = useState(false);
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const {
     guestsNumber,
     increaseGuestsNumber,
@@ -51,13 +53,13 @@ export const MakeReservationDialog = ({
     bookingForm,
     table,
     reservation,
+    ownTimeSlot,
     onSuccessCallback: (reservation) => {
       setCreatedReservation(reservation);
       setIsSuccessDialogOpen(true);
       setIsCurrentDialogOpen(false);
     },
   });
-
   return (
     <>
       <Dialog open={isCurrentDialogOpen} onOpenChange={setIsCurrentDialogOpen}>

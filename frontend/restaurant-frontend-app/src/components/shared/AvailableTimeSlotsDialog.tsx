@@ -51,6 +51,7 @@ export const AvailableTimeSlotsDialog = ({
               table={table}
               key={i}
               bookingForm={bookingForm}
+              ownTimeSlot={`${slot.start}-${slot.end}`}
             >
               <TimeSlot
                 key={slot.start + slot.end}

@@ -14,16 +14,17 @@ export const useMakeReservationForm = ({
   bookingForm,
   onSuccessCallback,
   reservation,
+  ownTimeSlot,
 }: {
   table: Table;
   bookingForm: UseBookingForm;
   onSuccessCallback: (reservation: Reservation) => void;
   reservation: Reservation | null;
+  ownTimeSlot: string;
 }) => {
   const dispatch = useAppDispatch();
   const [guestsNumber, setGuests] = useState(bookingForm.guests);
-  const [time, setTime] = useState(bookingForm.time);
-
+  const [time, setTime] = useState(ownTimeSlot);
   const increaseGuestsNumber = () => {
     if (guestsNumber >= Number(table.capacity)) return;
     setGuests(guestsNumber + 1);
