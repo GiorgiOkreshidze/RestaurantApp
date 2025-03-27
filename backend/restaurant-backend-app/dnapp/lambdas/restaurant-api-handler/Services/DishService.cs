@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Function.Models.Dishes;
+using Function.Models.Requests;
 using Function.Models.Responses;
 using Function.Repository;
 using Function.Repository.Interfaces;
@@ -17,16 +18,16 @@ public class DishService : IDishService
         _dishRepository = new DishRepository();    
     }
 
-    public async Task<DishResponseDto> GetDishByIdAsync(string dishId)
+    public async Task<ExactDishResponseDto> GetDishByIdAsync(string dishId)
     {
         var dish = await _dishRepository.GetDishByIdAsync(dishId);
         
         return dish;
     }
     
-    public async Task<IEnumerable<DishResponseDto>> GetAllDishAsync()
+    public async Task<IEnumerable<AllDishResponseDto>> GetAllDishAsync(GetallDishRequest getallDishRequest)
     {
-        var dishes = await _dishRepository.GetAllDishAsync();
+        var dishes = await _dishRepository.GetAllDishAsync(getallDishRequest);
         return dishes;
     }
     

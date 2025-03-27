@@ -6,10 +6,8 @@ using Amazon.DynamoDBv2.Model;
 using Function.Models.Responses;
 using System;
 using System.Globalization;
-using System.Text.Json;
 using Function.Models.Dishes;
 using Function.Models.User;
-using SimpleLambdaFunction.Models.Nutritient;
 
 namespace Function.Mappers;
 
@@ -43,18 +41,40 @@ public class Mapper
         }).ToList();
     }
 
-    public static List<DishResponseDto> MapDocumentsToDishesResponseDtos(List<Document> documentList)
+    public static List<ExactDishResponseDto> MapDocumentsToExactDishResponseDtos(List<Document> documentList)
     {
-        return documentList.Select(doc => new DishResponseDto
+        var result = documentList.Select(doc => new ExactDishResponseDto
         {
             Id = doc.TryGetValue("id", out var id) ? id : "",
             ImageUrl = doc.TryGetValue("imageUrl", out var imageUrl) ? imageUrl : "",
             Name = doc.TryGetValue("name", out var name) ? name : "",
+            Price = doc.TryGetValue("price", out var price) ? $"${price}" : "",
+            Weight = doc.TryGetValue("weight", out var weight) ? weight : "",
+            DishType = doc.TryGetValue("dishType", out var dishType) ? dishType : "",
+            State = doc.TryGetValue("state", out var state) ? state : "",
+            Description = doc.TryGetValue("description", out var description) ? description : "",
+            Calories = doc.TryGetValue("calories", out var calories) ? calories : "",
+            Carbohydrates = doc.TryGetValue("carbohydrates", out var carbohydrates) ? carbohydrates : "",
+            Fats = doc.TryGetValue("fats", out var fats) ? fats : "",
+            Proteins = doc.TryGetValue("proteins", out var proteins) ? proteins : "",
+            Vitamins = doc.TryGetValue("vitamins", out var vitamins) ? vitamins : ""
+        }).ToList();
+
+        return result;
+    }
+
+    public static List<AllDishResponseDto> MapDocumentsToDishesResponseDtos(List<Document> documentList)
+    {
+        return documentList.Select(doc => new AllDishResponseDto
+        {
+            Id = doc.TryGetValue("id", out var id) ? id : "",
+            PreviewImageUrl = doc.TryGetValue("imageUrl", out var imageUrl) ? imageUrl : "",
+            Name = doc.TryGetValue("name", out var name) ? name : "",
             Price = doc.TryGetValue("price", out var price) ? price : "",
             Weight = doc.TryGetValue("weight", out var weight) ? weight : "",
-            Status = doc.TryGetValue("status", out var status) ? status : "",
-            Category = doc.TryGetValue("category", out var category) ? category.AsListOfString() : [],
-            Nutritients = null
+            DishType = doc.TryGetValue("dishType", out var dishType) ? dishType : "",
+            State = doc.TryGetValue("state", out var state) ? state : "",
+            IsPopular = doc.TryGetValue("isPopular", out var isPopular) && isPopular.AsBoolean()
         }).ToList();
     }
 
