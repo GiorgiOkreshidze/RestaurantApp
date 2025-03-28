@@ -14,9 +14,6 @@ public class Dish
     [JsonPropertyName("price")] 
     public required string Price { get; set; }
 
-    [JsonPropertyName("testData")] 
-    public int TestData { get; set; }
-
     [JsonPropertyName("weight")] 
     public required string Weight { get; set; }
 

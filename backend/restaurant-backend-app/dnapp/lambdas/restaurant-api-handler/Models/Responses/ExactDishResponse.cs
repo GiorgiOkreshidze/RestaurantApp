@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 namespace Function.Models.Responses;
 
-public class ExactDishResponseDto
+public class ExactDishResponse
 {
     [JsonPropertyName("calories")]
     public required string Calories { get; set; }

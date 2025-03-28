@@ -32,7 +32,7 @@ public class ApiHandler
     private readonly GetReservationsAction _getReservationsAction;
     private readonly DeleteReservationAction _deleteReservationAction;
     private readonly GetAllCustomersAction _getAllCustomersAction;
-    private readonly GetAllDishesAction _getalldishesaction;
+    private readonly GetAllDishesAction _getAllDishesAction;
     private readonly GetDishByIdAction _getDishByIdAction;
 
     public ApiHandler()
@@ -53,7 +53,7 @@ public class ApiHandler
         _getReservationsAction = new GetReservationsAction();
         _deleteReservationAction = new DeleteReservationAction();
         _getAllCustomersAction = new GetAllCustomersAction();
-        _getalldishesaction = new GetAllDishesAction();
+        _getAllDishesAction = new GetAllDishesAction();
         _getDishByIdAction = new GetDishByIdAction();
     }
 
@@ -112,7 +112,7 @@ public class ApiHandler
                     "/dishes",
                     new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "GET", _getalldishesaction.GetAllDishesAsync }
+                        { "GET", _getAllDishesAction.GetAllDishesAsync }
                     }
                 },
                 {

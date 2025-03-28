@@ -18,17 +18,14 @@ public class DishService : IDishService
         _dishRepository = new DishRepository();    
     }
 
-    public async Task<ExactDishResponseDto> GetDishByIdAsync(string dishId)
+    public async Task<ExactDishResponse> GetDishByIdAsync(string dishId)
     {
-        var dish = await _dishRepository.GetDishByIdAsync(dishId);
-        
-        return dish;
+        return await _dishRepository.GetDishByIdAsync(dishId);;
     }
     
-    public async Task<IEnumerable<AllDishResponseDto>> GetAllDishAsync(GetallDishRequest getallDishRequest)
+    public async Task<IEnumerable<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest)
     {
-        var dishes = await _dishRepository.GetAllDishAsync(getallDishRequest);
-        return dishes;
+        return await _dishRepository.GetAllDishesAsync(getAllDishesRequest);
     }
     
     public async Task<List<Dish>> GetListOfPopularDishesAsync()

@@ -8,8 +8,8 @@ namespace Function.Services.Interfaces;
 
 public interface IDishService
 {
-    Task<ExactDishResponseDto> GetDishByIdAsync(string dishId);
+    Task<ExactDishResponse> GetDishByIdAsync(string dishId);
     Task<List<Dish>> GetListOfPopularDishesAsync();
     Task<List<Dish>> GetListOfSpecialityDishesAsync(string locationId);
-    Task<IEnumerable<AllDishResponseDto>> GetAllDishAsync(GetallDishRequest getallDishRequest);
+    Task<IEnumerable<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest);
 }

@@ -1,5 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
+using Function.Models.Dishes;
 using Function.Models.Requests;
 using Function.Services;
 using Function.Services.Interfaces;
@@ -17,29 +19,28 @@ public class GetAllDishesAction
 
     public async Task<APIGatewayProxyResponse> GetAllDishesAsync(APIGatewayProxyRequest request)
     {
-        var dishType =  string.Empty;
-        
-        if (request.QueryStringParameters != null && 
-            request.QueryStringParameters.TryGetValue("dishType", out var dishtypeValue))
+        var getDishRequest = new GetAllDishesRequest
         {
-            dishType = dishtypeValue;
-        }
-        
-        var sortBy = string.Empty;
-        
-        if (request.QueryStringParameters != null && 
-            request.QueryStringParameters.TryGetValue("sort", out var sortByValue))
-        {
-            sortBy = sortByValue;
-        }
-
-        var getDishRequest = new GetallDishRequest
-        {
-            DishTypeEnum = dishType,
-            SortBy = sortBy 
+            DishTypeEnum = InputParser<FilterEnum>(request, "dishType"),
+            SortBy = InputParser<SortEnum>(request, "sort")
         };
 
-        var popularDishes = await _dishService.GetAllDishAsync(getDishRequest);
+        var popularDishes = await _dishService.GetAllDishesAsync(getDishRequest);
         return ActionUtils.FormatResponse(200, popularDishes);
+    }
+    
+    private TEnum? InputParser<TEnum>(APIGatewayProxyRequest request, string key) where TEnum : struct
+    {
+        var returnKey = string.Empty;
+        
+        if (request.QueryStringParameters != null && 
+            request.QueryStringParameters.TryGetValue(key, out var parsedValue))
+        {
+            returnKey = parsedValue;
+        }
+        
+        var resultEnum = Enum.TryParse(returnKey, ignoreCase: true, out TEnum result) ? result : default;
+        
+        return resultEnum;
     }
 }

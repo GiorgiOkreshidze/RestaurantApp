@@ -41,9 +41,9 @@ public class Mapper
         }).ToList();
     }
 
-    public static List<ExactDishResponseDto> MapDocumentsToExactDishResponseDtos(List<Document> documentList)
+    public static List<ExactDishResponse> MapDocumentsToExactDishResponseDtos(List<Document> documentList)
     {
-        var result = documentList.Select(doc => new ExactDishResponseDto
+        var result = documentList.Select(doc => new ExactDishResponse
         {
             Id = doc.TryGetValue("id", out var id) ? id : "",
             ImageUrl = doc.TryGetValue("imageUrl", out var imageUrl) ? imageUrl : "",
@@ -63,9 +63,9 @@ public class Mapper
         return result;
     }
 
-    public static List<AllDishResponseDto> MapDocumentsToDishesResponseDtos(List<Document> documentList)
+    public static List<AllDishResponse> MapDocumentsToDishesResponseDtos(List<Document> documentList)
     {
-        return documentList.Select(doc => new AllDishResponseDto
+        return documentList.Select(doc => new AllDishResponse
         {
             Id = doc.TryGetValue("id", out var id) ? id : "",
             PreviewImageUrl = doc.TryGetValue("imageUrl", out var imageUrl) ? imageUrl : "",

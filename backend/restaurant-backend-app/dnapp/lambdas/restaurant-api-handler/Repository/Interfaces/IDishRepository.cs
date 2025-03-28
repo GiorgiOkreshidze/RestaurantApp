@@ -10,6 +10,6 @@ public interface IDishRepository
 {
     Task<List<Dish>> GetListOfPopularDishesAsync();
     Task<List<Dish>> GetListOfSpecialityDishesAsync(string locationId);
-    Task<IEnumerable<AllDishResponseDto>> GetAllDishAsync(GetallDishRequest getallDishRequest);
-    Task<ExactDishResponseDto> GetDishByIdAsync(string dishId);
+    Task<IEnumerable<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest);
+    Task<ExactDishResponse> GetDishByIdAsync(string dishId);
 }

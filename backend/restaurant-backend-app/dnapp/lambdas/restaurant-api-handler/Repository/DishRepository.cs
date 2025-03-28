@@ -24,7 +24,7 @@ public class DishRepository : IDishRepository
         _dynamoDbClient = new AmazonDynamoDBClient();
     }
 
-    public async Task<ExactDishResponseDto> GetDishByIdAsync(string dishId)
+    public async Task<ExactDishResponse> GetDishByIdAsync(string dishId)
     {
         var documentList = await DynamoDbUtils.ScanDynamoDbTableAsync(_dynamoDbClient, _dishesTableName);
 
@@ -44,7 +44,7 @@ public class DishRepository : IDishRepository
         return dishes;
     }
 
-    public async Task<IEnumerable<AllDishResponseDto>> GetAllDishAsync(GetallDishRequest getallDishRequest)
+    public async Task<IEnumerable<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest)
     {
         var documentList = await DynamoDbUtils.ScanDynamoDbTableAsync(_dynamoDbClient, _dishesTableName);
 
@@ -53,15 +53,15 @@ public class DishRepository : IDishRepository
         var dishes = Mapper.MapDocumentsToDishesResponseDtos(documentList);
 
         // FilterByTypeOfDish
-        if (!string.IsNullOrWhiteSpace(getallDishRequest.DishTypeEnum))
+        if (getAllDishesRequest.DishTypeEnum is not null)
         {
-            dishes = FilterDishByType(dishes, getallDishRequest.DishTypeEnum);
+            dishes = FilterDishByType(dishes, getAllDishesRequest.DishTypeEnum);
         }
 
         // SortBy
-        if (!string.IsNullOrEmpty(getallDishRequest.SortBy))
+        if (getAllDishesRequest.SortBy is not null)
         {
-            dishes = SortDishesByInput(dishes, getallDishRequest.SortBy);
+            dishes = SortDishesByInput(dishes, getAllDishesRequest.SortBy);
         }
 
         ConvertPriceToCurrency(dishes);
@@ -71,28 +71,28 @@ public class DishRepository : IDishRepository
 
     #region GetAllDishAsync
 
-    private List<AllDishResponseDto> SortDishesByInput(List<AllDishResponseDto> dishes, string sortInput)
+    private List<AllDishResponse> SortDishesByInput(List<AllDishResponse> dishes, SortEnum? sortInput)
     {
         return sortInput switch
         {
-            SortInputs.PopularityAsc => dishes.OrderBy(dish => ConvertBoolToInt(dish.IsPopular)).ToList(),
-            SortInputs.PopularityDesc => dishes.OrderByDescending(dish => ConvertBoolToInt(dish.IsPopular)).ToList(),
-            SortInputs.PriceAsc => dishes.OrderBy(dish => ConvertPrice(dish.Price)).ToList(),
-            SortInputs.PriceDesc => dishes.OrderByDescending(dish => ConvertPrice(dish.Price)).ToList(),
+            SortEnum.PopularityAsc => dishes.OrderBy(dish => ConvertBoolToInt(dish.IsPopular)).ToList(),
+            SortEnum.PopularityDesc => dishes.OrderByDescending(dish => ConvertBoolToInt(dish.IsPopular)).ToList(),
+            SortEnum.PriceAsc => dishes.OrderBy(dish => ConvertPrice(dish.Price)).ToList(),
+            SortEnum.PriceDesc => dishes.OrderByDescending(dish => ConvertPrice(dish.Price)).ToList(),
             _ => dishes
         };
     }
 
-    private List<AllDishResponseDto> FilterDishByType(List<AllDishResponseDto> dishes, string? dishTypeEnum)
+    private List<AllDishResponse> FilterDishByType(List<AllDishResponse> dishes, FilterEnum? dishTypeEnum)
     {
         return dishTypeEnum switch
         {
-            FilterInputs.Appetizers => dishes
-                .Where(dish => dish.DishType == FilterInputs.Appetizers).ToList(),
-            FilterInputs.Desserts => dishes
-                .Where(dish => dish.DishType == FilterInputs.Desserts).ToList(),
-            FilterInputs.MainCourse => dishes
-                .Where(dish => dish.DishType == FilterInputs.MainCourse).ToList(),
+            FilterEnum.Appetizers => dishes
+                .Where(dish => dish.DishType == nameof(FilterEnum.Appetizers)).ToList(),
+            FilterEnum.Desserts => dishes
+                .Where(dish => dish.DishType == nameof(FilterEnum.Desserts)).ToList(),
+            FilterEnum.MainCourse => dishes
+                .Where(dish => dish.DishType == nameof(FilterEnum.MainCourse)).ToList(),
             _ => dishes
         };
     }
@@ -107,14 +107,14 @@ public class DishRepository : IDishRepository
         return isPopular ? 1 : 0;
     }
 
-    private void ConvertPriceToCurrency(List<AllDishResponseDto> dishes)
+    private void ConvertPriceToCurrency(List<AllDishResponse> dishes)
     {
         foreach (var dish in dishes)
         {
             dish.Price = $"{ConvertPrice(dish.Price):C}";
         }
     }
-    private void ConvertPriceToCurrency(List<ExactDishResponseDto> dishes)
+    private void ConvertPriceToCurrency(List<ExactDishResponse> dishes)
     {
         foreach (var dish in dishes)
         {

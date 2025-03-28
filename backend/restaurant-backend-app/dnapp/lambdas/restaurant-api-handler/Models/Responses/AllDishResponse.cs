@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Function.Models.Responses;
 
-public class AllDishResponseDto
+public class AllDishResponse
 {
     [JsonPropertyName("id")]
     public string Id { get; set; }
