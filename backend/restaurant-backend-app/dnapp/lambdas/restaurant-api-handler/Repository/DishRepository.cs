@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Function.Exceptions;
-using Function.Helper;
 using Function.Mappers;
 using Function.Models.Dishes;
 using Function.Models.Requests;
@@ -40,11 +39,11 @@ public class DishRepository : IDishRepository
 
         var dishes = Mapper.MapDocumentsToExactDishResponseDtos(filteredDocuments).FirstOrDefault()
                      ?? throw new ResourceNotFoundException("Dish not found.");
-        
+
         return dishes;
     }
 
-    public async Task<IEnumerable<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest)
+    public async Task<List<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest)
     {
         var documentList = await DynamoDbUtils.ScanDynamoDbTableAsync(_dynamoDbClient, _dishesTableName);
 
@@ -65,11 +64,9 @@ public class DishRepository : IDishRepository
         }
 
         ConvertPriceToCurrency(dishes);
-        
+
         return dishes;
     }
-
-    #region GetAllDishAsync
 
     private List<AllDishResponse> SortDishesByInput(List<AllDishResponse> dishes, SortEnum? sortInput)
     {
@@ -114,14 +111,6 @@ public class DishRepository : IDishRepository
             dish.Price = $"{ConvertPrice(dish.Price):C}";
         }
     }
-    private void ConvertPriceToCurrency(List<ExactDishResponse> dishes)
-    {
-        foreach (var dish in dishes)
-        {
-            dish.Price = $"{ConvertPrice(dish.Price):C}";
-        }
-    }
-    #endregion
 
     public async Task<List<Dish>> GetListOfPopularDishesAsync()
     {

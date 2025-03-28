@@ -11,5 +11,5 @@ public interface IDishService
     Task<ExactDishResponse> GetDishByIdAsync(string dishId);
     Task<List<Dish>> GetListOfPopularDishesAsync();
     Task<List<Dish>> GetListOfSpecialityDishesAsync(string locationId);
-    Task<IEnumerable<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest);
+    Task<List<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest);
 }

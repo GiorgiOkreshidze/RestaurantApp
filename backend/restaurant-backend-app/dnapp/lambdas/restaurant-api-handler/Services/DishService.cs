@@ -23,7 +23,7 @@ public class DishService : IDishService
         return await _dishRepository.GetDishByIdAsync(dishId);;
     }
     
-    public async Task<IEnumerable<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest)
+    public async Task<List<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest)
     {
         return await _dishRepository.GetAllDishesAsync(getAllDishesRequest);
     }

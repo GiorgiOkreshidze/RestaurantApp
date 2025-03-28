@@ -11,7 +11,7 @@
           "calories": { "S": "480 kcal" },
           "carbohydrates": { "S": "15-20 g" },
           "description": { "S": "A classic Indian dish featuring tender chicken marinated in a rich, creamy tomato-based sauce. Perfectly spiced and served with fragrant basmati rice, this Chicken Tikka Masala offers a delightful blend of traditional flavors and modern culinary excellence." },
-          "dishType": { "S": "Main course" },
+          "dishType": { "S": "MainCourse" },
           "fats": { "S": "28-32 g" },
           "proteins": { "S": "35-40 g" },
           "state": { "S": "Active" },
