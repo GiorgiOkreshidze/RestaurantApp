@@ -13,8 +13,10 @@ using Function.Services.Interfaces;
 using SimpleLambdaFunction.Repository;
 using Function.Actions;
 using Amazon.CognitoIdentityProvider.Model;
-using Function.Models.User;
 using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
+using Amazon.SQS.Model;
+using Amazon.SQS;
+using System.Text.Json;
 
 namespace Function.Services;
 
@@ -24,6 +26,9 @@ public class ReservationService : IReservationService
     private readonly ILocationRepository _locationRepository;
     private readonly ITableRepository _tableRepository;
     private readonly IWaiterRepository _waiterRepository;
+    private readonly AmazonSQSClient _amazonSqsClient;
+
+    private readonly string? _sqsQueueName = Environment.GetEnvironmentVariable("SQS_EVENTS_QUEUE_NAME");
 
     public ReservationService()
     {
@@ -31,6 +36,7 @@ public class ReservationService : IReservationService
         _locationRepository = new LocationRepository();
         _tableRepository = new TableRepository();
         _waiterRepository = new WaiterRepository();
+        _amazonSqsClient = new AmazonSQSClient();
     }
 
     public async Task<Reservation> UpsertReservationAsync(ReservationRequest reservationRequest, User user)
@@ -195,7 +201,7 @@ public class ReservationService : IReservationService
         {
             throw new UnauthorizedException("Only the customer or assigned waiter can modify this reservation");
         }
-        
+
         newReservation.WaiterId = existingReservation.WaiterId;
         newReservation.UserEmail = existingReservation.UserEmail;
 
@@ -210,5 +216,30 @@ public class ReservationService : IReservationService
         {
             throw new ArgumentException("Reservations cannot be modified within 30 minutes of start time");
         }
+    }
+
+
+    private async Task SendEventToSQS<T>(string eventType, T payload)
+    {
+        var getQueueUrlRequest = new GetQueueUrlRequest
+        {
+            QueueName = _sqsQueueName
+        };
+        var getQueueUrlResponse = await _amazonSqsClient.GetQueueUrlAsync(getQueueUrlRequest);
+        var queueUrl = getQueueUrlResponse.QueueUrl;
+
+        var messageBody = JsonSerializer.Serialize(new
+        {
+            eventType,
+            payload
+        });
+
+        var sendMessageRequest = new SendMessageRequest
+        {
+            QueueUrl = queueUrl,
+            MessageBody = messageBody
+        };
+
+        await _amazonSqsClient.SendMessageAsync(sendMessageRequest);
     }
 }

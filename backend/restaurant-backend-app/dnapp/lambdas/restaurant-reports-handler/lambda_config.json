@@ -17,7 +17,11 @@
       "batch_window": 1
     }
   ],
-  "env_variables": {},
+  "env_variables": {
+    "USER_TABLE_NAME": "${users_table}",
+    "REPORTS_TABLE_NAME": "${reports_table}",
+    "EMPLOYEE_TABLE_NAME": "${waiters_table}"
+  },
   "publish_version": true,
   "alias": "${lambdas_alias_name}",
   "url_config": {},
