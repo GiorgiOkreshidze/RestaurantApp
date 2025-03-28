@@ -25,4 +25,4 @@ export { PageBodyHeader } from "./PageBody";
 export { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";
 export { GuestsNumber } from "./GuestsNumber";
 export { Tooltip } from "./Tooltip";
-export { TimePicker } from "./TimePicker";
+export { TimeSlotPicker } from "./TimeSlotPicker";

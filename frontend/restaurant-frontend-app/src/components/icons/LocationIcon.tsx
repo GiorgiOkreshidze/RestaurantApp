@@ -7,7 +7,7 @@ export const LocationIcon = ({
 }: ComponentProps<"svg">) => {
   return (
     <svg
-      className={cn("stroke-primary", className)}
+      className={cn("stroke-foreground", className)}
       width="24"
       height="24"
       viewBox="0 0 24 24"

@@ -67,11 +67,6 @@
   font-weight: 500;
 }
 
-@utility kitty {
-  font-size: 1.25rem; /* 20px */
-  line-height: 2rem; /* 32px */
-  font-weight: 500;
-}
 
 /* ==================================== */
 /* FONT-SIZE */
@@ -131,3 +126,4 @@
     border-color: var(--color-destructive);
   }
 }
+

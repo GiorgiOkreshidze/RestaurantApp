@@ -1,121 +1,120 @@
-import { z } from "zod";
 import { useAppDispatch } from "@/app/hooks";
 import {
-  clearTables,
-  selectFilters,
-  setFilters,
+  clearLocationTimeSlots,
+  selectLocationTimeSlots,
+  selectLocationTimeSlotsLoading,
+  selectTodaySlots,
 } from "@/app/slices/bookingSlice";
-import { getTables } from "@/app/thunks/bookingThunk";
 import {
-  set,
-  getDate,
-  getMonth,
-  getYear,
-  getSeconds,
-  getMilliseconds,
-  getHours,
-  getMinutes,
-  startOfDay,
-} from "date-fns";
-import { useEffect } from "react";
+  selectSelectOptions,
+  selectSelectOptionsLoading,
+} from "@/app/slices/locationsSlice";
+import { getLocationTimeSlots, getTables } from "@/app/thunks/bookingThunk";
+import { getSelectOptions } from "@/app/thunks/locationsThunks";
+import { SelectOption } from "@/types";
+import { dateObjectToYYYY_MM_DD } from "@/utils/dateTime";
+import { startOfToday, startOfTomorrow } from "date-fns";
+import { Dispatch, FormEvent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { dateObjectToYYYY_MM_DD, dateObjectToHH_MM } from "@/utils/dateTime";
+import { toast } from "react-toastify";
 
-export const useBookingForm = () => {
+export const useBookingForm = (): UseBookingForm => {
+  const [locationId, setLocationId] = useState("");
+  const [guests, setGuests] = useState(2);
+  const [time, setTime] = useState("");
   const dispatch = useAppDispatch();
-  const filters = useSelector(selectFilters);
-  const { locationId, dateTime, guests } = useSelector(selectFilters);
-  const date = new Date(dateTime);
+  const selectOptions = useSelector(selectSelectOptions);
+  const selectOptionsLoading = useSelector(selectSelectOptionsLoading);
+  const locationTimeSlots = useSelector(selectLocationTimeSlots);
+  const locationTimeSlotsLoading = useSelector(selectLocationTimeSlotsLoading);
+  const todaySlots = useSelector(selectTodaySlots);
+  const [date, setDate] = useState(
+    todaySlots.length ? startOfToday() : startOfTomorrow(),
+  );
 
-  const setLocationId = (locationId: string | null) => {
-    dispatch(setFilters({ ...filters, locationId: locationId ?? "" }));
-  };
-
-  const setDate = (dateParam: Date | undefined) => {
-    const newDate = set(dateTime, {
-      year: getYear(dateParam ?? Date.now()),
-      month: getMonth(dateParam ?? Date.now()),
-      date: getDate(dateParam ?? Date.now()),
-    }).toString();
-    dispatch(setFilters({ ...filters, dateTime: newDate }));
-  };
-
-  const setTime = (dateParam: Date | undefined) => {
-    const newDate = set(dateTime, {
-      hours: getHours(dateParam ?? Date.now()),
-      minutes: getMinutes(dateParam ?? Date.now()),
-      seconds: getSeconds(dateParam ?? Date.now()),
-      milliseconds: getMilliseconds(dateParam ?? Date.now()),
-    }).toString();
-    dispatch(setFilters({ ...filters, dateTime: newDate }));
-  };
-
-  const increaseGuestsNumber = () => {
+  const increaseGuests = () => {
     if (guests >= 10) return;
-    dispatch(setFilters({ ...filters, guests: guests + 1 }));
+    setGuests(guests + 1);
   };
-  const decreaseGuestsNumber = () => {
+  const decreaseGuests = () => {
     if (guests <= 1) return;
-    dispatch(setFilters({ ...filters, guests: guests - 1 }));
+    setGuests(guests - 1);
   };
 
   useEffect(() => {
     (async () => {
-      if (!locationId) {
-        dispatch(clearTables());
+      const data = await dispatch(getSelectOptions()).unwrap();
+      if (data.length > 0) {
+        setLocationId(data[0].id);
       }
     })();
-  }, [locationId]);
+  }, []);
 
-  const formSchema = z.object({
-    locationId: z.string().nonempty({ message: "Please select 'Location'" }),
-    date: z.date().min(startOfDay(new Date()), {
-      message: "Reservation date cannot be in the past",
-    }),
-    time: z.date(),
-    guests: z.number(),
-  });
+  useEffect(() => {
+    (async () => {
+      dispatch(clearLocationTimeSlots());
+      if (!locationId) return;
+      await dispatch(
+        getLocationTimeSlots({
+          locationId,
+          date: dateObjectToYYYY_MM_DD(date),
+        }),
+      ).unwrap();
+    })();
+  }, [locationId, date]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      locationId: locationId ?? "",
-      date: date,
-      time: date,
-      guests: guests,
-    },
-    mode: "onSubmit",
-    criteriaMode: "all",
-  });
-
-  const onSubmit = async (_: z.infer<typeof formSchema>) => {
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!locationId) {
+      toast.error("Select 'Location'");
+      return;
+    }
     try {
       await dispatch(
         getTables({
           locationId: locationId,
           date: dateObjectToYYYY_MM_DD(date),
-          time: dateObjectToHH_MM(date),
+          time: time.split("-")[0],
           guests: String(guests),
         }),
       ).unwrap();
-      console.log("Form submited");
+      console.log("Tables recieved");
     } catch (error) {
-      console.error("Registration failed:", error);
+      console.error("Tables recieving failed:", error);
     }
   };
 
   return {
+    onSubmit,
     locationId,
     setLocationId,
     date,
     setDate,
+    time,
     setTime,
     guests,
-    increaseGuestsNumber,
-    decreaseGuestsNumber,
-    onSubmit,
-    form,
+    increaseGuests,
+    decreaseGuests,
+    selectOptions,
+    selectOptionsLoading,
+    locationTimeSlots,
+    locationTimeSlotsLoading,
   };
 };
+
+export interface UseBookingForm {
+  onSubmit: (e: FormEvent) => Promise<void>;
+  locationId: string;
+  setLocationId: Dispatch<React.SetStateAction<string>>;
+  date: Date;
+  setDate: Dispatch<React.SetStateAction<Date>>;
+  time: string;
+  setTime: Dispatch<React.SetStateAction<string>>;
+  guests: number;
+  increaseGuests: () => void;
+  decreaseGuests: () => void;
+  selectOptions: SelectOption[];
+  selectOptionsLoading: boolean;
+  locationTimeSlots: string[];
+  locationTimeSlotsLoading: boolean;
+}

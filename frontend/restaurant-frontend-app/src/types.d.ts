@@ -99,36 +99,55 @@ export type ReservationStatus =
   | "Finished";
 
 export interface Reservation {
+  id: string;
   date: string;
   feedbackId: string;
-  guests: string;
-  id: string;
+  guestsNumber: string;
   locationAddress: string;
+  locationId: string;
   preOrder: string;
   status: ReservationStatus;
   tableNumber: string;
+  timeFrom: string;
+  timeTo: string;
   timeSlot: string;
   userInfo: string;
+  createdAt: string;
+}
+
+export interface UpsertReservationRequest {
+  id?: string;
+  locationId: string;
+  tableNumber: string;
+  date: string /* YYYY-MM-DD */;
+  timeFrom: string /* HH:MM (24H) */;
+  timeTo: string /* HH:MM (24H) */;
+  guestsNumber: string;
+  tableId: string;
+}
+
+export interface SelectOption {
+  id: string;
+  address: string;
 }
 
 export interface Table {
-  tableId: string;
+  availableSlots: AvailableSlots[];
   capacity: string;
-  availableSlots: { start: string; end: string }[];
   locationAddress: string;
   locationId: string;
+  tableId: string;
   tableNumber: string;
 }
 
-export interface GetTablesParams {
-  date: string;
-  locationId: string;
-  guests?: string;
-  time?: string;
+export interface AvailableSlots {
+  start: string;
+  end: string;
 }
 
-export interface BookingFilters {
+export interface TableRequestParams {
   locationId: string;
-  dateTime: string;
-  guests: number;
+  date: string /* YYYY-MM-DD */;
+  time?: string /* HH:MM (24H) */;
+  guests?: string;
 }

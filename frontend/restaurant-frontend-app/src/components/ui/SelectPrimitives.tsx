@@ -28,11 +28,8 @@ function SelectValue({
 function SelectTrigger({
   className,
   children,
-  Icon,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
-  Icon?: ComponentType<{ className?: string }>;
-}) {
+}: React.ComponentProps<typeof SelectPrimitive.Trigger>) {
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
@@ -40,13 +37,6 @@ function SelectTrigger({
       {...props}
     >
       {children}
-      {/* <Button variant="trigger" size="trigger">
-        {Icon && <Icon className="shrink-0 stroke-foreground size-[1.5rem]" />}
-        {children}
-        <SelectPrimitive.Icon className="shrink-0 ml-auto" asChild>
-          <ChevronDownIcon />
-        </SelectPrimitive.Icon>
-      </Button> */}
     </SelectPrimitive.Trigger>
   );
 }
@@ -62,10 +52,10 @@ function SelectContent({
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          // "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto border shadow-md",
-          "bg-input-background rounded overflow-hidden",
+          // "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto border ",
+          "bg-input-background rounded overflow-hidden shadow-card z-50",
           position === "popper" &&
-            "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+            "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1 shadow-card",
           className,
         )}
         position={position}
@@ -109,7 +99,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "fontset-bodyBold hover:bg-green-100 outline-hidden py-[0.25rem] px-[0.5rem] focus:bg-green-100 cursor-pointer",
+        "fontset-bodyBold hover:bg-green-100 outline-hidden py-[0.25rem] px-[0.5rem] focus:bg-green-100 cursor-pointer data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}
       {...props}
@@ -119,9 +109,7 @@ function SelectItem({
           <CheckIcon className="size-4" />
         </SelectPrimitive.ItemIndicator>
       </span> */}
-      <SelectPrimitive.ItemText className="">
-        {children}
-      </SelectPrimitive.ItemText>
+      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   );
 }

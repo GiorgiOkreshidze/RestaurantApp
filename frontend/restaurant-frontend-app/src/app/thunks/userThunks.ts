@@ -71,7 +71,6 @@ export const signout = createAsyncThunk<
 >("signout", async (signOutMutation, { rejectWithValue }) => {
   try {
     await axiosApi.post(serverRoute.signOut, signOutMutation);
-
     console.log("Logged out successfully");
     return;
   } catch (e) {
