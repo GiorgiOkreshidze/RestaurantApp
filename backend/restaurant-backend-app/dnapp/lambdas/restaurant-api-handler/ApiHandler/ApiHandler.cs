@@ -32,6 +32,8 @@ public class ApiHandler
     private readonly GetReservationsAction _getReservationsAction;
     private readonly DeleteReservationAction _deleteReservationAction;
     private readonly GetAllCustomersAction _getAllCustomersAction;
+    private readonly GetAllDishesAction _getAllDishesAction;
+    private readonly GetDishByIdAction _getDishByIdAction;
 
     public ApiHandler()
     {
@@ -51,6 +53,8 @@ public class ApiHandler
         _getReservationsAction = new GetReservationsAction();
         _deleteReservationAction = new DeleteReservationAction();
         _getAllCustomersAction = new GetAllCustomersAction();
+        _getAllDishesAction = new GetAllDishesAction();
+        _getDishByIdAction = new GetDishByIdAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -98,22 +102,31 @@ public class ApiHandler
                     }
                 },
                 {
-                    "/dishes/popular",
-                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/dishes/popular", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getPopularDishesAction.GetPopularDishesAsync }
                     }
                 },
                 {
-                    "/users/profile",
-                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/dishes", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getAllDishesAction.GetAllDishesAsync }
+                    }
+                },
+                {
+                    "/dishes/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getDishByIdAction.GetDishByIdAsync }
+                    }
+                },
+                {
+                    "/users/profile", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getProfileAction.GetProfile }
                     }
                 },
                 {
-                    "/locations/{id}/speciality-dishes",
-                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/locations/{id}/speciality-dishes", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getSpecialityDishesAction.GetSpecialityDishesAsync }
                     }
@@ -125,8 +138,7 @@ public class ApiHandler
                     }
                 },
                 {
-                    "/reservations/client",
-                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/reservations/client", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "POST", _createReservationAction.CreateReservationAsync }
                     }
@@ -137,22 +149,22 @@ public class ApiHandler
                         { "GET", _getLocationFeedbacksAction.GetLocationFeedbacks }
                     }
                 },
-                 {
+                {
                     "/bookings/tables", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getAvailableTablesAction.GetAvailableTables }
                     }
                 },
-                 {
+                {
                     "/reservations", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getReservationsAction.GetReservationsAsync }
                     }
                 },
-                 {
+                {
                     "/reservations/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                       { "DELETE", _deleteReservationAction.DeleteReservationAsync }
+                        { "DELETE", _deleteReservationAction.DeleteReservationAsync }
                     }
                 },
                 {
