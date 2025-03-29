@@ -5,7 +5,7 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/SelectPrimitives";
-import { Dispatch, JSX, SetStateAction } from "react";
+import type { JSX } from "react";
 import { Button, Spinner } from "../ui";
 import { ChevronDownIcon } from "../icons";
 
@@ -26,18 +26,17 @@ export const Select = ({
   Icon?: () => JSX.Element;
   className?: string;
   value?: string | null;
-  setValue: Dispatch<SetStateAction<string>>;
+  setValue: (value: string) => void;
   loading?: boolean;
 }) => {
   const handleChange = (id: string) => {
     setValue(id === "null" ? "" : id);
   };
-
   return (
     <SelectRoot value={value ?? ""} onValueChange={handleChange}>
       <SelectTrigger className={className} asChild>
         <Button variant="trigger" size="trigger">
-          {Icon && Icon()}
+          {Icon?.()}
           {loading ? (
             <span>Loading...</span>
           ) : (
@@ -48,8 +47,8 @@ export const Select = ({
       </SelectTrigger>
       <SelectContent className="shadow-card [&>*]:tabular-nums [&>*]:font-sans">
         <SelectItem value="null">{placeholder}</SelectItem>
-        {items?.map((item, i) => (
-          <SelectItem key={i} value={item.id}>
+        {items?.map((item) => (
+          <SelectItem key={item.id} value={item.id}>
             {item.label}
           </SelectItem>
         ))}

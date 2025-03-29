@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
 import { MinusIcon, PeopleIcon, PlusIcon } from "../icons";
 import { Button, Text } from "../ui";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
+import { buttonVariants } from "../ui/Button";
 
 export const GuestsNumber = ({
   guests,
@@ -17,15 +18,14 @@ export const GuestsNumber = ({
   return (
     <div
       className={cn(
-        "styleSet-input flex gap-[0.5rem] justify-between py-[0.75rem] px-[1.5rem] bg-card rounded",
+        buttonVariants({ variant: "trigger", size: "trigger" }),
+        "py-[0.75rem]",
         className,
       )}
       {...props}
     >
-      <div className="flex items-center gap-[0.5rem]">
-        <PeopleIcon className="size-[24px]" />
-        <Text variant="buttonSecondary">Guests</Text>
-      </div>
+      <PeopleIcon className="size-[24px]" />
+      <Text variant="buttonSecondary">Guests</Text>
       <div className="flex items-center gap-[0.5rem]">
         <Button
           variant="secondary"

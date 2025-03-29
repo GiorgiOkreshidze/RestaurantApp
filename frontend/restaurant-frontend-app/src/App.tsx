@@ -9,51 +9,61 @@ import { Booking } from "./pages/Booking";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "./app/hooks";
 import { selectPopularDishes } from "./app/slices/dishesSlice";
-import { selectLocations } from "./app/slices/locationsSlice";
+import {
+	selectLocations,
+	selectSelectOptions,
+} from "./app/slices/locationsSlice";
 import { getPopularDishes } from "./app/thunks/dishesThunks";
-import { getLocations } from "./app/thunks/locationsThunks";
+import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
 
 function App() {
-  const location = useLocation();
-  const hideNavBar = ["/signin", "/signup"].includes(location.pathname);
-  const dispatch = useAppDispatch();
-  const popularDishes = useSelector(selectPopularDishes);
-  const locations = useSelector(selectLocations);
+	const location = useLocation();
+	const hideNavBar = ["/signin", "/signup"].includes(location.pathname);
+	const dispatch = useAppDispatch();
+	const popularDishes = useSelector(selectPopularDishes);
+	const locations = useSelector(selectLocations);
+	const selectOptions = useSelector(selectSelectOptions);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [location.pathname]);
 
-  useEffect(() => {
-    if (!popularDishes.length) {
-      dispatch(getPopularDishes());
-    }
-  }, [dispatch, popularDishes.length]);
+	useEffect(() => {
+		if (!popularDishes.length) {
+			dispatch(getPopularDishes());
+		}
+	}, [dispatch, popularDishes.length]);
 
-  useEffect(() => {
-    if (!locations.length) {
-      dispatch(getLocations());
-    }
-  }, [dispatch, locations.length]);
+	useEffect(() => {
+		if (!locations.length) {
+			dispatch(getLocations());
+		}
+	}, [dispatch, locations.length]);
 
-  return (
-    <>
-      <ToastContainer position="top-right" autoClose={3000} theme="light" />
-      {!hideNavBar && (
-        <header>
-          <NavBar />
-        </header>
-      )}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signin" element={<Auth />} />
-        <Route path="/signup" element={<Auth />} />
-        <Route path="/locations/:id" element={<Location />} />
-        <Route path="/reservations" element={<Reservations />} />
-        <Route path="/booking" element={<Booking />} />
-      </Routes>
-    </>
-  );
+	useEffect(() => {
+		if (!selectOptions.length) {
+			dispatch(getSelectOptions());
+		}
+	}, [dispatch, selectOptions.length]);
+
+	return (
+		<>
+			<ToastContainer position="top-right" autoClose={3000} theme="light" />
+			{!hideNavBar && (
+				<header>
+					<NavBar />
+				</header>
+			)}
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/signin" element={<Auth />} />
+				<Route path="/signup" element={<Auth />} />
+				<Route path="/locations/:id" element={<Location />} />
+				<Route path="/reservations" element={<Reservations />} />
+				<Route path="/booking" element={<Booking />} />
+			</Routes>
+		</>
+	);
 }
 
 export default App;

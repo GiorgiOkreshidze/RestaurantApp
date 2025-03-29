@@ -1,38 +1,38 @@
 import { useAppDispatch } from "@/app/hooks";
-import { FormEvent, useState } from "react";
-import { UseBookingForm } from "./useBookingForm";
-import { dateObjectToYYYY_MM_DD } from "@/utils/dateTime";
-import { Reservation, Table } from "@/types";
 import {
   deleteClientReservation,
   upsertClientReservation,
-} from "@/app/thunks/bookingThunk";
+} from "@/app/thunks/reservationsThunks";
+import type {
+  Reservation,
+  ReservationDialogProps,
+} from "@/types/reservation.types";
+import { dateObjToDateStringServer } from "@/utils/dateTime";
+import { type FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 
-export const useMakeReservationForm = ({
-  table,
-  bookingForm,
+export const useReservationDialogForm = ({
   onSuccessCallback,
   reservation,
-  ownTimeSlot,
-}: {
-  table: Table;
-  bookingForm: UseBookingForm;
+  ...props
+}: ReservationDialogProps & {
   onSuccessCallback: (reservation: Reservation) => void;
-  reservation: Reservation | null;
-  ownTimeSlot: string;
+  reservation?: Reservation;
 }) => {
+  const maxGuests = props.maxGuests;
+  const [time, setTime] = useState(reservation?.timeSlot ?? props.initTime);
+  const [guests, setGuests] = useState(
+    reservation?.guestsNumber
+      ? Number.parseInt(reservation.guestsNumber)
+      : props.initGuests,
+  );
   const dispatch = useAppDispatch();
-  const [guestsNumber, setGuests] = useState(bookingForm.guests);
-  const [time, setTime] = useState(ownTimeSlot);
-  const increaseGuestsNumber = () => {
-    if (guestsNumber >= Number(table.capacity)) return;
-    setGuests(guestsNumber + 1);
+  const increaseGuests = () => {
+    setGuests(guests < maxGuests ? guests + 1 : maxGuests);
   };
 
-  const decreaseGuestsNumber = () => {
-    if (guestsNumber <= 0) return;
-    setGuests(guestsNumber - 1);
+  const decreaseGuests = () => {
+    setGuests(guests > 1 ? guests - 1 : 1);
   };
 
   const onSubmit = async (e: FormEvent) => {
@@ -45,17 +45,17 @@ export const useMakeReservationForm = ({
       const data = await dispatch(
         upsertClientReservation({
           ...(reservation?.id && { id: reservation.id }),
-          locationId: bookingForm.locationId,
-          date: dateObjectToYYYY_MM_DD(bookingForm.date),
+          locationId: props.locationId,
+          date: dateObjToDateStringServer(props.date),
           timeFrom: time.split("-")[0],
           timeTo: time.split("-")[1],
-          tableNumber: table.tableNumber,
-          guestsNumber: String(guestsNumber),
-          tableId: table.tableId,
+          tableNumber: props.tableNumber,
+          guestsNumber: String(guests),
+          tableId: props.tableId,
         }),
       ).unwrap();
-      console.log("Reservation created");
       onSuccessCallback(data);
+      console.log("Reservation created", data);
     } catch (error) {
       console.error("Reservation creating failed:", error);
     }
@@ -72,12 +72,13 @@ export const useMakeReservationForm = ({
   };
 
   return {
-    guestsNumber,
-    increaseGuestsNumber,
-    decreaseGuestsNumber,
+    onSubmit,
     time,
     setTime,
-    onSubmit,
+    guests,
+    increaseGuests,
+    decreaseGuests,
     onCancelReservation,
+    ...props,
   };
 };

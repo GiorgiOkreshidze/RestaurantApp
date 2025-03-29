@@ -1,10 +1,11 @@
-import { Dish, Location, SelectOption } from "@/types";
+import type { Dish } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 import {
   getLocations,
   getSelectOptions,
   getSpecialityDishes,
 } from "../thunks/locationsThunks";
+import type { Location, SelectOption } from "@/types/location.types";
 
 interface locationsState {
   locations: Location[];

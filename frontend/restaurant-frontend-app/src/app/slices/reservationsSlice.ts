@@ -1,15 +1,25 @@
-import { Reservation } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { getReservations } from "../thunks/reservationsThunks";
+import {
+  deleteClientReservation,
+  getReservations,
+  upsertClientReservation,
+} from "../thunks/reservationsThunks";
+import type { Reservation } from "@/types/reservation.types";
 
 interface reservationsState {
   reservations: Reservation[];
   reservationsLoading: boolean;
+  reservation: Reservation | null;
+  reservationCreatingLoading: boolean;
+  reservationDeletingLoading: boolean;
 }
 
 const initialState: reservationsState = {
   reservations: [],
   reservationsLoading: false,
+  reservation: null,
+  reservationCreatingLoading: false,
+  reservationDeletingLoading: false,
 };
 
 export const reservationsSlice = createSlice({
@@ -27,6 +37,35 @@ export const reservationsSlice = createSlice({
       })
       .addCase(getReservations.rejected, (state) => {
         state.reservationsLoading = false;
+      });
+
+    builder
+      .addCase(upsertClientReservation.pending, (state) => {
+        state.reservationCreatingLoading = true;
+      })
+      .addCase(
+        upsertClientReservation.fulfilled,
+        (state, { payload: data }) => {
+          state.reservationCreatingLoading = false;
+          state.reservation = data;
+        },
+      )
+      .addCase(upsertClientReservation.rejected, (state) => {
+        state.reservationCreatingLoading = false;
+      });
+
+    builder
+      .addCase(deleteClientReservation.pending, (state) => {
+        state.reservationDeletingLoading = true;
+      })
+      .addCase(
+        deleteClientReservation.fulfilled,
+        (state, { payload: data }) => {
+          state.reservationDeletingLoading = false;
+        },
+      )
+      .addCase(deleteClientReservation.rejected, (state) => {
+        state.reservationDeletingLoading = false;
       });
   },
   selectors: {

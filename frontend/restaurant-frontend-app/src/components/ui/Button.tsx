@@ -1,21 +1,21 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { ComponentProps, JSX } from "react";
+import type { ComponentProps, JSX } from "react";
 import { Slot } from "@radix-ui/react-slot";
 
 export const buttonVariants = cva(
-  "inline-flex rounded min-w-[44px] cursor-pointer text-center justify-center transition-all duration-300 items-center disabled:cursor-not-allowed",
+  "inline-flex rounded min-w-[44px] cursor-pointer text-center justify-center transition-all duration-300 items-center disabled:cursor-not-allowed border-[1px]",
   {
     variants: {
       variant: {
         primary:
-          "bg-primary text-neutral-0 fontset-buttonPrimary hover:bg-primary-dark active:bg-primary-darker disabled:bg-disabled",
+          "bg-primary text-neutral-0 fontset-buttonPrimary hover:bg-primary-dark active:bg-primary-darker disabled:bg-disabled border-transparent",
         secondary:
-          "bg-neutral-0 min-w-[103px] text-primary fontset-buttonPrimary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary border-[1px]",
+          "bg-neutral-0 min-w-[103px] text-primary fontset-buttonPrimary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary",
         tertiary:
-          "bg-transparent text-foreground fontset-bodyBold hover:bg-neutral-200 active:bg-primary-light disabled:text-disabled",
+          "bg-transparent text-foreground fontset-bodyBold hover:bg-neutral-200 active:bg-primary-light disabled:text-disabled border-transparent",
         trigger:
-          "grid grid-cols-[auto_1fr_auto] text-start bg-neutral-0 text-foreground fontset-buttonSecondary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary border-[1px] gap-[0.75rem] disabled:text-disabled disabled:bg-neutral-200 disabled:border-transparent",
+          "grid grid-cols-[auto_1fr_auto] text-start bg-neutral-0 text-foreground fontset-buttonSecondary disabled:text-disabled disabled:bg-neutral-0 border-[1px] gap-[0.75rem] disabled:text-disabled disabled:bg-neutral-200 disabled:border-transparent border-neutral-200",
       },
       size: {
         xl: "p-[1rem]",

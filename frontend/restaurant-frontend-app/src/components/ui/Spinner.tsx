@@ -1,4 +1,4 @@
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 
 export const Spinner = ({ ...props }: ComponentProps<"svg">) => {
   return (
@@ -9,6 +9,7 @@ export const Spinner = ({ ...props }: ComponentProps<"svg">) => {
       height="50"
       {...props}
     >
+      <title>Spinner</title>
       <radialGradient
         id="a12"
         cx={0.66}
