@@ -2,7 +2,7 @@
 
 namespace Function.Models.Requests;
 
-public class ReservationRequest
+public class ClientReservationRequest
 {
     // if no id, we are generating it otherwise, we update record based on the provided id.
     [JsonPropertyName("id")]

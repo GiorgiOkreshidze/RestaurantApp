@@ -33,7 +33,7 @@ public class ReservationService : IReservationService
         _waiterRepository = new WaiterRepository();
     }
 
-    public async Task<Reservation> UpsertReservationAsync(ReservationRequest reservationRequest, User user)
+    public async Task<Reservation> UpsertReservationAsync(ClientReservationRequest clientReservationRequest, User user)
     {
         //Available UTC time slots:
         // 06:30 - 08:00
@@ -46,8 +46,8 @@ public class ReservationService : IReservationService
         var predefinedSlots = ActionUtils.GeneratePredefinedTimeSlots();
 
         // Parse requested times
-        var newTimeFrom = TimeSpan.Parse(reservationRequest.TimeFrom);
-        var newTimeTo = TimeSpan.Parse(reservationRequest.TimeTo);
+        var newTimeFrom = TimeSpan.Parse(clientReservationRequest.TimeFrom);
+        var newTimeTo = TimeSpan.Parse(clientReservationRequest.TimeTo);
 
         // 1. Check if reservation is within working hours
         var firstSlot = TimeSpan.Parse(predefinedSlots.First().Start);
@@ -68,12 +68,12 @@ public class ReservationService : IReservationService
             throw new ArgumentException("Reservation must exactly match one of the predefined time slots.");
         }
         
-        var location = await _locationRepository.GetLocationByIdAsync(reservationRequest.LocationId);
+        var location = await _locationRepository.GetLocationByIdAsync(clientReservationRequest.LocationId);
 
         var existingReservations = await _reservationRepository.GetReservationsByDateLocationTable(
-            reservationRequest.Date,
+            clientReservationRequest.Date,
             location.Address,
-            reservationRequest.TableId);
+            clientReservationRequest.TableId);
 
         foreach (var existingReservation in existingReservations)
         {
@@ -86,7 +86,7 @@ public class ReservationService : IReservationService
                 existingReservation.UserEmail != user.Email)
             {
                 throw new ArgumentException(
-                    $"Table #{reservationRequest.Id} at location " +
+                    $"Table #{clientReservationRequest.Id} at location " +
                     $"{location.Address} is already booked during the requested time period."
                 );
             }
@@ -94,26 +94,26 @@ public class ReservationService : IReservationService
         
         var reservationId = Guid.NewGuid().ToString();
 
-        if (reservationRequest.Id != null)
+        if (clientReservationRequest.Id != null)
         {
-            reservationId = reservationRequest.Id;
+            reservationId = clientReservationRequest.Id;
         }
 
-        var table = await _tableRepository.GetTableById(reservationRequest.TableId);
+        var table = await _tableRepository.GetTableById(clientReservationRequest.TableId);
 
         if (table is null)
         {
-            throw new ResourceNotFoundException($"Table with ID {reservationRequest.TableId} not found.");
+            throw new ResourceNotFoundException($"Table with ID {clientReservationRequest.TableId} not found.");
         }
 
-        if (!int.TryParse(table.Capacity, out int capacity) || !int.TryParse(reservationRequest.GuestsNumber, out int guestsNumber))
+        if (!int.TryParse(table.Capacity, out int capacity) || !int.TryParse(clientReservationRequest.GuestsNumber, out int guestsNumber))
         {
             throw new ArgumentException("Invalid number format for Capacity or GuestsNumber.");
         }
 
         if (capacity < guestsNumber)
         {
-            throw new ArgumentException($"Table with ID {reservationRequest.TableId} cannot accommodate {reservationRequest.GuestsNumber} guests. " +
+            throw new ArgumentException($"Table with ID {clientReservationRequest.TableId} cannot accommodate {clientReservationRequest.GuestsNumber} guests. " +
                 $"Maximum capacity: {table.Capacity}."
             );
         }
@@ -121,18 +121,18 @@ public class ReservationService : IReservationService
         var reservation = new Reservation
         {
             Id = reservationId,
-            Date = reservationRequest.Date,
+            Date = clientReservationRequest.Date,
             FeedbackId = "NOT IMPLEMENTED YET AND ISN'T REQUIRED",
-            GuestsNumber = reservationRequest.GuestsNumber,
+            GuestsNumber = clientReservationRequest.GuestsNumber,
             LocationAddress = location.Address,
             LocationId = location.Id,
             PreOrder = "NOT IMPLEMENTED YET",
             Status = Status.Reserved.ToString(),
-            TableId = reservationRequest.TableId,
+            TableId = clientReservationRequest.TableId,
             TableNumber = table.TableNumber,
-            TimeFrom = reservationRequest.TimeFrom,
-            TimeTo = reservationRequest.TimeTo,
-            TimeSlot = reservationRequest.TimeFrom + " - " + reservationRequest.TimeTo,
+            TimeFrom = clientReservationRequest.TimeFrom,
+            TimeTo = clientReservationRequest.TimeTo,
+            TimeSlot = clientReservationRequest.TimeFrom + " - " + clientReservationRequest.TimeTo,
             UserEmail = user.Email,
             UserInfo = user.FirstName + " " + user.LastName,
             CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")

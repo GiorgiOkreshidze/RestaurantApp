@@ -28,7 +28,7 @@ public class CreateReservationAction
     {
         var accessToken = ActionUtils.GetAccessToken(request);
         var userInfo = await _authenticationService.GetUserDetailsAsync(accessToken);
-        var reservationRequest = JsonSerializer.Deserialize<ReservationRequest>(request.Body);
+        var reservationRequest = JsonSerializer.Deserialize<ClientReservationRequest>(request.Body);
         var email = userInfo.GetValueOrDefault("email");
         
         if (reservationRequest == null)
