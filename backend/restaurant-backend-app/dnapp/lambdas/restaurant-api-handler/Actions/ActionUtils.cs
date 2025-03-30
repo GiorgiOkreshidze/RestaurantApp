@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Amazon.CognitoIdentityProvider.Model;
@@ -89,6 +90,25 @@ public static class ActionUtils
 
         return accessTokenHeader.Trim();
     }
+
+    public static JwtSecurityToken ExtractJwtToken(APIGatewayProxyRequest request)
+    {
+        if (!request.Headers.TryGetValue("Authorization", out var idToken) || string.IsNullOrEmpty(idToken) || !idToken.StartsWith("Bearer "))
+        {
+            throw new ArgumentException("Authorization header empty or invalid.");
+        }
+
+        var token = idToken.Substring("Bearer ".Length).Trim();
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        if (!tokenHandler.CanReadToken(token))
+        {
+            throw new ArgumentException("Invalid token format.");
+        }
+
+        return tokenHandler.ReadJwtToken(token);
+    }
+
 
     public static List<TimeSlot> GeneratePredefinedTimeSlots()
     {

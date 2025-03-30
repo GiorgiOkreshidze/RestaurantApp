@@ -200,6 +200,7 @@ public class Mapper
             doc.TryGetValue("role", out var roleStr);
             doc.TryGetValue("locationId", out var locationId);
             doc.TryGetValue("createdAt", out var createdAt);
+            doc.TryGetValue("imageUrl", out var imageUrl);
 
             Enum.TryParse<Roles>(roleStr, out var parsedRole);
 
@@ -211,7 +212,8 @@ public class Mapper
                 Email = email ?? "",
                 Role = parsedRole,
                 LocationId = locationId ?? "",
-                CreatedAt = createdAt ?? ""
+                CreatedAt = createdAt ?? "",
+                ImageUrl = imageUrl ?? ""
             };
         }).ToList();
     }

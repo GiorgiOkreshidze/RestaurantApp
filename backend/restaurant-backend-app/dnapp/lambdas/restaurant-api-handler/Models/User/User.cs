@@ -21,7 +21,10 @@ public class User
     
     [JsonPropertyName("locationId")]
     public string? LocationId { get; set; }
-    
+
+    [JsonPropertyName("imageUrl")]
+    public required string ImageUrl { get; set; }
+
     [JsonPropertyName("createdAt")]
     public required string CreatedAt { get; set; }
     

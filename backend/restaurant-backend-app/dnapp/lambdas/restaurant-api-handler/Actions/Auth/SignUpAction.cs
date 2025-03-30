@@ -14,6 +14,7 @@ public class SignUpAction
     private readonly IAuthenticationService _authenticationService;
     private readonly IEmployeeService _employeeService;
     private readonly IUserService _userService;
+    private const string DefaultImageUrl = "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Users/default_user.jpg";
 
     public SignUpAction()
     {
@@ -40,6 +41,7 @@ public class SignUpAction
             LastName = body["lastName"].GetString(),
             Email = body["email"].GetString(),
             Role = Roles.Customer,
+            ImageUrl = DefaultImageUrl,
             CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
         };
         var password = body["password"].GetString();

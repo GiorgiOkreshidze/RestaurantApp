@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
@@ -21,23 +20,8 @@ public class GetAllCustomersAction
 
     public async Task<APIGatewayProxyResponse> GetAllCustomersAsync(APIGatewayProxyRequest request)
     {
-        request.Headers.TryGetValue("Authorization", out var idToken);
+        var jwtToken = ActionUtils.ExtractJwtToken(request);
 
-        if (string.IsNullOrEmpty(idToken) || !idToken.StartsWith("Bearer "))
-        {
-            throw new ArgumentException("Authorization header empty");
-        }
-
-        var token = idToken.Substring("Bearer ".Length).Trim();
-        var tokenHandler = new JwtSecurityTokenHandler();
-
-        if (!tokenHandler.CanReadToken(token))
-        {
-            throw new ArgumentException("Invalid token");
-        }
-
-        var jwtToken = tokenHandler.ReadJwtToken(token);
-        
         if (!Enum.TryParse(jwtToken.Claims.FirstOrDefault(c => c.Type == "custom:role")?.Value, out Roles role))
         {
             throw new ArgumentException("Invalid role");
