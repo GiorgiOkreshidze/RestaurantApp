@@ -32,6 +32,8 @@ export const Select = ({
   const handleChange = (id: string) => {
     setValue(id === "null" ? "" : id);
   };
+  console.log("Select render value:", value); // Проверяем значение при рендере
+
   return (
     <SelectRoot value={value ?? ""} onValueChange={handleChange}>
       <SelectTrigger className={className} asChild>
