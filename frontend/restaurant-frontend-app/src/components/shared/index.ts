@@ -22,7 +22,6 @@ export { Select } from "./Select";
 export { PageBody } from "./PageBody";
 export { PageBodySection } from "./PageBody";
 export { PageBodyHeader } from "./PageBody";
-export { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";
 export { GuestsNumber } from "./GuestsNumber";
 export { Tooltip } from "./Tooltip";
 export { TimeSlotPicker } from "./TimeSlotPicker";

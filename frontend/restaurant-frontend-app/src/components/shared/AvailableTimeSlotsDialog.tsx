@@ -8,12 +8,12 @@ import {
   DialogTrigger,
 } from "../ui";
 import { ReactElement } from "react";
-import { Table } from "@/types";
-import { timeStringFrom24hTo12h } from "@/utils/dateTime";
+import { timeString24hToTimeString12h } from "@/utils/dateTime";
 import { format } from "date-fns";
 import { MakeReservationDialog } from "./MakeReservationDialog";
 import { TimeSlot } from "./TimeSlot";
 import { UseBookingForm } from "@/hooks/useBookingForm";
+import { TableUI } from "@/types/tables.types";
 
 export const AvailableTimeSlotsDialog = ({
   children,
@@ -24,7 +24,7 @@ export const AvailableTimeSlotsDialog = ({
 }: {
   children: ReactElement;
   className?: string;
-  table: Table;
+  table: TableUI;
   date: Date;
   bookingForm: UseBookingForm;
 }) => {
@@ -57,8 +57,8 @@ export const AvailableTimeSlotsDialog = ({
                 key={slot.start + slot.end}
                 icon={<ClockIcon className="size-[1rem] stroke-primary" />}
               >
-                {timeStringFrom24hTo12h(slot.start)} -{" "}
-                {timeStringFrom24hTo12h(slot.end)}
+                {timeString24hToTimeString12h(slot.start)} -{" "}
+                {timeString24hToTimeString12h(slot.end)}
               </TimeSlot>
             </MakeReservationDialog>
           ))}

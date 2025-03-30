@@ -7,11 +7,20 @@ import { useEffect, type FormEvent } from "react";
 import { useAppDispatch } from "../app/hooks";
 import { fetchTables } from "@/app/thunks/tablesThunk";
 import { isPast } from "date-fns";
+import { useSelector } from "react-redux";
+import { selectSelectOptions } from "@/app/slices/locationsSlice";
+import { toast } from "react-toastify";
 
 export const useBookingForm = () => {
   const dispatch = useAppDispatch();
   const formStore = useBookingFormStore();
-  const { locationId, date, guests, time, setTime } = formStore;
+  const selectOptions = useSelector(selectSelectOptions);
+  const { locationId, date, guests, time, setTime, setLocationId } = formStore;
+
+  useEffect(() => {
+    if (!selectOptions.length) return;
+    setLocationId(selectOptions[0].id);
+  }, [selectOptions]);
 
   useEffect(() => {
     if (!time) return;
@@ -22,7 +31,14 @@ export const useBookingForm = () => {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!locationId || !date) return;
+    if (!locationId || !date) {
+      toast.warning("Location and Date are required");
+      return;
+    }
+    if (isPast(date) && isPast(timeString24hToDateObj(time.split("-")[0]))) {
+      toast.warning("Date and Time can't be in past");
+      return;
+    }
     try {
       await dispatch(
         fetchTables({

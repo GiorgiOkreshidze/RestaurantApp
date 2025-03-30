@@ -1,6 +1,7 @@
 import type { RichTimeSlot } from "@/types";
 import { create } from "zustand";
 import { TIME_SLOTS } from "@/utils/constants";
+import { startOfTomorrow } from "date-fns";
 
 interface FormStore {
   locationId: string;
@@ -18,7 +19,9 @@ interface FormStore {
 
 export const useBookingFormStore = create<FormStore>((set) => ({
   locationId: "",
-  date: new Date(),
+  date: TIME_SLOTS.filter((slot) => !slot.isPast).length
+    ? new Date()
+    : startOfTomorrow(),
   time: "",
   guests: 2,
   timeSlots: TIME_SLOTS,
