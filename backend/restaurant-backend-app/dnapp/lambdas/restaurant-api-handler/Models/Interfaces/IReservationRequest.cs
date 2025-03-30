@@ -1,29 +1,28 @@
 ﻿using System.Text.Json.Serialization;
-using Function.Models.Interfaces;
 
-namespace Function.Models.Requests;
+namespace Function.Models.Interfaces;
 
-public class ClientReservationRequest : IReservationRequest
+public interface IReservationRequest
 {
     // if no id, we are generating it otherwise, we update record based on the provided id.
     [JsonPropertyName("id")]
     public string? Id { get; set; }
     
     [JsonPropertyName("locationId")]
-    public required string LocationId { get; set; }
+    public string LocationId { get; set; }
     
     [JsonPropertyName("tableId")]
-    public required string TableId { get; set; }
+    public string TableId { get; set; }
  
     [JsonPropertyName("date")]
-    public required string Date { get; set; }
+    public string Date { get; set; }
     
     [JsonPropertyName("guestsNumber")]
-    public required string GuestsNumber { get; set; }
+    public string GuestsNumber { get; set; }
  
     [JsonPropertyName("timeFrom")]
-    public required string TimeFrom { get; set; }
+    public string TimeFrom { get; set; }
  
     [JsonPropertyName("timeTo")]
-    public required string TimeTo { get; set; }
+    public string TimeTo { get; set; }
 }
