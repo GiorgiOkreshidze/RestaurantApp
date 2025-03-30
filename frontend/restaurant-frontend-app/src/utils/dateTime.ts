@@ -1,11 +1,15 @@
 import { format, parse } from "date-fns";
 
-export const dateObjToDateStringServer = (date: Date) => {
+export const dateObjToDateStringServer = (date: Date): string => {
   return format(date, "yyyy-MM-dd");
 };
 
 export const dateObjToDateStringUI = (date: Date) => {
   return format(date, "PP");
+};
+
+export const dateStringServerToDateObject = (date: string) => {
+  return parse(date, "yyyy-MM-dd", new Date());
 };
 
 export const timeString24hToDateObj = (time: string) => {

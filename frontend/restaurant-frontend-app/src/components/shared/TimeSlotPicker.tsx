@@ -11,6 +11,7 @@ import { ChevronDownIcon, ClockIcon } from "../icons";
 import { isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { RichTimeSlot } from "@/types";
+import { timeString24hToTimeString12h } from "@/utils/dateTime";
 
 export const TimeSlotPicker = ({
   items,
@@ -53,7 +54,8 @@ export const TimeSlotPicker = ({
             value={timeSlot.rangeString}
             disabled={isToday(selectedDate) && timeSlot.isPast}
           >
-            {timeSlot.rangeString}
+            {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
+            {timeString24hToTimeString12h(timeSlot.endString)}
           </SelectItem>
         ))}
       </SelectContent>

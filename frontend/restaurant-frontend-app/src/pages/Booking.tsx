@@ -1,4 +1,4 @@
-import { selectTables } from "@/app/slices/tablesSlice";
+import { selectTables, selectTablesLoading } from "@/app/slices/tablesSlice";
 import {
   BookingForm,
   PageBody,
@@ -6,11 +6,12 @@ import {
   PageHero,
   TableCard,
 } from "@/components/shared";
-import { Text } from "@/components/ui";
+import { Spinner, Text } from "@/components/ui";
 import { useSelector } from "react-redux";
 
 export const Booking = () => {
   const tables = useSelector(selectTables);
+  const tablesLoading = useSelector(selectTablesLoading);
 
   return (
     <>
@@ -27,11 +28,15 @@ export const Booking = () => {
         <PageBodyHeader>
           <Text variant="bodyBold">{tables.length} tables available</Text>
         </PageBodyHeader>
-        <ul className="grid gap-[2rem] lg:grid-cols-2">
-          {tables?.map((table) => (
-            <TableCard key={table.tableId} table={table} />
-          ))}
-        </ul>
+        {tablesLoading ? (
+          <Spinner />
+        ) : (
+          <ul className="grid gap-[2rem] lg:grid-cols-2">
+            {tables?.map((table) => (
+              <TableCard key={table.tableId} table={table} />
+            ))}
+          </ul>
+        )}
       </PageBody>
     </>
   );

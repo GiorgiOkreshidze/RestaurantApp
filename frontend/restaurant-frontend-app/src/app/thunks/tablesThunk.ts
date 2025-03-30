@@ -6,7 +6,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 
 export const fetchTables = createAsyncThunk<
-  TableServer[],
+  { data: TableServer[]; date: string },
   TablesRequestParams,
   { rejectValue: GlobalErrorMessage }
 >("bookings/tables", async (params, { rejectWithValue }) => {
@@ -19,7 +19,7 @@ export const fetchTables = createAsyncThunk<
         guests: params.guests,
       },
     });
-    return response.data;
+    return { data: response.data, date: params.date };
   } catch (e) {
     if (isAxiosError(e) && e.response) {
       return rejectWithValue(e.response.data);

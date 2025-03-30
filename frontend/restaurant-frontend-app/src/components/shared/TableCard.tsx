@@ -1,12 +1,21 @@
 import type { TableUI } from "@/types/tables.types";
 import { Text } from "../ui";
 import { LocationIcon } from "../icons";
-import { dateObjToDateStringUI } from "@/utils/dateTime";
+import {
+  dateObjToDateStringUI,
+  timeString24hToTimeString12h,
+} from "@/utils/dateTime";
 import { ReservationDialog } from "./ReservationDialog";
 import { useBookingFormStore } from "@/app/useBookingFormStore";
+import { TimeSlot } from "./TimeSlot";
+import { isPast, isToday } from "date-fns";
+import { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";
 
 export const TableCard = ({ table }: { table: TableUI }) => {
   const bookingForm = useBookingFormStore();
+  const availableSlots = table.availableSlots.filter((timeSlot) => {
+    return isToday(table.date) && isPast(timeSlot.startDate) ? false : true;
+  });
 
   return (
     <li className="@container bg-card rounded overflow-hidden shadow-card">
@@ -29,26 +38,37 @@ export const TableCard = ({ table }: { table: TableUI }) => {
               Table seating capacity: {table.capacity} people
             </Text>
             <Text variant="bodyBold">
-              {table.availableSlots.length} slots available for{" "}
-              {dateObjToDateStringUI(bookingForm.date)}:
+              {availableSlots.length} slots available for{" "}
+              {dateObjToDateStringUI(table.date)}:
             </Text>
           </div>
           <div className="grid gap-[0.5rem] @min-[400px]:grid-cols-2">
-            {table.availableSlots.map((timeSlot) => (
+            {availableSlots.slice(0, 5).map((timeSlot) => (
               <ReservationDialog
                 key={timeSlot.id}
                 locationAddress={table.locationAddress}
-                date={bookingForm.date}
-                initTime={bookingForm.time}
+                date={table.date}
+                initTime={timeSlot.rangeString ?? bookingForm.time}
                 tableNumber={table.tableNumber}
                 initGuests={bookingForm.guests}
                 maxGuests={Number.parseInt(table.capacity)}
                 locationId={table.locationId}
                 tableId={table.tableId}
               >
-                <p>Hello</p>
+                <TimeSlot>
+                  {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
+                  {timeString24hToTimeString12h(timeSlot.endString)}
+                </TimeSlot>
               </ReservationDialog>
             ))}
+            {availableSlots.length > 5 ? (
+              <AvailableTimeSlotsDialog
+                table={table}
+                availableSlots={availableSlots}
+              >
+                <TimeSlot>Shaw all</TimeSlot>
+              </AvailableTimeSlotsDialog>
+            ) : null}
           </div>
         </div>
       </article>

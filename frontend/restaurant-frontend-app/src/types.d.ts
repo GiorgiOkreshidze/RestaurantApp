@@ -87,7 +87,7 @@ export interface RichTimeSlot {
   startString: string;
   endString: string;
   rangeString: string;
-  startDate?: string;
+  startDate: string;
   endDate: string;
   isPast: boolean;
 }

@@ -71,9 +71,17 @@ export const reservationsSlice = createSlice({
   selectors: {
     selectReservations: (state) => state.reservations,
     selectReservationsLoading: (state) => state.reservationsLoading,
+    selectReservationCreatingLoading: (state) =>
+      state.reservationCreatingLoading,
+    selectReservationDeletingLoading: (state) =>
+      state.reservationDeletingLoading,
   },
 });
 
 export const reservationsReducer = reservationsSlice.reducer;
-export const { selectReservations, selectReservationsLoading } =
-  reservationsSlice.selectors;
+export const {
+  selectReservations,
+  selectReservationsLoading,
+  selectReservationCreatingLoading,
+  selectReservationDeletingLoading,
+} = reservationsSlice.selectors;

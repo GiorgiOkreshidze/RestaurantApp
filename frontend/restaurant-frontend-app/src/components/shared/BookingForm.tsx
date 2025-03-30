@@ -8,11 +8,14 @@ import {
 import { LocationIcon } from "../icons";
 import { Button } from "../ui/Button";
 import { cn } from "../../lib/utils";
+import { selectTablesLoading } from "@/app/slices/tablesSlice";
+import { Spinner } from "../ui";
 
 export const BookingForm = ({ className }: { className?: string }) => {
   const form = useBookingForm();
   const selectOptions = useSelector(selectSelectOptions);
   const selectOptionsLoading = useSelector(selectSelectOptionsLoading);
+  const tablesLoading = useSelector(selectTablesLoading);
 
   return (
     <form
@@ -51,7 +54,11 @@ export const BookingForm = ({ className }: { className?: string }) => {
       />
 
       <Button type="submit" className="md:max-xl:col-span-2 text-nowrap">
-        Find a Table
+        {tablesLoading ? (
+          <Spinner color="var(--color-white)" className="size-[1.5rem]" />
+        ) : (
+          "Find a Table"
+        )}
       </Button>
     </form>
   );

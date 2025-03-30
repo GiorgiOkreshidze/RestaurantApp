@@ -25,7 +25,11 @@
         "useExhaustiveDependencies": "off"
       },
       "style": {
-        "useImportType": "off"
+        "useImportType": "off",
+        "noUselessElse": "off"
+      },
+      "complexity": {
+        "noUselessTernary": "off"
       }
 		}
 	},

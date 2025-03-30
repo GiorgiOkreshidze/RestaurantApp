@@ -1,4 +1,3 @@
-import { ClockIcon } from "../icons";
 import {
   Dialog,
   DialogContent,
@@ -10,25 +9,24 @@ import {
 import { ReactElement } from "react";
 import { timeString24hToTimeString12h } from "@/utils/dateTime";
 import { format } from "date-fns";
-import { MakeReservationDialog } from "./MakeReservationDialog";
+import { ReservationDialog } from "./ReservationDialog";
 import { TimeSlot } from "./TimeSlot";
-import { UseBookingForm } from "@/hooks/useBookingForm";
 import { TableUI } from "@/types/tables.types";
+import { useBookingFormStore } from "@/app/useBookingFormStore";
+import { RichTimeSlot } from "@/types";
 
 export const AvailableTimeSlotsDialog = ({
   children,
   className,
   table,
-  date,
-  bookingForm,
+  availableSlots,
 }: {
   children: ReactElement;
   className?: string;
   table: TableUI;
-  date: Date;
-  bookingForm: UseBookingForm;
+  availableSlots: RichTimeSlot[];
 }) => {
-  const { availableSlots, locationAddress, tableNumber } = table;
+  const bookingForm = useBookingFormStore();
   return (
     <Dialog>
       <DialogTrigger className={className} asChild>
@@ -38,42 +36,34 @@ export const AvailableTimeSlotsDialog = ({
         <DialogHeader>
           <DialogTitle className="!fontset-h2">Available slots</DialogTitle>
           <DialogDescription className="!fontset-body text-foreground">
-            There are <b>{availableSlots.length} slots</b> available at{" "}
+            There are <b>{table.availableSlots.length} slots</b> available at{" "}
             <b>
-              {locationAddress}, Table {tableNumber}
+              {table.locationAddress}, Table {table.tableNumber}
             </b>{" "}
-            for <b>{format(date, "PPP")}</b>
+            for <b>{format(table.date, "PPP")}</b>
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-[0.5rem] mt-[1rem]">
-          {availableSlots.slice(0, 5).map((slot, i) => (
-            <MakeReservationDialog
-              table={table}
-              key={i}
-              bookingForm={bookingForm}
-              ownTimeSlot={`${slot.start}-${slot.end}`}
+          {availableSlots.map((timeSlot) => (
+            <ReservationDialog
+              key={timeSlot.id}
+              locationAddress={table.locationAddress}
+              date={table.date}
+              initTime={timeSlot.rangeString ?? bookingForm.time}
+              tableNumber={table.tableNumber}
+              initGuests={bookingForm.guests}
+              maxGuests={Number.parseInt(table.capacity)}
+              locationId={table.locationId}
+              tableId={table.tableId}
             >
-              <TimeSlot
-                key={slot.start + slot.end}
-                icon={<ClockIcon className="size-[1rem] stroke-primary" />}
-              >
-                {timeString24hToTimeString12h(slot.start)} -{" "}
-                {timeString24hToTimeString12h(slot.end)}
+              <TimeSlot>
+                {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
+                {timeString24hToTimeString12h(timeSlot.endString)}
               </TimeSlot>
-            </MakeReservationDialog>
+            </ReservationDialog>
           ))}
         </div>
       </DialogContent>
     </Dialog>
   );
 };
-
-const timeSlots = [
-  "10:30 a.m. - 12:00 p.m",
-  "12:15 p.m. - 1:45 p.m",
-  "2:00 p.m. - 3:30 p.m",
-  "3:45 p.m. - 5:15 p.m",
-  "5:30 p.m. - 7:00 p.m",
-  "7:15 p.m. - 8:45 p.m",
-  "9:00 p.m. - 10:30 p.m",
-];

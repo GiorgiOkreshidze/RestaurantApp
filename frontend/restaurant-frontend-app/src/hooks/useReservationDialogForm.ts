@@ -57,7 +57,12 @@ export const useReservationDialogForm = ({
       onSuccessCallback(data);
       console.log("Reservation created", data);
     } catch (error) {
-      console.error("Reservation creating failed:", error);
+      if (error instanceof Error) {
+        console.error("Reservation creating failed:", error);
+        toast.error(
+          `Reservation creating failed: ${"message" in error ? error.message : ""}`,
+        );
+      }
     }
   };
 

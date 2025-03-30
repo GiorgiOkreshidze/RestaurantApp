@@ -8,12 +8,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  Spinner,
   Text,
 } from "../ui";
 import { dateObjToDateStringUI } from "@/utils/dateTime";
 import { useReservationDialogForm } from "@/hooks/useReservationDialogForm";
-import type { ReservationDialogProps } from "@/types/reservation.types";
+import type {
+  Reservation,
+  ReservationDialogProps,
+} from "@/types/reservation.types";
 import { TIME_SLOTS } from "@/utils/constants";
+import { useSelector } from "react-redux";
+import { selectReservationCreatingLoading } from "@/app/slices/reservationsSlice";
 
 export const ReservationDialog = ({
   className,
@@ -23,10 +29,13 @@ export const ReservationDialog = ({
   className?: string;
   children: ReactElement;
 }) => {
-  const [reservation, setReservation] = useState();
+  const [reservation, setReservation] = useState<Reservation>();
   const [isReservationDialogOpen, setIsReservationDialogOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-  const onSuccessCallback = (reservation) => {
+  const reservationCreatingLoading = useSelector(
+    selectReservationCreatingLoading,
+  );
+  const onSuccessCallback = (reservation: Reservation) => {
     setReservation(reservation);
     setIsConfirmDialogOpen(true);
     setIsReservationDialogOpen(false);
@@ -92,7 +101,11 @@ export const ReservationDialog = ({
               size="xl"
               className="mt-[2.5rem] w-full"
             >
-              Make a Reservation
+              {reservationCreatingLoading ? (
+                <Spinner color="var(--color-white)" className="size-[1.5rem]" />
+              ) : (
+                "Make a Reservation"
+              )}
             </Button>
           </form>
         </DialogContent>
