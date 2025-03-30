@@ -1,7 +1,7 @@
 export type ReservationStatus =
   | "Reserved"
   | "In Progress"
-  | "Canceled"
+  | "Cancelled"
   | "Finished";
 
 export interface Reservation {

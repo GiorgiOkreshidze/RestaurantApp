@@ -3,32 +3,46 @@ import { Card } from "./Card";
 import { Badge, Button, Text } from "../ui";
 import { CalendarIcon, ClockIcon, LocationIcon, PeopleIcon } from "../icons";
 
-import { Reservation } from "@/types";
+import { ReservationDialog } from "./ReservationDialog";
+import { Reservation } from "@/types/reservation.types";
+import {
+  dateStringServerToDateObject,
+  timeString24hToDateObj,
+} from "@/utils/dateTime";
+import { useAppDispatch } from "@/app/hooks";
+import {
+  deleteClientReservation,
+  getReservations,
+} from "@/app/thunks/reservationsThunks";
 
 export const ReservationCard = ({
-  id,
-  feedbackId,
-  locationAddress,
-  status,
-  date,
-  timeSlot,
-  guests: guestsNumber,
-  preOrder,
-  tableNumber,
-  userInfo,
+  reservation,
   children,
   ...props
-}: ComponentProps<"div"> & Reservation) => {
+}: ComponentProps<"div"> & { reservation: Reservation }) => {
+  const dispatch = useAppDispatch();
+  const {
+    id,
+    feedbackId,
+    locationAddress,
+    status,
+    date,
+    timeSlot,
+    guestsNumber,
+    preOrder,
+    tableNumber,
+    userInfo,
+  } = reservation;
   return (
     <Card {...props} className="flex flex-col gap-[3rem]">
       <div className="flex items-start justify-between gap-[0.5rem]">
         <div className="flex flex-col gap-[0.5rem]">
           <div className="flex items-center gap-[0.5rem]">
-            <LocationIcon className="size-[16px]" />
+            <LocationIcon className="size-[16px] stroke-primary" />
             <Text variant="bodyBold">{locationAddress}</Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
-            <CalendarIcon className="size-[16px]" />
+            <CalendarIcon className="size-[16px] stroke-primary" />
             <Text variant="bodyBold">{date}</Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
@@ -36,7 +50,7 @@ export const ReservationCard = ({
             <Text variant="bodyBold">{timeSlot}</Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
-            <PeopleIcon className="size-[16px]" />
+            <PeopleIcon className="size-[16px] stroke-primary" />
             <Text variant="bodyBold">{guestsNumber} Guests</Text>
           </div>
         </div>
@@ -48,13 +62,39 @@ export const ReservationCard = ({
         <Button
           variant="tertiary"
           size="sm"
-          className="relative before:absolute before:content[''] before:bottom-0 before:left-0 before:w-full before:h-[1px] before:bg-black"
+          className="relative before:absolute before:content[''] before:bottom-0 before:left-0 before:w-full before:h-[1px] before:bg-black disabled:before:bg-disabled"
+          disabled={status === "Cancelled"}
+          onClick={async () => {
+            try {
+              await dispatch(deleteClientReservation(reservation.id)).unwrap();
+              await dispatch(getReservations()).unwrap();
+              console.log("Reservation deleted");
+            } catch (error) {
+              console.log("Reservation deleting failed:", error);
+            }
+          }}
         >
           Cancel
         </Button>
-        <Button variant="secondary" size="l">
-          Edit
-        </Button>
+        <ReservationDialog
+          key={id}
+          locationAddress={locationAddress}
+          date={dateStringServerToDateObject(date)}
+          initTime={timeSlot.replace(/\s/g, "")}
+          tableNumber={tableNumber}
+          initGuests={Number.parseInt(guestsNumber)}
+          maxGuests={Number.parseInt(guestsNumber)}
+          locationId={""}
+          tableId={""}
+        >
+          <Button
+            variant="secondary"
+            size="l"
+            disabled={status === "Cancelled"}
+          >
+            Edit
+          </Button>
+        </ReservationDialog>
       </footer>
     </Card>
   );

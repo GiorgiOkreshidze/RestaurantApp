@@ -10,60 +10,69 @@ import { useSelector } from "react-redux";
 import { useAppDispatch } from "./app/hooks";
 import { selectPopularDishes } from "./app/slices/dishesSlice";
 import {
-	selectLocations,
-	selectSelectOptions,
+  selectLocations,
+  selectSelectOptions,
 } from "./app/slices/locationsSlice";
 import { getPopularDishes } from "./app/thunks/dishesThunks";
 import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
+import { getReservations } from "./app/thunks/reservationsThunks";
+import { selectReservations } from "./app/slices/reservationsSlice";
 
 function App() {
-	const location = useLocation();
-	const hideNavBar = ["/signin", "/signup"].includes(location.pathname);
-	const dispatch = useAppDispatch();
-	const popularDishes = useSelector(selectPopularDishes);
-	const locations = useSelector(selectLocations);
-	const selectOptions = useSelector(selectSelectOptions);
+  const location = useLocation();
+  const hideNavBar = ["/signin", "/signup"].includes(location.pathname);
+  const dispatch = useAppDispatch();
+  const popularDishes = useSelector(selectPopularDishes);
+  const locations = useSelector(selectLocations);
+  const selectOptions = useSelector(selectSelectOptions);
+  const reservations = useSelector(selectReservations);
 
-	useEffect(() => {
-		window.scrollTo(0, 0);
-	}, [location.pathname]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
-	useEffect(() => {
-		if (!popularDishes.length) {
-			dispatch(getPopularDishes());
-		}
-	}, [dispatch, popularDishes.length]);
+  useEffect(() => {
+    if (!popularDishes.length) {
+      dispatch(getPopularDishes());
+    }
+  }, [dispatch, popularDishes.length]);
 
-	useEffect(() => {
-		if (!locations.length) {
-			dispatch(getLocations());
-		}
-	}, [dispatch, locations.length]);
+  useEffect(() => {
+    if (!locations.length) {
+      dispatch(getLocations());
+    }
+  }, [dispatch, locations.length]);
 
-	useEffect(() => {
-		if (!selectOptions.length) {
-			dispatch(getSelectOptions());
-		}
-	}, [dispatch, selectOptions.length]);
+  useEffect(() => {
+    if (!selectOptions.length) {
+      dispatch(getSelectOptions());
+    }
+  }, [dispatch, selectOptions.length]);
 
-	return (
-		<>
-			<ToastContainer position="top-right" autoClose={3000} theme="light" />
-			{!hideNavBar && (
-				<header>
-					<NavBar />
-				</header>
-			)}
-			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/signin" element={<Auth />} />
-				<Route path="/signup" element={<Auth />} />
-				<Route path="/locations/:id" element={<Location />} />
-				<Route path="/reservations" element={<Reservations />} />
-				<Route path="/booking" element={<Booking />} />
-			</Routes>
-		</>
-	);
+  useEffect(() => {
+    if (!selectOptions.length) {
+      dispatch(getReservations());
+    }
+  }, [dispatch, reservations.length]);
+
+  return (
+    <>
+      <ToastContainer position="top-right" autoClose={3000} theme="light" />
+      {!hideNavBar && (
+        <header>
+          <NavBar />
+        </header>
+      )}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signin" element={<Auth />} />
+        <Route path="/signup" element={<Auth />} />
+        <Route path="/locations/:id" element={<Location />} />
+        <Route path="/reservations" element={<Reservations />} />
+        <Route path="/booking" element={<Booking />} />
+      </Routes>
+    </>
+  );
 }
 
 export default App;

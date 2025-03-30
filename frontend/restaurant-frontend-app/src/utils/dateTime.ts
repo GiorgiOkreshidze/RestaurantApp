@@ -13,7 +13,7 @@ export const dateStringServerToDateObject = (date: string) => {
 };
 
 export const timeString24hToDateObj = (time: string) => {
-  return parse(time, "HH:mm", new Date()).toString();
+  return parse(time, "HH:mm", new Date());
 };
 
 export const timeString24hToTimeString12h = (time: string) => {
