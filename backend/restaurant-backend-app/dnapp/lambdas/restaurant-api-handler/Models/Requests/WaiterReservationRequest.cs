@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Function.Models.Interfaces;
+using Function.Models.User;
 
 namespace Function.Models.Requests;
 
@@ -27,7 +28,7 @@ public class WaiterReservationRequest : IReservationRequest
     public string TimeTo { get; set; }
     
     [JsonPropertyName("clientType")]
-    public required string ClientType { get; set; }
+    public required ClientType ClientType { get; set; }
     
     [JsonPropertyName("customerName")]
     public required string CustomerName { get; set; }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
@@ -53,12 +51,12 @@ public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProx
 
    
         // Create operation
-        if (!new[] { "CUSTOMER", "VISITOR" }.Contains(reservationRequest.ClientType))
+        if (reservationRequest.ClientType is not ClientType.CUSTOMER and not ClientType.VISITOR)
         {
             throw new ArgumentException("ClientType must be either CUSTOMER or VISITOR");
         }
 
-        if (reservationRequest.ClientType == "CUSTOMER" && string.IsNullOrEmpty(reservationRequest.CustomerName))
+        if (reservationRequest.ClientType == ClientType.CUSTOMER && string.IsNullOrEmpty(reservationRequest.CustomerName))
         {
             throw new ArgumentException("CustomerName is required for CUSTOMER type reservations");
         }
