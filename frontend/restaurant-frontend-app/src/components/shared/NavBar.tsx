@@ -27,11 +27,11 @@ export const NavBar = () => {
         <div className="flex items-center justify-center self-center lg:justify-self-end">
           {user ? (
             <>
-              <Button asChild variant="tertiary" size="sm">
-                <Link to="#cart">
+              <Link to="#cart">
+                <Button variant="tertiary" size="sm">
                   <CartIcon className="size-[24px]" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
               <UserMenu />
             </>
           ) : (
