@@ -27,13 +27,14 @@ public class ApiHandler
     private readonly GetSpecialityDishesAction _getSpecialityDishesAction;
     private readonly GetLocationOptionsAction _getLocationOptionsAction;
     private readonly GetLocationFeedbacksAction _getLocationFeedbacksAction;
-    private readonly CreateReservationAction _createReservationAction;
+    private readonly CreateClientReservationAction _createClientReservationAction;
     private readonly GetAvailableTablesAction _getAvailableTablesAction;
     private readonly GetReservationsAction _getReservationsAction;
     private readonly DeleteReservationAction _deleteReservationAction;
     private readonly GetAllCustomersAction _getAllCustomersAction;
     private readonly GetAllDishesAction _getAllDishesAction;
     private readonly GetDishByIdAction _getDishByIdAction;
+    private readonly CreateWaiterReservationAction _createWaiterReservationAction;
 
     public ApiHandler()
     {
@@ -47,7 +48,7 @@ public class ApiHandler
         _getProfileAction = new GetProfileAction();
         _getSpecialityDishesAction = new GetSpecialityDishesAction();
         _getLocationOptionsAction = new GetLocationOptionsAction();
-        _createReservationAction = new CreateReservationAction();
+        _createClientReservationAction = new CreateClientReservationAction();
         _getLocationFeedbacksAction = new GetLocationFeedbacksAction();
         _getAvailableTablesAction = new GetAvailableTablesAction();
         _getReservationsAction = new GetReservationsAction();
@@ -55,6 +56,7 @@ public class ApiHandler
         _getAllCustomersAction = new GetAllCustomersAction();
         _getAllDishesAction = new GetAllDishesAction();
         _getDishByIdAction = new GetDishByIdAction();
+        _createWaiterReservationAction = new CreateWaiterReservationAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -140,7 +142,13 @@ public class ApiHandler
                 {
                     "/reservations/client", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "POST", _createReservationAction.CreateReservationAsync }
+                        { "POST", _createClientReservationAction.CreateReservationAsync }
+                    }
+                },
+                {
+                    "/reservations/waiter", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "POST", _createWaiterReservationAction.CreateReservationAsync }
                     }
                 },
                 {
@@ -172,7 +180,7 @@ public class ApiHandler
                     {
                         { "GET", _getAllCustomersAction.GetAllCustomersAsync }
                     }
-                }
+                },
             };
 
         if (!actionEndpointMapping.TryGetValue(requestPath, out var resourceMethods) ||

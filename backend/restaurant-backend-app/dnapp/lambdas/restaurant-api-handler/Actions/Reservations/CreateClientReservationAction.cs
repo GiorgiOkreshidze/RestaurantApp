@@ -12,13 +12,13 @@ using Function.Services.Interfaces;
 
 namespace Function.Actions.Reservations;
 
-public class CreateReservationAction
+public class CreateClientReservationAction
 {
     private readonly IAuthenticationService _authenticationService;
     private readonly IReservationService _reservationService;
     private readonly IUserService _userService;
 
-    public CreateReservationAction()
+    public CreateClientReservationAction()
     {
         _authenticationService = new AuthenticationService();
         _reservationService = new ReservationService();
