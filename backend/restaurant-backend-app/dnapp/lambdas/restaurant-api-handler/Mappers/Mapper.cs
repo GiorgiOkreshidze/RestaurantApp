@@ -7,6 +7,7 @@ using Function.Models.Responses;
 using System;
 using System.Globalization;
 using Function.Models.Dishes;
+using Function.Models.Reservations;
 using Function.Models.User;
 
 namespace Function.Mappers;
@@ -128,6 +129,10 @@ public class Mapper
             CreatedAt = doc.TryGetValue("createdAt", out var createAtValue) ? createAtValue : string.Empty,
             WaiterId = doc.TryGetValue("waiterId", out var waiterId) ? waiterId : string.Empty,
             UserEmail = doc.TryGetValue("userEmail", out var userEmail) ? userEmail : string.Empty,
+            ClientType = doc.TryGetValue("clientType", out var clientType) && 
+                         Enum.TryParse<ClientType>(clientType, out var parsedClientType) 
+                ? parsedClientType 
+                : ClientType.VISITOR,
         }).ToList();
     }
 

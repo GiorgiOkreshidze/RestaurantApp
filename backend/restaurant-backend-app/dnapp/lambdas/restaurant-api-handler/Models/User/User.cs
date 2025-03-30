@@ -24,4 +24,9 @@ public class User
     
     [JsonPropertyName("createdAt")]
     public required string CreatedAt { get; set; }
+    
+    public string? GetFullName()
+    {
+        return $"{FirstName} {LastName}";
+    }
 }

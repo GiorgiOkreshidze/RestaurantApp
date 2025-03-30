@@ -13,7 +13,7 @@ using Function.Services.Interfaces;
 using SimpleLambdaFunction.Repository;
 using Function.Actions;
 using Amazon.CognitoIdentityProvider.Model;
-using Function.Models.User;
+using Function.Models.Interfaces;
 using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
 
 namespace Function.Services;
@@ -33,7 +33,7 @@ public class ReservationService : IReservationService
         _waiterRepository = new WaiterRepository();
     }
 
-    public async Task<Reservation> UpsertReservationAsync(ReservationRequest reservationRequest, User user)
+    public async Task<Reservation> UpsertReservationAsync(IReservationRequest reservationRequest, User user)
     {
         //Available UTC time slots:
         // 06:30 - 08:00
@@ -44,12 +44,8 @@ public class ReservationService : IReservationService
         // 15:15 - 16:45
         // 17:00 - 18:30
         var predefinedSlots = ActionUtils.GeneratePredefinedTimeSlots();
-
-        // Parse requested times
         var newTimeFrom = TimeSpan.Parse(reservationRequest.TimeFrom);
         var newTimeTo = TimeSpan.Parse(reservationRequest.TimeTo);
-
-        // 1. Check if reservation is within working hours
         var firstSlot = TimeSpan.Parse(predefinedSlots.First().Start);
         var lastSlot = TimeSpan.Parse(predefinedSlots.Last().End);
 
@@ -58,7 +54,6 @@ public class ReservationService : IReservationService
             throw new ArgumentException("Reservation must be within restaurant working hours.");
         }
 
-        // 2. Check if reservation exactly matches a predefined slot
         bool isValidSlot = predefinedSlots.Any(slot =>
             TimeSpan.Parse(slot.Start) == newTimeFrom &&
             TimeSpan.Parse(slot.End) == newTimeTo);
@@ -69,7 +64,6 @@ public class ReservationService : IReservationService
         }
         
         var location = await _locationRepository.GetLocationByIdAsync(reservationRequest.LocationId);
-
         var existingReservations = await _reservationRepository.GetReservationsByDateLocationTable(
             reservationRequest.Date,
             location.Address,
@@ -86,7 +80,7 @@ public class ReservationService : IReservationService
                 existingReservation.UserEmail != user.Email)
             {
                 throw new ArgumentException(
-                    $"Table #{reservationRequest.Id} at location " +
+                    $"Reservation #{reservationRequest.Id} at location " +
                     $"{location.Address} is already booked during the requested time period."
                 );
             }
@@ -134,15 +128,37 @@ public class ReservationService : IReservationService
             TimeTo = reservationRequest.TimeTo,
             TimeSlot = reservationRequest.TimeFrom + " - " + reservationRequest.TimeTo,
             UserEmail = user.Email,
-            UserInfo = user.FirstName + " " + user.LastName,
-            CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
+            CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
         };
+        
+        switch (reservationRequest)
+        {
+            case WaiterReservationRequest waiterRequest:
+            {
+                reservation.ClientType = waiterRequest.ClientType;
+                reservation.UserInfo = waiterRequest.ClientType switch
+                {
+                    ClientType.CUSTOMER => $"Customer {waiterRequest.CustomerName}",
+                    ClientType.VISITOR => $"Waiter {user.GetFullName()} (Visitor)",
+                    _ => reservation.UserInfo
+                };
+                reservation.WaiterId = user.Id;
+                break;
+            }
+            case ClientReservationRequest:
+                reservation.UserEmail = user.Email;
+                reservation.UserInfo = user.GetFullName();
+                reservation.ClientType = ClientType.CUSTOMER;
+                break;
+            default:
+                throw new UnsupportedOperationException("Unsupported ReservationRequest type");
+        }
 
         var reservationExists = await _reservationRepository.ReservationExistsAsync(reservation.Id);
         
         if (!reservationExists)
         {
-            reservation.WaiterId = await GetLeastBusyWaiter(reservation.LocationId, reservation.Date);
+            reservation.WaiterId ??= await GetLeastBusyWaiter(reservation.LocationId, reservation.Date);
         }
         else
         {
@@ -151,7 +167,7 @@ public class ReservationService : IReservationService
         
         return await _reservationRepository.UpsertReservationAsync(reservation);
     }
-
+    
     public async Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParams,  string info, Roles role)
     {
         if (role == Roles.Customer)

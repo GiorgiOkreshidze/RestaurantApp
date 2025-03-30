@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Function.Mappers;
 using Function.Models;
@@ -40,7 +39,8 @@ public class ReservationRepository : IReservationRepository
             UpdateExpression = "SET #createdAt = :createdAt, #date = :date, #feedbackId = :feedbackId, #guestsNumber = :guestsNumber, " +
                                "#locationAddress = :locationAddress, #locationId = :locationId, #preOrder = :preOrder, #status = :status, " +
                                "#tableNumber = :tableNumber, #tableId = :tableId, #timeFrom = :timeFrom, #timeTo = :timeTo, " +
-                               "#timeSlot = :timeSlot, #userInfo = :userInfo, #userEmail = :userEmail, #waiterId = :waiterId",
+                               "#timeSlot = :timeSlot, #userInfo = :userInfo, #userEmail = :userEmail, #waiterId = :waiterId," +
+                               "#clientType = :clientType",
             ExpressionAttributeNames = new Dictionary<string, string>
             {
                 { "#createdAt", "createdAt" },
@@ -58,7 +58,8 @@ public class ReservationRepository : IReservationRepository
                 { "#timeSlot", "timeSlot" },
                 { "#userInfo", "userInfo" },
                 { "#waiterId", "waiterId" },
-                { "#userEmail", "userEmail" }
+                { "#userEmail", "userEmail" },
+                { "#clientType", "clientType"},
             },
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
@@ -77,7 +78,8 @@ public class ReservationRepository : IReservationRepository
                 { ":timeSlot", new AttributeValue { S = reservation.TimeSlot } },
                 { ":userInfo", new AttributeValue { S = reservation.UserInfo } },
                 { ":waiterId", new AttributeValue { S = reservation.WaiterId } },
-                { ":userEmail", new AttributeValue  { S = reservation.UserEmail } }
+                { ":userEmail", new AttributeValue  { S = reservation.UserEmail } },
+                { ":clientType", new AttributeValue  { S = reservation.ClientType.ToString() } },
             }
         };
 
