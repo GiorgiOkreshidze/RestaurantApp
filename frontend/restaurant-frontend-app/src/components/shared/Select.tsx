@@ -5,9 +5,9 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/SelectPrimitives";
-import { ComponentType } from "react";
-import { Button } from "../ui";
-import { ChevronDownIcon, LocationIcon } from "../icons";
+import type { JSX } from "react";
+import { Button, Spinner } from "../ui";
+import { ChevronDownIcon } from "../icons";
 
 export const Select = ({
   placeholder,
@@ -16,38 +16,40 @@ export const Select = ({
   className,
   value,
   setValue,
+  loading,
 }: {
   items: {
     id: string;
     label: string;
   }[];
   placeholder?: string;
-  Icon?: ComponentType<{ className?: string }>;
+  Icon?: () => JSX.Element;
   className?: string;
   value?: string | null;
-  setValue: (value: string | null) => void;
+  setValue: (value: string) => void;
+  loading?: boolean;
 }) => {
-  const handleChange = (value: string) => {
-    if (value === "null") {
-      setValue("");
-    } else {
-      setValue(value);
-    }
+  const handleChange = (id: string) => {
+    setValue(id === "null" ? "" : id);
   };
 
   return (
     <SelectRoot value={value ?? ""} onValueChange={handleChange}>
-      <SelectTrigger Icon={Icon} className={className} asChild>
+      <SelectTrigger className={className} asChild>
         <Button variant="trigger" size="trigger">
-          <LocationIcon className="shrink-0 stroke-foreground size-[1.5rem]" />
-          <SelectValue placeholder={placeholder ?? ""} />
-          <ChevronDownIcon />
+          {Icon?.()}
+          {loading ? (
+            <span>Loading...</span>
+          ) : (
+            <SelectValue placeholder={placeholder ?? ""} />
+          )}
+          {loading ? <Spinner className="size-[1em]" /> : <ChevronDownIcon />}
         </Button>
       </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="null">Location</SelectItem>
-        {items?.map((item, i) => (
-          <SelectItem key={i} value={item.id}>
+      <SelectContent className="shadow-card [&>*]:tabular-nums [&>*]:font-sans">
+        <SelectItem value="null">{placeholder}</SelectItem>
+        {items?.map((item) => (
+          <SelectItem key={item.id} value={item.id}>
             {item.label}
           </SelectItem>
         ))}

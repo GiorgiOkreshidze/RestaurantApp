@@ -1,7 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using Amazon.DynamoDBv2.DataModel;
+using Function.Models.User;
 
-namespace Function.Models;
+namespace Function.Models.Reservations;
 
 public class Reservation
 {
@@ -48,7 +49,7 @@ public class Reservation
     public required string TimeSlot { get; set; }
     
     [JsonPropertyName("userInfo")]
-    public required string UserInfo { get; set; }
+    public string? UserInfo { get; set; }
     
     [JsonPropertyName("userEmail")]
     public string? UserEmail { get; set; }
@@ -59,4 +60,7 @@ public class Reservation
 
     [JsonPropertyName("createdAt")]
     public required string CreatedAt { get; set; }
+    
+    [JsonPropertyName("clientType")]
+    public ClientType? ClientType { get; set; }
 }

@@ -47,9 +47,10 @@ const addInterceptors = (store: Store<RootState>) => {
     if (user?.tokens) {
       config.headers["Authorization"] = `Bearer ${user.tokens.idToken}`;
       console.log(config.url);
-      if (config.url === "users/profile") {
-        config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
-      }
+      config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
+      // if (config.url === "users/profile") {
+      //   config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
+      // }
     }
     return config;
   });
@@ -69,6 +70,7 @@ const addInterceptors = (store: Store<RootState>) => {
         if (isRefreshing) {
           return new Promise((resolve) => {
             refreshSubscribers.push((tokens) => {
+              console.log("tokens:", tokens);
               originalRequest.headers["Authorization"] =
                 `Bearer ${tokens.idToken}`;
               originalRequest.headers["X-Amz-Security-Token"] =

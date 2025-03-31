@@ -33,6 +33,7 @@ if (-not (Test-Path $feedbacksSeedFile)) {
     exit 1
 }
 
+
 # Process JSON: Update table names
 try {
     # Read JSON files and extract the inner arrays

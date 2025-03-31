@@ -27,11 +27,14 @@ public class ApiHandler
     private readonly GetSpecialityDishesAction _getSpecialityDishesAction;
     private readonly GetLocationOptionsAction _getLocationOptionsAction;
     private readonly GetLocationFeedbacksAction _getLocationFeedbacksAction;
-    private readonly CreateReservationAction _createReservationAction;
+    private readonly CreateClientReservationAction _createClientReservationAction;
     private readonly GetAvailableTablesAction _getAvailableTablesAction;
     private readonly GetReservationsAction _getReservationsAction;
     private readonly DeleteReservationAction _deleteReservationAction;
     private readonly GetAllCustomersAction _getAllCustomersAction;
+    private readonly GetAllDishesAction _getAllDishesAction;
+    private readonly GetDishByIdAction _getDishByIdAction;
+    private readonly CreateWaiterReservationAction _createWaiterReservationAction;
 
     public ApiHandler()
     {
@@ -45,12 +48,15 @@ public class ApiHandler
         _getProfileAction = new GetProfileAction();
         _getSpecialityDishesAction = new GetSpecialityDishesAction();
         _getLocationOptionsAction = new GetLocationOptionsAction();
-        _createReservationAction = new CreateReservationAction();
+        _createClientReservationAction = new CreateClientReservationAction();
         _getLocationFeedbacksAction = new GetLocationFeedbacksAction();
         _getAvailableTablesAction = new GetAvailableTablesAction();
         _getReservationsAction = new GetReservationsAction();
         _deleteReservationAction = new DeleteReservationAction();
         _getAllCustomersAction = new GetAllCustomersAction();
+        _getAllDishesAction = new GetAllDishesAction();
+        _getDishByIdAction = new GetDishByIdAction();
+        _createWaiterReservationAction = new CreateWaiterReservationAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -98,22 +104,31 @@ public class ApiHandler
                     }
                 },
                 {
-                    "/dishes/popular",
-                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/dishes/popular", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getPopularDishesAction.GetPopularDishesAsync }
                     }
                 },
                 {
-                    "/users/profile",
-                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/dishes", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getAllDishesAction.GetAllDishesAsync }
+                    }
+                },
+                {
+                    "/dishes/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getDishByIdAction.GetDishByIdAsync }
+                    }
+                },
+                {
+                    "/users/profile", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getProfileAction.GetProfile }
                     }
                 },
                 {
-                    "/locations/{id}/speciality-dishes",
-                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/locations/{id}/speciality-dishes", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getSpecialityDishesAction.GetSpecialityDishesAsync }
                     }
@@ -125,10 +140,15 @@ public class ApiHandler
                     }
                 },
                 {
-                    "/reservations/client",
-                    new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/reservations/client", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                        { "POST", _createReservationAction.CreateReservationAsync }
+                        { "POST", _createClientReservationAction.CreateReservationAsync }
+                    }
+                },
+                {
+                    "/reservations/waiter", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "POST", _createWaiterReservationAction.CreateReservationAsync }
                     }
                 },
                 {
@@ -137,22 +157,22 @@ public class ApiHandler
                         { "GET", _getLocationFeedbacksAction.GetLocationFeedbacks }
                     }
                 },
-                 {
+                {
                     "/bookings/tables", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getAvailableTablesAction.GetAvailableTables }
                     }
                 },
-                 {
+                {
                     "/reservations", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getReservationsAction.GetReservationsAsync }
                     }
                 },
-                 {
+                {
                     "/reservations/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
-                       { "DELETE", _deleteReservationAction.DeleteReservationAsync }
+                        { "DELETE", _deleteReservationAction.DeleteReservationAsync }
                     }
                 },
                 {
@@ -160,7 +180,7 @@ public class ApiHandler
                     {
                         { "GET", _getAllCustomersAction.GetAllCustomersAsync }
                     }
-                }
+                },
             };
 
         if (!actionEndpointMapping.TryGetValue(requestPath, out var resourceMethods) ||

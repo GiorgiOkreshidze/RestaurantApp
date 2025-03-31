@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Function.Mappers;
 using Function.Models;
@@ -20,6 +19,8 @@ public class ReservationRepository : IReservationRepository
         Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_NAME");
     private readonly string? _reservationsTableLocationIndexName =
         Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_LOCATION_INDEX");
+    private readonly string? _reservationsTableUserEmailIndex = Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_USER_EMAIL_INDEX");
+    private readonly string? _reservationsTableWaiterIdIndex = Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_WAITER_ID_INDEX");
 
     public ReservationRepository()
     {
@@ -40,7 +41,8 @@ public class ReservationRepository : IReservationRepository
             UpdateExpression = "SET #createdAt = :createdAt, #date = :date, #feedbackId = :feedbackId, #guestsNumber = :guestsNumber, " +
                                "#locationAddress = :locationAddress, #locationId = :locationId, #preOrder = :preOrder, #status = :status, " +
                                "#tableNumber = :tableNumber, #tableId = :tableId, #timeFrom = :timeFrom, #timeTo = :timeTo, " +
-                               "#timeSlot = :timeSlot, #userInfo = :userInfo, #userEmail = :userEmail, #waiterId = :waiterId",
+                               "#timeSlot = :timeSlot, #userInfo = :userInfo, #userEmail = :userEmail, #waiterId = :waiterId," +
+                               "#clientType = :clientType",
             ExpressionAttributeNames = new Dictionary<string, string>
             {
                 { "#createdAt", "createdAt" },
@@ -58,7 +60,8 @@ public class ReservationRepository : IReservationRepository
                 { "#timeSlot", "timeSlot" },
                 { "#userInfo", "userInfo" },
                 { "#waiterId", "waiterId" },
-                { "#userEmail", "userEmail" }
+                { "#userEmail", "userEmail" },
+                { "#clientType", "clientType"},
             },
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
@@ -77,7 +80,8 @@ public class ReservationRepository : IReservationRepository
                 { ":timeSlot", new AttributeValue { S = reservation.TimeSlot } },
                 { ":userInfo", new AttributeValue { S = reservation.UserInfo } },
                 { ":waiterId", new AttributeValue { S = reservation.WaiterId } },
-                { ":userEmail", new AttributeValue  { S = reservation.UserEmail } }
+                { ":userEmail", new AttributeValue  { S = reservation.UserEmail } },
+                { ":clientType", new AttributeValue  { S = reservation.ClientType.ToString() } },
             }
         };
 
@@ -91,7 +95,6 @@ public class ReservationRepository : IReservationRepository
         string tableId
     )
     {
-        //maybe use global index here as well? also dont forget to change seeding reserrvations json file adding tableNumbers
         var request = new ScanRequest
         {
             TableName = _reservationsTableName,
@@ -116,7 +119,6 @@ public class ReservationRepository : IReservationRepository
     public async Task<List<ReservationInfo>> GetReservationsForDateAndLocation(string date, string locationId)
     {
         var reservations = new List<ReservationInfo>();
-
         var queryRequest = new QueryRequest
         {
             TableName = _reservationsTableName,
@@ -150,86 +152,69 @@ public class ReservationRepository : IReservationRepository
         return reservations;
     }
 
-    public async Task<List<Reservation>> GetCustomerReservationsAsync(ReservationsQueryParameters queryParams, string info)
+    public async Task<List<Reservation>> GetCustomerReservationsAsync(string email)
     {
-        var conditions = new List<string> { "userInfo = :info"};
-        var expressionAttributeValues = new Dictionary<string, AttributeValue>
-        {
-            { ":info", new AttributeValue { S = info } }
-        };
-        var expressionAttributeNames = new Dictionary<string, string>();
-
-        if (!string.IsNullOrEmpty(queryParams.Date))
-        {
-            conditions.Add("#dt = :date"); // Use placeholder #dt instead of "date"
-            expressionAttributeValues.Add(":date", new AttributeValue { S = queryParams.Date });
-            expressionAttributeNames.Add("#dt", "date");
-        }
-        if (!string.IsNullOrEmpty(queryParams.TimeFrom))
-        {
-            conditions.Add("timeFrom = :timeFrom");
-            expressionAttributeValues.Add(":timeFrom", new AttributeValue { S = queryParams.TimeFrom });
-        }
-        if (!string.IsNullOrEmpty(queryParams.TableNumber))
-        {
-            conditions.Add("tableNumber = :tableNumber");
-            expressionAttributeValues.Add(":tableNumber", new AttributeValue { S = queryParams.TableNumber });
-        }
-
-        var filterExpression = string.Join(" AND ", conditions);
-
-        var request = new ScanRequest
+        var queryRequest = new QueryRequest
         {
             TableName = _reservationsTableName,
-            FilterExpression = filterExpression,
-            ExpressionAttributeValues = expressionAttributeValues,
-            ExpressionAttributeNames = expressionAttributeNames
+            IndexName = _reservationsTableUserEmailIndex,
+            KeyConditionExpression = "userEmail = :userEmail",
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":userEmail", new AttributeValue { S = email } },
+            }
         };
 
-        var response = await _dynamoDBClient.ScanAsync(request);
+        var response = await _dynamoDBClient.QueryAsync(queryRequest);
 
         return Mapper.MapItemsToReservations(response.Items);
     }
 
-    public async Task<List<Reservation>> GetWaiterReservationsAsync(ReservationsQueryParameters queryParams, string info)
+    public async Task<List<Reservation>> GetWaiterReservationsAsync(ReservationsQueryParameters queryParams, string waiterId)
     {
-        var waitersEmail = info.Split(",")[1].Trim();
-        var conditions = new List<string> { "waiterEmail = :waiterEmail" };
+        var keyConditionExpression = "waiterId = :waiterId";
         var expressionAttributeValues = new Dictionary<string, AttributeValue>
-        {
-            { ":waiterEmail", new AttributeValue { S = waitersEmail } }
-        };
+    {
+        { ":waiterId", new AttributeValue { S = waiterId } }
+    };
         var expressionAttributeNames = new Dictionary<string, string>();
 
         if (!string.IsNullOrEmpty(queryParams.Date))
         {
-            conditions.Add("#dt = :date"); // Use placeholder #dt instead of "date"
+            keyConditionExpression += " AND #dt = :date";
             expressionAttributeValues.Add(":date", new AttributeValue { S = queryParams.Date });
             expressionAttributeNames.Add("#dt", "date");
         }
-        
+
+        var filterConditions = new List<string>();
+
         if (!string.IsNullOrEmpty(queryParams.TimeFrom))
         {
-            conditions.Add("timeFrom = :timeFrom");
+            filterConditions.Add("timeFrom = :timeFrom");
             expressionAttributeValues.Add(":timeFrom", new AttributeValue { S = queryParams.TimeFrom });
         }
-        
-        if (!string.IsNullOrEmpty(queryParams.TableNumber))
+
+        if (!string.IsNullOrEmpty(queryParams.TableId))
         {
-            conditions.Add("tableNumber = :tableNumber");
-            expressionAttributeValues.Add(":tableNumber", new AttributeValue { S = queryParams.TableNumber });
+            filterConditions.Add("tableId = :tableId");
+            expressionAttributeValues.Add(":tableId", new AttributeValue { S = queryParams.TableId });
         }
 
-        var filterExpression = string.Join(" AND ", conditions);
-        var request = new ScanRequest
+        var queryRequest = new QueryRequest
         {
             TableName = _reservationsTableName,
-            FilterExpression = filterExpression,
+            IndexName = _reservationsTableWaiterIdIndex,
+            KeyConditionExpression = keyConditionExpression,
             ExpressionAttributeValues = expressionAttributeValues,
             ExpressionAttributeNames = expressionAttributeNames
         };
-        var response = await _dynamoDBClient.ScanAsync(request);
 
+        if (filterConditions.Count > 0)
+        {
+            queryRequest.FilterExpression = string.Join(" AND ", filterConditions);
+        }
+
+        var response = await _dynamoDBClient.QueryAsync(queryRequest);
         return Mapper.MapItemsToReservations(response.Items);
     }
 

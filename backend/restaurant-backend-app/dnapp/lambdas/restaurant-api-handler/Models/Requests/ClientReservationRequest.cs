@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Function.Models.Interfaces;
 
 namespace Function.Models.Requests;
 
-public class ReservationRequest
+public class ClientReservationRequest : IReservationRequest
 {
     // if no id, we are generating it otherwise, we update record based on the provided id.
     [JsonPropertyName("id")]

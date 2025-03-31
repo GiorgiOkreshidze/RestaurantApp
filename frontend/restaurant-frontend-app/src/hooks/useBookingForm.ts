@@ -1,121 +1,57 @@
-import { z } from "zod";
-import { useAppDispatch } from "@/app/hooks";
+import { useBookingFormStore } from "@/app/useBookingFormStore";
 import {
-  clearTables,
-  selectFilters,
-  setFilters,
-} from "@/app/slices/bookingSlice";
-import { getTables } from "@/app/thunks/bookingThunk";
-import {
-  set,
-  getDate,
-  getMonth,
-  getYear,
-  getSeconds,
-  getMilliseconds,
-  getHours,
-  getMinutes,
-  startOfDay,
-} from "date-fns";
-import { useEffect } from "react";
+  dateObjToDateStringServer,
+  timeString24hToDateObj,
+} from "@/utils/dateTime";
+import { useEffect, type FormEvent } from "react";
+import { useAppDispatch } from "../app/hooks";
+import { fetchTables } from "@/app/thunks/tablesThunk";
+import { isPast } from "date-fns";
 import { useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { dateObjectToYYYY_MM_DD, dateObjectToHH_MM } from "@/utils/dateTime";
+import { selectSelectOptions } from "@/app/slices/locationsSlice";
+import { toast } from "react-toastify";
 
 export const useBookingForm = () => {
   const dispatch = useAppDispatch();
-  const filters = useSelector(selectFilters);
-  const { locationId, dateTime, guests } = useSelector(selectFilters);
-  const date = new Date(dateTime);
-
-  const setLocationId = (locationId: string | null) => {
-    dispatch(setFilters({ ...filters, locationId: locationId ?? "" }));
-  };
-
-  const setDate = (dateParam: Date | undefined) => {
-    const newDate = set(dateTime, {
-      year: getYear(dateParam ?? Date.now()),
-      month: getMonth(dateParam ?? Date.now()),
-      date: getDate(dateParam ?? Date.now()),
-    }).toString();
-    dispatch(setFilters({ ...filters, dateTime: newDate }));
-  };
-
-  const setTime = (dateParam: Date | undefined) => {
-    const newDate = set(dateTime, {
-      hours: getHours(dateParam ?? Date.now()),
-      minutes: getMinutes(dateParam ?? Date.now()),
-      seconds: getSeconds(dateParam ?? Date.now()),
-      milliseconds: getMilliseconds(dateParam ?? Date.now()),
-    }).toString();
-    dispatch(setFilters({ ...filters, dateTime: newDate }));
-  };
-
-  const increaseGuestsNumber = () => {
-    if (guests >= 10) return;
-    dispatch(setFilters({ ...filters, guests: guests + 1 }));
-  };
-  const decreaseGuestsNumber = () => {
-    if (guests <= 1) return;
-    dispatch(setFilters({ ...filters, guests: guests - 1 }));
-  };
+  const formStore = useBookingFormStore();
+  const selectOptions = useSelector(selectSelectOptions);
+  const { locationId, date, guests, time, setTime, setLocationId } = formStore;
 
   useEffect(() => {
-    (async () => {
-      if (!locationId) {
-        dispatch(clearTables());
-      }
-    })();
-  }, [locationId]);
+    if (!selectOptions.length) return;
+    setLocationId(selectOptions[0].id);
+  }, [selectOptions, setLocationId]);
 
-  const formSchema = z.object({
-    locationId: z.string().nonempty({ message: "Please select 'Location'" }),
-    date: z.date().min(startOfDay(new Date()), {
-      message: "Reservation date cannot be in the past",
-    }),
-    time: z.date(),
-    guests: z.number(),
-  });
+  useEffect(() => {
+    if (!time) return;
+    if (isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
+      setTime("");
+    }
+  }, [date, setTime, time]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      locationId: locationId ?? "",
-      date: date,
-      time: date,
-      guests: guests,
-    },
-    mode: "onSubmit",
-    criteriaMode: "all",
-  });
-
-  const onSubmit = async (_: z.infer<typeof formSchema>) => {
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!locationId || !date) {
+      toast.warning("Location and Date are required");
+      return;
+    }
+    if (isPast(date) && isPast(timeString24hToDateObj(time.split("-")[0]))) {
+      toast.warning("Date and Time can't be in past");
+      return;
+    }
     try {
       await dispatch(
-        getTables({
-          locationId: locationId,
-          date: dateObjectToYYYY_MM_DD(date),
-          time: dateObjectToHH_MM(date),
+        fetchTables({
+          locationId,
+          date: dateObjToDateStringServer(date),
           guests: String(guests),
+          time: time.split("-")[0],
         }),
-      ).unwrap();
-      console.log("Form submited");
-    } catch (error) {
-      console.error("Registration failed:", error);
+      );
+    } catch (e) {
+      console.error("Tables receiving failed", e);
     }
   };
 
-  return {
-    locationId,
-    setLocationId,
-    date,
-    setDate,
-    setTime,
-    guests,
-    increaseGuestsNumber,
-    decreaseGuestsNumber,
-    onSubmit,
-    form,
-  };
+  return { onSubmit, ...formStore };
 };

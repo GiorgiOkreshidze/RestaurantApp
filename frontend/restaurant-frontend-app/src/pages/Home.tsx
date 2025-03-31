@@ -4,7 +4,6 @@ import {
   Locations,
   BrandTitle,
   PageBody,
-  PageBodySection,
 } from "@/components/shared";
 import { useSelector } from "react-redux";
 import {

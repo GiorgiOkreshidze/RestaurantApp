@@ -1,81 +1,65 @@
-import { Button } from "../ui";
-import { DatePicker } from "./DatePicker";
-import { ComponentProps } from "react";
-import { cn } from "@/lib/utils";
 import { useBookingForm } from "@/hooks/useBookingForm";
-import { GuestsNumber, Select } from "@/components/shared";
+import { DatePicker, GuestsNumber, Select, TimeSlotPicker } from ".";
 import { useSelector } from "react-redux";
-import { selectLocations } from "@/app/slices/locationsSlice";
-import { TimePicker } from "./TimePicker";
-import { Form, FormField, FormItem, FormMessage } from "@/components/ui/";
-import { selectFilters } from "@/app/slices/bookingSlice";
+import {
+  selectSelectOptions,
+  selectSelectOptionsLoading,
+} from "@/app/slices/locationsSlice";
+import { LocationIcon } from "../icons";
+import { Button } from "../ui/Button";
+import { cn } from "../../lib/utils";
+import { selectTablesLoading } from "@/app/slices/tablesSlice";
+import { Spinner } from "../ui";
 
-export const BookingForm = ({
-  className,
-  ...props
-}: ComponentProps<"form">) => {
-  const locations = useSelector(selectLocations);
-  const { locationId, setLocationId, date, setDate, onSubmit, form, setTime } =
-    useBookingForm();
-  const filters = useSelector(selectFilters);
-  // console.log(filters);
+export const BookingForm = ({ className }: { className?: string }) => {
+  const form = useBookingForm();
+  const selectOptions = useSelector(selectSelectOptions);
+  const selectOptionsLoading = useSelector(selectSelectOptionsLoading);
+  const tablesLoading = useSelector(selectTablesLoading);
+
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className={cn(
-          "grid gap-[1rem] md:grid-cols-2 xl:grid-cols-[2fr_repeat(4,minmax(max-content,1fr))] items-start",
-          className,
+    <form
+      onSubmit={form.onSubmit}
+      className={cn(
+        "grid gap-[1rem] md:grid-cols-2 xl:grid-cols-[2fr_repeat(4,minmax(max-content,1fr))] items-start",
+        className,
+      )}
+    >
+      <Select
+        items={selectOptions.map((location) => ({
+          id: location.id,
+          label: location.address,
+        }))}
+        placeholder="Location"
+        value={form.locationId}
+        setValue={form.setLocationId}
+        className="w-full"
+        Icon={() => <LocationIcon />}
+        loading={selectOptionsLoading}
+      />
+
+      <DatePicker value={form.date} setValue={form.setDate} />
+
+      <TimeSlotPicker
+        items={form.timeSlots}
+        value={form.time}
+        setValue={form.setTime}
+        selectedDate={form.date}
+      />
+
+      <GuestsNumber
+        guests={form.guests}
+        increase={form.increaseGuests}
+        decrease={form.decreaseGuests}
+      />
+
+      <Button type="submit" className="md:max-xl:col-span-2 text-nowrap">
+        {tablesLoading ? (
+          <Spinner color="var(--color-white)" className="size-[1.5rem]" />
+        ) : (
+          "Find a Table"
         )}
-        {...props}
-      >
-        <FormField
-          control={form.control}
-          name="locationId"
-          render={({ field: { onChange } }) => {
-            return (
-              <FormItem>
-                <Select
-                  items={locations.map((location) => ({
-                    id: location.id,
-                    label: location.address,
-                  }))}
-                  placeholder="Location"
-                  value={locationId}
-                  setValue={(id) => {
-                    setLocationId(id);
-                    onChange(id);
-                  }}
-                  className="w-full"
-                />
-                <FormMessage className="bg-red-100 rounded-[4px] p-[0.5rem]" />
-              </FormItem>
-            );
-          }}
-        />
-        <DatePicker value={date} setValue={setDate} className="w-full" />
-        <TimePicker date={date} setDate={setTime} />
-        <GuestsNumber />
-        <Button type="submit" className="md:max-xl:col-span-2">
-          Find&nbsp;a&nbsp;Table
-        </Button>
-      </form>
-    </Form>
+      </Button>
+    </form>
   );
 };
-
-// const timeSlotsMock = [
-//   "10:30 a.m. - 12:00 p.m",
-//   "12:15 p.m. - 1:45 p.m",
-//   "2:00 p.m. - 3:30 p.m",
-//   "3:45 p.m. - 5:15 p.m",
-//   "5:30 p.m. - 7:00 p.m",
-//   "7:15 p.m. - 8:45 p.m",
-//   "9:00 p.m. - 10:30 p.m",
-// ];
-
-// const locationsMock = [
-//   { id: "1", address: "Hello 1" },
-//   { id: "2", address: "Hello 2" },
-//   { id: "3", address: "Hello 3" },
-// ];

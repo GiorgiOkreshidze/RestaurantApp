@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Amazon.CognitoIdentityProvider.Model;
@@ -46,7 +47,7 @@ public static class ActionUtils
         throw new ArgumentException( $"Bad request syntax or unsupported method. Request path: {path}. HTTP method: {method}");
     }
 
-    public static void ValidateFullName(string name)
+    public static void ValidateFullName(string? name)
     {
         const string namePattern = @"^[a-zA-Z\-']+$";
 
@@ -79,16 +80,25 @@ public static class ActionUtils
         }
     }
 
-    public static string GetAccessToken(APIGatewayProxyRequest request)
+
+    public static JwtSecurityToken ExtractJwtToken(APIGatewayProxyRequest request)
     {
-        if (!request.Headers.TryGetValue("x-amz-security-token", out var accessTokenHeader) ||
-            string.IsNullOrEmpty(accessTokenHeader))
+        if (!request.Headers.TryGetValue("Authorization", out var idToken) || string.IsNullOrEmpty(idToken) || !idToken.StartsWith("Bearer "))
         {
-            throw new UnauthorizedException("Access token is missing");
+            throw new ArgumentException("Authorization header empty or invalid.");
         }
 
-        return accessTokenHeader.Trim();
+        var token = idToken.Substring("Bearer ".Length).Trim();
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        if (!tokenHandler.CanReadToken(token))
+        {
+            throw new ArgumentException("Invalid token format.");
+        }
+
+        return tokenHandler.ReadJwtToken(token);
     }
+
 
     public static List<TimeSlot> GeneratePredefinedTimeSlots()
     {
