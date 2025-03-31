@@ -5,10 +5,7 @@ import { CalendarIcon, ClockIcon, LocationIcon, PeopleIcon } from "../icons";
 
 import { ReservationDialog } from "./ReservationDialog";
 import { Reservation } from "@/types/reservation.types";
-import {
-  dateStringServerToDateObject,
-  timeString24hToDateObj,
-} from "@/utils/dateTime";
+import { dateStringServerToDateObject } from "@/utils/dateTime";
 import { useAppDispatch } from "@/app/hooks";
 import {
   deleteClientReservation,
@@ -17,21 +14,17 @@ import {
 
 export const ReservationCard = ({
   reservation,
-  children,
   ...props
 }: ComponentProps<"div"> & { reservation: Reservation }) => {
   const dispatch = useAppDispatch();
   const {
     id,
-    feedbackId,
     locationAddress,
     status,
     date,
     timeSlot,
     guestsNumber,
-    preOrder,
     tableNumber,
-    userInfo,
   } = reservation;
   return (
     <Card {...props} className="flex flex-col gap-[3rem]">

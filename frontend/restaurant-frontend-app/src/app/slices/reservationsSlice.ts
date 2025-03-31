@@ -5,6 +5,7 @@ import {
   upsertClientReservation,
 } from "../thunks/reservationsThunks";
 import type { Reservation } from "@/types/reservation.types";
+import { toast } from "react-toastify";
 
 interface reservationsState {
   reservations: Reservation[];
@@ -50,20 +51,21 @@ export const reservationsSlice = createSlice({
           state.reservation = data;
         },
       )
-      .addCase(upsertClientReservation.rejected, (state) => {
-        state.reservationCreatingLoading = false;
-      });
+      .addCase(
+        upsertClientReservation.rejected,
+        (state, { payload: errorResponse }) => {
+          state.reservationCreatingLoading = false;
+          toast.error(errorResponse?.message);
+        },
+      );
 
     builder
       .addCase(deleteClientReservation.pending, (state) => {
         state.reservationDeletingLoading = true;
       })
-      .addCase(
-        deleteClientReservation.fulfilled,
-        (state, { payload: data }) => {
-          state.reservationDeletingLoading = false;
-        },
-      )
+      .addCase(deleteClientReservation.fulfilled, (state) => {
+        state.reservationDeletingLoading = false;
+      })
       .addCase(deleteClientReservation.rejected, (state) => {
         state.reservationDeletingLoading = false;
       });

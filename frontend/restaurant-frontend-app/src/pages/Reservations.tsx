@@ -7,6 +7,8 @@ import {
   selectReservationsLoading,
 } from "@/app/slices/reservationsSlice";
 import { useSelector } from "react-redux";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/Button";
 
 export const Reservations = () => {
   const reservations = useSelector(selectReservations);
@@ -15,7 +17,7 @@ export const Reservations = () => {
   return (
     <>
       <PageHeading />
-      <PageBody variant="smallerPadding">
+      <PageBody variant="smallerPadding" className="grow content-center">
         {reservationsLoading ? (
           <Spinner />
         ) : reservations?.length > 0 ? (
@@ -38,14 +40,15 @@ export const Reservations = () => {
                   Looks like you haven't made any reservations yet.
                 </Text>
               </div>
-              <Button
-                variant="primary"
-                size="xl"
-                className="mt-[1.5rem] w-full"
-                asChild
+              <Link
+                to="/booking"
+                className={cn(
+                  buttonVariants({ variant: "primary", size: "xl" }),
+                  "mt-[1.5rem] w-full",
+                )}
               >
-                <Link to="/booking">Book a Table</Link>
-              </Button>
+                Book a Table
+              </Link>
             </div>
           </div>
         )}
