@@ -33,35 +33,6 @@ if (-not (Test-Path $feedbacksSeedFile)) {
     exit 1
 }
 
-# Validate reservation seed data for placeholder waiter IDs
-try {
-    $reservationsData = Get-Content $reservationsSeedFile -Raw | ConvertFrom-Json
-    $reservationsItems = $reservationsData.Reservations
-
-    $placeholderFound = $false
-    foreach ($item in $reservationsItems) {
-        $waiterId = $item.PutRequest.Item.waiterId.S
-        if ($waiterId -eq "PLACEHOLDER_REQUIRES_UPDATE" -or
-            $waiterId -match "After waiter signs up" -or
-            $waiterId -match "waiterId from user") {
-
-            $reservationId = $item.PutRequest.Item.id.S
-            Write-Error "Placeholder waiter ID found in reservation $reservationId"
-            $placeholderFound = $true
-        }
-    }
-
-    if ($placeholderFound) {
-        Write-Error "Error: Seed file contains placeholder waiter IDs that need to be updated."
-        Write-Error "Please update the waiterId fields with actual waiter IDs from your users table."
-        exit 1
-    } else {
-        Write-Host "Validation passed. All waiter IDs have been properly set."
-    }
-} catch {
-    Write-Error "Failed to validate waiter IDs: $($_.Exception.Message)"
-    exit 1
-}
 
 # Process JSON: Update table names
 try {

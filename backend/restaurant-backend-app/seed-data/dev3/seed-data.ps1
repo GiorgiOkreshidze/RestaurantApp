@@ -17,7 +17,7 @@ if (-not $resourcesSuffix) {
 # Construct table names
 $locationsTable = "$prefix" + "Locations" + "$resourcesSuffix"
 $dishesTable = "$prefix" + "Dishes" + "$resourcesSuffix"
-$waitersTable = "$prefix" + "Waiters" + "$resourcesSuffix"
+$employeesTable = "$prefix" + "EmployeeInfo" + "$resourcesSuffix"
 
 # Check if seed files exist
 if (-not (Test-Path $locationsSeedFile)) {
@@ -40,11 +40,9 @@ try {
     $dishesData = Get-Content $dishesSeedFile -Raw | ConvertFrom-Json
     $employeesData = Get-Content $employeesSeedFile -Raw | ConvertFrom-Json
 
-
     $locationsItems = $locationsData.Locations  # Extract the 'Locations' array
     $dishesItems = $dishesData.Dishes
     $employeesItems = $employeesData.EmployeeInfo
-
 
     # Create the request structure
     $requestItems = @{
@@ -75,4 +73,4 @@ Invoke-Expression $awsCommand
 # Clean up
 Remove-Item $tempFile -ErrorAction SilentlyContinue
 
-Write-Host "Seeded data into $locationsTable and $dishesTable"
+Write-Host "Seeded data into $locationsTable and $dishesTable"s

@@ -37,8 +37,6 @@ public class CreateClientReservationAction
             throw new ArgumentException("Reservation request body was null");
         }
 
-       // var user = await _userService.GetUserByIdAsync(userId); es gadavitano servisis doneze
-
 
         ReservationValidator.ValidateGuestsNumber(reservationRequest.GuestsNumber);
         
