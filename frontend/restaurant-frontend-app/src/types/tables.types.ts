@@ -11,7 +11,7 @@ export interface TableServer {
 
 export interface TableUI extends Omit<TableServer, "availableSlots"> {
   availableSlots: RichTimeSlot[];
-  date: Date;
+  date: string;
 }
 
 export interface TablesRequestParams {

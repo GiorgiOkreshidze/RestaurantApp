@@ -10,8 +10,8 @@ export function DatePicker({
   setValue,
   ...props
 }: PropsWithChildren & {
-  value: Date;
-  setValue: (date: Date) => void;
+  value: string;
+  setValue: (date: string) => void;
 }) {
   const [isOpened, setIsOpened] = useState(false);
   return (
@@ -28,8 +28,10 @@ export function DatePicker({
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={value}
-          onSelect={(date) => setValue(date ? date : value)}
+          selected={new Date(value)}
+          onSelect={(date) =>
+            setValue(date ? date.toString() : value.toString())
+          }
           initialFocus
           disabled={{ before: new Date() }}
           onDayClick={() => setIsOpened(false)}

@@ -5,7 +5,7 @@ import { startOfTomorrow } from "date-fns";
 
 interface BookingFormState {
   locationId: string;
-  date: Date;
+  date: string;
   time: string;
   guests: number;
   timeSlots: RichTimeSlot[];
@@ -14,8 +14,8 @@ interface BookingFormState {
 const initialState: BookingFormState = {
   locationId: "",
   date: TIME_SLOTS.filter((slot) => !slot.isPast).length
-    ? new Date()
-    : startOfTomorrow(),
+    ? new Date().toString()
+    : startOfTomorrow().toString(),
   time: "",
   guests: 2,
   timeSlots: TIME_SLOTS,
