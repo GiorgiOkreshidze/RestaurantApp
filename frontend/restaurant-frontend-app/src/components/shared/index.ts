@@ -1,3 +1,4 @@
+
 export { RegistrationInput } from "./RegistrationInput";
 export { BrandTitle } from "./BrandTitle";
 export { NavBar } from "./NavBar";
@@ -27,3 +28,4 @@ export { Tooltip } from "./Tooltip";
 export { TimeSlotPicker } from "./TimeSlotPicker";
 export { ReservationDialog } from "./ReservationDialog";
 export { ReservationConfirmDialog } from "./ReservationConfirmDialog";
+export {WaiterReservationDialog} from "./WaiterReservationDialog";

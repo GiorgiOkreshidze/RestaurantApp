@@ -58,6 +58,12 @@ const addInterceptors = (store: Store<RootState>) => {
   axiosApi.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
+      console.log(
+        "Interceptor caught error:",
+        error.response?.status,
+        error.config?.url
+      );
+
       const originalRequest = error.config as
         | CustomAxiosRequestConfig
         | undefined;
@@ -67,20 +73,22 @@ const addInterceptors = (store: Store<RootState>) => {
         originalRequest &&
         !originalRequest._retry
       ) {
+        console.log("Token expired. Refreshing...");
+        originalRequest._retry = true;
+
         if (isRefreshing) {
           return new Promise((resolve) => {
             refreshSubscribers.push((tokens) => {
-              console.log("tokens:", tokens);
-              originalRequest.headers["Authorization"] =
-                `Bearer ${tokens.idToken}`;
-              originalRequest.headers["X-Amz-Security-Token"] =
-                tokens.accessToken;
+              console.log("Retrying request with new tokens:", tokens);
+              originalRequest.headers[
+                "Authorization"
+              ] = `Bearer ${tokens.idToken}`;
+              
               resolve(axiosApi(originalRequest));
             });
           });
         }
 
-        originalRequest._retry = true;
         isRefreshing = true;
 
         try {
@@ -89,20 +97,21 @@ const addInterceptors = (store: Store<RootState>) => {
           refreshSubscribers = [];
           isRefreshing = false;
 
-          originalRequest.headers["Authorization"] =
-            `Bearer ${newTokens.idToken}`;
-          originalRequest.headers["X-Amz-Security-Token"] =
-            newTokens.accessToken;
+          console.log("Successfully refreshed tokens. Retrying request...");
+          originalRequest.headers[
+            "Authorization"
+          ] = `Bearer ${newTokens.idToken}`;
 
           return axiosApi(originalRequest);
         } catch (err) {
           isRefreshing = false;
+          console.error("Refresh token request failed. Logging out.");
           return Promise.reject(err);
         }
       }
 
       return Promise.reject(error);
-    },
+    }
   );
 };
 

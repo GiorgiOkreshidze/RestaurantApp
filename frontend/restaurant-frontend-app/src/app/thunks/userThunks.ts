@@ -37,11 +37,11 @@ export const login = createAsyncThunk<
   try {
     const response = await axiosApi.post<LoginResponse>(
       serverRoute.signIn,
-      loginMutation,
+      loginMutation
     );
     return response.data;
   } catch (e) {
-    if (isAxiosError(e) && e.response && e.response.status === 422) {
+    if (isAxiosError(e) && e.response) {
       return rejectWithValue(e.response.data);
     }
     throw e;

@@ -40,7 +40,11 @@ export const Home = () => {
         </div>
       </PageHero>
       <PageBody>
-        <Dishes isLoading={isDishesLoading} dishes={popularDishes} />
+        <Dishes
+          title="Most Popular Dishes"
+          isLoading={isDishesLoading}
+          dishes={popularDishes}
+        />
         <Locations isLoading={isLocationsLoading} locations={locations} />
       </PageBody>
     </>
