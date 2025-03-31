@@ -5,10 +5,13 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/SelectPrimitives";
-import { Dispatch, JSX, SetStateAction } from "react";
+import type { JSX } from "react";
 import { Button, Spinner } from "../ui";
 import { ChevronDownIcon, ClockIcon } from "../icons";
-import { isToday, parse } from "date-fns";
+import { isToday } from "date-fns";
+import { cn } from "@/lib/utils";
+import type { RichTimeSlot } from "@/types";
+import { timeString24hToTimeString12h } from "@/utils/dateTime";
 
 export const TimeSlotPicker = ({
   items,
@@ -18,11 +21,11 @@ export const TimeSlotPicker = ({
   loading,
   selectedDate,
 }: {
-  items: string[];
+  items: RichTimeSlot[];
   Icon?: () => JSX.Element;
   className?: string;
   value?: string | null;
-  setValue: Dispatch<SetStateAction<string>>;
+  setValue: (value: string) => void;
   loading?: boolean;
   selectedDate: Date;
 }) => {
@@ -30,15 +33,9 @@ export const TimeSlotPicker = ({
     setValue(id === "null" ? "" : id);
   };
 
-  const isPast = (item: string) => {
-    const fromHH_MM = item.split("-")[0];
-    const fromDate = parse(fromHH_MM, "HH:mm", new Date());
-    return fromDate < new Date();
-  };
-
   return (
     <SelectRoot value={value ?? ""} onValueChange={handleChange}>
-      <SelectTrigger className={className} asChild>
+      <SelectTrigger className={cn("w-full", className)} asChild>
         <Button variant="trigger" size="trigger">
           {<ClockIcon className="size-[1.5rem]" />}
           {loading ? (
@@ -51,13 +48,14 @@ export const TimeSlotPicker = ({
       </SelectTrigger>
       <SelectContent className="shadow-card [&>*]:tabular-nums [&>*]:font-sans">
         <SelectItem value="null">{"Time"}</SelectItem>
-        {items?.map((item, i) => (
+        {items?.map((timeSlot) => (
           <SelectItem
-            key={i}
-            value={item}
-            disabled={isToday(selectedDate) && isPast(item)}
+            key={timeSlot.rangeString}
+            value={timeSlot.rangeString}
+            disabled={isToday(selectedDate) && timeSlot.isPast}
           >
-            {item}
+            {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
+            {timeString24hToTimeString12h(timeSlot.endString)}
           </SelectItem>
         ))}
       </SelectContent>

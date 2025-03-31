@@ -1,28 +1,24 @@
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/";
 import { Calendar } from "@/components/ui/";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/";
 import { CalendarIcon, ChevronDownIcon } from "../icons";
 import { format } from "date-fns";
+import { useState, type PropsWithChildren } from "react";
 
 export function DatePicker({
-  className,
   value,
   setValue,
-}: {
-  className?: string;
+  ...props
+}: PropsWithChildren & {
   value: Date;
   setValue: (date: Date) => void;
 }) {
+  const [isOpened, setIsOpened] = useState(false);
   return (
-    <Popover>
+    <Popover open={isOpened} onOpenChange={setIsOpened}>
       <PopoverTrigger asChild>
-        <Button
-          variant="trigger"
-          size="trigger"
-          className={cn("", className, !value && "text-muted-foreground")}
-        >
-          <CalendarIcon className="size-[1.5rem]" />
+        <Button variant="trigger" size="trigger" className="w-full" {...props}>
+          <CalendarIcon className="size-[1.5rem] w-full" />
           <span className="whitespace-nowrap">
             {format(value, "PP") || "Pick a date"}
           </span>
@@ -36,6 +32,7 @@ export function DatePicker({
           onSelect={(date) => setValue(date ? date : value)}
           initialFocus
           disabled={{ before: new Date() }}
+          onDayClick={() => setIsOpened(false)}
         />
       </PopoverContent>
     </Popover>

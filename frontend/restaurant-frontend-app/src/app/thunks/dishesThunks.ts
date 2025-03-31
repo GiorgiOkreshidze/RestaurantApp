@@ -1,4 +1,4 @@
-import { Dish, GlobalErrorMessage } from "@/types";
+import type { Dish, GlobalErrorMessage } from "@/types";
 import axiosApi from "@/utils/axiosApi";
 import { serverRoute } from "@/utils/constants";
 import { createAsyncThunk } from "@reduxjs/toolkit";

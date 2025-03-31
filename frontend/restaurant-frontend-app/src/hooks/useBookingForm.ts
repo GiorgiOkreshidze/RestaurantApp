@@ -1,120 +1,57 @@
-import { useAppDispatch } from "@/app/hooks";
+import { useBookingFormStore } from "@/app/useBookingFormStore";
 import {
-  clearLocationTimeSlots,
-  selectLocationTimeSlots,
-  selectLocationTimeSlotsLoading,
-  selectTodaySlots,
-} from "@/app/slices/bookingSlice";
-import {
-  selectSelectOptions,
-  selectSelectOptionsLoading,
-} from "@/app/slices/locationsSlice";
-import { getLocationTimeSlots, getTables } from "@/app/thunks/bookingThunk";
-import { getSelectOptions } from "@/app/thunks/locationsThunks";
-import { SelectOption } from "@/types";
-import { dateObjectToYYYY_MM_DD } from "@/utils/dateTime";
-import { startOfToday, startOfTomorrow } from "date-fns";
-import { Dispatch, FormEvent, useEffect, useState } from "react";
+  dateObjToDateStringServer,
+  timeString24hToDateObj,
+} from "@/utils/dateTime";
+import { useEffect, type FormEvent } from "react";
+import { useAppDispatch } from "../app/hooks";
+import { fetchTables } from "@/app/thunks/tablesThunk";
+import { isPast } from "date-fns";
 import { useSelector } from "react-redux";
+import { selectSelectOptions } from "@/app/slices/locationsSlice";
 import { toast } from "react-toastify";
 
-export const useBookingForm = (): UseBookingForm => {
-  const [locationId, setLocationId] = useState("");
-  const [guests, setGuests] = useState(2);
-  const [time, setTime] = useState("");
+export const useBookingForm = () => {
   const dispatch = useAppDispatch();
+  const formStore = useBookingFormStore();
   const selectOptions = useSelector(selectSelectOptions);
-  const selectOptionsLoading = useSelector(selectSelectOptionsLoading);
-  const locationTimeSlots = useSelector(selectLocationTimeSlots);
-  const locationTimeSlotsLoading = useSelector(selectLocationTimeSlotsLoading);
-  const todaySlots = useSelector(selectTodaySlots);
-  const [date, setDate] = useState(
-    todaySlots.length ? startOfToday() : startOfTomorrow(),
-  );
-
-  const increaseGuests = () => {
-    if (guests >= 10) return;
-    setGuests(guests + 1);
-  };
-  const decreaseGuests = () => {
-    if (guests <= 1) return;
-    setGuests(guests - 1);
-  };
+  const { locationId, date, guests, time, setTime, setLocationId } = formStore;
 
   useEffect(() => {
-    (async () => {
-      const data = await dispatch(getSelectOptions()).unwrap();
-      if (data.length > 0) {
-        setLocationId(data[0].id);
-      }
-    })();
-  }, []);
+    if (!selectOptions.length) return;
+    setLocationId(selectOptions[0].id);
+  }, [selectOptions]);
 
   useEffect(() => {
-    (async () => {
-      dispatch(clearLocationTimeSlots());
-      if (!locationId) return;
-      await dispatch(
-        getLocationTimeSlots({
-          locationId,
-          date: dateObjectToYYYY_MM_DD(date),
-        }),
-      ).unwrap();
-    })();
-  }, [locationId, date]);
+    if (!time) return;
+    if (isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
+      setTime("");
+    }
+  }, [date]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!locationId) {
-      toast.error("Select 'Location'");
+    if (!locationId || !date) {
+      toast.warning("Location and Date are required");
+      return;
+    }
+    if (isPast(date) && isPast(timeString24hToDateObj(time.split("-")[0]))) {
+      toast.warning("Date and Time can't be in past");
       return;
     }
     try {
       await dispatch(
-        getTables({
-          locationId: locationId,
-          date: dateObjectToYYYY_MM_DD(date),
-          time: time.split("-")[0],
+        fetchTables({
+          locationId,
+          date: dateObjToDateStringServer(date),
           guests: String(guests),
+          time: time.split("-")[0],
         }),
-      ).unwrap();
-      console.log("Tables recieved");
-    } catch (error) {
-      console.error("Tables recieving failed:", error);
+      );
+    } catch (e) {
+      console.error("Tables receiving failed", e);
     }
   };
 
-  return {
-    onSubmit,
-    locationId,
-    setLocationId,
-    date,
-    setDate,
-    time,
-    setTime,
-    guests,
-    increaseGuests,
-    decreaseGuests,
-    selectOptions,
-    selectOptionsLoading,
-    locationTimeSlots,
-    locationTimeSlotsLoading,
-  };
+  return { onSubmit, ...formStore };
 };
-
-export interface UseBookingForm {
-  onSubmit: (e: FormEvent) => Promise<void>;
-  locationId: string;
-  setLocationId: Dispatch<React.SetStateAction<string>>;
-  date: Date;
-  setDate: Dispatch<React.SetStateAction<Date>>;
-  time: string;
-  setTime: Dispatch<React.SetStateAction<string>>;
-  guests: number;
-  increaseGuests: () => void;
-  decreaseGuests: () => void;
-  selectOptions: SelectOption[];
-  selectOptionsLoading: boolean;
-  locationTimeSlots: string[];
-  locationTimeSlotsLoading: boolean;
-}
