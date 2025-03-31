@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Function.Services;
 using Function.Services.Interfaces;
@@ -22,7 +23,7 @@ class GetProfileAction
 
         if (string.IsNullOrEmpty(userId))
         {
-            return ActionUtils.FormatResponse(403, new { message = "Forbidden: Resource not found." });
+            throw new UnauthorizedException("User is not registered");
         }
 
         var userProfile = await _userService.GetUserByIdAsync(userId);
