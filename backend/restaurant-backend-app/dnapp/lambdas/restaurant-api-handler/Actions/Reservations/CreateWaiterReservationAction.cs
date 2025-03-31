@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
@@ -27,24 +28,26 @@ public class CreateWaiterReservationAction
     
 public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProxyRequest request)
     {
-        var accessToken = ActionUtils.GetAccessToken(request);
-        var userInfo = await _authenticationService.GetUserDetailsAsync(accessToken);
+        var jwtToken = ActionUtils.ExtractJwtToken(request);
+        var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return ActionUtils.FormatResponse(403, new { message = "Forbidden: Resource not found." });
+        }
+
         var reservationRequest = JsonSerializer.Deserialize<WaiterReservationRequest>(request.Body);
-        var email = userInfo.GetValueOrDefault("email");
 
         if (reservationRequest == null)
         {
             throw new ArgumentException("Reservation request body was null");
         }
 
-        if (email == null)
-        {
-            throw new UnauthorizedException("User is not registered");
-        }
+        //var user = await _userService.GetUserByIdAsync(userId); es gadavitano servicis doneze da userId gadavushva servisshi
 
-        var user = await _userService.GetUserByEmailAsync(email);
-        
-        if (user.Role != Roles.Waiter)
+
+        //if (user.Role != Roles.Waiter) esec <<
         {
             throw new UnauthorizedException("Only waiters can create or modify waiter reservations");
         }
