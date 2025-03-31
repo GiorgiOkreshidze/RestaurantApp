@@ -11,6 +11,39 @@ export const useRegForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const passwordSchema = z.string().superRefine((value, ctx) => {
+    if (!/[A-Z]/.test(value)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "At least one uppercase letter required",
+      });
+    }
+    if (!/[a-z]/.test(value)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "At least one lowercase letter required",
+      });
+    }
+    if (!/[0-9]/.test(value)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "At least one number required",
+      });
+    }
+    if (!/[!@#$%^&*()\-+_=[\]{};:'",<.>/?\\|]/.test(value)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "At least one character required",
+      });
+    }
+    if (value.length < 8 || value.length > 16) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Password must be 8-16 characters long",
+      });
+    }
+  });
+
   const formSchema = z
     .object({
       firstName: z
@@ -35,44 +68,22 @@ export const useRegForm = () => {
         message:
           "Invalid email address. Please ensure it follows the format: username@domain.com",
       }),
-      password: z.string().superRefine((value, ctx) => {
-        if (!/[A-Z]/.test(value)) {
-          ctx.addIssue({
-            code: "custom",
-            message: "At least one uppercase letter required",
-          });
-        }
-        if (!/[a-z]/.test(value)) {
-          ctx.addIssue({
-            code: "custom",
-            message: "At least one lowercase letter required",
-          });
-        }
-        if (!/[0-9]/.test(value)) {
-          ctx.addIssue({
-            code: "custom",
-            message: "At least one number required",
-          });
-        }
-        if (!/[!@#$%^&*()\-+_=[\]{};:'",<.>/?\\|]/.test(value)) {
-          ctx.addIssue({
-            code: "custom",
-            message: "At least one character required",
-          });
-        }
-        if (value.length < 8 || value.length > 16) {
-          ctx.addIssue({
-            code: "custom",
-            message: "Password must be 8-16 characters long",
-          });
-        }
-      }),
+      password: passwordSchema,
       confirmPassword: z.string(),
     })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Confirm password must match new password",
-      path: ["confirmPassword"],
-    });
+    .refine(
+      (data) => {
+        const passwordResult = passwordSchema.safeParse(data.password);
+        if (!passwordResult.success) {
+          return false;
+        }
+        return data.password === data.confirmPassword;
+      },
+      {
+        message: "Confirm password must match new password",
+        path: ["confirmPassword"],
+      },
+    );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
