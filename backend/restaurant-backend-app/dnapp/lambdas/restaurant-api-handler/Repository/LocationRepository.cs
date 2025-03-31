@@ -3,31 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Function.Mappers;
 using Function.Models;
 using Function.Repository;
 using Function.Repository.Interfaces;
+using static System.String;
 using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
 
 namespace SimpleLambdaFunction.Repository;
 
 public class LocationRepository : ILocationRepository
 {
-    private readonly AmazonDynamoDBClient _dynamoDBClient;
+    private readonly AmazonDynamoDBClient _dynamoDbClient;
 
     private readonly string? _locationsTableName = Environment.GetEnvironmentVariable("DYNAMODB_LOCATIONS_TABLE_NAME");
 
     public LocationRepository()
     {
-        _dynamoDBClient = new AmazonDynamoDBClient();
+        _dynamoDbClient = new AmazonDynamoDBClient();
     }
 
     public async Task<List<Location>> GetListOfLocationsAsync()
     {
-        var documentList = await DynamoDbUtils.ScanDynamoDbTableAsync(_dynamoDBClient, _locationsTableName);
+        var documentList = await DynamoDbUtils.ScanDynamoDbTableAsync(_dynamoDbClient, _locationsTableName);
 
         return Mapper.MapDocumentsToLocations(documentList);
     }
@@ -39,7 +38,7 @@ public class LocationRepository : ILocationRepository
             TableName = _locationsTableName,
             ProjectionExpression = "id, address"
         };
-        var locations = await _dynamoDBClient.ScanAsync(request);
+        var locations = await _dynamoDbClient.ScanAsync(request);
 
         return locations.Items
             .Select(item => new LocationOptions
@@ -51,12 +50,33 @@ public class LocationRepository : ILocationRepository
 
     public async Task<Location> GetLocationByIdAsync(string locationId)
     {
-        var documentList = await DynamoDbUtils.ScanDynamoDbTableAsync(_dynamoDBClient, _locationsTableName);
-        var locations = Mapper.MapDocumentsToLocations(documentList);
-        var result = locations.FirstOrDefault(loc => loc.Id == locationId);
+        var request = new GetItemRequest
+        {
+            TableName = _locationsTableName,
+            Key = new Dictionary<string, AttributeValue>
+            {
+                { "id", new AttributeValue { S = locationId } }
+            }
+        };
 
-        if (result == null) throw new ResourceNotFoundException($"The location with {locationId} id is not found");
+        var response = await _dynamoDbClient.GetItemAsync(request);
 
-        return result;
+        if (response.Item == null || response.Item.Count == 0)
+        {
+            throw new ResourceNotFoundException($"The location with {locationId} id is not found");
+        }
+
+        var location = new Location
+        {
+            Id = response.Item["id"].S ?? Empty,
+            Address = response.Item["address"].S ?? Empty,
+            Description = response.Item["description"].S ?? Empty,
+            TotalCapacity = response.Item["totalCapacity"].N ?? Empty,
+            AverageOccupancy = response.Item["averageOccupancy"].N ?? Empty,
+            ImageUrl = response.Item["imageUrl"].S ?? Empty,
+            Rating = response.Item["rating"].S ?? Empty,
+        };
+
+        return location;
     }
 }

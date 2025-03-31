@@ -1,9 +1,0 @@
-{
-  "function-handler": "SimpleLambdaFunction::SimpleLambdaFunction.Function::FunctionHandler",
-  "framework": "net8.0",
-  "function-runtime": "dotnet8",
-  "function-memory-size": 128,
-  "function-timeout": 100,
-  "profile": "my-custom-profile",
-  "region": "eu-west-2"
-}
