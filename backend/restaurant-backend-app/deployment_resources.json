@@ -133,7 +133,7 @@
           "default_error_pattern": true
         }
       },
-      "/locations": {
+      "/location/{id}": {
         "enable_cors": true,
         "GET": {
           "authorization_type": "NONE",
