@@ -52,3 +52,4 @@ export {
   TooltipProvider,
 } from "./TooltipPrimitives";
 export { Spinner } from "./Spinner.tsx";
+export { RadioGroup, RadioGroupItem } from "./RadioGroup";

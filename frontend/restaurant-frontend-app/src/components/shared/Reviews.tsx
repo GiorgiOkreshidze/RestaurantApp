@@ -70,9 +70,9 @@ export const Reviews = () => {
         </div>
 
         <div className="flex gap-8">
-          {reviewsData.map((review) => (
+          {reviewsData.map((review, i) => (
             <ReviewsCard
-              key={review.name}
+              key={i}
               name={review.name}
               date={review.date}
               rating={review.rating}
