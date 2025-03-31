@@ -12,6 +12,5 @@ namespace Function.Models.Requests
 
         [JsonPropertyName("email")]
         public required string Email { get; set; }
-
     }
 }

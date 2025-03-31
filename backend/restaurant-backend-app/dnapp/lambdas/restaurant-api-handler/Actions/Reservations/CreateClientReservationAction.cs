@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Function.Actions.Validators;
 using Function.Models.Requests;
@@ -24,10 +25,9 @@ public class CreateClientReservationAction
         var jwtToken = ActionUtils.ExtractJwtToken(request);
         var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
-
         if (string.IsNullOrEmpty(userId))
         {
-            return ActionUtils.FormatResponse(403, new { message = "Forbidden: Resource not found." });
+            throw new UnauthorizedException("User is not registered");
         }
 
         var reservationRequest = JsonSerializer.Deserialize<ClientReservationRequest>(request.Body);
@@ -36,7 +36,6 @@ public class CreateClientReservationAction
         {
             throw new ArgumentException("Reservation request body was null");
         }
-
 
         ReservationValidator.ValidateGuestsNumber(reservationRequest.GuestsNumber);
         

@@ -18,7 +18,6 @@ class GetProfileAction
     public async Task<APIGatewayProxyResponse> GetProfile(APIGatewayProxyRequest request)
     {
         var jwtToken = ActionUtils.ExtractJwtToken(request);
-
         var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
         if (string.IsNullOrEmpty(userId))

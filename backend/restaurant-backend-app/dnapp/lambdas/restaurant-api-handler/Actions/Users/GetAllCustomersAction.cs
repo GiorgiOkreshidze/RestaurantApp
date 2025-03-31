@@ -32,7 +32,6 @@ public class GetAllCustomersAction
             throw new UnauthorizedException("Unauthorized: You don't have permission to access this resource.");
         }
         
-        
         var users = await _userService.GetAllCustomersAsync();
         
         return ActionUtils.FormatResponse(200, users);

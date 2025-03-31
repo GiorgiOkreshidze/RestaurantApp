@@ -7,5 +7,6 @@ namespace Function.Services.Interfaces;
 public interface ILocationService
 {
     Task<List<Location>> GetListOfLocationsAsync();
+
     Task<List<LocationOptions>> GetLocationDropdownOptionsAsync();
 }

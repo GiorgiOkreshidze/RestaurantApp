@@ -31,10 +31,9 @@ public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProx
         var jwtToken = ActionUtils.ExtractJwtToken(request);
         var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
-
         if (string.IsNullOrEmpty(userId))
         {
-            return ActionUtils.FormatResponse(403, new { message = "Forbidden: Resource not found." });
+            throw new UnauthorizedException("User is not registered");
         }
 
         var reservationRequest = JsonSerializer.Deserialize<WaiterReservationRequest>(request.Body);

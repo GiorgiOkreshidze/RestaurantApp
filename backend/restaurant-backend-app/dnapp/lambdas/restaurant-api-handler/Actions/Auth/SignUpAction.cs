@@ -15,7 +15,7 @@ public class SignUpAction
     private readonly IAuthenticationService _authenticationService;
     private readonly IEmployeeService _employeeService;
     private readonly IUserService _userService;
-    private const string DefaultImageUrl = "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Users/default_user.jpg";
+    private const string DefaultUserImageUrl = "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Users/default_user.jpg";
 
     public SignUpAction()
     {
@@ -83,7 +83,7 @@ public class SignUpAction
             Email = email,
             Role = role,
             LocationId = locationId,
-            ImageUrl = DefaultImageUrl,
+            ImageUrl = DefaultUserImageUrl,
             CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
         };
 

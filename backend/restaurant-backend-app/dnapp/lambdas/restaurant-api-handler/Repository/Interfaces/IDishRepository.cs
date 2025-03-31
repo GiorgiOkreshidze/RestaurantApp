@@ -9,7 +9,10 @@ namespace Function.Repository.Interfaces;
 public interface IDishRepository
 {
     Task<List<Dish>> GetListOfPopularDishesAsync();
+
     Task<List<Dish>> GetListOfSpecialityDishesAsync(string locationId);
+
     Task<List<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest);
+
     Task<ExactDishResponse> GetDishByIdAsync(string dishId);
 }

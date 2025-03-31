@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Authentication;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
@@ -80,9 +78,7 @@ public class AuthenticationService : IAuthenticationService
                 new AttributeType { Name = "email", Value = user.Email }
             ]
         };
-
         var signUpResponse = await _cognitoClient.SignUpAsync(signUpRequest);
-
         var confirmRequest = new AdminConfirmSignUpRequest
         {
             UserPoolId = _userPoolId,
@@ -145,7 +141,6 @@ public class AuthenticationService : IAuthenticationService
         try
         {
             var response = await _cognitoClient.AdminInitiateAuthAsync(authRequest);
-
             var authResult = new AuthResult
             {
                 IdToken = response.AuthenticationResult.IdToken,

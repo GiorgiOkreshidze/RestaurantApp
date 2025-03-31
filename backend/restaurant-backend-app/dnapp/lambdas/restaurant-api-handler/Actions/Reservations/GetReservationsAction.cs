@@ -23,15 +23,11 @@ public class GetReservationsAction
     public async Task<APIGatewayProxyResponse> GetReservationsAsync(APIGatewayProxyRequest request)
     {
         var jwtToken = ActionUtils.ExtractJwtToken(request);
-
         var email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")!.Value;
         var role = jwtToken.Claims.FirstOrDefault(c => c.Type == "custom:role")!.Value.ToRoles();
         var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")!.Value;
-
         var queryParams = ExtractReservationQueryParams(request);
-
         var reservations = await _reservationService.GetReservationsAsync(queryParams, userId, email, role);
-
 
         var response = Mapper.MapReservationsToReservationResponses(reservations);
         

@@ -71,7 +71,7 @@ public class ReservationService : IReservationService
 
         if (user is null)
         {
-            throw new ResourceNotFoundException("The requested resource could not be found.");
+            throw new UnauthorizedException("User is not registered");
         }
 
         var existingReservations = await _reservationRepository.GetReservationsByDateLocationTable(

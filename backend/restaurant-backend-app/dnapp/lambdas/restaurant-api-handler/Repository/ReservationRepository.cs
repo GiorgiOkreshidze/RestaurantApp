@@ -119,7 +119,6 @@ public class ReservationRepository : IReservationRepository
     public async Task<List<ReservationInfo>> GetReservationsForDateAndLocation(string date, string locationId)
     {
         var reservations = new List<ReservationInfo>();
-
         var queryRequest = new QueryRequest
         {
             TableName = _reservationsTableName,
@@ -209,6 +208,7 @@ public class ReservationRepository : IReservationRepository
             ExpressionAttributeValues = expressionAttributeValues,
             ExpressionAttributeNames = expressionAttributeNames
         };
+
         if (filterConditions.Count > 0)
         {
             queryRequest.FilterExpression = string.Join(" AND ", filterConditions);
