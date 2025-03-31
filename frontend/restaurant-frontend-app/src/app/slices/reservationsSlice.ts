@@ -58,12 +58,9 @@ export const reservationsSlice = createSlice({
       .addCase(deleteClientReservation.pending, (state) => {
         state.reservationDeletingLoading = true;
       })
-      .addCase(
-        deleteClientReservation.fulfilled,
-        (state, { payload: data }) => {
-          state.reservationDeletingLoading = false;
-        },
-      )
+      .addCase(deleteClientReservation.fulfilled, (state) => {
+        state.reservationDeletingLoading = false;
+      })
       .addCase(deleteClientReservation.rejected, (state) => {
         state.reservationDeletingLoading = false;
       });

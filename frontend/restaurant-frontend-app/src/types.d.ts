@@ -44,7 +44,7 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
-export interface UserDataResponse extends Omit<User, "tokens"> {}
+export type UserDataResponse = Omit<User, "tokens">;
 
 export interface RegistrationFields extends UserFields {
   confirmPassword: string;

@@ -45,7 +45,7 @@ export const bookingFormSlice = createSlice({
       state.guests = state.guests > 1 ? state.guests - 1 : 1;
     },
   },
-  extraReducers: (builder) => {},
+  extraReducers: () => {},
   selectors: {
     selectBookingFormState: (state) => state,
   },

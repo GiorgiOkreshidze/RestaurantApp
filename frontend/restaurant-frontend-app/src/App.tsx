@@ -53,7 +53,7 @@ function App() {
     if (!selectOptions.length) {
       dispatch(getReservations());
     }
-  }, [dispatch, reservations.length]);
+  }, [dispatch, reservations.length, selectOptions.length]);
 
   return (
     <>
