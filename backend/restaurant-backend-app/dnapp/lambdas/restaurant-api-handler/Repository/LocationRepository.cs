@@ -71,8 +71,8 @@ public class LocationRepository : ILocationRepository
             Id = response.Item["id"].S ?? Empty,
             Address = response.Item["address"].S ?? Empty,
             Description = response.Item["description"].S ?? Empty,
-            TotalCapacity = response.Item["totalCapacity"].N ?? Empty,
-            AverageOccupancy = response.Item["averageOccupancy"].N ?? Empty,
+            TotalCapacity = response.Item["totalCapacity"].S ?? Empty,
+            AverageOccupancy = response.Item["averageOccupancy"].S ?? Empty,
             ImageUrl = response.Item["imageUrl"].S ?? Empty,
             Rating = response.Item["rating"].S ?? Empty,
         };

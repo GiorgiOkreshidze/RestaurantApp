@@ -23,7 +23,7 @@ public class GetLocationByIdAction
             return ActionUtils.FormatResponse(400, "Location id is required.");
         }
         
-        var location = await _locationService.GetLocationById(locationId);
+        var location = await _locationService.GetLocationByIdAsync(locationId);
         
         return ActionUtils.FormatResponse(200, location);
     }

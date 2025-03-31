@@ -9,5 +9,5 @@ public interface ILocationService
     Task<List<Location>> GetListOfLocationsAsync();
 
     Task<List<LocationOptions>> GetLocationDropdownOptionsAsync();
-    Task<Location> GetLocationById(string locationId);
+    Task<Location> GetLocationByIdAsync(string locationId);
 }
