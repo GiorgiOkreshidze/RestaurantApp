@@ -33,6 +33,7 @@ public class UserRepository : IUserRepository
                 { "email", new AttributeValue { S = user.Email }},
                 { "role", new AttributeValue { S = user.Role.ToString() }},
                 { "createdAt", new AttributeValue { S = user.CreatedAt }},
+                { "imageUrl", new AttributeValue { S = user.ImageUrl }},
             }
         };
         
@@ -63,5 +64,36 @@ public class UserRepository : IUserRepository
         return Mapper.MapDocumentsToUsers(documentList)
             .Where(user => user.Role == Roles.Customer)
             .ToList();
+    }
+
+    public async Task<User?> GetUserByIdAsync(string id)
+    {
+        var request = new GetItemRequest
+        {
+            TableName = _usersTableName,
+            Key = new Dictionary<string, AttributeValue>
+        {
+            { "id", new AttributeValue { S = id } }
+        }
+        };
+
+        var response = await _dynamoDBClient.GetItemAsync(request);
+
+        if (response.Item == null || response.Item.Count == 0)
+        {
+            return null; // User not found
+        }
+
+        return new User
+        {
+            Id = response.Item["id"].S,
+            FirstName = response.Item["firstName"].S,
+            LastName = response.Item["lastName"].S,
+            Email = response.Item["email"].S,
+            Role = Enum.Parse<Roles>(response.Item["role"].S),
+            CreatedAt = response.Item["createdAt"].S,
+            ImageUrl = response.Item["imageUrl"].S,
+            LocationId = response.Item.ContainsKey("locationId") ? response.Item["locationId"].S : null
+        };
     }
 }

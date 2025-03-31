@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Function.Exceptions;
+using Function.Models.Responses;
 using Function.Models.User;
 using Function.Repository;
 using Function.Repository.Interfaces;
@@ -30,4 +32,27 @@ public class UserService : IUserService
     {
         return await _userRepository.GetAllCustomersAsync();
     }
+
+    public async Task<UserResponse> GetUserByIdAsync(string id)
+    {
+        var user = await _userRepository.GetUserByIdAsync(id);
+
+        if (user is null)
+        {
+            throw new ResourceNotFoundException("The requested resource could not be found.");
+        }
+
+        var userDto = new UserResponse
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            Role = user.Role.ToString(),
+            ImageUrl = user.ImageUrl
+        };
+
+        return userDto;
+    }
+
 }
