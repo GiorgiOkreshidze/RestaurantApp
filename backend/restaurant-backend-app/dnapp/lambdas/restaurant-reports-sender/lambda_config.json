@@ -10,7 +10,10 @@
   "lambda_path": "lambdas\\restaurant-reports-sender",
   "dependencies": [],
   "event_sources": [],
-  "env_variables": {},
+  "env_variables": {
+    "REPORTS_TABLE_DATE_INDEX": "${reports_table_date_index}",
+    "REPORTS_TABLE_NAME": "${reports_table}"
+  },
   "publish_version": true,
   "alias": "${lambdas_alias_name}",
   "url_config": {},

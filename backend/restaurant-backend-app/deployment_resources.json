@@ -439,11 +439,6 @@
     "autoscaling": [],
     "tags": {}
   },
-
-
-
-
-
   "${sqs_queue}": {
     "resource_type": "sqs_queue",
     "fifo_queue": false,
@@ -463,7 +458,13 @@
     "hash_key_type": "S",
     "read_capacity": 1,
     "write_capacity": 1,
-    "global_indexes": [],
+    "global_indexes": [
+      {
+        "name": "${reports_table_date_index}",
+        "index_key_name": "date",
+        "index_key_type": "S"
+      }
+    ],
     "autoscaling": [],
     "tags": {}
   },
@@ -473,10 +474,6 @@
     "tags": {},
     "expression": "cron(0 0 * * SUN *)"
   },
-
-
-
-
   "reports_handler_policy": {
     "policy_content": {
       "Statement": [
