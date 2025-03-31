@@ -183,15 +183,15 @@ public class ReservationService : IReservationService
         return await _reservationRepository.UpsertReservationAsync(reservation);
     }
     
-    public async Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParams,  string info, Roles role)
+    public async Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParams, string userId, string email, Roles role)
     {
         if (role == Roles.Customer)
         {
-            return await _reservationRepository.GetCustomerReservationsAsync(queryParams, info);
+            return await _reservationRepository.GetCustomerReservationsAsync(email);
         }
         else
         {
-            return await _reservationRepository.GetWaiterReservationsAsync(queryParams, info);
+            return await _reservationRepository.GetWaiterReservationsAsync(queryParams, userId);
         }   
     }
 

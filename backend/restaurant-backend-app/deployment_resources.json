@@ -428,7 +428,19 @@
         "index_key_type": "S",
         "index_sort_key_name": "date",
         "index_sort_key_type": "S"
-    }
+    },
+      {
+        "name": "${reservations_table_user_email_index_name}",
+        "index_key_name": "userEmail",
+        "index_key_type": "S"
+      },
+      {
+        "name": "${reservations_table_waiter_index}",
+        "index_key_name": "waiterId",
+        "index_key_type": "S",
+        "index_sort_key_name": "date",
+        "index_sort_key_type": "S"
+}
     ],
     "autoscaling": [],
     "tags": {}
