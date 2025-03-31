@@ -47,7 +47,7 @@ public static class ActionUtils
         throw new ArgumentException( $"Bad request syntax or unsupported method. Request path: {path}. HTTP method: {method}");
     }
 
-    public static void ValidateFullName(string name)
+    public static void ValidateFullName(string? name)
     {
         const string namePattern = @"^[a-zA-Z\-']+$";
 
@@ -80,16 +80,6 @@ public static class ActionUtils
         }
     }
 
-    public static string GetAccessToken(APIGatewayProxyRequest request)
-    {
-        if (!request.Headers.TryGetValue("x-amz-security-token", out var accessTokenHeader) ||
-            string.IsNullOrEmpty(accessTokenHeader))
-        {
-            throw new UnauthorizedException("Access token is missing");
-        }
-
-        return accessTokenHeader.Trim();
-    }
 
     public static JwtSecurityToken ExtractJwtToken(APIGatewayProxyRequest request)
     {

@@ -19,6 +19,8 @@ public class ReservationRepository : IReservationRepository
         Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_NAME");
     private readonly string? _reservationsTableLocationIndexName =
         Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_LOCATION_INDEX");
+    private readonly string? _reservationsTableUserEmailIndex = Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_USER_EMAIL_INDEX");
+    private readonly string? _reservationsTableWaiterIdIndex = Environment.GetEnvironmentVariable("DYNAMODB_RESERVATIONS_TABLE_WAITER_ID_INDEX");
 
     public ReservationRepository()
     {

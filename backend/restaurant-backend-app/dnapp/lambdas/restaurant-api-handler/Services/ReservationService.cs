@@ -15,12 +15,14 @@ using Function.Actions;
 using Amazon.CognitoIdentityProvider.Model;
 using Function.Models.Interfaces;
 using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
+using Function.Models.Responses;
 
 namespace Function.Services;
 
 public class ReservationService : IReservationService
 {
     private readonly IReservationRepository _reservationRepository;
+    private readonly IUserRepository _userRepository;
     private readonly ILocationRepository _locationRepository;
     private readonly ITableRepository _tableRepository;
     private readonly IWaiterRepository _waiterRepository;
@@ -28,12 +30,13 @@ public class ReservationService : IReservationService
     public ReservationService()
     {
         _reservationRepository = new ReservationRepository();
+        _userRepository = new UserRepository();
         _locationRepository = new LocationRepository();
         _tableRepository = new TableRepository();
         _waiterRepository = new WaiterRepository();
     }
 
-    public async Task<Reservation> UpsertReservationAsync(IReservationRequest reservationRequest, User user)
+    public async Task<Reservation> UpsertReservationAsync(IReservationRequest reservationRequest, string userId)
     {
         //Available UTC time slots:
         // 06:30 - 08:00
@@ -64,6 +67,13 @@ public class ReservationService : IReservationService
         }
         
         var location = await _locationRepository.GetLocationByIdAsync(reservationRequest.LocationId);
+        var user = await _userRepository.GetUserByIdAsync(userId);
+
+        if (user is null)
+        {
+            throw new ResourceNotFoundException("The requested resource could not be found.");
+        }
+
         var existingReservations = await _reservationRepository.GetReservationsByDateLocationTable(
             reservationRequest.Date,
             location.Address,
@@ -143,7 +153,12 @@ public class ReservationService : IReservationService
                     _ => reservation.UserInfo
                 };
                 reservation.WaiterId = user.Id;
-                break;
+                    if (user.Role != Roles.Waiter)
+                    {
+                        throw new UnauthorizedException("Only waiters can create or modify waiter reservations");
+                    }
+
+                    break;
             }
             case ClientReservationRequest:
                 reservation.UserEmail = user.Email;

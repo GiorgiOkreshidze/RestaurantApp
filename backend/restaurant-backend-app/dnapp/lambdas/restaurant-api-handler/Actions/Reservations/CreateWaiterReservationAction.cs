@@ -43,15 +43,6 @@ public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProx
         {
             throw new ArgumentException("Reservation request body was null");
         }
-
-        //var user = await _userService.GetUserByIdAsync(userId); es gadavitano servicis doneze da userId gadavushva servisshi
-
-
-        //if (user.Role != Roles.Waiter) esec <<
-        {
-            throw new UnauthorizedException("Only waiters can create or modify waiter reservations");
-        }
-
    
         // Create operation
         if (reservationRequest.ClientType is not ClientType.CUSTOMER and not ClientType.VISITOR)
@@ -75,7 +66,7 @@ public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProx
         ReservationValidator.ValidateFutureDateTime(reservationDateTimeFrom);
         ReservationValidator.ValidateFutureDateTime(reservationDateTimeTo);
 
-        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, user);
+        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, userId);
         return ActionUtils.FormatResponse(200, reservationResponse);
     }
 }

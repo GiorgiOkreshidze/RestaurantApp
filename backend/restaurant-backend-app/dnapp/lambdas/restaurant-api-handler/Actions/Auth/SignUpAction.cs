@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
+using Function.Models.Requests;
 using Function.Models.User;
 using Function.Services;
 using Function.Services.Interfaces;
@@ -34,47 +35,59 @@ public class SignUpAction
         
         ActionUtils.ValidateRequiredParams(requiredParams, body);
 
-        var user = new User
-        {
-            Id = Guid.NewGuid().ToString(),
-            FirstName = body["firstName"].GetString(),
-            LastName = body["lastName"].GetString(),
-            Email = body["email"].GetString(),
-            Role = Roles.Customer,
-            ImageUrl = DefaultImageUrl,
-            CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
-        };
+        var firstName = body["firstName"].GetString();
+        var lastName = body["lastName"].GetString();
+        var email = body["email"].GetString();
         var password = body["password"].GetString();
-        
-        ActionUtils.ValidateFullName(user.FirstName);
-        ActionUtils.ValidateFullName(user.LastName);
-        ActionUtils.ValidateEmail(user.Email);
+
+        ActionUtils.ValidateFullName(firstName);
+        ActionUtils.ValidateFullName(lastName);
+        ActionUtils.ValidateEmail(email);
         ActionUtils.ValidatePassword(password);
 
-        await _authenticationService.CheckEmailUniqueness(user.Email);
+        await _authenticationService.CheckEmailUniqueness(email!);
 
-        var result = await SignUpUserWithRole(user, password);
+        var result = await SignUpUserWithRole(firstName!, lastName!, email!, password!);
         return ActionUtils.FormatResponse(200, new { message = result });
     }
 
-    private async Task<string> SignUpUserWithRole(User user, string password)
+    private async Task<string> SignUpUserWithRole(string firstName, string lastName, string email, string password)
     {
 
-        var employeeInfo = await _employeeService.GetEmployeeInfoByEmailAsync(user.Email);
+        var role = Roles.Customer;
+        string? locationId = null;
+        var employeeInfo = await _employeeService.GetEmployeeInfoByEmailAsync(email);
 
-        if (employeeInfo == null)
+        var cognitoUser = new CreateUserCognitoRequest
         {
-            Console.WriteLine("User with email not found in employeeInfo table, so its just regular customer");
-            await _authenticationService.SignUp(user, password);
-        }
-        else
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+        };
+
+        string userId = employeeInfo == null
+            ? await _authenticationService.SignUp(cognitoUser, password)
+            : await _authenticationService.SignUp(cognitoUser, password, Roles.Waiter);
+
+        if (employeeInfo != null)
         {
-            await _authenticationService.SignUp(user, password, Roles.Waiter);
-            user.LocationId = employeeInfo.LocationId;
-            user.Role = Roles.Waiter;
+            role = Roles.Waiter;
+            locationId = employeeInfo.LocationId;
         }
-        
-        await _userService.AddUserAsync(user);
+
+        var dynamoDbUser = new User
+        {
+            Id = userId,
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            Role = role,
+            LocationId = locationId,
+            ImageUrl = DefaultImageUrl,
+            CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
+        };
+
+        await _userService.AddUserAsync(dynamoDbUser);
         return "User Registered";
     }
 }

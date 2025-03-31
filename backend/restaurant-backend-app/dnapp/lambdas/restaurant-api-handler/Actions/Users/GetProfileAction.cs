@@ -21,6 +21,11 @@ class GetProfileAction
 
         var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
+        if (string.IsNullOrEmpty(userId))
+        {
+            return ActionUtils.FormatResponse(403, new { message = "Forbidden: Resource not found." });
+        }
+
         var userProfile = await _userService.GetUserByIdAsync(userId);
 
         return ActionUtils.FormatResponse(200, userProfile);

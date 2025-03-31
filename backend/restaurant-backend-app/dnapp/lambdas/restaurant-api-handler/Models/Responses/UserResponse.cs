@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Function.Models.User;
+using System.Text.Json.Serialization;
 
 namespace Function.Models.Responses
 {
@@ -22,9 +23,5 @@ namespace Function.Models.Responses
         [JsonPropertyName("role")]
         public required string Role { get; set; }
 
-        public string? GetFullName()
-        {
-            return $"{FirstName} {LastName}";
-        }
     }
 }

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Function.Actions.Validators;
 using Function.Models.Requests;
@@ -14,35 +12,33 @@ namespace Function.Actions.Reservations;
 
 public class CreateClientReservationAction
 {
-    private readonly IAuthenticationService _authenticationService;
     private readonly IReservationService _reservationService;
-    private readonly IUserService _userService;
 
     public CreateClientReservationAction()
     {
-        _authenticationService = new AuthenticationService();
         _reservationService = new ReservationService();
-        _userService = new UserService();
     }
 
     public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProxyRequest request)
     {
-        var accessToken = ActionUtils.GetAccessToken(request);
-        var userInfo = await _authenticationService.GetUserDetailsAsync(accessToken);
+        var jwtToken = ActionUtils.ExtractJwtToken(request);
+        var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return ActionUtils.FormatResponse(403, new { message = "Forbidden: Resource not found." });
+        }
+
         var reservationRequest = JsonSerializer.Deserialize<ClientReservationRequest>(request.Body);
-        var email = userInfo.GetValueOrDefault("email");
         
         if (reservationRequest == null)
         {
             throw new ArgumentException("Reservation request body was null");
         }
 
-        if (email == null)
-        {
-            throw new UnauthorizedException("User is not registered");
-        }
-        
-        var user = await _userService.GetUserByEmailAsync(email);
+       // var user = await _userService.GetUserByIdAsync(userId); es gadavitano servisis doneze
+
 
         ReservationValidator.ValidateGuestsNumber(reservationRequest.GuestsNumber);
         
@@ -55,7 +51,7 @@ public class CreateClientReservationAction
         ReservationValidator.ValidateFutureDateTime(reservationDateTimeFrom);
         ReservationValidator.ValidateFutureDateTime(reservationDateTimeTo);
         
-        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, user);
+        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, userId);
 
         return ActionUtils.FormatResponse(200, reservationResponse);
     }

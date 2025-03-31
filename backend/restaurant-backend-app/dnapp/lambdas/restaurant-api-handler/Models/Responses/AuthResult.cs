@@ -10,9 +10,6 @@ public class AuthResult
     [JsonPropertyName("refreshToken")]
     public required string RefreshToken { get; set; }
 
-    [JsonPropertyName("accessToken")]
-    public required string AccessToken { get; set; }
-
     [JsonPropertyName("expiresIn")]
     public int ExpiresIn { get; set; }
 }
