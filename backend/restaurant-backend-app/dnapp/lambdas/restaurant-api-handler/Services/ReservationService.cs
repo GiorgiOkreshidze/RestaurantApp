@@ -86,9 +86,16 @@ public class ReservationService : IReservationService
             
             // Check if the time slots overlap
             if (newTimeFrom <= existingTimeTo &&
-                newTimeTo >= existingTimeFrom &&
-                existingReservation.UserEmail != user.Email)
+                newTimeTo >= existingTimeFrom)
             {
+                if (existingReservation.UserEmail == user.Email)
+                {
+                    throw new ArgumentException(
+                   $"You already have reservation booked at location " +
+                   $"{location.Address} during the requested time period.");
+
+                }
+
                 throw new ArgumentException(
                     $"Reservation #{reservationRequest.Id} at location " +
                     $"{location.Address} is already booked during the requested time period."
