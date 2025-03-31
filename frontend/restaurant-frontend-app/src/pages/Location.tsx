@@ -40,7 +40,9 @@ export const Location = () => {
 
       <LocationHero />
 
-      <Dishes title="Specialty Dishes" dishes={specialityDishes} />
+      <Container className="mt-[64px]">
+        <Dishes title="Specialty Dishes" dishes={specialityDishes} />
+      </Container>
 
       <Reviews />
     </>

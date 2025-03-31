@@ -1,5 +1,5 @@
 import { Route, Routes, useLocation } from "react-router";
-import { Home, Auth, Location } from "./pages";
+import { Home, Auth, Location, WaiterReservation } from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
@@ -67,11 +67,21 @@ function App() {
         </header>
       )}
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={user?.role === "Waiter" ? <WaiterReservation /> : <Home />}
+        />
+
         <Route path="/signin" element={<Auth />} />
         <Route path="/signup" element={<Auth />} />
         <Route path="/locations/:id" element={<Location />} />
-        <Route path="/reservations" element={<Reservations />} />
+        <Route
+          path="/reservations"
+          element={
+            user?.role === "Waiter" ? <WaiterReservation /> : <Reservations />
+          }
+        />
+
         <Route path="/booking" element={<Booking />} />
       </Routes>
     </>
