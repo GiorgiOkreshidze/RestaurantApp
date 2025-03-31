@@ -17,6 +17,7 @@ import { getPopularDishes } from "./app/thunks/dishesThunks";
 import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
 import { getReservations } from "./app/thunks/reservationsThunks";
 import { selectReservations } from "./app/slices/reservationsSlice";
+import { selectUser } from "./app/slices/userSlice";
 
 function App() {
   const location = useLocation();
@@ -26,6 +27,7 @@ function App() {
   const locations = useSelector(selectLocations);
   const selectOptions = useSelector(selectSelectOptions);
   const reservations = useSelector(selectReservations);
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -50,6 +52,7 @@ function App() {
   }, [dispatch, selectOptions.length]);
 
   useEffect(() => {
+    if (!user) return;
     if (!selectOptions.length) {
       dispatch(getReservations());
     }

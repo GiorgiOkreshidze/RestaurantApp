@@ -5,6 +5,7 @@ import { useAppDispatch } from "@/app/hooks";
 import { register } from "@/app/thunks/userThunks";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 export const useRegForm = () => {
   const dispatch = useAppDispatch();
@@ -98,7 +99,10 @@ export const useRegForm = () => {
       console.log("Registration successful:", result);
       navigate("/signin");
     } catch (error) {
-      console.error("Registration failed:", error);
+      if (error instanceof Error) {
+        console.error("Registration failed:", error);
+        toast.error(error.message);
+      }
     }
   };
 
