@@ -2,14 +2,14 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
-
 namespace automation_qa.Drivers
 {
-    public class WebDriverManager
+    public class BrowserDriverManager
     {
         private IWebDriver? _driver;
 
-        public WebDriverManager()
+        // Конструктор должен иметь то же имя, что и класс
+        public BrowserDriverManager()
         {
             _driver = null;
         }
@@ -31,6 +31,7 @@ namespace automation_qa.Drivers
             }
         }
 
+        // Остальные методы без изменений
         public IWebDriver GetDriver()
         {
             return _driver ?? throw new InvalidOperationException("Driver has not been initialized. Call InitializeDriver first.");
@@ -46,7 +47,6 @@ namespace automation_qa.Drivers
         {
             if (_driver == null)
                 throw new InvalidOperationException("Driver has not been initialized.");
-
             _driver.Manage().Timeouts().ImplicitWait = timeout;
         }
 
@@ -54,7 +54,6 @@ namespace automation_qa.Drivers
         {
             if (_driver == null)
                 throw new InvalidOperationException("Driver has not been initialized.");
-
             _driver.Manage().Window.Maximize();
         }
 
@@ -62,7 +61,6 @@ namespace automation_qa.Drivers
         {
             if (_driver == null)
                 throw new InvalidOperationException("Driver has not been initialized.");
-
             _driver.Navigate().GoToUrl(url);
         }
     }

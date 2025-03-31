@@ -52,23 +52,25 @@ namespace ApiTests
             // First registration
             var (firstStatusCode, _, _) = await _auth.RegisterUser(
                 firstName: "John",
-                lastName: "Smith",
-                email: email
+                lastName: "Doe",
+                email: email,
+                password: _defaultPassword
             );
 
             Assert.That(firstStatusCode, Is.EqualTo(HttpStatusCode.OK),
                 "First registration should be successful");
+            await Task.Delay(1000);
 
             // Repeat registration
             var (secondStatusCode, _, _) = await _auth.RegisterUser(
-                firstName: "Jane",
-                lastName: "Brown",
-                email: email
+                firstName: "John",
+                lastName: "Doe",
+                email: email,
+                password: _defaultPassword
             );
 
-            // Assert - принимаем оба возможных статуса ошибки
-            Assert.That(secondStatusCode, Is.EqualTo(HttpStatusCode.Conflict).Or.EqualTo(HttpStatusCode.InternalServerError),
-                "Repeated registration should be prohibited (either as Conflict or InternalServerError)");
+            Assert.That(secondStatusCode, Is.EqualTo(HttpStatusCode.Conflict),
+                 "Repeated registration should be prohibited (Conflict expected)");
         }
 
         [Test]
