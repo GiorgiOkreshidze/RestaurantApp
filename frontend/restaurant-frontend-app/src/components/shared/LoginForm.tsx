@@ -79,7 +79,7 @@ export function LoginForm({ className, ...props }: ComponentProps<"form">) {
                   {formState.errors.password?.message ? (
                     <FormMessage />
                   ) : (
-                    <FormDescription></FormDescription>
+                    <FormDescription />
                   )}
                 </FormItem>
               );
@@ -92,13 +92,13 @@ export function LoginForm({ className, ...props }: ComponentProps<"form">) {
           disabled={isLoading}
         >
           {isLoading ? (
-            <span className="animate-spin border-2 border-t-transparent border-white w-5 h-5 rounded-full"></span>
+            <span className="animate-spin border-2 border-t-transparent border-white w-5 h-5 rounded-full" />
           ) : (
             "Sign In"
           )}
         </Button>
         <Text className="mt-[16px]" variant="caption">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <CustomLink asChild>
             <Link to="/signup">Create an Account</Link>
           </CustomLink>

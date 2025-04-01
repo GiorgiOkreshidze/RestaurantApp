@@ -44,7 +44,7 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
-export interface UserDataResponse extends Omit<User, "tokens"> {}
+export type UserDataResponse = Omit<User, "tokens">;
 
 export interface RegistrationFields extends UserFields {
   confirmPassword: string;
@@ -74,16 +74,6 @@ export interface Dish {
   imageUrl: string;
 }
 
-export interface Location {
-  id: string;
-  address: string;
-  description: string;
-  totalCapacity: string;
-  averageOccupancy: string;
-  imageUrl: string;
-  rating: string;
-}
-
 export interface Review {
   name: string;
   date: string;
@@ -92,43 +82,12 @@ export interface Review {
   image: string;
 }
 
-export type ReservationStatus =
-  | "Reserved"
-  | "In Progress"
-  | "Canceled"
-  | "Finished";
-
-export interface Reservation {
-  date: string;
-  feedbackId: string;
-  guests: string;
+export interface RichTimeSlot {
   id: string;
-  locationAddress: string;
-  preOrder: string;
-  status: ReservationStatus;
-  tableNumber: string;
-  timeSlot: string;
-  userInfo: string;
-}
-
-export interface Table {
-  tableId: string;
-  capacity: string;
-  availableSlots: { start: string; end: string }[];
-  locationAddress: string;
-  locationId: string;
-  tableNumber: string;
-}
-
-export interface GetTablesParams {
-  date: string;
-  locationId: string;
-  guests?: string;
-  time?: string;
-}
-
-export interface BookingFilters {
-  locationId: string;
-  dateTime: string;
-  guests: number;
+  startString: string;
+  endString: string;
+  rangeString: string;
+  startDate: string;
+  endDate: string;
+  isPast: boolean;
 }

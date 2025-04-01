@@ -9,9 +9,15 @@ import { Booking } from "./pages/Booking";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "./app/hooks";
 import { selectPopularDishes } from "./app/slices/dishesSlice";
-import { selectLocations } from "./app/slices/locationsSlice";
+import {
+  selectLocations,
+  selectSelectOptions,
+} from "./app/slices/locationsSlice";
 import { getPopularDishes } from "./app/thunks/dishesThunks";
-import { getLocations } from "./app/thunks/locationsThunks";
+import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
+import { getReservations } from "./app/thunks/reservationsThunks";
+import { selectReservations } from "./app/slices/reservationsSlice";
+import { selectUser } from "./app/slices/userSlice";
 
 function App() {
   const location = useLocation();
@@ -19,6 +25,9 @@ function App() {
   const dispatch = useAppDispatch();
   const popularDishes = useSelector(selectPopularDishes);
   const locations = useSelector(selectLocations);
+  const selectOptions = useSelector(selectSelectOptions);
+  const reservations = useSelector(selectReservations);
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -35,6 +44,19 @@ function App() {
       dispatch(getLocations());
     }
   }, [dispatch, locations.length]);
+
+  useEffect(() => {
+    if (!selectOptions.length) {
+      dispatch(getSelectOptions());
+    }
+  }, [dispatch, selectOptions.length]);
+
+  useEffect(() => {
+    if (!user) return;
+    if (!selectOptions.length) {
+      dispatch(getReservations());
+    }
+  }, [dispatch, reservations.length, selectOptions.length]);
 
   return (
     <>

@@ -8,6 +8,14 @@
           "price": { "S": "17.50" },
           "weight": { "S": "450g" },
           "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/chicken-tikka-masala.jpg" },
+          "calories": { "S": "480 kcal" },
+          "carbohydrates": { "S": "15-20 g" },
+          "description": { "S": "A classic Indian dish featuring tender chicken marinated in a rich, creamy tomato-based sauce. Perfectly spiced and served with fragrant basmati rice, this Chicken Tikka Masala offers a delightful blend of traditional flavors and modern culinary excellence." },
+          "dishType": { "S": "MainCourse" },
+          "fats": { "S": "28-32 g" },
+          "proteins": { "S": "35-40 g" },
+          "state": { "S": "Active" },
+          "vitamins": { "S": "Vitamin B6, Vitamin B12, Vitamin D" },
           "isPopular": { "BOOL": true },
           "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" }
         }
@@ -21,6 +29,14 @@
           "price": { "S": "9.99" },
           "weight": { "S": "350g" },
           "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/cheeseburger.jpg" },
+          "calories": { "S": "550 kcal" },
+          "carbohydrates": { "S": "35-40 g" },
+          "description": { "S": "Our signature cheeseburger features a juicy beef patty topped with melted cheddar cheese, fresh lettuce, ripe tomatoes, and our secret house sauce. Served on a toasted brioche bun, it's the ultimate comfort food for burger lovers." },
+          "dishType": { "S": "Appetizers" },
+          "fats": { "S": "38-42 g" },
+          "proteins": { "S": "25-30 g" },
+          "state": { "S": "Active" },
+          "vitamins": { "S": "Vitamin B12, Calcium, Zinc" },
           "isPopular": { "BOOL": true },
           "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" }
         }
@@ -34,6 +50,14 @@
           "price": { "S": "25.99" },
           "weight": { "S": "600g" },
           "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/sushi-platter.jpg" },
+          "calories": { "S": "420 kcal" },
+          "carbohydrates": { "S": "40-45 g" },
+          "description": { "S": "An exquisite selection of premium sushi featuring fresh salmon, tuna, and yellowtail nigiri, accompanied by California rolls and vegetable maki. Garnished with pickled ginger, wasabi, and served with authentic soy sauce." },
+          "dishType": { "S": "Appetizers" },
+          "fats": { "S": "15-20 g" },
+          "proteins": { "S": "35-40 g" },
+          "state": { "S": "On Stop" },
+          "vitamins": { "S": "Omega-3, Vitamin D, Vitamin B12" },
           "isPopular": { "BOOL": false },
           "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" }
         }
@@ -47,8 +71,37 @@
           "price": { "S": "10.99" },
           "weight": { "S": "450g" },
           "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/mac-and-cheese.jpg" },
+          "calories": { "S": "620 kcal" },
+          "carbohydrates": { "S": "55-60 g" },
+          "description": { "S": "Creamy, indulgent mac and cheese made with a blend of sharp cheddar and gruyère cheeses. Topped with a crispy golden breadcrumb crust and baked to perfection. A comforting classic with a gourmet twist." },
+          "dishType": { "S": "Desserts" },
+          "fats": { "S": "35-40 g" },
+          "proteins": { "S": "20-25 g" },
+          "state": { "S": "Active" },
+          "vitamins": { "S": "Calcium, Vitamin A, Vitamin B12" },
           "isPopular": { "BOOL": true },
           "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "322846d5c951184d705b65d2" },
+          "name": { "S": "Fresh Strawberry Mint Salad" },
+          "price": { "S": "12" },
+          "weight": { "S": "430 g" },
+          "imageUrl": { "S": "https://green-and-tasty.s3.eu-central-1.amazonaws.com/img/ff7863bf-63eb-4f2e-8041-75a81507acff.jpg" },
+          "calories": { "S": "503 kcal" },
+          "carbohydrates": { "S": "30-35 g" },
+          "description": { "S": "A refreshing summer salad featuring sweet, ripe strawberries, crisp mixed greens, and fresh mint leaves. Drizzled with a light honey-lime vinaigrette and topped with toasted almonds for a delightful crunch." },
+          "dishType": { "S": "Appetizers" },
+          "fats": { "S": "33-35 g" },
+          "proteins": { "S": "18-30 g" },
+          "state": { "S": "On Stop" },
+          "vitamins": { "S": "Vitamin C, Vitamin A, calcium and iron" },
+          "isPopular": { "BOOL": false },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" }
         }
       }
     }

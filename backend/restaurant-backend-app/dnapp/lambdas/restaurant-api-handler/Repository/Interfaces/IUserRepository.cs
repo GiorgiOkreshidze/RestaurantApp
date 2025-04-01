@@ -7,6 +7,10 @@ namespace Function.Repository.Interfaces;
 public interface IUserRepository
 {
     Task<User> AddUserAsync(User user);
+
     Task<User> GetUserByEmailAsync(string email);
+
     Task<List<User>> GetAllCustomersAsync();
+
+    Task<User?> GetUserByIdAsync(string id);
 }

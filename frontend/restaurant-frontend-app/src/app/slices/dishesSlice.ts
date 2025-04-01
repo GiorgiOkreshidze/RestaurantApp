@@ -1,4 +1,4 @@
-import { Dish } from "@/types";
+import type { Dish } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 import { getPopularDishes } from "../thunks/dishesThunks";
 

@@ -193,6 +193,36 @@
           "default_error_pattern": true
         }
       },
+      "/dishes": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "restaurant-api-handler",
+          "enable_proxy": true,
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/dishes/{id}": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "restaurant-api-handler",
+          "enable_proxy": true,
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
       "/bookings/tables": {
         "enable_cors": true,
         "GET": {
@@ -303,6 +333,22 @@
           "default_error_pattern": true
         }
       },
+      "/reservations/waiter": {
+        "enable_cors": true,
+        "POST": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "restaurant-api-handler",
+          "enable_proxy": true,
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      }
+      },
       "/reservations/{id}/complete": {
         "enable_cors": true,
         "POST": {
@@ -397,7 +443,19 @@
         "index_key_type": "S",
         "index_sort_key_name": "date",
         "index_sort_key_type": "S"
-      }
+    },
+      {
+        "name": "${reservations_table_user_email_index_name}",
+        "index_key_name": "userEmail",
+        "index_key_type": "S"
+      },
+      {
+        "name": "${reservations_table_waiter_index}",
+        "index_key_name": "waiterId",
+        "index_key_type": "S",
+        "index_sort_key_name": "date",
+        "index_sort_key_type": "S"
+}
     ],
     "autoscaling": [],
     "tags": {}
@@ -486,7 +544,7 @@
     "resource_type": "eventbridge_rule",
     "rule_type": "schedule",
     "tags": {},
-    "expression": "cron(0 0 * * SUN *)"
+    "expression": "rate(7 days)"
   },
   "reports_handler_policy": {
     "policy_content": {
@@ -503,7 +561,10 @@
             "dynamodb:DeleteItem",
             "dynamodb:Scan",
             "dynamodb:DescribeTable",
-            "dynamodb:UpdateItem"
+            "dynamodb:UpdateItem",
+            "sqs:ReceiveMessage",
+            "sqs:DeleteMessage",
+            "sqs:GetQueueAttributes"
           ],
           "Effect": "Allow",
           "Resource": "*"

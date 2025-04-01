@@ -10,6 +10,6 @@ namespace Function.Models.Reservations
     {
         public string Date { get; set; } = string.Empty;
         public string TimeFrom { get; set; } = string.Empty;
-        public string TableNumber { get; set; } = string.Empty;
+        public string TableId { get; set; } = string.Empty;
     }
 }

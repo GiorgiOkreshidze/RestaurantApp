@@ -24,6 +24,8 @@
     "DYNAMODB_RESERVATIONS_TABLE_NAME": "${reservations_table}",
     "DYNAMODB_USERS_TABLE_NAME": "${users_table}",
     "DYNAMODB_RESERVATIONS_TABLE_LOCATION_INDEX": "${reservations_table_location_date_index}",
+    "DYNAMODB_RESERVATIONS_TABLE_USER_EMAIL_INDEX": "${reservations_table_user_email_index_name}",
+    "DYNAMODB_RESERVATIONS_TABLE_WAITER_ID_INDEX": "${reservations_table_waiter_index}",
     "COGNITO_USER_POOL_NAME": "${restaurant_userpool}",
     "COGNITO_USER_POOL_ID": {
       "resource_name": "${restaurant_userpool}",

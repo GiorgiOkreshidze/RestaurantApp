@@ -48,3 +48,7 @@ project.lock.json
 *.bak
 *.swp
 ~$*.*
+
+# Specific files to ignore
+launchSettings.json
+aws-lambda-tools-defaults.json

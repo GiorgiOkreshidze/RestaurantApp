@@ -140,8 +140,8 @@ body {
 }
 
 #root {
-  /* display: flex; */
-  /* flex-direction: column; */
+  display: flex;
+  flex-direction: column;
   min-block-size: 100vh;
 }
 

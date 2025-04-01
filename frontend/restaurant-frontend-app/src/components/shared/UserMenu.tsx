@@ -23,11 +23,11 @@ export const UserMenu = () => {
 
   return (
     <DropdownMenu>
-      <Button asChild variant="tertiary" size="sm">
-        <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
+        <Button variant="tertiary" size="sm">
           <UserCircledIcon className="size-[24px]" />
-        </DropdownMenuTrigger>
-      </Button>
+        </Button>
+      </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
         className="bg-neutral-0 p-0 shadow-card rounded border-none min-w-[216px]"

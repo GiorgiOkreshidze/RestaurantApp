@@ -6,6 +6,8 @@ using Amazon.DynamoDBv2.Model;
 using Function.Models.Responses;
 using System;
 using System.Globalization;
+using Function.Models.Dishes;
+using Function.Models.Reservations;
 using Function.Models.User;
 
 namespace Function.Mappers;
@@ -39,15 +41,56 @@ public class Mapper
             LocationId = doc.TryGetValue("locationId", out var locationId) ? locationId : "",
         }).ToList();
     }
-    
+
+    public static List<ExactDishResponse> MapDocumentsToExactDishResponseDtos(List<Document> documentList)
+    {
+        var result = documentList.Select(doc => new ExactDishResponse
+        {
+            Id = doc.TryGetValue("id", out var id) ? id : "",
+            ImageUrl = doc.TryGetValue("imageUrl", out var imageUrl) ? imageUrl : "",
+            Name = doc.TryGetValue("name", out var name) ? name : "",
+            Price = doc.TryGetValue("price", out var price) ? $"${price}" : "",
+            Weight = doc.TryGetValue("weight", out var weight) ? weight : "",
+            DishType = doc.TryGetValue("dishType", out var dishType) ? dishType : "",
+            State = doc.TryGetValue("state", out var state) ? state : "",
+            Description = doc.TryGetValue("description", out var description) ? description : "",
+            Calories = doc.TryGetValue("calories", out var calories) ? calories : "",
+            Carbohydrates = doc.TryGetValue("carbohydrates", out var carbohydrates) ? carbohydrates : "",
+            Fats = doc.TryGetValue("fats", out var fats) ? fats : "",
+            Proteins = doc.TryGetValue("proteins", out var proteins) ? proteins : "",
+            Vitamins = doc.TryGetValue("vitamins", out var vitamins) ? vitamins : ""
+        }).ToList();
+
+        return result;
+    }
+
+    public static List<AllDishResponse> MapDocumentsToDishesResponseDtos(List<Document> documentList)
+    {
+        return documentList.Select(doc => new AllDishResponse
+        {
+            Id = doc.TryGetValue("id", out var id) ? id : "",
+            PreviewImageUrl = doc.TryGetValue("imageUrl", out var imageUrl) ? imageUrl : "",
+            Name = doc.TryGetValue("name", out var name) ? name : "",
+            Price = doc.TryGetValue("price", out var price) ? price : "",
+            Weight = doc.TryGetValue("weight", out var weight) ? weight : "",
+            DishType = doc.TryGetValue("dishType", out var dishType) ? dishType : "",
+            State = doc.TryGetValue("state", out var state) ? state : "",
+            IsPopular = doc.TryGetValue("isPopular", out var isPopular) && isPopular.AsBoolean()
+        }).ToList();
+    }
+
     public static List<Reservation> MapItemsToReservations(List<Dictionary<string, AttributeValue>> items)
     {
         return items.Select(item => new Reservation
         {
             Id = item.TryGetValue("id", out var idValue) ? idValue.S : string.Empty,
             Date = item.TryGetValue("date", out var dateValue) ? dateValue.S : string.Empty,
-            GuestsNumber = item.TryGetValue("guestsNumber", out var guestsNumberValue) ? guestsNumberValue.S : string.Empty,
-            LocationAddress = item.TryGetValue("locationAddress", out var locationAddressValue) ? locationAddressValue.S : string.Empty,
+            GuestsNumber = item.TryGetValue("guestsNumber", out var guestsNumberValue)
+                ? guestsNumberValue.S
+                : string.Empty,
+            LocationAddress = item.TryGetValue("locationAddress", out var locationAddressValue)
+                ? locationAddressValue.S
+                : string.Empty,
             LocationId = item.TryGetValue("locationId", out var locationIdValue) ? locationIdValue.S : string.Empty,
             TableId = item.TryGetValue("tableId", out var tableIdValue) ? tableIdValue.S : string.Empty,
             TableNumber = item.TryGetValue("tableNumber", out var tableNumberValue) ? tableNumberValue.S : string.Empty,
@@ -70,7 +113,9 @@ public class Mapper
             Id = doc.TryGetValue("id", out var id) ? id : string.Empty,
             Date = doc.TryGetValue("date", out var date) ? date : string.Empty,
             GuestsNumber = doc.TryGetValue("guestsNumber", out var guestsNumber) ? guestsNumber : string.Empty,
-            LocationAddress = doc.TryGetValue("locationAddress", out var locationAddress) ? locationAddress : string.Empty,
+            LocationAddress = doc.TryGetValue("locationAddress", out var locationAddress)
+                ? locationAddress
+                : string.Empty,
             LocationId = doc.TryGetValue("locationId", out var locationId) ? locationAddress : string.Empty,
             TableId = doc.TryGetValue("tableId", out var tableId) ? tableId : string.Empty,
             TableNumber = doc.TryGetValue("tableNumber", out var tableNumber) ? tableNumber : string.Empty,
@@ -84,6 +129,10 @@ public class Mapper
             CreatedAt = doc.TryGetValue("createdAt", out var createAtValue) ? createAtValue : string.Empty,
             WaiterId = doc.TryGetValue("waiterId", out var waiterId) ? waiterId : string.Empty,
             UserEmail = doc.TryGetValue("userEmail", out var userEmail) ? userEmail : string.Empty,
+            ClientType = doc.TryGetValue("clientType", out var clientType) && 
+                         Enum.TryParse<ClientType>(clientType, out var parsedClientType) 
+                ? parsedClientType 
+                : ClientType.VISITOR,
         }).ToList();
     }
 
@@ -105,18 +154,20 @@ public class Mapper
             EditableTill = CalculateEditableTill(reservation)
         }).ToList();
     }
+
     private static string CalculateEditableTill(Reservation reservation)
     {
         var editableTillTime = "";
 
-        if (DateTime.TryParseExact(reservation.TimeFrom, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedTime))
+        if (DateTime.TryParseExact(reservation.TimeFrom, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None,
+                out DateTime parsedTime))
         {
             // Subtract 30 minutes
             DateTime newTime = parsedTime.AddMinutes(-30);
             // Return the result in the same "HH:mm" format
             editableTillTime = newTime.ToString("HH:mm");
         }
-        
+
         var editableTill = $"{reservation.Date} {editableTillTime}";
 
         return editableTill;
@@ -137,10 +188,10 @@ public class Mapper
         };
         return feedback;
     }
-    
+
     public static List<User> MapDocumentsToUsers(List<Document> documentList)
     {
-        return documentList.Select(doc => 
+        return documentList.Select(doc =>
         {
             doc.TryGetValue("id", out var id);
             doc.TryGetValue("firstName", out var firstName);
@@ -149,6 +200,7 @@ public class Mapper
             doc.TryGetValue("role", out var roleStr);
             doc.TryGetValue("locationId", out var locationId);
             doc.TryGetValue("createdAt", out var createdAt);
+            doc.TryGetValue("imageUrl", out var imageUrl);
 
             Enum.TryParse<Roles>(roleStr, out var parsedRole);
 
@@ -160,7 +212,8 @@ public class Mapper
                 Email = email ?? "",
                 Role = parsedRole,
                 LocationId = locationId ?? "",
-                CreatedAt = createdAt ?? ""
+                CreatedAt = createdAt ?? "",
+                ImageUrl = imageUrl ?? ""
             };
         }).ToList();
     }
