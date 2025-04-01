@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Function.Models
+{
+    public class SummaryEntry
+    {
+        public string Location { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string WaiterName { get; set; }
+        public string WaiterEmail { get; set; }
+        public int CurrentHours { get; set; }
+        public int NextHours { get; set; }
+        public int DeltaHours { get; set; }
+    }
+}

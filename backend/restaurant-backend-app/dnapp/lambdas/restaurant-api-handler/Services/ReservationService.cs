@@ -217,6 +217,16 @@ public class ReservationService : IReservationService
             throw new ArgumentException("Reservations cannot be modified within 30 minutes of start time");
         }
     }
+    public async Task<bool> CompleteReservationAsync(string reservationId)
+    {
+        var reservation = await _reservationRepository.GetReservationByIdAsync(reservationId);
+        reservation.Status = Status.Finished.ToString();
+
+        await _reservationRepository.UpsertReservationAsync(reservation);
+        await SendEventToSQS("reservation", reservation);
+
+        return true;
+    }
 
 
     private async Task SendEventToSQS<T>(string eventType, T payload)
@@ -241,5 +251,5 @@ public class ReservationService : IReservationService
         };
 
         await _amazonSqsClient.SendMessageAsync(sendMessageRequest);
-    }
+    } 
 }
