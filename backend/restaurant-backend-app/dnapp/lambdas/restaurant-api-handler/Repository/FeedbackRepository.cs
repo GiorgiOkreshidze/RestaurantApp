@@ -8,6 +8,7 @@ using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Function.Mappers;
 using Function.Models;
+using Function.Models.Feedbacks;
 using Function.Models.Responses;
 using Function.Repository.Interfaces;
 
@@ -15,28 +16,62 @@ namespace Function.Repository;
 
 public class FeedbackRepository : IFeedbackRepository
 {
-    private readonly AmazonDynamoDBClient _dynamoDBClient;
-    
+    private readonly AmazonDynamoDBClient _dynamoDbClient;
     private readonly string? _locationFeedbacksTableName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TABLE");
     private readonly string? _locationFeedbacksRatingByTypeIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TYPE_RATING_INDEX");
     private readonly string? _locationFeedbacksDateIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_DATE_INDEX");
     private readonly string? _locationFeedbacksRatingIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_RATING_INDEX");
     private readonly string? _locationFeedbacksDateByTypeIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TYPE_DATE_INDEX");
-    
+    private readonly string? _reservationFeedbacksTableName = Environment.GetEnvironmentVariable("DYNAMODB_RESERVATION_FEEDBACKS_TABLE");
+
     public FeedbackRepository()
     {
-        _dynamoDBClient = new AmazonDynamoDBClient();
+        _dynamoDbClient = new AmazonDynamoDBClient();
     }
     
     public async Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(
         LocationFeedbackQueryParameters queryParameters)
     {
         var request = BuildQueryRequest(queryParameters);
-        var response = await _dynamoDBClient.QueryAsync(request);
+        var response = await _dynamoDbClient.QueryAsync(request);
         var nextToken = GetNextToken(response.LastEvaluatedKey);
         var feedbacks = response.Items.Select(Mapper.MapToLocationFeedbackResponse).ToList();
 
         return (feedbacks, nextToken);
+    }
+
+    public async Task<ReservationFeedback> UpsertReservationFeedbackAsync(ReservationFeedback feedback)
+    {
+        var updateItemRequest = new UpdateItemRequest
+        {
+            TableName = _reservationFeedbacksTableName,
+            Key = new Dictionary<string, AttributeValue>
+            {
+                {
+                    "reservationId", new AttributeValue { S = feedback.ReservationId }
+                }
+            },
+            UpdateExpression =
+                "SET #cuisineComment = :cuisineComment, #serviceComment = :serviceComment, " +
+                "#cuisineRating = :cuisineRating, #serviceRating = :serviceRating",
+            ExpressionAttributeNames = new Dictionary<string, string>
+            {
+                { "#cuisineComment", "cuisineComment" },
+                { "#serviceComment", "serviceComment" },
+                { "#cuisineRating", "cuisineRating" },
+                { "#serviceRating", "serviceRating" }
+            },
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":cuisineComment", new AttributeValue { S = feedback.CuisineComment } },
+                { ":serviceComment", new AttributeValue { S = feedback.ServiceComment } },
+                { ":cuisineRating", new AttributeValue { S = feedback.CuisineRating } },
+                { ":serviceRating", new AttributeValue { S = feedback.ServiceRating } },
+            }
+        };
+        
+        await _dynamoDbClient.UpdateItemAsync(updateItemRequest);
+        return feedback;
     }
 
     private QueryRequest BuildQueryRequest(LocationFeedbackQueryParameters queryParameters)

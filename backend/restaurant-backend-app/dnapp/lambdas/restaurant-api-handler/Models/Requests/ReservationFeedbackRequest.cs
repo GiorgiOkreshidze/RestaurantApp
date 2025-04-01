@@ -2,16 +2,7 @@
 
 namespace Function.Models.Requests;
 
-/*
- * {
-  "cuisineComment": "Good food",
-  "cuisineRating": "4",
-  "reservationId": "672846d5c951184d705b65d7",
-  "serviceComment": "Good service, good atmosphere",
-  "serviceRating": "5"
-}
-*/
-public class FeedbackRequest
+public class ReservationFeedbackRequest
 {
     [JsonPropertyName("reservationId")]
     public string ReservationId { get; set; }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
 using Function.Models;
+using Function.Models.Feedbacks;
 using Function.Models.Requests;
 using Function.Models.Responses;
 using Function.Repository;
@@ -15,11 +17,13 @@ public class FeedbackService : IFeedbackService
 {
     private readonly IFeedbackRepository _feedbackRepository;
     private readonly IReservationRepository _reservationRepository;
+    private readonly IUserRepository _userRepository;
     
     public FeedbackService()
     {
         _feedbackRepository = new FeedbackRepository();
         _reservationRepository = new ReservationRepository();
+        _userRepository = new UserRepository();
     }
     
     public async Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters queryParameters)
@@ -27,51 +31,49 @@ public class FeedbackService : IFeedbackService
         return await _feedbackRepository.GetLocationFeedbacksAsync(queryParameters);
     }
     
-    public async Task AddFeedbackAsync(FeedbackRequest feedbackRequest)
+    public async Task AddFeedbackAsync(ReservationFeedbackRequest reservationFeedbackRequest, string userId)
     {
-        //get reservationId from db
-        var reservation = await _reservationRepository.GetReservationByIdAsync(feedbackRequest.ReservationId);
-        
-        // check if reservation belongs to user
-        if (reservation.UserEmail != fetchCurrentUserFromToken().userEmail)
-        {
-            throw new UnauthorizedException("You are not authorized to add feedback for this reservation");
-        }
-        
+        var reservation = await _reservationRepository.GetReservationByIdAsync(reservationFeedbackRequest.ReservationId);
+        var user = await _userRepository.GetUserByIdAsync(userId);
 
+        if (user is null) throw new UnauthorizedException("User is not registered");
+
+        if (reservation.UserEmail != user.Email)
+            throw new UnauthorizedException("You are not authorized to add feedback for this reservation");
         
-        // check if reservation is in status "In Progress" or "Completed" / otherwise throw argument exception
-        if (reservation.Status != ReservationStatus.InProgress && reservation.Status != ReservationStatus.Completed)
+        if (reservation.Status != GetEnumDescription(ReservationStatus.InProgress) && 
+            reservation.Status != GetEnumDescription(ReservationStatus.Finished)) 
+            throw new ArgumentException("Reservation should be in status 'In Progress' or 'Finished'");
+
+        if (int.TryParse(reservationFeedbackRequest.CuisineRating, out var cuisineRating) &&
+            int.TryParse(reservationFeedbackRequest.ServiceRating, out var serviceRating))
         {
-            throw new ArgumentException("Reservation is not in progress or completed");
-        }
-        
-        // check that rating can not be negative and no more then 5
-        if (int.TryParse(feedbackRequest.CuisineRating, out var cuisineRating) && int.TryParse(feedbackRequest.ServiceRating, out var serviceRating))
-        {
-            if (cuisineRating < 0 || cuisineRating > 5)
-            {
-                throw new ArgumentException("Cuisine rating must be between 0 and 5");
-            }
-            if (serviceRating < 0 || serviceRating > 5)
-            {
-                throw new ArgumentException("Service rating must be between 0 and 5");
-            }
+            if (cuisineRating is < 0 or > 5) throw new ArgumentException("Cuisine rating must be between 0 and 5");
+            
+            if (serviceRating is < 0 or > 5) throw new ArgumentException("Service rating must be between 0 and 5");
         }
         else
         {
-            throw new ArgumentException("Cuisine rating and Service rating must be numbers");
+            throw new ArgumentException("Cuisine and Service rating must be numbers and between 0 and 5");
         }
+
+
+        var feedback = new ReservationFeedback
+        {
+            ReservationId = reservationFeedbackRequest.ReservationId,
+            CuisineComment = reservationFeedbackRequest.CuisineComment,
+            ServiceComment = reservationFeedbackRequest.ServiceComment,
+            CuisineRating = reservationFeedbackRequest.CuisineRating,
+            ServiceRating = reservationFeedbackRequest.ServiceRating,
+        };
         
-        // Check if reservation alredy has feedback if yes update it
-        var feedback = await _feedbackRepository.GetFeedbackByReservationIdAsync(feedbackRequest.ReservationId);
-        if (feedback != null)
-        {
-            await _feedbackRepository.UpdateFeedbackAsync(feedbackRequest, feedback);
-        }
-        else
-        {
-            await _feedbackRepository.AddFeedbackAsync(feedbackRequest);
-        }
+        await _feedbackRepository.UpsertReservationFeedbackAsync(feedback);
+    }
+
+    private static string GetEnumDescription(Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+        return attribute == null ? value.ToString() : attribute.Description;
     }
 }
