@@ -21,6 +21,7 @@ export { DatePicker } from "./DatePicker";
 export { TableCard } from "./TableCard";
 export { TimeSlot } from "./TimeSlot";
 export { Select } from "./Select";
+export { SelectMini } from "./SelectMini";
 export { PageBody } from "./PageBody";
 export { PageBodySection } from "./PageBody";
 export { PageBodyHeader } from "./PageBody";

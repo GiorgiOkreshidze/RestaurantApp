@@ -39,6 +39,7 @@ const refreshTokenRequest = async (store: Store<RootState>) => {
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
+  skipRefreshToken?: boolean;
 }
 
 const addInterceptors = (store: Store<RootState>) => {
@@ -46,11 +47,7 @@ const addInterceptors = (store: Store<RootState>) => {
     const user = store.getState().users.user;
     if (user?.tokens) {
       config.headers["Authorization"] = `Bearer ${user.tokens.idToken}`;
-      console.log(config.url);
       config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
-      // if (config.url === "users/profile") {
-      //   config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
-      // }
     }
     return config;
   });
@@ -62,17 +59,21 @@ const addInterceptors = (store: Store<RootState>) => {
         | CustomAxiosRequestConfig
         | undefined;
 
+      const isAuthRequest = originalRequest?.url?.includes("signin");
+
       if (
         error.response?.status === 401 &&
         originalRequest &&
-        !originalRequest._retry
+        !originalRequest._retry &&
+        !isAuthRequest &&
+        !originalRequest.skipRefreshToken
       ) {
         if (isRefreshing) {
           return new Promise((resolve) => {
             refreshSubscribers.push((tokens) => {
-              console.log("tokens:", tokens);
-              originalRequest.headers["Authorization"] =
-                `Bearer ${tokens.idToken}`;
+              originalRequest.headers[
+                "Authorization"
+              ] = `Bearer ${tokens.idToken}`;
               originalRequest.headers["X-Amz-Security-Token"] =
                 tokens.accessToken;
               resolve(axiosApi(originalRequest));
@@ -89,8 +90,9 @@ const addInterceptors = (store: Store<RootState>) => {
           refreshSubscribers = [];
           isRefreshing = false;
 
-          originalRequest.headers["Authorization"] =
-            `Bearer ${newTokens.idToken}`;
+          originalRequest.headers[
+            "Authorization"
+          ] = `Bearer ${newTokens.idToken}`;
           originalRequest.headers["X-Amz-Security-Token"] =
             newTokens.accessToken;
 
@@ -102,9 +104,18 @@ const addInterceptors = (store: Store<RootState>) => {
       }
 
       return Promise.reject(error);
-    },
+    }
   );
 };
 
-export { addInterceptors };
+const createAuthRequest = (
+  config: InternalAxiosRequestConfig
+): CustomAxiosRequestConfig => {
+  return {
+    ...config,
+    skipRefreshToken: true,
+  };
+};
+
+export { addInterceptors, createAuthRequest };
 export default axiosApi;

@@ -20,8 +20,6 @@ import { selectReservations } from "./app/slices/reservationsSlice";
 import { ProtectedRoute } from "./components/routeComponents/ProtectedRoute";
 import { PublicRoute } from "./components/routeComponents/PublicRoute";
 
-
-
 function App() {
   const location = useLocation();
   const hideNavBar = ["/signin", "/signup"].includes(location.pathname);
@@ -30,7 +28,6 @@ function App() {
   const locations = useSelector(selectLocations);
   const selectOptions = useSelector(selectSelectOptions);
   const reservations = useSelector(selectReservations);
-  const user = useSelector(selectUser);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -60,7 +57,6 @@ function App() {
     }
   }, [dispatch, reservations.length, selectOptions.length]);
 
- 
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} theme="light" />
