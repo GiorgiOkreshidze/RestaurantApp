@@ -46,7 +46,7 @@ const addInterceptors = (store: Store<RootState>) => {
     const user = store.getState().users.user;
     if (user?.tokens) {
       config.headers["Authorization"] = `Bearer ${user.tokens.idToken}`;
-      console.log(config.url);
+      // console.log(config.url);
       config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
       // if (config.url === "users/profile") {
       //   config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
@@ -61,7 +61,7 @@ const addInterceptors = (store: Store<RootState>) => {
       console.log(
         "Interceptor caught error:",
         error.response?.status,
-        error.config?.url
+        error.config?.url,
       );
 
       const originalRequest = error.config as
@@ -80,10 +80,9 @@ const addInterceptors = (store: Store<RootState>) => {
           return new Promise((resolve) => {
             refreshSubscribers.push((tokens) => {
               console.log("Retrying request with new tokens:", tokens);
-              originalRequest.headers[
-                "Authorization"
-              ] = `Bearer ${tokens.idToken}`;
-              
+              originalRequest.headers["Authorization"] =
+                `Bearer ${tokens.idToken}`;
+
               resolve(axiosApi(originalRequest));
             });
           });
@@ -98,9 +97,8 @@ const addInterceptors = (store: Store<RootState>) => {
           isRefreshing = false;
 
           console.log("Successfully refreshed tokens. Retrying request...");
-          originalRequest.headers[
-            "Authorization"
-          ] = `Bearer ${newTokens.idToken}`;
+          originalRequest.headers["Authorization"] =
+            `Bearer ${newTokens.idToken}`;
 
           return axiosApi(originalRequest);
         } catch (err) {
@@ -111,7 +109,7 @@ const addInterceptors = (store: Store<RootState>) => {
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 };
 

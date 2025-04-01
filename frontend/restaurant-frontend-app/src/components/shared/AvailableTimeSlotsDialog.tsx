@@ -12,7 +12,7 @@ import { format } from "date-fns";
 import { ReservationDialog } from "./ReservationDialog";
 import { TimeSlot } from "./TimeSlot";
 import { TableUI } from "@/types/tables.types";
-import { useBookingFormStore } from "@/app/useBookingFormStore";
+import { useBookingFormStore } from "@/hooks/useBookingFormStore";
 import { RichTimeSlot } from "@/types";
 
 export const AvailableTimeSlotsDialog = ({

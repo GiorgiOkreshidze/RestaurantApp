@@ -6,7 +6,7 @@ import {
   timeString24hToTimeString12h,
 } from "@/utils/dateTime";
 import { ReservationDialog } from "./ReservationDialog";
-import { useBookingFormStore } from "@/app/useBookingFormStore";
+import { useBookingFormStore } from "@/hooks/useBookingFormStore";
 import { TimeSlot } from "./TimeSlot";
 import { isPast, isToday } from "date-fns";
 import { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";

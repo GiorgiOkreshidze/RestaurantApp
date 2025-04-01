@@ -91,3 +91,7 @@ export interface RichTimeSlot {
   endDate: string;
   isPast: boolean;
 }
+
+export interface LocationTable {
+  tableNumber: string;
+}

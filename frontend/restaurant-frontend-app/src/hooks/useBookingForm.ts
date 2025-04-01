@@ -1,11 +1,11 @@
-import { useBookingFormStore } from "@/app/useBookingFormStore";
+import { useBookingFormStore } from "@/hooks/useBookingFormStore";
 import {
   dateObjToDateStringServer,
   timeString24hToDateObj,
 } from "@/utils/dateTime";
 import { useEffect, type FormEvent } from "react";
 import { useAppDispatch } from "../app/hooks";
-import { fetchTables } from "@/app/thunks/tablesThunk";
+import { getTables } from "@/app/thunks/tablesThunk";
 import { isPast } from "date-fns";
 import { useSelector } from "react-redux";
 import { selectSelectOptions } from "@/app/slices/locationsSlice";
@@ -41,7 +41,7 @@ export const useBookingForm = () => {
     }
     try {
       await dispatch(
-        fetchTables({
+        getTables({
           locationId,
           date: dateObjToDateStringServer(date),
           guests: String(guests),

@@ -1,11 +1,13 @@
 import {
   Container,
   DatePicker,
+  PageBody,
   PageHeading,
   ReservationCard,
   Select,
   TimeSlotPicker,
   WaiterReservationDialog,
+  WaiterReservationsForm,
 } from "@/components/shared";
 import { Button, Dialog, Text } from "@/components/ui";
 import { useSelector } from "react-redux";
@@ -28,17 +30,6 @@ export const WaiterReservation = () => {
   const dispatch = useAppDispatch();
   const reservations = useSelector(selectReservations);
 
-  const { control, handleSubmit, setValue, watch } = useForm({
-    defaultValues: {
-      date: new Date(),
-      time: "",
-      tableNumber: "",
-    },
-  });
-
-  const date = watch("date");
-  const time = watch("time");
-
   useEffect(() => {
     dispatch(getReservations());
   }, [dispatch]);
@@ -50,8 +41,11 @@ export const WaiterReservation = () => {
   return (
     <>
       <PageHeading />
+      <PageBody>
+        <WaiterReservationsForm />
+      </PageBody>
       <Container className="flex flex-col grow-1">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+        {/* <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <div className="flex items-center justify-center gap-4 mt-10 mb-8">
             <div className="w-[200px]">
               <Controller
@@ -114,7 +108,7 @@ export const WaiterReservation = () => {
               </Button>
             </WaiterReservationDialog>
           </div>
-        </form>
+        </form> */}
 
         <div className="grow-1 content-start grid gap-[2rem] lg:grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">
           {reservations.map((reservation) => (

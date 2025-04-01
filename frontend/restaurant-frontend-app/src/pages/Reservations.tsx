@@ -1,6 +1,6 @@
 import { PageBody, PageHeading, ReservationCard } from "@/components/shared";
 import calendarCrossed from "@/assets/images/calendar-crossed.png";
-import { Button, Spinner, Text } from "@/components/ui";
+import { Spinner, Text } from "@/components/ui";
 import { Link } from "react-router";
 import {
   selectReservations,

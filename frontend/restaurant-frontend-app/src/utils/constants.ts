@@ -1,6 +1,6 @@
 import { isPast } from "date-fns";
 import { timeString24hToDateObj } from "./dateTime";
-import { RichTimeSlot } from "@/types/tables.types";
+import { LocationTable, RichTimeSlot } from "@/types";
 
 export const apiURL = import.meta.env["VITE_API_URL"];
 
@@ -18,6 +18,11 @@ export const serverRoute = {
   deleteClientReservation: "reservations",
   selectOptions: "locations/select-options",
   tables: "bookings/tables",
+};
+
+export const USER_ROLE = {
+  CUSTOMER: "Customer",
+  WAITER: "Waiter",
 };
 
 export const TIME_SLOTS: RichTimeSlot[] = [
@@ -83,5 +88,23 @@ export const TIME_SLOTS: RichTimeSlot[] = [
     startDate: timeString24hToDateObj("17:00"),
     endDate: timeString24hToDateObj("18:30"),
     isPast: isPast(timeString24hToDateObj("17:00")),
+  },
+];
+
+export const LOCATION_TABLES: LocationTable[] = [
+  {
+    tableNumber: "1",
+  },
+  {
+    tableNumber: "2",
+  },
+  {
+    tableNumber: "3",
+  },
+  {
+    tableNumber: "4",
+  },
+  {
+    tableNumber: "5",
   },
 ];

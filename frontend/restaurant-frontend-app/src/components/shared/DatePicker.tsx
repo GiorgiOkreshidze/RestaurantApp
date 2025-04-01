@@ -18,7 +18,7 @@ export function DatePicker({
     <Popover open={isOpened} onOpenChange={setIsOpened}>
       <PopoverTrigger asChild>
         <Button variant="trigger" size="trigger" className="w-full" {...props}>
-          <CalendarIcon className="size-[1.5rem] w-full" />
+          <CalendarIcon className="size-[1.5rem]" />
           <span className="whitespace-nowrap">
             {format(value, "PP") || "Pick a date"}
           </span>

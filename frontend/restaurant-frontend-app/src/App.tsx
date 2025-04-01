@@ -18,6 +18,7 @@ import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
 import { getReservations } from "./app/thunks/reservationsThunks";
 import { selectReservations } from "./app/slices/reservationsSlice";
 import { selectUser } from "./app/slices/userSlice";
+import { USER_ROLE } from "./utils/constants";
 
 function App() {
   const location = useLocation();
@@ -51,13 +52,6 @@ function App() {
     }
   }, [dispatch, selectOptions.length]);
 
-  useEffect(() => {
-    if (!user) return;
-    if (!selectOptions.length) {
-      dispatch(getReservations());
-    }
-  }, [dispatch, reservations.length, selectOptions.length]);
-
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} theme="light" />
@@ -69,7 +63,9 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={user?.role === "Waiter" ? <WaiterReservation /> : <Home />}
+          element={
+            user?.role === USER_ROLE.WAITER ? <WaiterReservation /> : <Home />
+          }
         />
 
         <Route path="/signin" element={<Auth />} />
@@ -78,7 +74,11 @@ function App() {
         <Route
           path="/reservations"
           element={
-            user?.role === "Waiter" ? <WaiterReservation /> : <Reservations />
+            user?.role === USER_ROLE.WAITER ? (
+              <WaiterReservation />
+            ) : (
+              <Reservations />
+            )
           }
         />
 

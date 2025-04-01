@@ -20,15 +20,7 @@ export const TimeSlotPicker = ({
   setValue,
   loading,
   selectedDate,
-}: {
-  items: RichTimeSlot[];
-  Icon?: () => JSX.Element;
-  className?: string;
-  value?: string | null;
-  setValue: (value: string) => void;
-  loading?: boolean;
-  selectedDate: string;
-}) => {
+}: TimeSlotPickerProps) => {
   const handleChange = (id: string) => {
     setValue(id === "null" ? "" : id);
   };
@@ -62,3 +54,13 @@ export const TimeSlotPicker = ({
     </SelectRoot>
   );
 };
+
+interface TimeSlotPickerProps {
+  items: RichTimeSlot[];
+  Icon?: () => JSX.Element;
+  className?: string;
+  value?: string | null;
+  setValue: (value: string) => void;
+  loading?: boolean;
+  selectedDate: string;
+}

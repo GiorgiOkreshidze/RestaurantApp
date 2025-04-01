@@ -9,26 +9,9 @@ import type { JSX } from "react";
 import { Button, Spinner } from "../ui";
 import { ChevronDownIcon } from "../icons";
 
-export const Select = ({
-  placeholder,
-  items,
-  Icon,
-  className,
-  value,
-  setValue,
-  loading,
-}: {
-  items: {
-    id: string;
-    label: string;
-  }[];
-  placeholder?: string;
-  Icon?: () => JSX.Element;
-  className?: string;
-  value?: string | null;
-  setValue: (value: string) => void;
-  loading?: boolean;
-}) => {
+export const Select = (props: SelectProps) => {
+  const { placeholder, items, Icon, className, value, setValue, loading } =
+    props;
   const handleChange = (id: string) => {
     setValue(id === "null" ? "" : id);
   };
@@ -37,13 +20,17 @@ export const Select = ({
     <SelectRoot value={value ?? ""} onValueChange={handleChange}>
       <SelectTrigger className={className} asChild>
         <Button variant="trigger" size="trigger">
-          {Icon?.()}
+          {Icon?.() ?? <span />}
           {loading ? (
             <span>Loading...</span>
           ) : (
             <SelectValue placeholder={placeholder ?? ""} />
           )}
-          {loading ? <Spinner className="size-[1em]" /> : <ChevronDownIcon />}
+          {loading ? (
+            <Spinner className="size-[1em]" />
+          ) : (
+            <ChevronDownIcon className="ml-auto" />
+          )}
         </Button>
       </SelectTrigger>
       <SelectContent className="shadow-card [&>*]:tabular-nums [&>*]:font-sans">
@@ -57,3 +44,16 @@ export const Select = ({
     </SelectRoot>
   );
 };
+
+interface SelectProps {
+  items: {
+    id: string;
+    label: string;
+  }[];
+  placeholder: string;
+  Icon?: () => JSX.Element;
+  className?: string;
+  value?: string | null;
+  setValue: (value: string) => void;
+  loading?: boolean;
+}

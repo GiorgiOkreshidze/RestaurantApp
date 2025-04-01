@@ -6,8 +6,8 @@ import {
   setDateAction,
   setLocationIdAction,
   setTimeAction,
-} from "./slices/bookingFormSlice";
-import { useAppDispatch } from "./hooks";
+} from "../app/slices/bookingFormSlice";
+import { useAppDispatch } from "../app/hooks";
 
 export const useBookingFormStore = () => {
   const dipatch = useAppDispatch();

@@ -29,7 +29,9 @@
         "noUselessElse": "off"
       },
       "complexity": {
-        "noUselessTernary": "off"
+        "noUselessTernary": "off",
+        "useLiteralKeys": "off",
+        "noForEach": "off"
       }
 		}
 	},

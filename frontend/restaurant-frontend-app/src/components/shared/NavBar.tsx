@@ -22,7 +22,7 @@ export const NavBar = () => {
         <div className="flex flex-col justify-center items-center gap-[1rem] lg:flex-row lg:gap-[2rem]">
           {user?.role === "Waiter" ? (
             <>
-              <NavBarLink to="/reservations">Reservations</NavBarLink>
+              <NavBarLink to="/">Reservations</NavBarLink>
               <NavBarLink to="/menu">Menu</NavBarLink>
             </>
           ) : (
