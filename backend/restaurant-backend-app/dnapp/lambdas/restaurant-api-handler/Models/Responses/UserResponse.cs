@@ -22,5 +22,8 @@ namespace Function.Models.Responses
 
         [JsonPropertyName("role")]
         public required string Role { get; set; }
+
+        [JsonPropertyName("locationId")]
+        public string? LocationId { get; set; }
     }
 }
