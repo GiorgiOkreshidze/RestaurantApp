@@ -11,21 +11,24 @@ namespace Function.Repositories
     {
         public readonly IAmazonDynamoDB _dynamoDbClient;
         public readonly string? _tableName = Environment.GetEnvironmentVariable("USER_TABLE_NAME");
+        public readonly string? _emailIndex = Environment.GetEnvironmentVariable("USER_TABLE_EMAIL_INDEX");
 
         public UserRepository(IAmazonDynamoDB dynamoDbClient)
         {
             _dynamoDbClient = dynamoDbClient;
         }
 
-        public async Task<string> GetUserFullName(string id)
+        public async Task<string> GetUserFullName(string email)
         {
             var request = new QueryRequest
             {
                 TableName = _tableName,
-                KeyConditionExpression = "id = :id",
+                IndexName = _emailIndex,
+                KeyConditionExpression = "#email = :email",
+                ExpressionAttributeNames = new Dictionary<string, string> { { "#email", "email" } },
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
-                    { ":id", new AttributeValue { S = id } }
+                    { ":email", new AttributeValue { S = email } },
                 },
                 Limit = 1
             };

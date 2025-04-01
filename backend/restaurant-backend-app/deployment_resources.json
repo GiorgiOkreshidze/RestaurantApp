@@ -27,7 +27,9 @@
             "cognito-idp:AdminConfirmSignUp",
             "cognito-idp:SignUp",
             "cognito-idp:AdminUpdateUserAttributes",
-            "cognito-idp:RevokeToken"
+            "cognito-idp:RevokeToken",
+            "sqs:SendMessage",
+            "sqs:GetQueueUrl"
           ],
           "Effect": "Allow",
           "Resource": "*"
@@ -354,6 +356,7 @@
           "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "restaurant-api-handler",
+          "enable_proxy": true,
           "api_key_required": false,
           "method_request_parameters": {},
           "integration_request_body_template": {},
@@ -506,19 +509,37 @@
     "hash_key_type": "S",
     "read_capacity": 1,
     "write_capacity": 1,
-    "global_indexes": [],
+    "global_indexes": [
+      {
+        "name": "${user_table_email_index}",
+        "index_key_name": "email",
+        "index_key_type": "S"
+      }
+    ],
     "autoscaling": [],
     "tags": {}
   },
   "${sqs_queue}": {
     "resource_type": "sqs_queue",
     "fifo_queue": false,
-    "visibility_timeout": 30,
+    "visibility_timeout": 600,
     "delay_seconds": 0,
     "maximum_message_size": 1024,
     "message_retention_period": 60,
     "receive_message_wait_time_seconds": 0,
-    "policy": {},
+    "policy": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Action": [
+            "sqs:SendMessage",
+            "sqs:GetQueueUrl"
+          ],
+          "Resource": "*",
+          "Effect": "Allow"
+        }
+      ]
+    },
     "redrive_policy": {},
     "content_based_deduplication": false,
     "tags": {}

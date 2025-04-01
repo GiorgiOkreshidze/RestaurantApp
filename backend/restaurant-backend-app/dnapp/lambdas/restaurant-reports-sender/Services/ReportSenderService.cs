@@ -1,7 +1,7 @@
 ﻿using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
 using Function.Formatters;
-using Function.Formatters.CSVFormatter;
+using Function.Formatters.ExcelFormatter;
 using Function.Models;
 using Function.Repositories.Interfaces;
 using Function.Services.Interfaces;
@@ -18,14 +18,20 @@ namespace Function.Services
     {
         private readonly IReportRepository _reportRepository;
         private readonly AmazonSimpleEmailServiceClient _sesClient;
+        private readonly IReportFormatter _reportFormatter;
 
         private const string FromEmail = "sender@example.com";
         private const string ToEmail = "recipient@example.com";
 
-        public ReportSenderService(IReportRepository reportRepository, AmazonSimpleEmailServiceClient sesClient)
+        public ReportSenderService(
+            IReportRepository reportRepository,
+            AmazonSimpleEmailServiceClient sesClient,
+            IReportFormatter reportFormatter
+            )
         {
             _reportRepository = reportRepository;
             _sesClient = sesClient;
+            _reportFormatter = reportFormatter;
         }
 
         public async Task SendReportAsync(Dictionary<string, object> eventData)
@@ -40,14 +46,16 @@ namespace Function.Services
 
             var summary = ProcessReports(currentWeekReports, previousWeekReports, currentWeekStart, currentWeekEnd);
 
-            IReportFormatter formatter = new CsvReportFormatter();
-            var reportContent = formatter.Format(summary);
+            var reportContent = _reportFormatter.Format(summary);
 
-            // Send email
-            await SendEmailAsync(reportContent, "report.csv", "text/csv");
+            string fileName = _reportFormatter is ExcelReportFormatter ? "report.xlsx" : "report.csv";
+            string mimeType = _reportFormatter is ExcelReportFormatter ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : "text/csv";
+
+            await SendEmailAsync(reportContent, fileName, mimeType);
+
         }
 
-        private List<SummaryEntry> ProcessReports(List<Report> currentWeek, List<Report> nextWeek, DateTime startDate, DateTime endDate)
+        private List<SummaryEntry> ProcessReports(List<Report> currentWeek, List<Report> previousWeek, DateTime startDate, DateTime endDate)
         {
             var waiterSummaries = new Dictionary<string, SummaryEntry>();
 
@@ -65,16 +73,16 @@ namespace Function.Services
                         WaiterName = report.Waiter,
                         WaiterEmail = report.WaiterEmail,
                         CurrentHours = 0,
-                        NextHours = 0
+                        PreviousHours = 0
                     };
                 }
                 waiterSummaries[key].CurrentHours += report.HoursWorked;
             }
 
-            // Aggregate next week
-            foreach (var report in nextWeek)
+            // Aggregate previous week
+            foreach (var report in previousWeek)
             {
-                var key = $"{report.Waiter}-{report.WaiterEmail}";
+                var key = $"{ report.Waiter}-{ report.WaiterEmail}";
                 if (!waiterSummaries.ContainsKey(key))
                 {
                     waiterSummaries[key] = new SummaryEntry
@@ -85,16 +93,15 @@ namespace Function.Services
                         WaiterName = report.Waiter,
                         WaiterEmail = report.WaiterEmail,
                         CurrentHours = 0,
-                        NextHours = 0
+                        PreviousHours = 0
                     };
                 }
-                waiterSummaries[key].NextHours += report.HoursWorked;
+                waiterSummaries[key].PreviousHours += report.HoursWorked;
             }
 
-            // Calculate delta
             foreach (var entry in waiterSummaries.Values)
             {
-                entry.DeltaHours = entry.NextHours - entry.CurrentHours;
+                entry.DeltaHours = entry.CurrentHours - entry.PreviousHours;
             }
 
             return waiterSummaries.Values.ToList();
@@ -103,15 +110,36 @@ namespace Function.Services
 
         private async Task SendEmailAsync(string reportContent, string fileName, string mimeType)
         {
-            using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(reportContent));
-            var request = new SendRawEmailRequest
+            try
             {
-                RawMessage = new RawMessage
+                MemoryStream attachmentStream;
+                if (mimeType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                 {
-                    Data = CreateEmailMessage(memoryStream, fileName, mimeType)
+                    // For Excel, reportContent is base64; decode it to bytes
+                    attachmentStream = new MemoryStream(Convert.FromBase64String(reportContent));
                 }
-            };
-            await _sesClient.SendRawEmailAsync(request);
+                else
+                {
+                    // For CSV, reportContent is a UTF-8 string
+                    attachmentStream = new MemoryStream(Encoding.UTF8.GetBytes(reportContent));
+                }
+
+                using (attachmentStream)
+                {
+                    var request = new SendRawEmailRequest
+                    {
+                        RawMessage = new RawMessage
+                        {
+                            Data = CreateEmailMessage(attachmentStream, fileName, mimeType)
+                        }
+                    };
+                    await _sesClient.SendRawEmailAsync(request);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw; // Re-throw to let Lambda handle retries or logging
+            }
         }
 
         private MemoryStream CreateEmailMessage(MemoryStream attachment, string fileName, string mimeType)

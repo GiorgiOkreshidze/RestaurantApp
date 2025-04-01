@@ -55,7 +55,6 @@ public class Reservation
     public string? UserEmail { get; set; }
     
     [JsonPropertyName("waiterId")]
-    [JsonIgnore]
     public string? WaiterId { get; set; }
 
     [JsonPropertyName("createdAt")]

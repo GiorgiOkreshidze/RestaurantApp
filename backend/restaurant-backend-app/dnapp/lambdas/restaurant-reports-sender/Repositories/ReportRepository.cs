@@ -26,7 +26,7 @@ namespace Function.Repositories
             {
                 TableName = _tableName,
                 IndexName = _dateIndex,
-                KeyConditionExpression = "#date >= :startDate AND #date <= :endDate",
+                KeyConditionExpression = "#date BETWEEN :startDate AND :endDate",
                 ExpressionAttributeNames = new Dictionary<string, string> { { "#date", "date" } },
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {

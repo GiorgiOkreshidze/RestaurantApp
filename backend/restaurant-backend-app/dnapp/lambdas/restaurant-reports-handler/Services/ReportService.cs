@@ -28,15 +28,23 @@ namespace Function.Services
             var timeTo = TimeSpan.Parse(reservation.TimeTo);
             var hoursWorked = (int)(timeTo - timeFrom).TotalHours;
 
+            Console.WriteLine($"id: {reservation.WaiterId}");
+
+            var email = await _employeeInfoRepository.GetEmployeeEmail(reservation.WaiterId!);
+
+            Console.WriteLine($"email: {email}");
+
             var report = new Report
             {
                 Id = Guid.NewGuid().ToString(),
                 Date = reservation.Date,
                 Location = reservation.LocationAddress,
-                Waiter = await _userRepository.GetUserFullName(reservation.WaiterId!),
-                WaiterEmail = await _employeeInfoRepository.GetEmployeeEmail(reservation.WaiterId!),
+                Waiter = await _userRepository.GetUserFullName(email),
+                WaiterEmail = email,
                 HoursWorked = hoursWorked
             };
+
+            Console.WriteLine($"Waiter: {report.Waiter}");
 
             await _reportRepository.SaveReportAsync(report);
         }

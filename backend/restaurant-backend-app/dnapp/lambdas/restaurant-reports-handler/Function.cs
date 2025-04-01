@@ -56,11 +56,14 @@ public class Function
                     continue;
                 }
 
-                var payload = JsonSerializer.Deserialize(eventWrapper.Payload, payloadType);
+                var payloadJson = eventWrapper.Payload.GetRawText();
+                var payload = JsonSerializer.Deserialize(payloadJson, payloadType);
 
                 switch (payload)
                 {
                     case Reservation reservation:
+                        context.Logger.LogLine($"Reservation ID: {reservation.Id}");
+                        context.Logger.LogLine($"Waiter ID: {reservation.WaiterId}");
                         await _reportService.ProcessReservationAsync(reservation);
                         break;
                     default:

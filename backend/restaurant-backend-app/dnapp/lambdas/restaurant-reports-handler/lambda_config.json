@@ -20,7 +20,8 @@
   "env_variables": {
     "USER_TABLE_NAME": "${users_table}",
     "REPORTS_TABLE_NAME": "${reports_table}",
-    "EMPLOYEE_TABLE_NAME": "${waiters_table}"
+    "EMPLOYEE_TABLE_NAME": "${employee_info_table}",
+    "USER_TABLE_EMAIL_INDEX": "${user_table_email_index}"
   },
   "publish_version": true,
   "alias": "${lambdas_alias_name}",

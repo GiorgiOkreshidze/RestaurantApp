@@ -2,6 +2,7 @@ using Amazon.DynamoDBv2;
 using Amazon.SimpleEmail;
 using Function.Formatters;
 using Function.Formatters.CSVFormatter;
+using Function.Formatters.ExcelFormatter;
 using Function.Repositories;
 using Function.Repositories.Interfaces;
 using Function.Services;
@@ -24,7 +25,7 @@ namespace Function.DependencyInjection
             services.AddSingleton<IReportSenderService, ReportSenderService>();
 
             // Formatters
-            services.AddSingleton<IReportFormatter, CsvReportFormatter>();
+            services.AddSingleton<IReportFormatter, ExcelReportFormatter>();
 
             return services;
         }

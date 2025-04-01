@@ -13,8 +13,8 @@ namespace Function.Models
         public string EndDate { get; set; }
         public string WaiterName { get; set; }
         public string WaiterEmail { get; set; }
-        public int CurrentHours { get; set; }
-        public int NextHours { get; set; }
-        public int DeltaHours { get; set; }
+        public double CurrentHours { get; set; }
+        public double PreviousHours { get; set; }
+        public double DeltaHours { get; set; }
     }
 }

@@ -23,9 +23,8 @@ namespace Function.Actions.Reservations
 
         public async Task<APIGatewayProxyResponse> CompleteReservation(APIGatewayProxyRequest request)
         {
-            var token = GetJWTToken(request);
+            var token = ActionUtils.ExtractJwtToken(request);
             var role = token.Claims.FirstOrDefault(c => c.Type == "custom:role")!.Value.ToRoles();
-
 
             if (role != Roles.Waiter)
             {
@@ -46,26 +45,6 @@ namespace Function.Actions.Reservations
             var complete = await _reservationService.CompleteReservationAsync(reservationId);
 
             return ActionUtils.FormatResponse(200, complete);
-        }
-
-        private JwtSecurityToken GetJWTToken(APIGatewayProxyRequest request)
-        {
-            request.Headers.TryGetValue("Authorization", out var idToken);
-
-            if (string.IsNullOrEmpty(idToken) || !idToken.StartsWith("Bearer "))
-            {
-                throw new ArgumentException("Authorization header empty");
-            }
-
-            var token = idToken.Substring("Bearer ".Length).Trim();
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            if (!tokenHandler.CanReadToken(token))
-            {
-                throw new ArgumentException("Invalid token");
-            }
-
-            return tokenHandler.ReadJwtToken(token)!;
         }
     }
 }

@@ -298,6 +298,8 @@ public class ReservationRepository : IReservationRepository
         var reservations = Mapper.MapDocumentsToReservations(documentList);
         var result = reservations.FirstOrDefault(loc => loc.Id == reservationId);
 
+        Console.WriteLine($"Waiter Id from reposotory: {result.WaiterId}");
+
         if (result == null) throw new ResourceNotFoundException($"The location with {reservationId} id is not found");
 
         return result;

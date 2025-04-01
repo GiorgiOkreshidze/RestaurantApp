@@ -180,7 +180,7 @@ public class ReservationService : IReservationService
                 reservation.ClientType = ClientType.CUSTOMER;
                 break;
             default:
-                throw new UnsupportedOperationException("Unsupported ReservationRequest type");
+                throw new Amazon.CognitoIdentityProvider.Model.UnsupportedOperationException("Unsupported ReservationRequest type");
         }
 
         var reservationExists = await _reservationRepository.ReservationExistsAsync(reservation.Id);
@@ -262,6 +262,7 @@ public class ReservationService : IReservationService
         reservation.Status = Status.Finished.ToString();
 
         await _reservationRepository.UpsertReservationAsync(reservation);
+        Console.WriteLine($"Reservation Waiter Id before SQS message: {reservation.WaiterId}");
         await SendEventToSQS("reservation", reservation);
 
         return true;
