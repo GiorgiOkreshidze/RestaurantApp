@@ -261,7 +261,7 @@
       "/reservations/client": {
         "enable_cors": true,
         "POST": {
-          "authorization_type": "NONE",
+          "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "restaurant-api-handler",
           "enable_proxy": true,
@@ -336,7 +336,7 @@
       "/reservations/waiter": {
         "enable_cors": true,
         "POST": {
-          "authorization_type": "NONE",
+          "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "restaurant-api-handler",
           "enable_proxy": true,
@@ -351,7 +351,7 @@
       "/feedbacks": {
         "enable_cors": true,
         "POST": {
-          "authorization_type": "NONE",
+          "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "restaurant-api-handler",
           "enable_proxy": true,
@@ -504,6 +504,16 @@
   "${users_table}": {
     "resource_type": "dynamodb_table",
     "hash_key_name": "id",
+    "hash_key_type": "S",
+    "read_capacity": 1,
+    "write_capacity": 1,
+    "global_indexes": [],
+    "autoscaling": [],
+    "tags": {}
+  },
+  "${reservationFeedback_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "reservationId",
     "hash_key_type": "S",
     "read_capacity": 1,
     "write_capacity": 1,
