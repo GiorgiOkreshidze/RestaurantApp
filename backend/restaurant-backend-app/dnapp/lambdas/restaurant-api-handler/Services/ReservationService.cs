@@ -15,7 +15,6 @@ using Function.Actions;
 using Amazon.CognitoIdentityProvider.Model;
 using Function.Models.Interfaces;
 using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
-using Function.Models.Responses;
 
 namespace Function.Services;
 
@@ -131,7 +130,7 @@ public class ReservationService : IReservationService
             LocationAddress = location.Address,
             LocationId = location.Id,
             PreOrder = "NOT IMPLEMENTED YET",
-            Status = Status.Reserved.ToString(),
+            Status = ReservationStatus.Reserved.ToString(),
             TableId = reservationRequest.TableId,
             TableNumber = table.TableNumber,
             TimeFrom = reservationRequest.TimeFrom,
