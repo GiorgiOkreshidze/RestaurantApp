@@ -35,6 +35,7 @@ public class ApiHandler
     private readonly GetAllDishesAction _getAllDishesAction;
     private readonly GetDishByIdAction _getDishByIdAction;
     private readonly CreateWaiterReservationAction _createWaiterReservationAction;
+    private readonly GetLocationByIdAction _getLocationByIdAction;
     private readonly AddFeedbackAction _addFeedbackAction;
 
     public ApiHandler()
@@ -58,6 +59,7 @@ public class ApiHandler
         _getAllDishesAction = new GetAllDishesAction();
         _getDishByIdAction = new GetDishByIdAction();
         _createWaiterReservationAction = new CreateWaiterReservationAction();
+        _getLocationByIdAction = new GetLocationByIdAction();
         _addFeedbackAction = new AddFeedbackAction();
     }
 
@@ -151,6 +153,12 @@ public class ApiHandler
                     "/reservations/waiter", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "POST", _createWaiterReservationAction.CreateReservationAsync }
+                    }
+                },
+                {
+                    "/location/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getLocationByIdAction.GetLocationByIdAsync }
                     }
                 },
                 {
