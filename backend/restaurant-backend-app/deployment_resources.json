@@ -347,7 +347,6 @@
           "integration_responses": [],
           "default_error_pattern": true
         }
-      }
       },
       "/reservations/{id}/complete": {
         "enable_cors": true,
