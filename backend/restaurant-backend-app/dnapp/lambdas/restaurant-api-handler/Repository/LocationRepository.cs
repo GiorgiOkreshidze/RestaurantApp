@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using Function.Helper;
 using Function.Mappers;
 using Function.Models;
 using Function.Repository;
