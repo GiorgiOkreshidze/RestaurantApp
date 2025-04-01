@@ -1,77 +1,112 @@
-# Define variables
-$region = "eu-west-2"
-$prefix = "tm2-"
-$syndicateFile = "../../.syndicate-config-dev/syndicate.yml"
-$tablesSeedFile = "../seed-data-tables.json"
-$reservationsSeedFile = "../seed-data-reservations.json"
-$feedbacksSeedFile = "../seed-data-feedbacks.json"
-$tempFile = "seed-data-processed.json"
+class DynamoDBTableSeeder {
+    [string]$Region = "eu-west-2"
+    [string]$Prefix = "tm2-"
+    [string]$SyndicateConfigPath = "../../.syndicate-config-dev/syndicate.yml"
+    [hashtable]$SeedFiles = @{
+        Tables = "../seed-data-tables.json"
+        Reservations = "../seed-data-reservations.json"
+        LocationFeedbacks = "../seed-data-feedbacks.json"
+    }
+    [string]$TempFile = "seed-data-processed.json"
 
-# Get the suffix from syndicate.yml
-$resourcesSuffix = (Get-Content $syndicateFile | Where-Object { $_ -match "resources_suffix:" }) -replace "resources_suffix:\s*", ""
-if (-not $resourcesSuffix) {
-    $resourcesSuffix = "-dev4"
-    Write-Host "No suffix found in syndicate.yml, defaulting to $resourcesSuffix"
-}
+    [string] GetResourcesSuffix() {
+        try {
+            if (-not (Test-Path $this.SyndicateConfigPath)) {
+                Write-Warning "Syndicate config file not found. Using default suffix."
+                return "-dev3"
+            }
 
-# Construct table names
-$tablesTable = "$prefix" + "Tables" + "$resourcesSuffix"
-$reservationsTable = "$prefix" + "Reservations" + "$resourcesSuffix"
-$feedbacksTable = "$prefix" + "LocationFeedbacks" + "$resourcesSuffix"
+            $suffix = (Get-Content $this.SyndicateConfigPath | Where-Object { $_ -match "resources_suffix:" } |
+                ForEach-Object { $_ -replace "resources_suffix:\s*", "" }).Trim()
 
-# Check if seed files exist
-if (-not (Test-Path $tablesSeedFile)) {
-    Write-Error "Seed file $tablesSeedFile not found!"
-    exit 1
-}
-if (-not (Test-Path $reservationsSeedFile)) {
-    Write-Error "Seed file $reservationsSeedFile not found!"
-    exit 1
-}
-if (-not (Test-Path $feedbacksSeedFile)) {
-    Write-Error "Seed file $feedbacksSeedFile not found!"
-    exit 1
-}
-
-# Process JSON: Update table names
-try {
-    # Read JSON files and extract the inner arrays
-    $tablesData = Get-Content $tablesSeedFile -Raw | ConvertFrom-Json
-    $reservationsData = Get-Content $reservationsSeedFile -Raw | ConvertFrom-Json
-    $feedbacksData = Get-Content $feedbacksSeedFile -Raw | ConvertFrom-Json
-
-     # Extract the 'Locations' array
-    $tablesItems = $tablesData.Tables
-    $reservationsItems = $reservationsData.Reservations
-    $feedbacksItems = $feedbacksData.LocationFeedbacks
-
-    # Create the request structure
-    $requestItems = @{
-        "$tablesTable" = $tablesItems
-        "$reservationsTable" = $reservationsItems
-        "$feedbacksTable" = $feedbacksItems
+            if ($suffix) { return $suffix } else { return "-dev3" }
+        }
+        catch {
+            Write-Error "Error reading syndicate config: $_"
+            return "-dev3"
+        }
     }
 
-    # Write to temp file without BOM
-    [System.IO.File]::WriteAllText($tempFile, ($requestItems | ConvertTo-Json -Depth 10))
-    Write-Host "Temp file created: $tempFile"
-} catch {
-    Write-Error "Failed to process seed files : $($_.Exception.Message)"
-    exit 1
+    [bool] ValidateSeedFiles() {
+        $valid = $true
+        foreach ($file in $this.SeedFiles.Values) {
+            if (-not (Test-Path $file)) {
+                Write-Error "Seed file $file not found!"
+                $valid = $false
+            }
+        }
+        return $valid
+    }
+
+    [string] GetTableName([string]$ResourceType, [string]$Suffix) {
+        return "$($this.Prefix)$ResourceType$Suffix"
+    }
+
+    [hashtable] ProcessSeedData([string]$Suffix) {
+        try {
+            $requestItems = @{}
+
+            foreach ($key in $this.SeedFiles.Keys) {
+                $tableName = $this.GetTableName($key, $Suffix)
+                
+                $seedFile = $this.SeedFiles[$key]
+                $seedData = Get-Content $seedFile -Raw | ConvertFrom-Json
+                $items = $seedData."$key"
+
+                if ($items) {
+                    $requestItems[$tableName] = $items
+                    Write-Host "Prepared data for table: $tableName (Items: $($items.Count))"
+                } else {
+                    Write-Warning "No items found in $seedFile for $key"
+                }
+            }
+
+            return $requestItems
+        }
+        catch {
+            Write-Error "Failed to process seed data: $_"
+            return @{}
+        }
+    }
+
+    [void] Seed() {
+        if (-not $this.ValidateSeedFiles()) { return }
+
+        $resourcesSuffix = $this.GetResourcesSuffix()
+        $requestItems = $this.ProcessSeedData($resourcesSuffix)
+
+        if ($requestItems.Count -eq 0) {
+            Write-Error "No items to seed. Exiting."
+            return
+        }
+
+        try {
+            $jsonContent = $requestItems | ConvertTo-Json -Depth 10
+            [System.IO.File]::WriteAllText($this.TempFile, $jsonContent)
+            Write-Host "Temporary seed file created: $($this.TempFile)"
+
+            $awsCommand = "aws dynamodb batch-write-item --request-items file://$($this.TempFile) --region $($this.Region) --profile syndicate"
+            Write-Host "Executing: $awsCommand"
+            Invoke-Expression $awsCommand
+
+            Write-Host "Seeded data into tables:"
+            foreach ($key in $this.SeedFiles.Keys) {
+                Write-Host "  - $($this.GetTableName($key, $resourcesSuffix))"
+            }
+        }
+        catch {
+            Write-Error "Seeding failed: $_"
+        }
+        finally {
+            Remove-Item $this.TempFile -ErrorAction SilentlyContinue
+        }
+    }
 }
 
-# Verify temp file exists
-if (-not (Test-Path $tempFile)) {
-    Write-Error "Processed file $tempFile was not created!"
-    exit 1
+try {
+    $seeder = [DynamoDBTableSeeder]::new()
+    $seeder.Seed()
 }
-
-# Run the AWS CLI command
-$awsCommand = "aws dynamodb batch-write-item --request-items file://$tempFile --region $region --profile syndicate"
-Write-Host "Executing: $awsCommand"
-Invoke-Expression $awsCommand
-
-# Clean up
-Remove-Item $tempFile -ErrorAction SilentlyContinue
-
-Write-Host "Seeded data into $tablesTable and $reservationsTable and $feedbacksTable"
+catch {
+    Write-Error "Seeding process encountered an error: $_"
+}

@@ -15,12 +15,14 @@ using Function.Actions;
 using Amazon.CognitoIdentityProvider.Model;
 using Function.Models.Interfaces;
 using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
+using Function.Models.Responses;
 
 namespace Function.Services;
 
 public class ReservationService : IReservationService
 {
     private readonly IReservationRepository _reservationRepository;
+    private readonly IUserRepository _userRepository;
     private readonly ILocationRepository _locationRepository;
     private readonly ITableRepository _tableRepository;
     private readonly IWaiterRepository _waiterRepository;
@@ -28,12 +30,13 @@ public class ReservationService : IReservationService
     public ReservationService()
     {
         _reservationRepository = new ReservationRepository();
+        _userRepository = new UserRepository();
         _locationRepository = new LocationRepository();
         _tableRepository = new TableRepository();
         _waiterRepository = new WaiterRepository();
     }
 
-    public async Task<Reservation> UpsertReservationAsync(IReservationRequest reservationRequest, User user)
+    public async Task<Reservation> UpsertReservationAsync(IReservationRequest reservationRequest, string userId)
     {
         //Available UTC time slots:
         // 06:30 - 08:00
@@ -64,6 +67,13 @@ public class ReservationService : IReservationService
         }
         
         var location = await _locationRepository.GetLocationByIdAsync(reservationRequest.LocationId);
+        var user = await _userRepository.GetUserByIdAsync(userId);
+
+        if (user is null)
+        {
+            throw new UnauthorizedException("User is not registered");
+        }
+
         var existingReservations = await _reservationRepository.GetReservationsByDateLocationTable(
             reservationRequest.Date,
             location.Address,
@@ -76,9 +86,16 @@ public class ReservationService : IReservationService
             
             // Check if the time slots overlap
             if (newTimeFrom <= existingTimeTo &&
-                newTimeTo >= existingTimeFrom &&
-                existingReservation.UserEmail != user.Email)
+                newTimeTo >= existingTimeFrom)
             {
+                if (existingReservation.UserEmail == user.Email)
+                {
+                    throw new ArgumentException(
+                   $"You already have reservation booked at location " +
+                   $"{location.Address} during the requested time period.");
+
+                }
+
                 throw new ArgumentException(
                     $"Reservation #{reservationRequest.Id} at location " +
                     $"{location.Address} is already booked during the requested time period."
@@ -143,7 +160,12 @@ public class ReservationService : IReservationService
                     _ => reservation.UserInfo
                 };
                 reservation.WaiterId = user.Id;
-                break;
+                    if (user.Role != Roles.Waiter)
+                    {
+                        throw new UnauthorizedException("Only waiters can create or modify waiter reservations");
+                    }
+
+                    break;
             }
             case ClientReservationRequest:
                 reservation.UserEmail = user.Email;
@@ -168,15 +190,15 @@ public class ReservationService : IReservationService
         return await _reservationRepository.UpsertReservationAsync(reservation);
     }
     
-    public async Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParams,  string info, Roles role)
+    public async Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParams, string userId, string email, Roles role)
     {
         if (role == Roles.Customer)
         {
-            return await _reservationRepository.GetCustomerReservationsAsync(queryParams, info);
+            return await _reservationRepository.GetCustomerReservationsAsync(email);
         }
         else
         {
-            return await _reservationRepository.GetWaiterReservationsAsync(queryParams, info);
+            return await _reservationRepository.GetWaiterReservationsAsync(queryParams, userId);
         }   
     }
 

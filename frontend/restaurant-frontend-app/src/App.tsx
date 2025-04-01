@@ -30,6 +30,7 @@ function App() {
   const locations = useSelector(selectLocations);
   const selectOptions = useSelector(selectSelectOptions);
   const reservations = useSelector(selectReservations);
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -57,7 +58,7 @@ function App() {
     if (!reservations.length) {
       dispatch(getReservations());
     }
-  }, [dispatch, reservations.length]);
+  }, [dispatch, reservations.length, selectOptions.length]);
 
  
   return (

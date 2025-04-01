@@ -27,7 +27,7 @@ export const TimeSlotPicker = ({
   value?: string | null;
   setValue: (value: string) => void;
   loading?: boolean;
-  selectedDate: Date;
+  selectedDate: string;
 }) => {
   const handleChange = (id: string) => {
     setValue(id === "null" ? "" : id);

@@ -4,7 +4,7 @@ $prefix = "tm2-"
 $syndicateFile = "../../.syndicate-config-dev/syndicate.yml"
 $locationsSeedFile = "../seed-data-locations.json"
 $dishesSeedFile = "../seed-data-dishes.json"
-$waitersSeedFile = "../seed-data-waiters.json"
+$employeesSeedFile = "../seed-data-employee-info.json"
 $tempFile = "seed-data-processed.json"
 
 # Get the suffix from syndicate.yml
@@ -17,7 +17,7 @@ if (-not $resourcesSuffix) {
 # Construct table names
 $locationsTable = "$prefix" + "Locations" + "$resourcesSuffix"
 $dishesTable = "$prefix" + "Dishes" + "$resourcesSuffix"
-$waitersTable = "$prefix" + "Waiters" + "$resourcesSuffix"
+$employeesTable = "$prefix" + "EmployeeInfo" + "$resourcesSuffix"
 
 # Check if seed files exist
 if (-not (Test-Path $locationsSeedFile)) {
@@ -28,8 +28,8 @@ if (-not (Test-Path $dishesSeedFile)) {
     Write-Error "Seed file $dishesSeedFile not found!"
     exit 1
 }
-if (-not (Test-Path $waitersSeedFile)) {
-    Write-Error "Seed file $waitersSeedFile not found!"
+if (-not (Test-Path $employeesSeedFile)) {
+    Write-Error "Seed file $employeesSeedFile not found!"
     exit 1
 }
 
@@ -38,17 +38,17 @@ try {
     # Read JSON files and extract the inner arrays
     $locationsData = Get-Content $locationsSeedFile -Raw | ConvertFrom-Json
     $dishesData = Get-Content $dishesSeedFile -Raw | ConvertFrom-Json
-    $waitersData = Get-Content $waitersSeedFile -Raw | ConvertFrom-Json
+    $employeesData = Get-Content $employeesSeedFile -Raw | ConvertFrom-Json
 
     $locationsItems = $locationsData.Locations  # Extract the 'Locations' array
     $dishesItems = $dishesData.Dishes
-    $waitersItems = $waitersData.Waiters
+    $employeesItems = $employeesData.EmployeeInfo
 
     # Create the request structure
     $requestItems = @{
         "$locationsTable" = $locationsItems
         "$dishesTable" = $dishesItems
-        "$waitersTable" = $waitersItems
+        "$employeesTable" = $employeesItems
     }
 
     # Write to temp file without BOM
@@ -73,4 +73,4 @@ Invoke-Expression $awsCommand
 # Clean up
 Remove-Item $tempFile -ErrorAction SilentlyContinue
 
-Write-Host "Seeded data into $locationsTable and $dishesTable"
+Write-Host "Seeded data into $locationsTable and $dishesTable"s

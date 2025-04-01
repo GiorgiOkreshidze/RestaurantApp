@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Function.Actions;
 using Function.Models;
-using Function.Models.Requests;
 using Function.Models.Reservations;
 using Function.Repository;
 using Function.Repository.Interfaces;

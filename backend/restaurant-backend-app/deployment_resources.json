@@ -133,6 +133,21 @@
           "default_error_pattern": true
         }
       },
+      "/location/{id}": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "restaurant-api-handler",
+          "enable_proxy": true,
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
       "/locations": {
         "enable_cors": true,
         "GET": {
@@ -428,7 +443,19 @@
         "index_key_type": "S",
         "index_sort_key_name": "date",
         "index_sort_key_type": "S"
-    }
+    },
+      {
+        "name": "${reservations_table_user_email_index_name}",
+        "index_key_name": "userEmail",
+        "index_key_type": "S"
+      },
+      {
+        "name": "${reservations_table_waiter_index}",
+        "index_key_name": "waiterId",
+        "index_key_type": "S",
+        "index_sort_key_name": "date",
+        "index_sort_key_type": "S"
+}
     ],
     "autoscaling": [],
     "tags": {}

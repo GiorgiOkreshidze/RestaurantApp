@@ -9,7 +9,10 @@ namespace Function.Services.Interfaces;
 public interface IDishService
 {
     Task<ExactDishResponse> GetDishByIdAsync(string dishId);
+
     Task<List<Dish>> GetListOfPopularDishesAsync();
+
     Task<List<Dish>> GetListOfSpecialityDishesAsync(string locationId);
+
     Task<List<AllDishResponse>> GetAllDishesAsync(GetAllDishesRequest getAllDishesRequest);
 }

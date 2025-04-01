@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Authentication;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using Function.Exceptions;
+using Function.Models.Requests;
 using Function.Models.Responses;
 using Function.Models.User;
 using Function.Services.Interfaces;
@@ -46,7 +45,6 @@ public class AuthenticationService : IAuthenticationService
             {
                 IdToken = authResponse.AuthenticationResult.IdToken,
                 RefreshToken = authResponse.AuthenticationResult.RefreshToken,
-                AccessToken = authResponse.AuthenticationResult.AccessToken,
                 ExpiresIn = authResponse.AuthenticationResult.ExpiresIn
             };
 
@@ -66,7 +64,7 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    public async Task<AuthResult> SignUp(User user, string password, Roles role = Roles.Customer)
+    public async Task<string> SignUp(CreateUserCognitoRequest user, string password, Roles role = Roles.Customer)
     {
         var signUpRequest = new SignUpRequest
         {
@@ -80,9 +78,7 @@ public class AuthenticationService : IAuthenticationService
                 new AttributeType { Name = "email", Value = user.Email }
             ]
         };
-
-        await _cognitoClient.SignUpAsync(signUpRequest);
-
+        var signUpResponse = await _cognitoClient.SignUpAsync(signUpRequest);
         var confirmRequest = new AdminConfirmSignUpRequest
         {
             UserPoolId = _userPoolId,
@@ -99,7 +95,7 @@ public class AuthenticationService : IAuthenticationService
         };
         
         await _cognitoClient.AdminUpdateUserAttributesAsync(updateAttributesRequest);
-        return await SignIn(user.Email , password);
+        return signUpResponse.UserSub;
     }
 
     public async Task SignOut(string refreshToken)
@@ -129,33 +125,6 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    public async Task<Dictionary<string, string>> GetUserDetailsAsync(string accessToken)
-    {
-        try
-        {
-            var request = new GetUserRequest
-            {
-                AccessToken = accessToken
-            };
-
-            var response = await _cognitoClient.GetUserAsync(request);
-            Console.WriteLine("Cognito response received: " + JsonSerializer.Serialize(response));
-
-            var userAttributes = response.UserAttributes
-                .ToDictionary(attr => attr.Name, attr => attr.Value);
-
-            if (!userAttributes.ContainsKey("custom:role"))
-            {
-                userAttributes["custom:role"] = Roles.Customer.ToString();
-            }
-            return userAttributes;
-        }
-        catch (UserNotFoundException)
-        {
-            throw new ResourceNotFoundException("User not found in Cognito.");
-        }
-    }
-
     public async Task<AuthResult> RefreshToken(string refreshToken)
     {
         var authRequest = new AdminInitiateAuthRequest
@@ -172,12 +141,10 @@ public class AuthenticationService : IAuthenticationService
         try
         {
             var response = await _cognitoClient.AdminInitiateAuthAsync(authRequest);
-
             var authResult = new AuthResult
             {
                 IdToken = response.AuthenticationResult.IdToken,
                 RefreshToken = response.AuthenticationResult.RefreshToken ?? refreshToken,
-                AccessToken = response.AuthenticationResult.AccessToken,
                 ExpiresIn = response.AuthenticationResult.ExpiresIn
             };
 

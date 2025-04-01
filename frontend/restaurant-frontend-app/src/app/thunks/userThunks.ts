@@ -57,7 +57,7 @@ export const getUserData = createAsyncThunk<
     const response = await axiosApi.get<UserDataResponse>(serverRoute.userData);
     return response.data;
   } catch (e) {
-    if (isAxiosError(e) && e.response && e.response.status === 422) {
+    if (isAxiosError(e) && e.response) {
       return rejectWithValue(e.response.data);
     }
     throw e;
@@ -74,7 +74,7 @@ export const signout = createAsyncThunk<
     console.log("Logged out successfully");
     return;
   } catch (e) {
-    if (isAxiosError(e) && e.response && e.response.status === 422) {
+    if (isAxiosError(e) && e.response) {
       return rejectWithValue(e.response.data);
     }
     throw e;

@@ -82,8 +82,9 @@ export const userSlice = createSlice({
           state.user.role = data.role;
         }
       })
-      .addCase(getUserData.rejected, (state) => {
+      .addCase(getUserData.rejected, (state, { payload: errorResponse }) => {
         state.userDataLoading = false;
+        toast.error(errorResponse?.message);
       });
 
     builder
@@ -94,8 +95,9 @@ export const userSlice = createSlice({
         state.signoutLoading = false;
         state.user = null;
       })
-      .addCase(signout.rejected, (state) => {
+      .addCase(signout.rejected, (state, { payload: errorResponse }) => {
         state.signoutLoading = false;
+        toast.error(errorResponse?.message);
       });
   },
   selectors: {

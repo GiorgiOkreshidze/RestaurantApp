@@ -16,8 +16,9 @@
           "feedbackId": { "S": "2f0b7f9c-9bde-4b75-9612-7431d4058f8b" },
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "Temirlan Doe, temirlan@example.com" },
-          "waiterEmail": { "S": "laydyGaga98@example.com" },
+          "userInfo": { "S": "Temirlan Doe" },
+          "userEmail": {"S":  "temirlan@example.com"},
+          "waiterId": { "S": "PLACEHOLDER_REQUIRES_UPDATE" },
           "createdAt": { "S": "2025-03-08T10:15:00Z" }
         }
       }
@@ -38,8 +39,9 @@
           "feedbackId": { "S": "2f0b7f9c-9bde-4b75-9612-7431d4058f8b" },
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "Irina Doe, irina@example.com" },
-          "waiterEmail": { "S": "johnyDepp007@example.com" },
+          "userInfo": { "S": "Irina Doe" },
+          "userEmail": {"S":  "irina@example.com"},
+          "waiterId": { "S": "PLACEHOLDER_REQUIRES_UPDATE" },
           "createdAt": { "S": "2025-03-12T10:15:00Z" }
         }
       }
@@ -60,8 +62,9 @@
           "feedbackId": { "S": "6e6a173e-67c5-43e8-a0a5-2810833cf248" },
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "Giorgi Doe, giorgi@example.com" },
-          "waiterEmail": { "S": "kylieJenner69@example.com" },
+          "userInfo": { "S": "Giorgi Doe" },
+          "userEmail": {"S":  "giorgi@example.com"},
+          "waiterId": { "S": "PLACEHOLDER_REQUIRES_UPDATE" },
           "createdAt": { "S": "2025-03-09T10:15:00Z" }
         }
       }
@@ -82,8 +85,9 @@
           "feedbackId": { "S": "6e6a173e-67c5-43e8-a0a5-2810833cf248" },
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "Salome Doe, salome@example.com" },
-          "waiterEmail": { "S": "laydyGaga98@example.com" },
+          "userInfo": { "S": "Salome Doe" },
+          "userEmail": {"S":  "salome@example.com"},
+          "waiterId": { "S": "PLACEHOLDER_REQUIRES_UPDATE" },
           "createdAt": { "S": "2025-03-10T10:15:00Z" }
         }
       }
@@ -104,8 +108,9 @@
           "feedbackId": { "S": "b8e7c75a-bd92-44ef-8cf0-6e5f01d158db" },
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "Dora Doe, dora@example.com" },
-          "waiterEmail": { "S": "johnyDepp007@example.com" },
+          "userInfo": { "S": "Dora Doe" },
+          "userEmail": {"S":  "dora@example.com"},
+          "waiterId": { "S": "PLACEHOLDER_REQUIRES_UPDATE" },
           "createdAt": { "S": "2025-03-11T10:15:00Z" }
         }
       }
@@ -126,8 +131,9 @@
           "feedbackId": { "S": "b8e7c75a-bd92-44ef-8cf0-6e5f01d158db" },
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "Roman Doe, roman@example.com" },
-          "waiterEmail": { "S": "kylieJenner69@example.com" },
+          "userInfo": { "S": "Roman Doe" },
+          "userEmail": {"S":  "roman@example.com"},
+          "waiterId": { "S": "PLACEHOLDER_REQUIRES_UPDATE" },
           "createdAt": { "S": "2025-02-12T10:15:00Z" }
         }
       }

@@ -20,14 +20,14 @@ export const useBookingForm = () => {
   useEffect(() => {
     if (!selectOptions.length) return;
     setLocationId(selectOptions[0].id);
-  }, [selectOptions]);
+  }, [selectOptions, setLocationId]);
 
   useEffect(() => {
     if (!time) return;
     if (isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
       setTime("");
     }
-  }, [date]);
+  }, [date, setTime, time]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();

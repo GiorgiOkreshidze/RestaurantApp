@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
@@ -27,28 +28,20 @@ public class CreateWaiterReservationAction
     
 public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProxyRequest request)
     {
-        var accessToken = ActionUtils.GetAccessToken(request);
-        var userInfo = await _authenticationService.GetUserDetailsAsync(accessToken);
+        var jwtToken = ActionUtils.ExtractJwtToken(request);
+        var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            throw new UnauthorizedException("User is not registered");
+        }
+
         var reservationRequest = JsonSerializer.Deserialize<WaiterReservationRequest>(request.Body);
-        var email = userInfo.GetValueOrDefault("email");
 
         if (reservationRequest == null)
         {
             throw new ArgumentException("Reservation request body was null");
         }
-
-        if (email == null)
-        {
-            throw new UnauthorizedException("User is not registered");
-        }
-
-        var user = await _userService.GetUserByEmailAsync(email);
-        
-        if (user.Role != Roles.Waiter)
-        {
-            throw new UnauthorizedException("Only waiters can create or modify waiter reservations");
-        }
-
    
         // Create operation
         if (reservationRequest.ClientType is not ClientType.CUSTOMER and not ClientType.VISITOR)
@@ -72,7 +65,7 @@ public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProx
         ReservationValidator.ValidateFutureDateTime(reservationDateTimeFrom);
         ReservationValidator.ValidateFutureDateTime(reservationDateTimeTo);
 
-        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, user);
+        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, userId);
         return ActionUtils.FormatResponse(200, reservationResponse);
     }
 }

@@ -3,6 +3,7 @@ import { getUserData, login } from "@/app/thunks/userThunks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 export const useLoginForm = () => {
@@ -43,7 +44,10 @@ export const useLoginForm = () => {
       console.log("Userdata successful:", userData);
       navigate("/");
     } catch (error) {
-      console.error("Login failed:", error);
+      if (error instanceof Error) {
+        console.error("Login failed:", error);
+        toast.error(error.message);
+      }
     }
   };
 

@@ -33,7 +33,7 @@ export const ReservationConfirmDialog = ({
   className?: string;
   children?: ReactElement;
   guests: number;
-  date: Date;
+  date: string;
   time: string;
   tableNumber: string;
   locationAddress: string;

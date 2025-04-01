@@ -1,11 +1,9 @@
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { CheckIcon, ChevronUpIcon } from "lucide-react";
+import { ChevronUpIcon } from "lucide-react";
 import { ChevronDownIcon } from "@/components/icons/";
 
 import { cn } from "@/lib/utils";
-import { ComponentType } from "react";
-import { Button } from "./Button";
 
 function SelectRoot({
   ...props

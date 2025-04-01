@@ -39,7 +39,7 @@ export interface ReservationDialogProps {
   locationId: string;
   tableId: string;
   tableNumber: string;
-  date: Date;
+  date: string;
   initTime: string;
   initGuests: number;
   maxGuests: number;
