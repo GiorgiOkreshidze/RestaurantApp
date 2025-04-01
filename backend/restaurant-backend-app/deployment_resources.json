@@ -121,7 +121,7 @@
       "/auth/refresh": {
         "enable_cors": true,
         "POST": {
-          "authorization_type": "authorizer",
+          "authorization_type": "NONE",
           "integration_type": "lambda",
           "lambda_name": "restaurant-api-handler",
           "enable_proxy": true,
