@@ -72,6 +72,16 @@ export interface Dish {
   price: string;
   weight: string;
   imageUrl: string;
+  state?: string;
+}
+
+export interface ExtendedDish extends Dish {
+  description: string;
+  calories: string;
+  carbohydrates: string;
+  fats: string;
+  proteins: string;
+  vitamins: string;
 }
 
 export interface Review {

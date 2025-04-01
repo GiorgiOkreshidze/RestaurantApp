@@ -22,7 +22,7 @@ export const NavBar = () => {
         <div className="flex flex-col justify-center items-center gap-[1rem] lg:flex-row lg:gap-[2rem]">
           <NavBarLink to="/">Main page</NavBarLink>
           <NavBarLink to="/booking">Book a Table</NavBarLink>
-          <NavBarLink to="/reservations">Reservations</NavBarLink>
+          {user && <NavBarLink to="/reservations">Reservations</NavBarLink>}
         </div>
         <div className="flex items-center justify-center self-center lg:justify-self-end">
           {user ? (

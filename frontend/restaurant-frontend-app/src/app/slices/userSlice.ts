@@ -62,9 +62,11 @@ export const userSlice = createSlice({
             imageUrl: "",
           };
         }
+        toast.success("Successfully logged in!");
       })
-      .addCase(login.rejected, (state) => {
+      .addCase(login.rejected, (state, { payload: errorResponse }) => {
         state.loginLoading = false;
+        toast.error(errorResponse?.message);
       });
 
     builder

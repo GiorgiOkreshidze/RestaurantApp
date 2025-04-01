@@ -4,7 +4,6 @@ import {
   Locations,
   BrandTitle,
   PageBody,
-  PageBodySection,
 } from "@/components/shared";
 import { useSelector } from "react-redux";
 import {
@@ -16,6 +15,7 @@ import {
   selectLocationsLoading,
 } from "@/app/slices/locationsSlice";
 import { Button, Text } from "@/components/ui";
+import { Link } from "react-router";
 
 export const Home = () => {
   const popularDishes = useSelector(selectPopularDishes);
@@ -36,11 +36,17 @@ export const Home = () => {
             Our diverse menu includes vegetarian and vegan options, crafted to
             highlight the rich flavors of Georgian cuisine with a modern twist.
           </Text>
-          <Button className="w-full mt-[2.5rem]">View Menu</Button>
+          <Link to="/menu">
+            <Button className="w-full mt-[2.5rem]">View Menu</Button>
+          </Link>
         </div>
       </PageHero>
       <PageBody>
-        <Dishes isLoading={isDishesLoading} dishes={popularDishes} />
+        <Dishes
+          title="Most Popular Dishes"
+          isLoading={isDishesLoading}
+          dishes={popularDishes}
+        />
         <Locations isLoading={isLocationsLoading} locations={locations} />
       </PageBody>
     </>
