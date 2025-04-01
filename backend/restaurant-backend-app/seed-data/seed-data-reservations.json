@@ -137,6 +137,52 @@
           "createdAt": { "S": "2025-02-12T10:15:00Z" }
         }
       }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "1a7b9370-3d4e-42b9-a283-12f4a545bf88" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
+          "tableId": { "S": "04ba5b37-8fbd-4f5f-8354-0b75078a790a"},
+          "tableNumber": { "S": "1" },
+          "date": { "S": "2025-04-22" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "10:00" },
+          "timeTo": { "S": "11:30" },
+          "timeSlot": { "S": "10:00 - 11:30" },
+          "locationAddress": { "S": "48 Rustaveli Avenue" },
+          "feedbackId": { "S": "2f0b7f9c-9bde-4b75-9612-7431d4058f8b" },
+          "preOrder": { "S": "Breakfast Special" },
+          "status": { "S": "In Progress" },
+          "userInfo": { "S": "Salome Doe" },
+          "userEmail": { "S": "salome@example.com" },
+          "waiterId": { "S": "PLACEHOLDER_REQUIRES_UPDATE" },
+          "createdAt": { "S": "2025-04-20T10:15:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "bded1291-4f92-4e16-91fc-3a79a1d6725e" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
+          "tableId": { "S": "04ba5b37-8fbd-4f5f-8354-0b75078a790a" },
+          "tableNumber": { "S": "1" },
+          "date": { "S": "2025-04-22" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "12:00" },
+          "timeTo": { "S": "13:30" },
+          "timeSlot": { "S": "12:00 - 13:30" },
+          "locationAddress": { "S": "48 Rustaveli Avenue" },
+          "feedbackId": { "S": "2f0b7f9c-9bde-4b75-9612-7431d4058f8b" },
+          "preOrder": { "S": "Lunch Special" },
+          "status": { "S": "Finished" },
+          "userInfo": { "S": "Roam Doe" },
+          "userEmail": { "S": "roman@example.com" },
+          "waiterId": { "S": "PLACEHOLDER_REQUIRES_UPDATE" },
+          "createdAt": { "S": "2025-04-20T10:30:00Z" }
+        }
+      }
     }
   ]
 }
