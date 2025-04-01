@@ -2,6 +2,8 @@ export { RegistrationInput } from "./RegistrationInput";
 export { BrandTitle } from "./BrandTitle";
 export { NavBar } from "./NavBar";
 export { Dishes } from "./Dishes";
+export { AllDishes } from "./AllDishes";
+export { OneDishDialog } from "./OneDishDialog";
 export { Locations } from "./Locations";
 export { RegForm } from "./RegForm";
 export { LoginForm } from "./LoginForm";

@@ -1,5 +1,5 @@
 import { Route, Routes, useLocation } from "react-router";
-import { Home, Auth, Location } from "./pages";
+import { Home, Auth, Location, Menu } from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
@@ -17,7 +17,10 @@ import { getPopularDishes } from "./app/thunks/dishesThunks";
 import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
 import { getReservations } from "./app/thunks/reservationsThunks";
 import { selectReservations } from "./app/slices/reservationsSlice";
-import { selectUser } from "./app/slices/userSlice";
+import { ProtectedRoute } from "./components/routeComponents/ProtectedRoute";
+import { PublicRoute } from "./components/routeComponents/PublicRoute";
+
+
 
 function App() {
   const location = useLocation();
@@ -52,12 +55,12 @@ function App() {
   }, [dispatch, selectOptions.length]);
 
   useEffect(() => {
-    if (!user) return;
-    if (!selectOptions.length) {
+    if (!reservations.length) {
       dispatch(getReservations());
     }
   }, [dispatch, reservations.length, selectOptions.length]);
 
+ 
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} theme="light" />
@@ -68,10 +71,39 @@ function App() {
       )}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signin" element={<Auth />} />
-        <Route path="/signup" element={<Auth />} />
+        <Route
+          path="/menu"
+          element={
+            <ProtectedRoute>
+              <Menu />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/signin"
+          element={
+            <PublicRoute>
+              <Auth />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <Auth />
+            </PublicRoute>
+          }
+        />
         <Route path="/locations/:id" element={<Location />} />
-        <Route path="/reservations" element={<Reservations />} />
+        <Route
+          path="/reservations"
+          element={
+            <ProtectedRoute>
+              <Reservations />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/booking" element={<Booking />} />
       </Routes>
     </>

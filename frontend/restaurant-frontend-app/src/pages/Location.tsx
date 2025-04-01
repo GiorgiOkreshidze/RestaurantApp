@@ -1,4 +1,4 @@
-import { Container, Dishes, LocationHero, Reviews } from "@/components/shared";
+import { Container, Dishes, LocationHero, PageBody, Reviews } from "@/components/shared";
 import { Text } from "@/components/ui";
 import { NavLink, useParams } from "react-router";
 import { useAppDispatch } from "@/app/hooks";
@@ -40,7 +40,11 @@ export const Location = () => {
 
       <LocationHero />
 
+      <PageBody>
+
+
       <Dishes title="Specialty Dishes" dishes={specialityDishes} />
+      </PageBody>
 
       <Reviews />
     </>
