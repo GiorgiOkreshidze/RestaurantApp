@@ -37,6 +37,7 @@ namespace Function.Formatters.ExcelFormatter
                 worksheet.Cells[row, 6].Value = entry.CurrentHours;
                 worksheet.Cells[row, 7].Value = entry.PreviousHours;
                 worksheet.Cells[row, 8].Value = entry.DeltaHours;
+                worksheet.Cells[row, 8].Style.Numberformat.Format = "+0.0%;-0.0%"; // Explicit + and - with %
                 row++;
             }
 

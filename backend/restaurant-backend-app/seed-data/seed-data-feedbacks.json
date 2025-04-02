@@ -11,8 +11,10 @@
           "date": { "S": "2025-03-17T12:00:00Z" },
           "type": { "S": "SERVICE-QUALITY" },
           "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
+          "reservationId": { "S":  "1a7b9370-3d4e-42b9-a283-12f4a545bf88"},
           "type#date": { "S": "SERVICE_QUALITY#2025-03-17T12:00:00Z" },
-          "locationId#type": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99#SERVICE_QUALITY" }
+          "locationId#type": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99#SERVICE_QUALITY" },
+          "reservationId#type": { "S": "1a7b9370-3d4e-42b9-a283-12f4a545bf88#SERVICE_QUALITY" }
         }
       }
     },
@@ -27,8 +29,10 @@
           "date": { "S": "2025-03-16T14:30:00Z" },
           "type": { "S": "SERVICE-QUALITY" },
           "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "reservationId": { "S":  "bded1291-4f92-4e16-91fc-3a79a1d6725e"},
           "type#date": { "S": "SERVICE_QUALITY#2025-03-16T14:30:00Z" },
-          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#SERVICE_QUALITY" }
+          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#SERVICE_QUALITY" },
+          "reservationId#type": { "S": "bded1291-4f92-4e16-91fc-3a79a1d6725e#SERVICE_QUALITY" }
         }
       }
     },
@@ -40,11 +44,13 @@
           "comment": { "S": "Average experience." },
           "userName": { "S": "Roman Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar3.jpg" },
-          "date": { "S": "2025-03-15T10:15:00Z" },
+          "date": { "S": "2025-02-02T10:15:00Z" },
           "type": { "S": "CUISINE-EXPERIENCE" },
           "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
-          "type#date": { "S": "SERVICE_QUALITY#2025-03-15T10:15:00Z" },
-          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#SERVICE_QUALITY" }
+          "reservationId": { "S":  "2a18dd45-e609-4bd4-8219-42392a9168bd"},
+          "type#date": { "S": "SERVICE_QUALITY#2025-02-02T10:15:00Z" },
+          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#SERVICE_QUALITY" },
+          "reservationId#type": { "S": "2a18dd45-e609-4bd4-8219-42392a9168bd#SERVICE_QUALITY" }
         }
       }
     },
@@ -56,11 +62,13 @@
           "comment": { "S": "Do not like it." },
           "userName": { "S": "Dora Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar4.jpg" },
-          "date": { "S": "2025-03-20T10:15:00Z" },
+          "date": { "S": "2025-02-03T13:30:00Z" },
           "type": { "S": "CUISINE-EXPERIENCE" },
           "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
-          "type#date": { "S": "SERVICE_QUALITY#2025-03-20T10:15:00Z" },
-          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#SERVICE_QUALITY" }
+          "reservationId": { "S":  "adeddaef-c271-4915-bf70-48dd95735dc5"},
+          "type#date": { "S": "SERVICE_QUALITY#2025-02-03T13:30:00Z" },
+          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#SERVICE_QUALITY" },
+          "reservationId#type": { "S": "adeddaef-c271-4915-bf70-48dd95735dc5#SERVICE_QUALITY" }
         }
       }
     }

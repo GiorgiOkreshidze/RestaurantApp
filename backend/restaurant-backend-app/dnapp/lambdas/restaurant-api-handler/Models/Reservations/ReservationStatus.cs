@@ -1,6 +1,6 @@
 ﻿namespace Function.Models;
 
-public enum Status
+public enum ReservationStatus
 {
     
     [System.ComponentModel.Description("Reserved")]

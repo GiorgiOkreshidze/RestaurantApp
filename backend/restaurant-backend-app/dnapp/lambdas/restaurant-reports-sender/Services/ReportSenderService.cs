@@ -2,6 +2,7 @@
 using Amazon.SimpleEmail.Model;
 using Function.Formatters;
 using Function.Formatters.ExcelFormatter;
+using Function.Mappers;
 using Function.Models;
 using Function.Repositories.Interfaces;
 using Function.Services.Interfaces;
@@ -20,8 +21,8 @@ namespace Function.Services
         private readonly AmazonSimpleEmailServiceClient _sesClient;
         private readonly IReportFormatter _reportFormatter;
 
-        private const string FromEmail = "sender@example.com";
-        private const string ToEmail = "recipient@example.com";
+        private const string FromEmail = "wojomi5508@macho3.com";
+        private const string ToEmail = "xohefi1609@motivue.com";
 
         public ReportSenderService(
             IReportRepository reportRepository,
@@ -41,10 +42,19 @@ namespace Function.Services
             var previousWeekStart = currentWeekStart.AddDays(-7);
             var previousWeekEnd = currentWeekEnd.AddDays(-7);
 
-            var currentWeekReports = await _reportRepository.RetrieveReports(currentWeekStart, currentWeekEnd);
-            var previousWeekReports = await _reportRepository.RetrieveReports(previousWeekStart, previousWeekEnd);
+            var currentWeekItems = await _reportRepository.RetrieveReports(currentWeekStart, currentWeekEnd);
+            var previousWeekItems = await _reportRepository.RetrieveReports(previousWeekStart, previousWeekEnd);
+
+            var currentWeekReports = Mapper.MapItemsToReports(currentWeekItems);
+            var previousWeekReports = Mapper.MapItemsToReports(previousWeekItems);
 
             var summary = ProcessReports(currentWeekReports, previousWeekReports, currentWeekStart, currentWeekEnd);
+
+            Console.WriteLine($"Summary entries: {summary.Count}");
+            foreach (var report in summary)
+            {
+                Console.WriteLine($"Report: {report.WaiterName}, Hours: {report.WaiterEmail}");
+            }
 
             var reportContent = _reportFormatter.Format(summary);
 
@@ -52,12 +62,22 @@ namespace Function.Services
             string mimeType = _reportFormatter is ExcelReportFormatter ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : "text/csv";
 
             await SendEmailAsync(reportContent, fileName, mimeType);
-
         }
 
         private List<SummaryEntry> ProcessReports(List<Report> currentWeek, List<Report> previousWeek, DateTime startDate, DateTime endDate)
         {
             var waiterSummaries = new Dictionary<string, SummaryEntry>();
+
+            Console.WriteLine($"Current week reports: {currentWeek.Count}");
+            foreach (var report in currentWeek)
+            {
+                Console.WriteLine($"Report: {report.Waiter}, Hours: {report.HoursWorked}");
+            }
+            Console.WriteLine($"Previous week reports: {previousWeek.Count}");
+            foreach (var report in previousWeek)
+            {
+                Console.WriteLine($"Report: {report.Waiter}, Hours: {report.HoursWorked}");
+            }
 
             // Aggregate current week
             foreach (var report in currentWeek)
@@ -73,7 +93,8 @@ namespace Function.Services
                         WaiterName = report.Waiter,
                         WaiterEmail = report.WaiterEmail,
                         CurrentHours = 0,
-                        PreviousHours = 0
+                        PreviousHours = 0,
+                        DeltaHours = 0
                     };
                 }
                 waiterSummaries[key].CurrentHours += report.HoursWorked;
@@ -93,7 +114,8 @@ namespace Function.Services
                         WaiterName = report.Waiter,
                         WaiterEmail = report.WaiterEmail,
                         CurrentHours = 0,
-                        PreviousHours = 0
+                        PreviousHours = 0,
+                        DeltaHours = 0
                     };
                 }
                 waiterSummaries[key].PreviousHours += report.HoursWorked;
@@ -101,7 +123,14 @@ namespace Function.Services
 
             foreach (var entry in waiterSummaries.Values)
             {
-                entry.DeltaHours = entry.CurrentHours - entry.PreviousHours;
+                if (entry.PreviousHours == 0)
+                {
+                    entry.DeltaHours = entry.CurrentHours > 0 ? 1 : 0; // +100% or 0%
+                }
+                else
+                {
+                    entry.DeltaHours = ((entry.CurrentHours - entry.PreviousHours) / entry.PreviousHours);
+                }
             }
 
             return waiterSummaries.Values.ToList();

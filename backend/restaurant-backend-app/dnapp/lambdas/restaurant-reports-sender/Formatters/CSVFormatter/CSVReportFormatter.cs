@@ -15,7 +15,7 @@ namespace Function.Formatters.CSVFormatter
             csvBuilder.AppendLine("Location,Start Date,End Date,Waiter Name,Waiter Email,Current Hours,Next Hours,Delta Hours");
             foreach (var entry in summary)
             {
-                csvBuilder.AppendLine($"{entry.Location},{entry.StartDate},{entry.EndDate},{entry.WaiterName},{entry.WaiterEmail},{entry.CurrentHours},{entry.NextHours},{entry.DeltaHours}");
+                csvBuilder.AppendLine($"{entry.Location},{entry.StartDate},{entry.EndDate},{entry.WaiterName},{entry.WaiterEmail},{entry.CurrentHours},{entry.PreviousHours},{entry.DeltaHours}");
             }
             return csvBuilder.ToString();
         }

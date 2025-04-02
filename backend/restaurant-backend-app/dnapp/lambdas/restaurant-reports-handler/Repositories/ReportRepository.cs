@@ -20,6 +20,8 @@ namespace Function.Repositories
         {
             var item = new Dictionary<string, AttributeValue>
             {
+                { "partition", new AttributeValue { S = "weekly" } },
+                { "date#id", new AttributeValue { S = $"{report.Date}#{report.Id}" } },
                 { "id", new AttributeValue { S = report.Id } },
                 { "location", new AttributeValue { S = report.Location } },
                 { "date", new AttributeValue { S = report.Date } },

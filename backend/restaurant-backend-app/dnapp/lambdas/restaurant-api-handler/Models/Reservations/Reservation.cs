@@ -13,9 +13,6 @@ public class Reservation
     [JsonPropertyName("date")]
     public required string Date { get; set; }
     
-    [JsonPropertyName("feedbackId")]
-    public string FeedbackId { get; set; }
-    
     [JsonPropertyName("guestsNumber")]
     public required string GuestsNumber { get; set; }
     

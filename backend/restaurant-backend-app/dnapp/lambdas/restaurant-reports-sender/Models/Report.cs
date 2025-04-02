@@ -1,17 +1,9 @@
-﻿using Amazon.DynamoDBv2.DataModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace Function.Models
 {
-    [DynamoDBTable("Reports")]
     public class Report
     {
-        [DynamoDBHashKey]
         [JsonPropertyName("id")]
         public required string Id { get; set; }
         [JsonPropertyName("location")]

@@ -72,7 +72,24 @@ export interface Dish {
   price: string;
   weight: string;
   imageUrl: string;
+  state?: string;
 }
+
+export interface ExtendedDish extends Dish {
+  description: string;
+  calories: string;
+  carbohydrates: string;
+  fats: string;
+  proteins: string;
+  vitamins: string;
+}
+
+type CategoryType = "Appetizers" | "MainCourse" | "Desserts" | "";
+
+type SortOptionType = {
+  id: string;
+  label: string;
+};
 
 export interface Review {
   name: string;

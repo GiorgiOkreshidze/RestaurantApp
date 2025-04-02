@@ -26,7 +26,7 @@ export const PageHero = ({
     <div
       className={cn(
         "content-center min-h-[404px] bg-cover bg-no-repeat bg-center",
-        heroVariants({ variant, className }),
+        heroVariants({ variant, className })
       )}
       style={{ backgroundImage: `url(${HeroImg})` }}
       {...props}

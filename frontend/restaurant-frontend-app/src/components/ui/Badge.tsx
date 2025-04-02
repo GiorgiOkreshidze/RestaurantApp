@@ -23,7 +23,8 @@ export const Badge = ({
         status === "In Progress" && "bg-blue-100",
         status === "Canceled" && "bg-red-100",
         status === "Finished" && "bg-green-100",
-        className,
+        status === "On Stop" && "bg-red-100",
+        className
       )}
       {...props}
     />

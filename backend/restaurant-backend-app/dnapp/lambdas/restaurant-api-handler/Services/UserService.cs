@@ -49,7 +49,8 @@ public class UserService : IUserService
             LastName = user.LastName,
             Email = user.Email,
             Role = user.Role.ToString(),
-            ImageUrl = user.ImageUrl
+            ImageUrl = user.ImageUrl,
+            LocationId = user.LocationId
         };
 
         return userDto;
