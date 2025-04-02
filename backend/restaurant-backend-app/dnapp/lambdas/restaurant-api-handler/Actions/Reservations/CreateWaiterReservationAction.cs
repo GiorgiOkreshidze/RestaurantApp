@@ -60,6 +60,11 @@ public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProx
             throw new ArgumentException("CustomerId is required for CUSTOMER type reservations");
         }
 
+        if (reservationRequest.ClientType == ClientType.VISITOR && !string.IsNullOrEmpty(reservationRequest.CustomerId))
+        {
+            throw new ArgumentException("Visitor can not have CustomerId");
+        }
+
         ReservationValidator.ValidateGuestsNumber(reservationRequest.GuestsNumber);
         
         var parsedDate = ReservationValidator.ParseDate(reservationRequest.Date);
