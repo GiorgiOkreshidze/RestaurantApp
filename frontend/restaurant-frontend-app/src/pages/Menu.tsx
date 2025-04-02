@@ -3,7 +3,6 @@ import { selectDishes, selectDishesLoading } from "@/app/slices/dishesSlice";
 import { getAllDishes } from "@/app/thunks/dishesThunks";
 import { AllDishes, PageBody, PageHero } from "@/components/shared";
 import { CategoryFilters } from "@/components/shared/CategoryFilters";
-import { Loader } from "@/components/shared/Loader";
 import { SortingOptions } from "@/components/shared/SortingOptions";
 import { Text } from "@/components/ui";
 import { useFilterState } from "@/hooks/useFiltersState";
@@ -40,27 +39,6 @@ export const Menu = () => {
     []
   );
 
-  const renderContent = () => {
-    if (isLoading) {
-      return <Loader />;
-    }
-
-    if (dishes.length === 0) {
-      return (
-        <div className="flex flex-col items-center justify-center">
-          <Text variant="h3" className="mb-2">
-            No dishes found
-          </Text>
-          <Text variant="bodyBold">
-            Try changing your filters or check back later.
-          </Text>
-        </div>
-      );
-    }
-
-    return <AllDishes dishes={dishes} />;
-  };
-
   return (
     <div>
       <PageHero variant="dark" className="flex flex-col justify-center">
@@ -86,7 +64,7 @@ export const Menu = () => {
           />
         </div>
 
-        {renderContent()}
+        <AllDishes dishes={dishes} loading={isLoading} />
       </PageBody>
     </div>
   );
