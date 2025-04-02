@@ -15,28 +15,117 @@ namespace Function.Repository;
 
 public class FeedbackRepository : IFeedbackRepository
 {
-    private readonly AmazonDynamoDBClient _dynamoDBClient;
-    
+    private readonly AmazonDynamoDBClient _dynamoDbClient;
     private readonly string? _locationFeedbacksTableName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TABLE");
     private readonly string? _locationFeedbacksRatingByTypeIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TYPE_RATING_INDEX");
+    private readonly string? _locationFeedbacksReservationTypeIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_RESERVATION_TYPE_INDEX");
     private readonly string? _locationFeedbacksDateIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_DATE_INDEX");
     private readonly string? _locationFeedbacksRatingIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_RATING_INDEX");
     private readonly string? _locationFeedbacksDateByTypeIndexName = Environment.GetEnvironmentVariable("DDB_LOCATION_FEEDBACKS_TYPE_DATE_INDEX");
-    
+
     public FeedbackRepository()
     {
-        _dynamoDBClient = new AmazonDynamoDBClient();
+        _dynamoDbClient = new AmazonDynamoDBClient();
     }
     
-    public async Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(
+    public async Task<(List<LocationFeedback>, string?)> GetLocationFeedbacksAsync(
         LocationFeedbackQueryParameters queryParameters)
     {
         var request = BuildQueryRequest(queryParameters);
-        var response = await _dynamoDBClient.QueryAsync(request);
+        var response = await _dynamoDbClient.QueryAsync(request);
         var nextToken = GetNextToken(response.LastEvaluatedKey);
         var feedbacks = response.Items.Select(Mapper.MapToLocationFeedbackResponse).ToList();
 
         return (feedbacks, nextToken);
+    }
+    
+    public async Task UpsertFeedbackByReservationAndTypeAsync(LocationFeedback feedback)
+    {
+        var reservationIdTypeKey = $"{feedback.ReservationId}#{feedback.Type}";
+        var queryRequest = new QueryRequest
+        {
+            TableName = _locationFeedbacksTableName,
+            IndexName = _locationFeedbacksReservationTypeIndexName,
+            KeyConditionExpression = "#resIdType = :resIdTypeValue",
+            ProjectionExpression = "#locId, #typeDate",
+            ExpressionAttributeNames = new Dictionary<string, string>
+            {
+                { "#resIdType", "reservationId#type" },
+                { "#locId", "locationId" },
+                { "#typeDate", "type#date" }
+            },
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":resIdTypeValue", new AttributeValue { S = reservationIdTypeKey } }
+            },
+            Limit = 1 
+        };
+
+        var queryResponse = await _dynamoDbClient.QueryAsync(queryRequest);
+        var existingItemKey = queryResponse.Items.FirstOrDefault();
+
+        if (existingItemKey != null && existingItemKey.ContainsKey("locationId") && existingItemKey.ContainsKey("type#date"))
+        {
+            await UpdateExistingFeedbackRateAndCommentAsync(feedback, existingItemKey);
+        }
+        else
+        {
+            await InsertNewFeedbackAsync(feedback);
+        }
+    }
+
+    private async Task UpdateExistingFeedbackRateAndCommentAsync(LocationFeedback feedback, Dictionary<string, AttributeValue> primaryKey)
+    {
+        var updateItemRequest = new UpdateItemRequest
+        {
+            TableName = _locationFeedbacksTableName,
+            Key = primaryKey,
+            UpdateExpression = "SET #rate = :rate, #comment = :comment",
+            ExpressionAttributeNames = new Dictionary<string, string>
+            {
+                { "#rate", "rate" },
+                { "#comment", "comment" }
+            },
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":rate", new AttributeValue { N = feedback.Rate } },
+                { ":comment", new AttributeValue { S = feedback.Comment } }
+            },
+            ConditionExpression = "attribute_exists(locationId)",
+            ReturnValues = ReturnValue.NONE
+        };
+        
+        await _dynamoDbClient.UpdateItemAsync(updateItemRequest);
+    }
+
+    private async Task InsertNewFeedbackAsync(LocationFeedback feedback)
+    {
+        var typeDateKey = $"{feedback.Type}#{feedback.Date}";
+        var locationIdTypeKey = $"{feedback.LocationId}#{feedback.Type}";
+        var reservationIdTypeKey = $"{feedback.ReservationId}#{feedback.Type}";
+        var feedbackId = feedback.Id;
+        var putItemRequest = new PutItemRequest
+        {
+            TableName = _locationFeedbacksTableName,
+            Item = new Dictionary<string, AttributeValue>
+            {
+                { "locationId", new AttributeValue { S = feedback.LocationId } },
+                { "type#date", new AttributeValue { S = typeDateKey } },
+                { "locationId#type", new AttributeValue { S = locationIdTypeKey } },
+                { "reservationId#type", new AttributeValue { S = reservationIdTypeKey } },
+                { "id", new AttributeValue { S = feedbackId } },
+                { "rate", new AttributeValue { N = feedback.Rate } },
+                { "comment", new AttributeValue { S = feedback.Comment } },
+                { "userName", new AttributeValue { S = feedback.UserName } },
+                { "userAvatarUrl", new AttributeValue { S = feedback.UserAvatarUrl } },
+                { "date", new AttributeValue { S = feedback.Date } },
+                { "type", new AttributeValue { S = feedback.Type } },
+                { "reservationId", new AttributeValue { S = feedback.ReservationId } }
+            },
+            ConditionExpression = "attribute_not_exists(locationId)"
+        };
+        
+        await _dynamoDbClient.PutItemAsync(putItemRequest);
     }
 
     private QueryRequest BuildQueryRequest(LocationFeedbackQueryParameters queryParameters)

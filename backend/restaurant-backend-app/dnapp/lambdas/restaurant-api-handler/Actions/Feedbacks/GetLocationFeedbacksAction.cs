@@ -116,12 +116,12 @@ public class GetLocationFeedbacksAction
         return (sortProperty, sortDirection);
     }
 
-    private async Task<(List<LocationFeedbackResponse> Feedbacks, string? NextToken)> GetPaginatedFeedbacks(
+    private async Task<(List<LocationFeedback> Feedbacks, string? NextToken)> GetPaginatedFeedbacks(
         LocationFeedbacksParameters parameters,
         (string SortProperty, string SortDirection) sortOptions)
     {
-        string? currentNextToken = parameters.NextPageToken;
-        List<LocationFeedbackResponse> currentPageFeedbacks = new();
+        var currentNextToken = parameters.NextPageToken;
+        List<LocationFeedback> currentPageFeedbacks = new();
 
         if (parameters.Page <= 1)
         {
@@ -160,7 +160,7 @@ public class GetLocationFeedbacksAction
 
                 if (pageFeedbacks.Count == 0 || nextToken == null)
                 {
-                    return (new List<LocationFeedbackResponse>(), null);
+                    return (new List<LocationFeedback>(), null);
                 }
 
                 currentPageFeedbacks = pageFeedbacks;
@@ -172,7 +172,7 @@ public class GetLocationFeedbacksAction
     }
 
     private object BuildResponseBody(
-        List<LocationFeedbackResponse> content,
+        List<LocationFeedback> content,
         string? nextPageToken,
         LocationFeedbacksParameters parameters,
         (string SortProperty, string SortDirection) sortOptions)

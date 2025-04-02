@@ -36,6 +36,7 @@ public class ApiHandler
     private readonly GetDishByIdAction _getDishByIdAction;
     private readonly CreateWaiterReservationAction _createWaiterReservationAction;
     private readonly GetLocationByIdAction _getLocationByIdAction;
+    private readonly AddFeedbackAction _addFeedbackAction;
 
     public ApiHandler()
     {
@@ -59,6 +60,7 @@ public class ApiHandler
         _getDishByIdAction = new GetDishByIdAction();
         _createWaiterReservationAction = new CreateWaiterReservationAction();
         _getLocationByIdAction = new GetLocationByIdAction();
+        _addFeedbackAction = new AddFeedbackAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -189,6 +191,12 @@ public class ApiHandler
                         { "GET", _getAllCustomersAction.GetAllCustomersAsync }
                     }
                 },
+                {
+                    "/feedbacks", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "POST", _addFeedbackAction.AddFeedbackAsync }
+                    }
+                }
             };
 
         if (!actionEndpointMapping.TryGetValue(requestPath, out var resourceMethods) ||

@@ -42,6 +42,7 @@
     "DDB_LOCATION_FEEDBACKS_TABLE": "${locationFeedback_table}",
     "DDB_LOCATION_FEEDBACKS_TYPE_RATING_INDEX": "${ix_locationFeedback_type_rating}",
     "DDB_LOCATION_FEEDBACKS_DATE_INDEX": "${ix_locationFeedback_date}",
+    "DDB_LOCATION_FEEDBACKS_RESERVATION_TYPE_INDEX": "${ix_locationFeedback_reservation_type}",
     "DDB_LOCATION_FEEDBACKS_RATING_INDEX": "${ix_locationFeedback_rating}",
     "DDB_LOCATION_FEEDBACKS_TYPE_DATE_INDEX": "${ix_locationFeedback_type_date}"
   },

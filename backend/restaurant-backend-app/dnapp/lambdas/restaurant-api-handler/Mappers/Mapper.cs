@@ -173,9 +173,9 @@ public class Mapper
         return editableTill;
     }
 
-    public static LocationFeedbackResponse MapToLocationFeedbackResponse(Dictionary<string, AttributeValue> item)
+    public static LocationFeedback MapToLocationFeedbackResponse(Dictionary<string, AttributeValue> item)
     {
-        var feedback = new LocationFeedbackResponse
+        var feedback = new LocationFeedback
         {
             Id = item.TryGetValue("id", out var id) ? id.S : "",
             Rate = item.TryGetValue("rate", out var rate) ? rate.N.ToString() : "",
@@ -184,7 +184,8 @@ public class Mapper
             UserAvatarUrl = item.TryGetValue("userAvatarUrl", out var userAvatarUrl) ? userAvatarUrl.S : "",
             Date = item.TryGetValue("date", out var date) ? date.S : "",
             Type = item.TryGetValue("type", out var type) ? type.S : "",
-            LocationId = item.TryGetValue("locationId", out var locationId) ? locationId.S : ""
+            LocationId = item.TryGetValue("locationId", out var locationId) ? locationId.S : "",
+            ReservationId = item.TryGetValue("reservationId", out var reservationId) ? reservationId.S : ""
         };
         return feedback;
     }
