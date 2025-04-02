@@ -1,20 +1,65 @@
 import { useAppDispatch } from "@/app/hooks";
-import { selectDishes } from "@/app/slices/dishesSlice";
+import { selectDishes, selectDishesLoading } from "@/app/slices/dishesSlice";
 import { getAllDishes } from "@/app/thunks/dishesThunks";
 import { AllDishes, PageBody, PageHero } from "@/components/shared";
+import { CategoryFilters } from "@/components/shared/CategoryFilters";
+import { Loader } from "@/components/shared/Loader";
+import { SortingOptions } from "@/components/shared/SortingOptions";
 import { Text } from "@/components/ui";
-import { useEffect } from "react";
+import { useFilterState } from "@/hooks/useFiltersState";
+import { CategoryType, SortOptionType } from "@/types";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 export const Menu = () => {
   const dishes = useSelector(selectDishes);
   const dispatch = useAppDispatch();
+  const isLoading = useSelector(selectDishesLoading);
+
+  const { filters, handleCategoryToggle, isCategoryActive, setSort } =
+    useFilterState();
 
   useEffect(() => {
-    if (!dishes.length) {
-      dispatch(getAllDishes());
+    dispatch(
+      getAllDishes({
+        category: filters.activeCategory,
+        sortBy: filters.sortBy,
+      })
+    );
+  }, [filters.activeCategory, filters.sortBy, dispatch]);
+
+  const categories: CategoryType[] = ["Appetizers", "MainCourse", "Desserts"];
+
+  const sortOptions: SortOptionType[] = useMemo(
+    () => [
+      { id: "PopularityAsc", label: "Popularity Ascending" },
+      { id: "PopularityDesc", label: "Popularity Descending" },
+      { id: "PriceAsc", label: "Price Ascending" },
+      { id: "PriceDesc", label: "Price Descending" },
+    ],
+    []
+  );
+
+  const renderContent = () => {
+    if (isLoading) {
+      return <Loader />;
     }
-  }, [dishes.length, dispatch]);
+
+    if (dishes.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center">
+          <Text variant="h3" className="mb-2">
+            No dishes found
+          </Text>
+          <Text variant="bodyBold">
+            Try changing your filters or check back later.
+          </Text>
+        </div>
+      );
+    }
+
+    return <AllDishes dishes={dishes} />;
+  };
 
   return (
     <div>
@@ -28,7 +73,20 @@ export const Menu = () => {
       </PageHero>
 
       <PageBody>
-        <AllDishes dishes={dishes} />
+        <div className="flex items-center justify-between mb-10">
+          <CategoryFilters
+            categories={categories}
+            handleCategoryToggle={handleCategoryToggle}
+            isCategoryActive={isCategoryActive}
+          />
+          <SortingOptions
+            options={sortOptions}
+            value={filters.sortBy}
+            onChange={setSort}
+          />
+        </div>
+
+        {renderContent()}
       </PageBody>
     </div>
   );
