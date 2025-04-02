@@ -95,7 +95,7 @@ public class ReservationService : IReservationService
    
         if (waiter.LocationId != locationId)
         {
-            throw new UnauthorizedException("Waiter cannot modify reservations for a different location.");
+            throw new UnauthorizedException("Waiter cannot create reservations for a different location.");
         }
 
         var reservationExists = await _reservationRepository.ReservationExistsAsync(reservation.Id);
