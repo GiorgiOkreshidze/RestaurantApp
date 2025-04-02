@@ -46,7 +46,7 @@ export const tablesSlice = createSlice({
           }))
           .sort(
             (a, b) =>
-              Number.parseInt(a.tableNumber) - Number.parseInt(b.tableNumber),
+              Number.parseInt(a.tableNumber) - Number.parseInt(b.tableNumber)
           );
       })
       .addCase(getTables.rejected, (state) => {

@@ -1,12 +1,17 @@
 import type { Dish, ExtendedDish } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllDishes, getOneDish, getPopularDishes } from "../thunks/dishesThunks";
+import {
+  getAllDishes,
+  getOneDish,
+  getPopularDishes,
+} from "../thunks/dishesThunks";
 
 interface dishesState {
   dishes: Dish[];
   oneDish: ExtendedDish | null;
   popularDishes: Dish[];
   dishesLoading: boolean;
+  oneDishLoading: boolean;
 }
 
 const initialState: dishesState = {
@@ -14,6 +19,7 @@ const initialState: dishesState = {
   oneDish: null,
   popularDishes: [],
   dishesLoading: false,
+  oneDishLoading: false,
 };
 
 export const dishesSlice = createSlice({
@@ -34,14 +40,14 @@ export const dishesSlice = createSlice({
       });
     builder
       .addCase(getOneDish.pending, (state) => {
-        state.dishesLoading = true;
+        state.oneDishLoading = true;
       })
       .addCase(getOneDish.fulfilled, (state, { payload: data }) => {
-        state.dishesLoading = false;
+        state.oneDishLoading = false;
         state.oneDish = data;
       })
       .addCase(getOneDish.rejected, (state) => {
-        state.dishesLoading = false;
+        state.oneDishLoading = false;
       });
     builder
       .addCase(getPopularDishes.pending, (state) => {
@@ -60,6 +66,7 @@ export const dishesSlice = createSlice({
     selectOneDish: (state) => state.oneDish,
     selectPopularDishes: (state) => state.popularDishes,
     selectDishesLoading: (state) => state.dishesLoading,
+    selectOneDishLoading: (state) => state.oneDishLoading,
   },
 });
 
@@ -69,4 +76,5 @@ export const {
   selectOneDish,
   selectPopularDishes,
   selectDishesLoading,
+  selectOneDishLoading,
 } = dishesSlice.selectors;

@@ -1,4 +1,4 @@
-﻿# Define variables
+# Define variables
 $region = "eu-west-2"
 $prefix = "tm2-"
 $syndicateFile = "../../.syndicate-config-dev/syndicate.yml"
@@ -8,7 +8,7 @@ $tempFile = "seed-data-processed.json"
 # Get the suffix from syndicate.yml
 $resourcesSuffix = (Get-Content $syndicateFile | Where-Object { $_ -match "resources_suffix:" }) -replace "resources_suffix:\s*", ""
 if (-not $resourcesSuffix) {
-    $resourcesSuffix = "-dev1"
+    $resourcesSuffix = "-dev3"
     Write-Host "No suffix found in syndicate.yml, defaulting to $resourcesSuffix"
 }
 
@@ -27,7 +27,7 @@ try {
     # Read JSON files and extract the inner arrays
     $feedbacksData = Get-Content $feedbacksSeedFile -Raw | ConvertFrom-Json
 
-    # Extract the 'Locations' array
+     # Extract the 'Locations' array
     $feedbacksItems = $feedbacksData.LocationFeedbacks
 
     # Create the request structure

@@ -86,6 +86,13 @@ export interface ExtendedDish extends Dish {
   vitamins: string;
 }
 
+type CategoryType = "Appetizers" | "MainCourse" | "Desserts" | "";
+
+type SortOptionType = {
+  id: string;
+  label: string;
+};
+
 export interface Review {
   name: string;
   date: string;
