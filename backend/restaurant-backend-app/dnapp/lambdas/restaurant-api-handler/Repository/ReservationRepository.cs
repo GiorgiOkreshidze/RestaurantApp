@@ -38,7 +38,7 @@ public class ReservationRepository : IReservationRepository
                     "id", new AttributeValue { S = reservation.Id }
                 }
             },
-            UpdateExpression = "SET #createdAt = :createdAt, #date = :date, #feedbackId = :feedbackId, #guestsNumber = :guestsNumber, " +
+            UpdateExpression = "SET #createdAt = :createdAt, #date = :date, #guestsNumber = :guestsNumber, " +
                                "#locationAddress = :locationAddress, #locationId = :locationId, #preOrder = :preOrder, #status = :status, " +
                                "#tableNumber = :tableNumber, #tableId = :tableId, #timeFrom = :timeFrom, #timeTo = :timeTo, " +
                                "#timeSlot = :timeSlot, #userInfo = :userInfo, #userEmail = :userEmail, #waiterId = :waiterId," +
@@ -47,7 +47,6 @@ public class ReservationRepository : IReservationRepository
             {
                 { "#createdAt", "createdAt" },
                 { "#date", "date" },
-                { "#feedbackId", "feedbackId" },
                 { "#guestsNumber", "guestsNumber" },
                 { "#locationAddress", "locationAddress" },
                 { "#locationId", "locationId" },
@@ -67,7 +66,6 @@ public class ReservationRepository : IReservationRepository
             {
                 { ":createdAt", new AttributeValue { S = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ") } },
                 { ":date", new AttributeValue { S = reservation.Date } },
-                { ":feedbackId", new AttributeValue { S = reservation.FeedbackId } },
                 { ":guestsNumber", new AttributeValue { S = reservation.GuestsNumber } },
                 { ":locationAddress", new AttributeValue { S = reservation.LocationAddress } },
                 { ":locationId", new AttributeValue { S = reservation.LocationId } },

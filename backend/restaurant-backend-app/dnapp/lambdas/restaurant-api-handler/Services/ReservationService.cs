@@ -55,7 +55,6 @@ public class ReservationService : IReservationService
         {
             Id = reservationId,
             Date = reservationRequest.Date,
-            FeedbackId = "NOT IMPLEMENTED YET AND ISN'T REQUIRED",
             GuestsNumber = reservationRequest.GuestsNumber,
             LocationAddress = location.Address,
             LocationId = location.Id,
