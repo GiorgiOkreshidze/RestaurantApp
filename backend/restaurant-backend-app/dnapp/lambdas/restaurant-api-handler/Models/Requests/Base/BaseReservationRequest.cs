@@ -17,7 +17,7 @@ namespace Function.Models.Requests.Base
         public required string Date { get; set; }
 
         [JsonPropertyName("guestsNumber")]
-        public required string GuestsNumber { get; set; } // Changed to int
+        public required string GuestsNumber { get; set; }
 
         [JsonPropertyName("timeFrom")]
         public required string TimeFrom { get; set; }
