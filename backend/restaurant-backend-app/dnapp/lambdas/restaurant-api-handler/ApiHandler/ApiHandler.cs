@@ -35,6 +35,8 @@ public class ApiHandler
     private readonly GetAllDishesAction _getAllDishesAction;
     private readonly GetDishByIdAction _getDishByIdAction;
     private readonly CreateWaiterReservationAction _createWaiterReservationAction;
+    private readonly GetLocationByIdAction _getLocationByIdAction;
+    private readonly AddFeedbackAction _addFeedbackAction;
 
     public ApiHandler()
     {
@@ -57,6 +59,8 @@ public class ApiHandler
         _getAllDishesAction = new GetAllDishesAction();
         _getDishByIdAction = new GetDishByIdAction();
         _createWaiterReservationAction = new CreateWaiterReservationAction();
+        _getLocationByIdAction = new GetLocationByIdAction();
+        _addFeedbackAction = new AddFeedbackAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -152,6 +156,12 @@ public class ApiHandler
                     }
                 },
                 {
+                    "/location/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "GET", _getLocationByIdAction.GetLocationByIdAsync }
+                    }
+                },
+                {
                     "/locations/{id}/feedbacks", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getLocationFeedbacksAction.GetLocationFeedbacks }
@@ -181,6 +191,12 @@ public class ApiHandler
                         { "GET", _getAllCustomersAction.GetAllCustomersAsync }
                     }
                 },
+                {
+                    "/feedbacks", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "POST", _addFeedbackAction.AddFeedbackAsync }
+                    }
+                }
             };
 
         if (!actionEndpointMapping.TryGetValue(requestPath, out var resourceMethods) ||

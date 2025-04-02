@@ -3,3 +3,4 @@ export { Auth } from "./Auth";
 export { Location } from "./Location";
 export { Reservations } from "./Reservations";
 export { WaiterReservation } from "./WaiterReservations";
+export { Menu } from "./Menu";

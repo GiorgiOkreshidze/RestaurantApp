@@ -7,5 +7,7 @@ namespace Function.Repository.Interfaces;
 
 public interface IFeedbackRepository
 {
-    Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters queryParameters);
+    Task<(List<LocationFeedback>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters queryParameters);
+    
+    Task UpsertFeedbackByReservationAndTypeAsync(LocationFeedback feedback);
 }

@@ -296,9 +296,9 @@ public class ReservationRepository : IReservationRepository
     {
         var documentList = await DynamoDbUtils.ScanDynamoDbTableAsync(_dynamoDBClient, _reservationsTableName);
         var reservations = Mapper.MapDocumentsToReservations(documentList);
-        var result = reservations.FirstOrDefault(loc => loc.Id == reservationId);
+        var result = reservations.FirstOrDefault(res => res.Id == reservationId);
 
-        if (result == null) throw new ResourceNotFoundException($"The location with {reservationId} id is not found");
+        if (result == null) throw new ResourceNotFoundException($"The reservation with {reservationId} id is not found");
 
         return result;
     }
