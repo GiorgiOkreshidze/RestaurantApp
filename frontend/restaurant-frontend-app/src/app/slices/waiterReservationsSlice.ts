@@ -1,27 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { LocationTable, RichTimeSlot } from "@/types";
 import { LOCATION_TABLES, TIME_SLOTS } from "@/utils/constants";
-
-interface WaiterReservationsState {
-  form: WaiterReservationsFormState;
-}
-
-export interface WaiterReservationsFormState {
-  date: string;
-  time: string;
-  table: string;
-  timeList: RichTimeSlot[];
-  tableList: LocationTable[];
-}
+import { startOfToday } from "date-fns";
 
 const initialState: WaiterReservationsState = {
   form: {
-    date: new Date().toString(),
+    date: startOfToday().toString(),
     time: "",
     table: "",
     timeList: TIME_SLOTS,
     tableList: LOCATION_TABLES,
   },
+  newReservation: null,
 };
 
 export const waiterReservationsState = createSlice({
@@ -49,3 +39,19 @@ export const { setFormDateAction, setFormTimeAction, setFormTableAction } =
   waiterReservationsState.actions;
 export const { selectWaiterReservationsForm } =
   waiterReservationsState.selectors;
+
+export interface WaiterReservationsState {
+  form: WaiterReservationsSearchForm;
+  newReservation: NewReservation | null;
+}
+export interface WaiterReservationsSearchForm {
+  date: string;
+  time: string;
+  table: string;
+  timeList: RichTimeSlot[];
+  tableList: LocationTable[];
+}
+
+export interface NewReservation {
+  locationId: string;
+}

@@ -32,3 +32,7 @@ export { ReservationConfirmDialog } from "./ReservationConfirmDialog";
 export { WaiterReservationDialog } from "./WaiterReservationDialog";
 export { WaiterReservationsForm } from "./WaiterReservationsForm";
 export { TablePicker } from "./TablePicker";
+export { CreateReservationDialog } from "./CreateReservationDialog";
+export { LocationPicker } from "./LocationPicker";
+export { UserPicker } from "./UserPicker";
+export { CustomerPicker } from "./CustomerPicker";

@@ -15,3 +15,4 @@ export { PlusIcon } from "./PlusIcon";
 export { ChevronDownIcon } from "./ChevronDownIcon";
 export { MinusIcon } from "./MinusIcon";
 export { SearchMagnifierIcon } from "./SearchMagnifierIcon";
+export { CircleIcon } from "./CircleIcon";

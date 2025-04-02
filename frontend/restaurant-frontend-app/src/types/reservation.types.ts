@@ -1,3 +1,5 @@
+import { UserType } from "./user.types";
+
 export type ReservationStatus =
   | "Reserved"
   | "In Progress"
@@ -23,7 +25,7 @@ export interface Reservation {
   createdAt: string;
 }
 
-export interface ReservationUpsertRequestParams {
+export interface UpsertReservationRequestParams {
   id?: string;
   locationId: string;
   tableNumber: string;
@@ -32,6 +34,18 @@ export interface ReservationUpsertRequestParams {
   timeTo: string /* HH:MM (24H) */;
   guestsNumber: string;
   tableId: string;
+}
+
+export interface UpsertWaiterReservationRequestParams
+  extends UpsertReservationRequestParams {
+  clientType: UserType;
+  customerName?: string;
+}
+
+export interface GetReservationRequestParams {
+  date?: string /* YYYY-MM-DD */;
+  timeFrom?: string /* HH:MM (24H) */;
+  tableNumber?: string;
 }
 
 export interface ReservationDialogProps {

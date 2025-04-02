@@ -10,15 +10,23 @@ import { Button, Spinner } from "../ui";
 import { ChevronDownIcon } from "../icons";
 
 export const Select = (props: SelectProps) => {
-  const { placeholder, items, Icon, className, value, setValue, loading } =
-    props;
+  const {
+    placeholder,
+    items,
+    Icon,
+    className,
+    value,
+    setValue,
+    loading,
+    disabled = false,
+  } = props;
   const handleChange = (id: string) => {
     setValue(id === "null" ? "" : id);
   };
 
   return (
     <SelectRoot value={value ?? ""} onValueChange={handleChange}>
-      <SelectTrigger className={className} asChild>
+      <SelectTrigger className={className} asChild disabled={disabled}>
         <Button variant="trigger" size="trigger">
           {Icon?.() ?? <span />}
           {loading ? (
@@ -56,4 +64,5 @@ interface SelectProps {
   value?: string | null;
   setValue: (value: string) => void;
   loading?: boolean;
+  disabled?: boolean;
 }

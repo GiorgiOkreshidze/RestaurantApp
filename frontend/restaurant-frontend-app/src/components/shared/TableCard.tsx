@@ -6,13 +6,13 @@ import {
   timeString24hToTimeString12h,
 } from "@/utils/dateTime";
 import { ReservationDialog } from "./ReservationDialog";
-import { useBookingFormStore } from "@/hooks/useBookingFormStore";
 import { TimeSlot } from "./TimeSlot";
 import { isPast, isToday } from "date-fns";
 import { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";
+import { bookingFormState } from "@/hooks/useBookingForm";
 
 export const TableCard = ({ table }: { table: TableUI }) => {
-  const bookingForm = useBookingFormStore();
+  const bookingForm = bookingFormState();
   const availableSlots = table.availableSlots.filter((timeSlot) => {
     return isToday(table.date) && isPast(timeSlot.startDate) ? false : true;
   });
@@ -66,7 +66,7 @@ export const TableCard = ({ table }: { table: TableUI }) => {
                 table={table}
                 availableSlots={availableSlots}
               >
-                <TimeSlot>Shaw all</TimeSlot>
+                <TimeSlot>Show all</TimeSlot>
               </AvailableTimeSlotsDialog>
             ) : null}
           </div>

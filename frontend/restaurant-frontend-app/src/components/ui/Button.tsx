@@ -15,7 +15,7 @@ export const buttonVariants = cva(
         tertiary:
           "bg-transparent text-foreground fontset-bodyBold hover:bg-neutral-200 active:bg-primary-light disabled:text-disabled border-transparent disabled:bg-transparent",
         trigger:
-          "grid grid-cols-[auto_1fr_auto] justify-start text-start bg-neutral-0 text-foreground fontset-buttonSecondary disabled:text-disabled disabled:bg-neutral-0 border-[1px] gap-[0.75rem] disabled:text-disabled disabled:bg-neutral-200 disabled:border-transparent border-neutral-200",
+          "grid grid-cols-[auto_1fr_auto] justify-start text-start bg-neutral-0 text-foreground fontset-buttonSecondary disabled:text-disabled disabled:bg-neutral-0 border-[1px] gap-[0.75rem] disabled:text-disabled disabled:bg-neutral-50 border-neutral-200",
       },
       size: {
         xl: "p-[1rem]",
