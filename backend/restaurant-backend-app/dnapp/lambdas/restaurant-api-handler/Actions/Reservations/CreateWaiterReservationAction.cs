@@ -29,11 +29,17 @@ public class CreateWaiterReservationAction
 public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProxyRequest request)
     {
         var jwtToken = ActionUtils.ExtractJwtToken(request);
-        var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+        var waiterId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+        var role = jwtToken.Claims.FirstOrDefault(c => c.Type == "custom:role")!.Value.ToRoles();
 
-        if (string.IsNullOrEmpty(userId))
+        if (string.IsNullOrEmpty(waiterId))
         {
             throw new UnauthorizedException("User is not registered");
+        }
+
+        if (role != Roles.Waiter)
+        {
+            throw new UnauthorizedException("Only waiters can create or modify waiter reservations");
         }
 
         var reservationRequest = JsonSerializer.Deserialize<WaiterReservationRequest>(request.Body);
@@ -49,9 +55,9 @@ public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProx
             throw new ArgumentException("ClientType must be either CUSTOMER or VISITOR");
         }
 
-        if (reservationRequest.ClientType == ClientType.CUSTOMER && string.IsNullOrEmpty(reservationRequest.CustomerName))
+        if (reservationRequest.ClientType == ClientType.CUSTOMER && string.IsNullOrEmpty(reservationRequest.CustomerId))
         {
-            throw new ArgumentException("CustomerName is required for CUSTOMER type reservations");
+            throw new ArgumentException("CustomerId is required for CUSTOMER type reservations");
         }
 
         ReservationValidator.ValidateGuestsNumber(reservationRequest.GuestsNumber);
@@ -65,7 +71,7 @@ public async Task<APIGatewayProxyResponse> CreateReservationAsync(APIGatewayProx
         ReservationValidator.ValidateFutureDateTime(reservationDateTimeFrom);
         ReservationValidator.ValidateFutureDateTime(reservationDateTimeTo);
 
-        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, userId);
+        var reservationResponse = await _reservationService.UpsertReservationAsync(reservationRequest, waiterId);
         return ActionUtils.FormatResponse(200, reservationResponse);
     }
 }

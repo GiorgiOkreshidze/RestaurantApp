@@ -88,24 +88,37 @@ public class ReservationService : IReservationService
     Reservation reservation,
     string waiterId, string locationId)
     {
-        var customer = await ValidateUser(request.CustomerId);
-        var waiter = await ValidateUser(waiterId);
+        reservation.ClientType = request.ClientType;
+        reservation.WaiterId = waiterId;
 
+        var waiter = await ValidateUser(waiterId);
+   
         if (waiter.LocationId != locationId)
         {
             throw new UnauthorizedException("Waiter cannot modify reservations for a different location.");
         }
-        HandleWaiterReservation(request, reservation, customer);
 
-        await CheckForConflictingReservations(request, reservation.LocationAddress, customer.Email);
-        var isNewReservation = !await _reservationRepository.ReservationExistsAsync(reservation.Id);
-        if (isNewReservation)
+        var reservationExists = await _reservationRepository.ReservationExistsAsync(reservation.Id);
+
+        if (reservationExists)
         {
-            reservation.WaiterId = waiterId;
+            await ValidateModificationPermissionsForWaiter(reservation, waiterId);
+        }
+
+        if (request.ClientType == ClientType.CUSTOMER && request.CustomerId != null)
+        {
+            var customer = await ValidateUser(request.CustomerId);
+            reservation.UserEmail = customer.Email;
+            reservation.UserInfo = $"Customer {customer.FirstName} {customer.LastName}";
+
+            await CheckForConflictingReservations(request, reservation.LocationAddress, customer.Email);
         }
         else
         {
-            await ValidateModificationPermissionsForWaiter(reservation, waiterId);
+            reservation.UserEmail = waiter.Email;
+            reservation.UserInfo = $"Waiter {waiter.GetFullName()} (Visitor)";
+
+            await CheckForConflictingReservations(request, reservation.LocationAddress, waiter.Email);
         }
 
         return await _reservationRepository.UpsertReservationAsync(reservation);
@@ -118,6 +131,7 @@ public class ReservationService : IReservationService
 
         await CheckForConflictingReservations(request, reservation.LocationAddress, user.Email);
         var isNewReservation = !await _reservationRepository.ReservationExistsAsync(reservation.Id);
+
         if (isNewReservation)
         {
             reservation.WaiterId ??= await GetLeastBusyWaiter(reservation.LocationId, reservation.Date);
@@ -126,6 +140,7 @@ public class ReservationService : IReservationService
         {
             await ValidateModificationPermissionsForClient(reservation, user);
         }
+
         return await _reservationRepository.UpsertReservationAsync(reservation);
     }
 
@@ -185,21 +200,6 @@ public class ReservationService : IReservationService
         }
 
         return table;
-    }
-
-    private void HandleWaiterReservation(
-    WaiterReservationRequest request,
-    Reservation reservation,
-    User user)
-    {
-        reservation.UserEmail = user.Email;
-        reservation.ClientType = request.ClientType;
-        reservation.UserInfo = request.ClientType switch
-        {
-            ClientType.CUSTOMER => $"Customer {user.FirstName} {user.LastName}",
-            ClientType.VISITOR => $"Waiter {user.GetFullName()} (Visitor)",
-            _ => reservation.UserInfo
-        };
     }
 
     private void HandleClientReservation(Reservation reservation, User user)
@@ -266,7 +266,7 @@ public class ReservationService : IReservationService
 
         if (waiterId != existingReservation.WaiterId)
         {
-            throw new UnauthorizedException("Only the customer or assigned waiter can modify this reservation");
+            throw new UnauthorizedException("Only assigned waiter can modify this reservation");
         }
         
         ValidateReservationTimeLock(existingReservation);
@@ -280,7 +280,7 @@ public class ReservationService : IReservationService
         {
             throw new UnauthorizedException("Only the customer or assigned waiter can modify this reservation");
         }
-
+        newReservation.WaiterId = existingReservation.WaiterId;
         ValidateReservationTimeLock(existingReservation);
     }
 
