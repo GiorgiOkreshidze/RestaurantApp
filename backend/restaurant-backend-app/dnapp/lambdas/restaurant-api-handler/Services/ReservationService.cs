@@ -13,8 +13,8 @@ using Function.Services.Interfaces;
 using SimpleLambdaFunction.Repository;
 using Function.Actions;
 using Amazon.CognitoIdentityProvider.Model;
-using Function.Models.Interfaces;
 using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
+using Function.Models.Requests.Base;
 
 namespace Function.Services;
 
@@ -35,97 +35,20 @@ public class ReservationService : IReservationService
         _waiterRepository = new WaiterRepository();
     }
 
-    public async Task<Reservation> UpsertReservationAsync(IReservationRequest reservationRequest, string userId)
+    public async Task<Reservation> UpsertReservationAsync(BaseReservationRequest reservationRequest, string userId)
     {
-        //Available UTC time slots:
-        // 06:30 - 08:00
-        // 08:15 - 09:45
-        // 10:00 - 11:30
-        // 11:45 - 13:15
-        // 13:30 - 15:00
-        // 15:15 - 16:45
-        // 17:00 - 18:30
-        var predefinedSlots = ActionUtils.GeneratePredefinedTimeSlots();
-        var newTimeFrom = TimeSpan.Parse(reservationRequest.TimeFrom);
-        var newTimeTo = TimeSpan.Parse(reservationRequest.TimeTo);
-        var firstSlot = TimeSpan.Parse(predefinedSlots.First().Start);
-        var lastSlot = TimeSpan.Parse(predefinedSlots.Last().End);
-
-        if (newTimeFrom < firstSlot || newTimeTo > lastSlot)
-        {
-            throw new ArgumentException("Reservation must be within restaurant working hours.");
-        }
-
-        bool isValidSlot = predefinedSlots.Any(slot =>
-            TimeSpan.Parse(slot.Start) == newTimeFrom &&
-            TimeSpan.Parse(slot.End) == newTimeTo);
-
-        if (!isValidSlot)
-        {
-            throw new ArgumentException("Reservation must exactly match one of the predefined time slots.");
-        }
-        
+        var user = await ValidateUser(userId);
+        ValidateTimeSlot(reservationRequest);
+      
         var location = await _locationRepository.GetLocationByIdAsync(reservationRequest.LocationId);
-        var user = await _userRepository.GetUserByIdAsync(userId);
-
-        if (user is null)
-        {
-            throw new UnauthorizedException("User is not registered");
-        }
-
-        var existingReservations = await _reservationRepository.GetReservationsByDateLocationTable(
-            reservationRequest.Date,
-            location.Address,
-            reservationRequest.TableId);
-
-        foreach (var existingReservation in existingReservations)
-        {
-            var existingTimeFrom = TimeSpan.Parse(existingReservation.TimeFrom);
-            var existingTimeTo = TimeSpan.Parse(existingReservation.TimeTo);
-            
-            // Check if the time slots overlap
-            if (newTimeFrom <= existingTimeTo &&
-                newTimeTo >= existingTimeFrom)
-            {
-                if (existingReservation.UserEmail == user.Email)
-                {
-                    throw new ArgumentException(
-                   $"You already have reservation booked at location " +
-                   $"{location.Address} during the requested time period.");
-
-                }
-
-                throw new ArgumentException(
-                    $"Reservation #{reservationRequest.Id} at location " +
-                    $"{location.Address} is already booked during the requested time period."
-                );
-            }
-        }
+        var table = await GetAndValidateTable(reservationRequest.TableId, reservationRequest.GuestsNumber);
+        await CheckForConflictingReservations(reservationRequest, location.Address, user.Email);
         
         var reservationId = Guid.NewGuid().ToString();
 
         if (reservationRequest.Id != null)
         {
             reservationId = reservationRequest.Id;
-        }
-
-        var table = await _tableRepository.GetTableById(reservationRequest.TableId);
-
-        if (table is null)
-        {
-            throw new ResourceNotFoundException($"Table with ID {reservationRequest.TableId} not found.");
-        }
-
-        if (!int.TryParse(table.Capacity, out int capacity) || !int.TryParse(reservationRequest.GuestsNumber, out int guestsNumber))
-        {
-            throw new ArgumentException("Invalid number format for Capacity or GuestsNumber.");
-        }
-
-        if (capacity < guestsNumber)
-        {
-            throw new ArgumentException($"Table with ID {reservationRequest.TableId} cannot accommodate {reservationRequest.GuestsNumber} guests. " +
-                $"Maximum capacity: {table.Capacity}."
-            );
         }
 
         var reservation = new Reservation
@@ -150,26 +73,10 @@ public class ReservationService : IReservationService
         switch (reservationRequest)
         {
             case WaiterReservationRequest waiterRequest:
-            {
-                reservation.ClientType = waiterRequest.ClientType;
-                reservation.UserInfo = waiterRequest.ClientType switch
-                {
-                    ClientType.CUSTOMER => $"Customer {waiterRequest.CustomerName}",
-                    ClientType.VISITOR => $"Waiter {user.GetFullName()} (Visitor)",
-                    _ => reservation.UserInfo
-                };
-                reservation.WaiterId = user.Id;
-                    if (user.Role != Roles.Waiter)
-                    {
-                        throw new UnauthorizedException("Only waiters can create or modify waiter reservations");
-                    }
-
-                    break;
-            }
+                 HandleWaiterReservation(waiterRequest, reservation, user);
+                 break;
             case ClientReservationRequest:
-                reservation.UserEmail = user.Email;
-                reservation.UserInfo = user.GetFullName();
-                reservation.ClientType = ClientType.CUSTOMER;
+                HandleClientReservation(reservation, user);
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported ReservationRequest type");
@@ -205,7 +112,126 @@ public class ReservationService : IReservationService
     {
         await _reservationRepository.CancelReservation(reservationId);
     }
-    
+
+    private async Task<User> ValidateUser(string userId)
+    {
+        var user = await _userRepository.GetUserByIdAsync(userId);
+        if (user is null)
+        {
+            throw new UnauthorizedException("User is not registered");
+        }
+        return user;
+    }
+
+    private void ValidateTimeSlot(BaseReservationRequest request)
+    {
+        var predefinedSlots = ActionUtils.GeneratePredefinedTimeSlots();
+        var newTimeFrom = TimeSpan.Parse(request.TimeFrom);
+        var newTimeTo = TimeSpan.Parse(request.TimeTo);
+
+        var firstSlot = TimeSpan.Parse(predefinedSlots.First().Start);
+        var lastSlot = TimeSpan.Parse(predefinedSlots.Last().End);
+
+        if (newTimeFrom < firstSlot || newTimeTo > lastSlot)
+        {
+            throw new ArgumentException("Reservation must be within restaurant working hours.");
+        }
+
+        bool isValidSlot = predefinedSlots.Any(slot =>
+            TimeSpan.Parse(slot.Start) == newTimeFrom &&
+            TimeSpan.Parse(slot.End) == newTimeTo);
+
+        if (!isValidSlot)
+        {
+            throw new ArgumentException("Reservation must exactly match one of the predefined time slots.");
+        }
+    }
+
+    private async Task<RestaurantTable> GetAndValidateTable(string tableId, string guestsNumber)
+    {
+        var table = await _tableRepository.GetTableById(tableId);
+        if (table is null)
+        {
+            throw new ResourceNotFoundException($"Table with ID {tableId} not found.");
+        }
+
+        if (!int.TryParse(table.Capacity, out int capacity) ||
+            !int.TryParse(guestsNumber, out int guests))
+        {
+            throw new ArgumentException("Invalid number format for Capacity or GuestsNumber.");
+        }
+
+        if (capacity < guests)
+        {
+            throw new ArgumentException(
+                $"Table with ID {tableId} cannot accommodate {guestsNumber} guests. " +
+                $"Maximum capacity: {table.Capacity}.");
+        }
+
+        return table;
+    }
+
+    private async Task CheckForConflictingReservations(
+    BaseReservationRequest request,
+    string locationAddress,
+    string userEmail)
+    {
+        var existingReservations = await _reservationRepository.GetReservationsByDateLocationTable(
+            request.Date,
+            locationAddress,
+            request.TableId);
+
+        var newTimeFrom = TimeSpan.Parse(request.TimeFrom);
+        var newTimeTo = TimeSpan.Parse(request.TimeTo);
+
+        foreach (var existingReservation in existingReservations)
+        {
+            var existingTimeFrom = TimeSpan.Parse(existingReservation.TimeFrom);
+            var existingTimeTo = TimeSpan.Parse(existingReservation.TimeTo);
+
+            if (newTimeFrom <= existingTimeTo && newTimeTo >= existingTimeFrom)
+            {
+                if (existingReservation.UserEmail == userEmail)
+                {
+                    throw new ArgumentException(
+                        $"You already have reservation booked at location " +
+                        $"{locationAddress} during the requested time period.");
+                }
+
+                throw new ArgumentException(
+                    $"Reservation #{request.Id} at location " +
+                    $"{locationAddress} is already booked during the requested time period.");
+            }
+        }
+    }
+
+    private void HandleWaiterReservation(
+    WaiterReservationRequest request,
+    Reservation reservation,
+    User user)
+    {
+        if (user.Role != Roles.Waiter)
+        {
+            throw new UnauthorizedException("Only waiters can create or modify waiter reservations");
+        }
+
+        reservation.ClientType = request.ClientType;
+        reservation.UserInfo = request.ClientType switch
+        {
+            ClientType.CUSTOMER => $"Customer {request.CustomerName}",
+            ClientType.VISITOR => $"Waiter {user.GetFullName()} (Visitor)",
+            _ => reservation.UserInfo
+        };
+        reservation.WaiterId = user.Id;
+    }
+
+    private void HandleClientReservation(Reservation reservation, User user)
+    {
+        reservation.UserEmail = user.Email;
+        reservation.UserInfo = user.GetFullName();
+        reservation.ClientType = ClientType.CUSTOMER;
+    }
+
     private async Task<string> GetLeastBusyWaiter(string locationId, string date) // Change parameter to locationId
     {
         var waiters = await _waiterRepository.GetWaitersByLocationAsync(locationId);
