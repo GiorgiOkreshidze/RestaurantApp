@@ -9,7 +9,12 @@
   "timeout": 100,
   "lambda_path": "lambdas\\restaurant-reports-sender",
   "dependencies": [],
-  "event_sources": [],
+  "event_sources": [
+    {
+      "resource_type": "cloudwatch_rule_trigger",
+      "target_rule": "${report_eventbridge}"
+    }
+  ],
   "env_variables": {
     "REPORTS_TABLE_DATE_INDEX": "${reports_table_date_index}",
     "REPORTS_TABLE_NAME": "${reports_table}",

@@ -594,7 +594,7 @@
     "tags": {}
   },
   "${report_eventbridge}": {
-    "resource_type": "eventbridge_rule",
+    "resource_type": "cloudwatch_rule",
     "rule_type": "schedule",
     "tags": {},
     "expression": "rate(7 days)"

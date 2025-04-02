@@ -284,7 +284,7 @@ public class ReservationService : IReservationService
     public async Task<bool> CompleteReservationAsync(string reservationId)
     {
         var reservation = await _reservationRepository.GetReservationByIdAsync(reservationId);
-        reservation.Status = Status.Finished.ToString();
+        reservation.Status = ReservationStatus.Finished.ToString();
 
         await _reservationRepository.UpsertReservationAsync(reservation);
         await SendEventToSQS("reservation", reservation);
