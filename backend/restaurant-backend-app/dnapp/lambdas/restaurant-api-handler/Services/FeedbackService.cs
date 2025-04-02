@@ -4,17 +4,18 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
 using Function.Models;
-using Function.Models.Feedbacks;
 using Function.Models.Requests;
 using Function.Models.Responses;
 using Function.Repository;
 using Function.Repository.Interfaces;
+using Function.Services.Factories;
 using Function.Services.Interfaces;
 
 namespace Function.Services;
 
 public class FeedbackService : IFeedbackService
 {
+    private readonly ILocationFeedbackFactory _locationFeedbackFactory;
     private readonly IFeedbackRepository _feedbackRepository;
     private readonly IReservationRepository _reservationRepository;
     private readonly IUserRepository _userRepository;
@@ -24,9 +25,10 @@ public class FeedbackService : IFeedbackService
         _feedbackRepository = new FeedbackRepository();
         _reservationRepository = new ReservationRepository();
         _userRepository = new UserRepository();
+        _locationFeedbackFactory = new LocationFeedbackFactory();
     }
     
-    public async Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters queryParameters)
+    public async Task<(List<LocationFeedback>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters queryParameters)
     {
         return await _feedbackRepository.GetLocationFeedbacksAsync(queryParameters);
     }
@@ -45,29 +47,24 @@ public class FeedbackService : IFeedbackService
             reservation.Status != GetEnumDescription(ReservationStatus.Finished)) 
             throw new ArgumentException("Reservation should be in status 'In Progress' or 'Finished'");
 
-        if (int.TryParse(reservationFeedbackRequest.CuisineRating, out var cuisineRating) &&
-            int.TryParse(reservationFeedbackRequest.ServiceRating, out var serviceRating))
+        if (!string.IsNullOrEmpty(reservationFeedbackRequest.CuisineRating) &&
+            int.TryParse(reservationFeedbackRequest.CuisineRating, out var cuisineRating))
         {
             if (cuisineRating is < 0 or > 5) throw new ArgumentException("Cuisine rating must be between 0 and 5");
-            
+        }
+
+        if (!string.IsNullOrEmpty(reservationFeedbackRequest.ServiceRating) &&
+            int.TryParse(reservationFeedbackRequest.ServiceRating, out var serviceRating))
+        {
             if (serviceRating is < 0 or > 5) throw new ArgumentException("Service rating must be between 0 and 5");
         }
-        else
-        {
-            throw new ArgumentException("Cuisine and Service rating must be numbers and between 0 and 5");
-        }
 
-
-        var feedback = new ReservationFeedback
-        {
-            ReservationId = reservationFeedbackRequest.ReservationId,
-            CuisineComment = reservationFeedbackRequest.CuisineComment,
-            ServiceComment = reservationFeedbackRequest.ServiceComment,
-            CuisineRating = reservationFeedbackRequest.CuisineRating,
-            ServiceRating = reservationFeedbackRequest.ServiceRating,
-        };
+        var feedbacks = await _locationFeedbackFactory.CreateFeedbacksAsync(reservationFeedbackRequest, user, reservation);
         
-        await _feedbackRepository.UpsertReservationFeedbackAsync(feedback);
+        foreach (var feedback in feedbacks)
+        {
+            await _feedbackRepository.UpsertFeedbackByReservationAndTypeAsync(feedback);
+        }
     }
 
     private static string GetEnumDescription(Enum value)

@@ -8,7 +8,7 @@ namespace Function.Services.Interfaces;
 
 public interface IFeedbackService
 {
-    Task<(List<LocationFeedbackResponse>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters queryParameters);
+    Task<(List<LocationFeedback>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters queryParameters);
     
     Task AddFeedbackAsync(ReservationFeedbackRequest reservationFeedbackRequest, string userId);
 }

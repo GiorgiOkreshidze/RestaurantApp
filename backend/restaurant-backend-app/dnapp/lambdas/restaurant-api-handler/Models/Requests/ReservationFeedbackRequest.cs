@@ -14,8 +14,8 @@ public class ReservationFeedbackRequest
     public string? ServiceComment { get; set; }
     
     [JsonPropertyName("cuisineRating")]
-    public string CuisineRating { get; set; }
+    public string? CuisineRating { get; set; }
     
     [JsonPropertyName("serviceRating")]
-    public string ServiceRating { get; set; }
+    public string? ServiceRating { get; set; }
 }
