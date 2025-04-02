@@ -23,7 +23,6 @@
     "DYNAMODB_TABLES_TABLE_LOCATION_INDEX": "${tables_table_location_index_name}",
     "DYNAMODB_RESERVATIONS_TABLE_NAME": "${reservations_table}",
     "DYNAMODB_USERS_TABLE_NAME": "${users_table}",
-    "DYNAMODB_RESERVATION_FEEDBACKS_TABLE": "${reservationFeedback_table}",
     "DYNAMODB_RESERVATIONS_TABLE_LOCATION_INDEX": "${reservations_table_location_date_index}",
     "DYNAMODB_RESERVATIONS_TABLE_USER_EMAIL_INDEX": "${reservations_table_user_email_index_name}",
     "DYNAMODB_RESERVATIONS_TABLE_WAITER_ID_INDEX": "${reservations_table_waiter_index}",
