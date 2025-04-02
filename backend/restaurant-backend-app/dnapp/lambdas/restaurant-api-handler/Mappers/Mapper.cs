@@ -98,7 +98,6 @@ public class Mapper
             TimeTo = item.TryGetValue("timeTo", out var timeToValue) ? timeToValue.S : string.Empty,
             TimeSlot = item.TryGetValue("timeSlot", out var timeSlotValue) ? timeSlotValue.S : string.Empty,
             Status = item.TryGetValue("status", out var statusValue) ? statusValue.S : string.Empty,
-            FeedbackId = item.TryGetValue("feedbackId", out var feedbackIdValue) ? feedbackIdValue.S : string.Empty,
             PreOrder = item.TryGetValue("preOrder", out var preOrderValue) ? preOrderValue.S : string.Empty,
             UserInfo = item.TryGetValue("userInfo", out var userInfoValue) ? userInfoValue.S : string.Empty,
             CreatedAt = item.TryGetValue("createdAt", out var createAtValue) ? createAtValue.S : string.Empty,
@@ -123,7 +122,6 @@ public class Mapper
             TimeTo = doc.TryGetValue("timeTo", out var timeTo) ? timeTo : string.Empty,
             TimeSlot = doc.TryGetValue("timeSlot", out var timeSlot) ? timeSlot : string.Empty,
             Status = doc.TryGetValue("status", out var status) ? status : string.Empty,
-            FeedbackId = doc.TryGetValue("feedbackId", out var feedbackId) ? feedbackId : string.Empty,
             PreOrder = doc.TryGetValue("preOrder", out var preOrder) ? preOrder : string.Empty,
             UserInfo = doc.TryGetValue("userInfo", out var userInfo) ? userInfo : string.Empty,
             CreatedAt = doc.TryGetValue("createdAt", out var createAtValue) ? createAtValue : string.Empty,
@@ -148,7 +146,6 @@ public class Mapper
             TimeSlot = reservation.TimeSlot,
             TimeFrom = reservation.TimeFrom,
             Status = reservation.Status,
-            FeedbackId = reservation.FeedbackId,
             PreOrder = reservation.PreOrder,
             UserInfo = reservation.UserInfo,
             EditableTill = CalculateEditableTill(reservation)
