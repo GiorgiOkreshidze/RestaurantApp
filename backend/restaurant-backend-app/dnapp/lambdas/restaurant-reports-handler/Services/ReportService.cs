@@ -28,11 +28,7 @@ namespace Function.Services
             var timeTo = TimeSpan.Parse(reservation.TimeTo);
             var hoursWorked = (int)(timeTo - timeFrom).TotalHours;
 
-            Console.WriteLine($"id: {reservation.WaiterId}");
-
             var email = await _employeeInfoRepository.GetEmployeeEmail(reservation.WaiterId!);
-
-            Console.WriteLine($"email: {email}");
 
             var report = new Report
             {
@@ -43,8 +39,6 @@ namespace Function.Services
                 WaiterEmail = email,
                 HoursWorked = hoursWorked
             };
-
-            Console.WriteLine($"Waiter: {report.Waiter}");
 
             await _reportRepository.SaveReportAsync(report);
         }

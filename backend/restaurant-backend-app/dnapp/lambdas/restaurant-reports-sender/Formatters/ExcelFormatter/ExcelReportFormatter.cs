@@ -41,10 +41,8 @@ namespace Function.Formatters.ExcelFormatter
                 row++;
             }
 
-            // Auto-fit columns
             worksheet.Cells.AutoFitColumns();
 
-            // Convert to base64 string for email attachment
             var excelBytes = package.GetAsByteArray();
             return Convert.ToBase64String(excelBytes);
         }

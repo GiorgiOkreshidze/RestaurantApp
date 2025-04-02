@@ -43,7 +43,6 @@ namespace Function.Repositories
             };
 
             var response = await _dynamoDbClient.QueryAsync(request);
-            Console.WriteLine($"Retrieved {response.Items.Count} items from DynamoDB");
             return response.Items;
         }
     }

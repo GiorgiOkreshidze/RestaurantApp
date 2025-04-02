@@ -62,8 +62,6 @@ public class Function
                 switch (payload)
                 {
                     case Reservation reservation:
-                        context.Logger.LogLine($"Reservation ID: {reservation.Id}");
-                        context.Logger.LogLine($"Waiter ID: {reservation.WaiterId}");
                         await _reportService.ProcessReservationAsync(reservation);
                         break;
                     default:

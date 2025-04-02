@@ -50,12 +50,6 @@ namespace Function.Services
 
             var summary = ProcessReports(currentWeekReports, previousWeekReports, currentWeekStart, currentWeekEnd);
 
-            Console.WriteLine($"Summary entries: {summary.Count}");
-            foreach (var report in summary)
-            {
-                Console.WriteLine($"Report: {report.WaiterName}, Hours: {report.WaiterEmail}");
-            }
-
             var reportContent = _reportFormatter.Format(summary);
 
             string fileName = _reportFormatter is ExcelReportFormatter ? "report.xlsx" : "report.csv";
@@ -67,17 +61,6 @@ namespace Function.Services
         private List<SummaryEntry> ProcessReports(List<Report> currentWeek, List<Report> previousWeek, DateTime startDate, DateTime endDate)
         {
             var waiterSummaries = new Dictionary<string, SummaryEntry>();
-
-            Console.WriteLine($"Current week reports: {currentWeek.Count}");
-            foreach (var report in currentWeek)
-            {
-                Console.WriteLine($"Report: {report.Waiter}, Hours: {report.HoursWorked}");
-            }
-            Console.WriteLine($"Previous week reports: {previousWeek.Count}");
-            foreach (var report in previousWeek)
-            {
-                Console.WriteLine($"Report: {report.Waiter}, Hours: {report.HoursWorked}");
-            }
 
             // Aggregate current week
             foreach (var report in currentWeek)
