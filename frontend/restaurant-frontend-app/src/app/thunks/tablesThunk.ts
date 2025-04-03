@@ -5,7 +5,7 @@ import { serverRoute } from "@/utils/constants";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 
-export const fetchTables = createAsyncThunk<
+export const getTables = createAsyncThunk<
   { data: TableServer[]; date: string },
   TablesRequestParams,
   { rejectValue: GlobalErrorMessage }

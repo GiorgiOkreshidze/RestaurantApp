@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { TableUI } from "../../types/tables.types";
-import { fetchTables } from "../thunks/tablesThunk";
+import { getTables } from "../thunks/tablesThunk";
 import {
   dateStringServerToDateObject,
   timeString24hToDateObj,
@@ -23,10 +23,10 @@ export const tablesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTables.pending, (state) => {
+      .addCase(getTables.pending, (state) => {
         state.tablesLoading = true;
       })
-      .addCase(fetchTables.fulfilled, (state, { payload }) => {
+      .addCase(getTables.fulfilled, (state, { payload }) => {
         state.tablesLoading = false;
         state.tables = payload.data
           .map((table) => ({
@@ -49,7 +49,7 @@ export const tablesSlice = createSlice({
               Number.parseInt(a.tableNumber) - Number.parseInt(b.tableNumber)
           );
       })
-      .addCase(fetchTables.rejected, (state) => {
+      .addCase(getTables.rejected, (state) => {
         state.tablesLoading = false;
       });
   },

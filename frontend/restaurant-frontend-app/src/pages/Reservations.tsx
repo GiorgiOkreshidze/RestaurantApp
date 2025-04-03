@@ -1,6 +1,6 @@
 import { PageBody, PageHeading, ReservationCard } from "@/components/shared";
 import calendarCrossed from "@/assets/images/calendar-crossed.png";
-import { Button, Spinner, Text } from "@/components/ui";
+import { Spinner, Text } from "@/components/ui";
 import { Link } from "react-router";
 import {
   selectReservations,
@@ -9,10 +9,18 @@ import {
 import { useSelector } from "react-redux";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
+import { useEffect } from "react";
+import { useAppDispatch } from "@/app/hooks";
+import { getReservations } from "@/app/thunks/reservationsThunks";
 
 export const Reservations = () => {
+  const dispatch = useAppDispatch();
   const reservations = useSelector(selectReservations);
   const reservationsLoading = useSelector(selectReservationsLoading);
+
+  useEffect(() => {
+    dispatch(getReservations({}));
+  }, []);
 
   return (
     <>

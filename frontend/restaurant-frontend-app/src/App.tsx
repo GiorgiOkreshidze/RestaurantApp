@@ -1,5 +1,5 @@
 import { Route, Routes, useLocation } from "react-router";
-import { Home, Auth, Location, Menu } from "./pages";
+import { Home, Auth, Location, Menu, WaiterReservation } from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
@@ -15,10 +15,13 @@ import {
 } from "./app/slices/locationsSlice";
 import { getPopularDishes } from "./app/thunks/dishesThunks";
 import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
-import { getReservations } from "./app/thunks/reservationsThunks";
 import { selectReservations } from "./app/slices/reservationsSlice";
 import { ProtectedRoute } from "./components/routeComponents/ProtectedRoute";
 import { PublicRoute } from "./components/routeComponents/PublicRoute";
+
+import { USER_ROLE } from "./utils/constants";
+import { selectUser } from "./app/slices/userSlice";
+import { getReservations } from "./app/thunks/reservationsThunks";
 
 function App() {
   const location = useLocation();
@@ -53,7 +56,7 @@ function App() {
 
   useEffect(() => {
     if (!reservations.length) {
-      dispatch(getReservations());
+      dispatch(getReservations({}));
     }
   }, [dispatch, reservations.length, selectOptions.length]);
 
@@ -66,7 +69,13 @@ function App() {
         </header>
       )}
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            user?.role === USER_ROLE.WAITER ? <WaiterReservation /> : <Home />
+          }
+        />
+
         <Route
           path="/menu"
           element={

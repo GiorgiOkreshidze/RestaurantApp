@@ -12,8 +12,8 @@ import { format } from "date-fns";
 import { ReservationDialog } from "./ReservationDialog";
 import { TimeSlot } from "./TimeSlot";
 import { TableUI } from "@/types/tables.types";
-import { useBookingFormStore } from "@/app/useBookingFormStore";
 import { RichTimeSlot } from "@/types";
+import { bookingFormState } from "@/hooks/useBookingForm";
 
 export const AvailableTimeSlotsDialog = ({
   children,
@@ -26,7 +26,7 @@ export const AvailableTimeSlotsDialog = ({
   table: TableUI;
   availableSlots: RichTimeSlot[];
 }) => {
-  const bookingForm = useBookingFormStore();
+  const bookingForm = bookingFormState();
   return (
     <Dialog>
       <DialogTrigger className={className} asChild>

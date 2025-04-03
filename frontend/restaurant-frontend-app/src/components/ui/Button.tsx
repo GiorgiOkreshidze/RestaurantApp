@@ -11,11 +11,11 @@ export const buttonVariants = cva(
         primary:
           "bg-primary text-neutral-0 fontset-buttonPrimary hover:bg-primary-dark active:bg-primary-darker disabled:bg-disabled border-transparent",
         secondary:
-          "bg-neutral-0 min-w-[103px] text-primary fontset-buttonPrimary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary disabled:border-disabled",
+          "bg-neutral-0 text-primary fontset-buttonPrimary hover:bg-primary-light active:bg-primary disabled:text-disabled disabled:bg-neutral-0 border-primary disabled:border-disabled",
         tertiary:
           "bg-transparent text-foreground fontset-bodyBold hover:bg-neutral-200 active:bg-primary-light disabled:text-disabled border-transparent disabled:bg-transparent",
         trigger:
-          "grid grid-cols-[auto_1fr_auto] text-start bg-neutral-0 text-foreground fontset-buttonSecondary disabled:text-disabled disabled:bg-neutral-0 border-[1px] gap-[0.75rem] disabled:text-disabled disabled:bg-neutral-200 disabled:border-transparent border-neutral-200",
+          "grid grid-cols-[auto_1fr_auto] justify-start text-start bg-neutral-0 text-foreground fontset-buttonSecondary disabled:text-disabled disabled:bg-neutral-0 border-[1px] gap-[0.75rem] disabled:text-disabled disabled:bg-neutral-50 border-neutral-200",
       },
       size: {
         xl: "p-[1rem]",

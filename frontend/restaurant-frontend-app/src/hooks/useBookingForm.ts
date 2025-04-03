@@ -1,26 +1,33 @@
-import { useBookingFormStore } from "@/app/useBookingFormStore";
 import {
   dateObjToDateStringServer,
   timeString24hToDateObj,
 } from "@/utils/dateTime";
 import { useEffect, type FormEvent } from "react";
 import { useAppDispatch } from "../app/hooks";
-import { fetchTables } from "@/app/thunks/tablesThunk";
+import { getTables } from "@/app/thunks/tablesThunk";
 import { isPast } from "date-fns";
 import { useSelector } from "react-redux";
 import { selectSelectOptions } from "@/app/slices/locationsSlice";
 import { toast } from "react-toastify";
+import {
+  decreaseGuestsAction,
+  increaseGuestsAction,
+  selectBookingFormState,
+  setDateAction,
+  setLocationAction,
+  setTimeAction,
+} from "@/app/slices/bookingFormSlice";
 
 export const useBookingForm = () => {
   const dispatch = useAppDispatch();
-  const formStore = useBookingFormStore();
   const selectOptions = useSelector(selectSelectOptions);
-  const { locationId, date, guests, time, setTime, setLocationId } = formStore;
+  const formState = bookingFormState();
+  const { locationId, date, guests, time, setTime, setLocation } = formState;
 
   useEffect(() => {
     if (!selectOptions.length) return;
-    setLocationId(selectOptions[0].id);
-  }, [selectOptions, setLocationId]);
+    setLocation(selectOptions[0].id);
+  }, [selectOptions]);
 
   useEffect(() => {
     if (!time) return;
@@ -41,7 +48,7 @@ export const useBookingForm = () => {
     }
     try {
       await dispatch(
-        fetchTables({
+        getTables({
           locationId,
           date: dateObjToDateStringServer(date),
           guests: String(guests),
@@ -53,5 +60,30 @@ export const useBookingForm = () => {
     }
   };
 
-  return { onSubmit, ...formStore };
+  return { onSubmit, ...formState };
+};
+
+export const bookingFormState = () => {
+  const dispatch = useAppDispatch();
+  const formState = useSelector(selectBookingFormState);
+
+  const formActions = {
+    setLocation: (locationId: string) => {
+      dispatch(setLocationAction(locationId));
+    },
+    setDate: (date: string) => {
+      dispatch(setDateAction(date));
+    },
+    setTime: (time: string) => {
+      dispatch(setTimeAction(time));
+    },
+    increaseGuests: () => {
+      dispatch(increaseGuestsAction());
+    },
+    decreaseGuests: () => {
+      dispatch(decreaseGuestsAction());
+    },
+  };
+
+  return { ...formState, ...formActions };
 };
