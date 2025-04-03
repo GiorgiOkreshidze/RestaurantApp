@@ -11,4 +11,6 @@ public interface IFeedbackService
     Task<(List<LocationFeedback>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters queryParameters);
     
     Task AddFeedbackAsync(ReservationFeedbackRequest reservationFeedbackRequest, string userId);
+
+    Task<int> TotalItemCountAsync();
 }

@@ -13,4 +13,5 @@ public interface IReservationService
     Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParameters, string userId, string email, Roles role);
 
     Task CancelReservationAsync(string reservationId);
+    Task<bool> CompleteReservationAsync(string reservationId);
 }

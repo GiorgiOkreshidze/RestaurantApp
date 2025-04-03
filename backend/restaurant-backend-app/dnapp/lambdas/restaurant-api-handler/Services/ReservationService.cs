@@ -14,6 +14,10 @@ using SimpleLambdaFunction.Repository;
 using Function.Actions;
 using Amazon.CognitoIdentityProvider.Model;
 using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
+using Amazon.SQS.Model;
+using Amazon.SQS;
+using System.Text.Json;
+using Function.Models.Responses;
 using Function.Models.Requests.Base;
 
 namespace Function.Services;
@@ -25,6 +29,9 @@ public class ReservationService : IReservationService
     private readonly ILocationRepository _locationRepository;
     private readonly ITableRepository _tableRepository;
     private readonly IWaiterRepository _waiterRepository;
+    private readonly AmazonSQSClient _amazonSqsClient;
+
+    private readonly string? _sqsQueueName = Environment.GetEnvironmentVariable("SQS_EVENTS_QUEUE_NAME");
 
     public ReservationService()
     {
@@ -33,6 +40,7 @@ public class ReservationService : IReservationService
         _locationRepository = new LocationRepository();
         _tableRepository = new TableRepository();
         _waiterRepository = new WaiterRepository();
+        _amazonSqsClient = new AmazonSQSClient();
     }
 
     public async Task<Reservation> UpsertReservationAsync(BaseReservationRequest reservationRequest, string userId)
@@ -62,7 +70,7 @@ public class ReservationService : IReservationService
         {
             WaiterReservationRequest waiterRequest => await ProcessWaiterReservation(waiterRequest, reservation, userId, location.Id),
             ClientReservationRequest clientRequest => await ProcessClientReservation(clientRequest, reservation, userId),
-            _ => throw new UnsupportedOperationException("Unsupported ReservationRequest type")
+            _ => throw new Amazon.CognitoIdentityProvider.Model.UnsupportedOperationException("Unsupported ReservationRequest type")
         };
     }
     
@@ -227,7 +235,7 @@ public class ReservationService : IReservationService
             var existingTimeFrom = TimeSpan.Parse(existingReservation.TimeFrom);
             var existingTimeTo = TimeSpan.Parse(existingReservation.TimeTo);
 
-            if (newTimeFrom <= existingTimeTo && newTimeTo >= existingTimeFrom)
+            if (newTimeFrom <= existingTimeTo && newTimeTo >= existingTimeFrom && existingReservation.Id != request.Id)
             {
                 if (existingReservation.UserEmail == userEmail)
                 {
@@ -257,7 +265,7 @@ public class ReservationService : IReservationService
 
         return reservationCounts
             .OrderBy(x => x.Value)
-            .FirstOrDefault().Key ?? throw new Exception($"No waiters available for location ID: {locationId} after counting reservations");
+            .FirstOrDefault().Key ?? throw new ResourceNotFoundException($"No waiters available for location ID: {locationId} after counting reservations");
     }
 
     private async Task ValidateModificationPermissionsForWaiter(Reservation newReservation, string waiterId)
@@ -297,4 +305,39 @@ public class ReservationService : IReservationService
             throw new ArgumentException("Reservations cannot be modified within 30 minutes of start time");
         }
     }
+    public async Task<bool> CompleteReservationAsync(string reservationId)
+    {
+        var reservation = await _reservationRepository.GetReservationByIdAsync(reservationId);
+        reservation.Status = ReservationStatus.Finished.ToString();
+
+        await _reservationRepository.UpsertReservationAsync(reservation);
+        await SendEventToSQS("reservation", reservation);
+
+        return true;
+    }
+
+
+    private async Task SendEventToSQS<T>(string eventType, T payload)
+    {
+        var getQueueUrlRequest = new GetQueueUrlRequest
+        {
+            QueueName = _sqsQueueName
+        };
+        var getQueueUrlResponse = await _amazonSqsClient.GetQueueUrlAsync(getQueueUrlRequest);
+        var queueUrl = getQueueUrlResponse.QueueUrl;
+
+        var messageBody = JsonSerializer.Serialize(new
+        {
+            eventType,
+            payload
+        });
+
+        var sendMessageRequest = new SendMessageRequest
+        {
+            QueueUrl = queueUrl,
+            MessageBody = messageBody
+        };
+
+        await _amazonSqsClient.SendMessageAsync(sendMessageRequest);
+    } 
 }
