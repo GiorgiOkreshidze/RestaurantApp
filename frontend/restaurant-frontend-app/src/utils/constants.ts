@@ -19,7 +19,7 @@ export const serverRoute = {
   selectOptions: "locations/select-options",
   tables: "bookings/tables",
   users: "users",
-  upsertWaiterReservation: "api/reservations/waiter",
+  upsertWaiterReservation: "reservations/waiter",
 };
 
 export const USER_ROLE = {

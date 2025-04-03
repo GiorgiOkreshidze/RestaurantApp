@@ -32,9 +32,11 @@ export const WaiterReservation = () => {
   const reservationsLoading = useSelector(selectReservationsLoading);
 
   useEffect(() => {
-    dispatch(getReservations({}));
-    dispatch(getAllUsers());
-  }, [dispatch]);
+    (async () => {
+      // await dispatch(getReservations({}));
+      await dispatch(getAllUsers());
+    })();
+  }, []);
 
   return (
     <>
@@ -43,7 +45,7 @@ export const WaiterReservation = () => {
         <WaiterReservationsForm />
         <div className="flex flex-col gap-[1rem] my-[2rem] justify-between items-center md:flex-row">
           <Text variant="h3">
-            You have {reservations.length} reservations for{" "}
+            You have {reservations.length} reservations{" "}
             {store.date ? dateObjToDateStringUI(store.date) : ""}{" "}
             {store?.time
               ? `, ${store.time

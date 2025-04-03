@@ -52,7 +52,7 @@ export const WaiterReservationDialog = (props: Props) => {
             userType={state.userType}
             setUserType={state.setUserType}
           />
-          {state.userType === UserType.Customer && (
+          {state.userType === UserType.CUSTOMER && (
             <CustomerPicker
               customerId={state.customerId}
               setCustomerId={state.setCustomerId}
