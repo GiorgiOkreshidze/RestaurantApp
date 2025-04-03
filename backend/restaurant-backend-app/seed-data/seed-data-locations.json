@@ -8,7 +8,7 @@
           "description": { "S": "A spacious coworking space with modern amenities." },
           "totalCapacity": { "S": "4" },
           "averageOccupancy": { "S": "12" },
-          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/location1.jpg" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/compresed/kaja-sariwating-6XMIzhk91_Y-unsplash+1.jpg" },
           "rating": { "S": "4.5" }
         }
       }
@@ -21,7 +21,7 @@
           "description": { "S": "A beachfront lounge with stunning views and great ambiance." },
           "totalCapacity": { "S": "4" },
           "averageOccupancy": { "S": "78" },
-          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/location2.jpg" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/compresed/kayleigh-harrington-yhn4okt6ci0-unsplash+1.jpg" },
           "rating": { "S": "4.8" }
         }
       }
@@ -34,7 +34,7 @@
           "description": { "S": "A cozy retreat in the mountains, perfect for remote work." },
           "totalCapacity": { "S": "4" },
           "averageOccupancy": { "S": "99" },
-          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/location3.jpg" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/compresed/ruben-ramirez-xhKG01FN2uk-unsplash+1+(1).jpg" },
           "rating": { "S": "4.7" }
         }
       }
