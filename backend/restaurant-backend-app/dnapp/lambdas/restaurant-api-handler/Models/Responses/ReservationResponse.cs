@@ -19,6 +19,9 @@ public class ReservationResponse
     [JsonPropertyName("locationId")]
     public required string LocationId { get; set; }
     
+    [JsonPropertyName("tableId")]
+    public required string TableId { get; set; }
+    
     [JsonPropertyName("preOrder")]
     public required string PreOrder { get; set; }
     

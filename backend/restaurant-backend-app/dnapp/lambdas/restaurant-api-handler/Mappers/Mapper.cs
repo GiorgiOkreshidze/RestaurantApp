@@ -143,6 +143,7 @@ public class Mapper
             GuestsNumber = reservation.GuestsNumber,
             LocationAddress = reservation.LocationAddress,
             LocationId = reservation.LocationId,
+            TableId = reservation.TableId,
             TableNumber = reservation.TableNumber,
             TimeSlot = reservation.TimeSlot,
             TimeFrom = reservation.TimeFrom,
