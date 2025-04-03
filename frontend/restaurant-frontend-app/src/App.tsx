@@ -15,13 +15,11 @@ import {
 } from "./app/slices/locationsSlice";
 import { getPopularDishes } from "./app/thunks/dishesThunks";
 import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
-import { selectReservations } from "./app/slices/reservationsSlice";
 import { ProtectedRoute } from "./components/routeComponents/ProtectedRoute";
 import { PublicRoute } from "./components/routeComponents/PublicRoute";
 
 import { USER_ROLE } from "./utils/constants";
 import { selectUser } from "./app/slices/userSlice";
-import { getReservations } from "./app/thunks/reservationsThunks";
 
 function App() {
   const location = useLocation();
@@ -30,7 +28,6 @@ function App() {
   const popularDishes = useSelector(selectPopularDishes);
   const locations = useSelector(selectLocations);
   const selectOptions = useSelector(selectSelectOptions);
-  const reservations = useSelector(selectReservations);
   const user = useSelector(selectUser);
 
   useEffect(() => {
@@ -54,12 +51,6 @@ function App() {
       dispatch(getSelectOptions());
     }
   }, [dispatch, selectOptions.length]);
-
-  useEffect(() => {
-    if (!reservations.length) {
-      dispatch(getReservations({}));
-    }
-  }, [dispatch, reservations.length, selectOptions.length]);
 
   return (
     <>
