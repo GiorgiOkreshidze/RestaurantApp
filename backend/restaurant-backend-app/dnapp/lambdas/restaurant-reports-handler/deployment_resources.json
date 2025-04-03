@@ -1,0 +1,11 @@
+{
+  "restaurant-reports-handler-role": {
+    "predefined_policies": [],
+    "principal_service": "lambda",
+    "custom_policies": [
+      "reports_handler_policy"
+    ],
+    "resource_type": "iam_role",
+    "tags": {}
+  }
+}

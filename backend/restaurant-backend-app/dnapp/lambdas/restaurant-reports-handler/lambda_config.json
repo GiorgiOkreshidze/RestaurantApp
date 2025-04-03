@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "name": "restaurant-reports-handler",
+  "func_name": "SimpleLambdaFunction::SimpleLambdaFunction.Function::FunctionHandler",
+  "resource_type": "lambda",
+  "iam_role_name": "restaurant-reports-handler-role",
+  "runtime": "dotnet8",
+  "memory": 128,
+  "timeout": 100,
+  "lambda_path": "lambdas\\restaurant-reports-handler",
+  "dependencies": [],
+  "event_sources": [
+    {
+      "resource_type": "sqs_trigger",
+      "target_queue": "${sqs_queue}",
+      "batch_size": 1,
+      "batch_window": 1
+    }
+  ],
+  "env_variables": {
+    "USER_TABLE_NAME": "${users_table}",
+    "REPORTS_TABLE_NAME": "${reports_table}",
+    "EMPLOYEE_TABLE_NAME": "${employee_info_table}",
+    "USER_TABLE_EMAIL_INDEX": "${user_table_email_index}"
+  },
+  "publish_version": true,
+  "alias": "${lambdas_alias_name}",
+  "url_config": {},
+  "ephemeral_storage": 512,
+  "tags": {}
+}

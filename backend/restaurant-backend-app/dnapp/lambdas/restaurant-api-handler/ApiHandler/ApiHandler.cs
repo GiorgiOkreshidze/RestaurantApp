@@ -37,6 +37,7 @@ public class ApiHandler
     private readonly CreateWaiterReservationAction _createWaiterReservationAction;
     private readonly GetLocationByIdAction _getLocationByIdAction;
     private readonly AddFeedbackAction _addFeedbackAction;
+    private readonly CompleteReservationAction _completeReservationAction;
 
     public ApiHandler()
     {
@@ -61,6 +62,7 @@ public class ApiHandler
         _createWaiterReservationAction = new CreateWaiterReservationAction();
         _getLocationByIdAction = new GetLocationByIdAction();
         _addFeedbackAction = new AddFeedbackAction();
+        _completeReservationAction = new CompleteReservationAction();
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest eventRequest,
@@ -183,6 +185,12 @@ public class ApiHandler
                     "/reservations/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "DELETE", _deleteReservationAction.DeleteReservationAsync }
+                    }
+                },
+                {
+                    "/reservations/{id}/complete", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    {
+                        { "POST", _completeReservationAction.CompleteReservation }
                     }
                 },
                 {
