@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import {
   Button,
   Dialog,
@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  Spinner,
   Text,
 } from "../ui";
 import { useWaiterReservationDialog } from "@/hooks/useWaiterReservationDialog";
@@ -23,13 +24,18 @@ import { LOCATION_TABLES, TIME_SLOTS } from "@/utils/constants";
 import { LocationIcon } from "../icons";
 
 export const WaiterReservationDialog = (props: Props) => {
+  const [isCurrentDialogOpen, setIsCurrentDialogOpen] = useState(false);
+  const onSuccessCallback = () => {
+    setIsCurrentDialogOpen(!isCurrentDialogOpen);
+  };
   const state = useWaiterReservationDialog({
     initTable: props.table,
     initDate: props.date,
+    onSuccessCallback,
   });
 
   return (
-    <Dialog>
+    <Dialog open={isCurrentDialogOpen} onOpenChange={setIsCurrentDialogOpen}>
       <DialogTrigger className={props.className} asChild>
         {props.children}
       </DialogTrigger>
@@ -95,7 +101,11 @@ export const WaiterReservationDialog = (props: Props) => {
           />
           <DialogFooter>
             <Button type="submit" className="w-full">
-              Make a Reservation
+              {state.reservationCreatingLoading ? (
+                <Spinner />
+              ) : (
+                "Make a Reservation"
+              )}
             </Button>
           </DialogFooter>
         </form>

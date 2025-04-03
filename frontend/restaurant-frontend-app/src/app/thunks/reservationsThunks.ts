@@ -76,8 +76,10 @@ export const upsertWaiterReservation = createAsyncThunk<
       );
       return response.data;
     } catch (e) {
-      if (isAxiosError(e) && e.response) {
-        return rejectWithValue(e.response.data);
+      if (isAxiosError(e)) {
+        return e.response
+          ? rejectWithValue(e.response.data)
+          : rejectWithValue({ message: e.message });
       }
       throw e;
     }

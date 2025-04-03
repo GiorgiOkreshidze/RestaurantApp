@@ -3,6 +3,7 @@ import {
   selectSelectOptions,
   selectSelectOptionsLoading,
 } from "@/app/slices/locationsSlice";
+import { selectReservationCreatingLoading } from "@/app/slices/reservationsSlice";
 import {
   selectUser,
   selectAllUsers,
@@ -20,6 +21,9 @@ export const useWaiterReservationDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const selectOptions = useSelector(selectSelectOptions);
   const selectOptionsLoading = useSelector(selectSelectOptionsLoading);
+  const reservationCreatingLoading = useSelector(
+    selectReservationCreatingLoading,
+  );
   const waiter = useSelector(selectUser);
   const [userType, setUserType] = useState(UserType.VISITOR);
   const allCustomers = useSelector(selectAllUsers);
@@ -76,9 +80,16 @@ export const useWaiterReservationDialog = (props: Props) => {
           timeTo: time.split(" - ")[1],
           customerName: customerName ?? "",
         }),
-      );
-    } catch (e) {
-      console.log(e);
+      ).unwrap();
+      props.onSuccessCallback();
+      toast.success("New Reservation has been created successfully.");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Reservation creating failed:", error);
+        toast.error(
+          `Reservation creating failed: ${"message" in error ? error.message : ""}`,
+        );
+      }
     }
   };
 
@@ -102,10 +113,12 @@ export const useWaiterReservationDialog = (props: Props) => {
     onSubmit,
     date,
     setDate,
+    reservationCreatingLoading,
   };
 };
 
 interface Props {
   initTable: string;
   initDate: string;
+  onSuccessCallback: () => void;
 }

@@ -32,10 +32,8 @@ export const WaiterReservation = () => {
   const reservationsLoading = useSelector(selectReservationsLoading);
 
   useEffect(() => {
-    (async () => {
-      // await dispatch(getReservations({}));
-      await dispatch(getAllUsers());
-    })();
+    dispatch(getReservations({}));
+    dispatch(getAllUsers());
   }, []);
 
   return (

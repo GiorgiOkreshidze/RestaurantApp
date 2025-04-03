@@ -3,6 +3,7 @@ import {
   deleteClientReservation,
   getReservations,
   upsertClientReservation,
+  upsertWaiterReservation,
 } from "../thunks/reservationsThunks";
 import type { Reservation } from "@/types/reservation.types";
 import { toast } from "react-toastify";
@@ -69,6 +70,25 @@ export const reservationsSlice = createSlice({
       .addCase(deleteClientReservation.rejected, (state) => {
         state.reservationDeletingLoading = false;
       });
+
+    builder
+      .addCase(upsertWaiterReservation.pending, (state) => {
+        state.reservationCreatingLoading = true;
+      })
+      .addCase(
+        upsertWaiterReservation.fulfilled,
+        (state, { payload: data }) => {
+          state.reservationCreatingLoading = false;
+          state.reservation = data;
+        },
+      )
+      .addCase(
+        upsertWaiterReservation.rejected,
+        (state, { payload: errorResponse }) => {
+          state.reservationCreatingLoading = false;
+          toast.error(errorResponse?.message);
+        },
+      );
   },
   selectors: {
     selectReservations: (state) => state.reservations,
