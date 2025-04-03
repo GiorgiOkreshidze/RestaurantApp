@@ -9,10 +9,11 @@ import { ReservationDialog } from "./ReservationDialog";
 import { TimeSlot } from "./TimeSlot";
 import { isPast, isToday } from "date-fns";
 import { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";
-import { bookingFormState } from "@/hooks/useBookingForm";
+import { selectBookingFormState } from "@/app/slices/bookingFormSlice";
+import { useSelector } from "react-redux";
 
 export const TableCard = ({ table }: { table: TableUI }) => {
-  const bookingForm = bookingFormState();
+  const bookingForm = useSelector(selectBookingFormState);
   const availableSlots = table.availableSlots.filter((timeSlot) => {
     return isToday(table.date) && isPast(timeSlot.startDate) ? false : true;
   });
