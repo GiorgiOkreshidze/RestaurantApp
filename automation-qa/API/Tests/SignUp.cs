@@ -59,7 +59,7 @@ namespace ApiTests
 
             Assert.That(firstStatusCode, Is.EqualTo(HttpStatusCode.OK),
                 "First registration should be successful");
-            await Task.Delay(1000);
+            await Task.Delay(2000);
 
             // Repeat registration
             var (secondStatusCode, _, _) = await _auth.RegisterUser(
@@ -253,6 +253,97 @@ namespace ApiTests
             // Assert
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK),
                 "Login with registered credentials should succeed");
+        }
+
+        [Test]
+        public async Task SignUp_NoPassword_ShouldFail()
+        {
+            var (statusCode, _, responseBody) = await _auth.RegisterUser(
+                firstName: "Alice",
+                lastName: "Brown",
+                email: $"no_password_{Guid.NewGuid()}@example.com",
+                password: null
+            );
+
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
+                "Registration without a password should fail");
+
+            Assert.That(responseBody.ContainsKey("message"), Is.True,
+                "Response should contain an error message");
+        }
+
+        [Test]
+        public async Task SignUp_BasicValidUser_ShouldSucceed()
+        {
+            // Arrange
+            string email = $"basic_user_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
+
+            // Act
+            var (statusCode, _, responseBody) = await _auth.RegisterUser(
+                firstName: "Basic",
+                lastName: "User",
+                email: email,
+                password: "ValidP@ss123!"
+            );
+
+            // Assert
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK),
+                "Basic user registration should succeed");
+            Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
+        }
+
+        [Test]
+        public async Task SignUp_CheckResponseMessage_ShouldContainSuccessMessage()
+        {
+            // Arrange
+            string email = $"message_check_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
+
+            // Act
+            var (_, _, responseBody) = await _auth.RegisterUser(
+                firstName: "Message",
+                lastName: "Check",
+                email: email,
+                password: "StrongP@ss123!"
+            );
+
+            // Assert
+            Assert.That(responseBody.ContainsKey("message"), Is.True,
+                "Response should contain a message key");
+            Assert.That(responseBody["message"].ToString(), Is.EqualTo("User Registered"),
+                "Success message should match expected text");
+        }
+
+        [Test]
+        public async Task SignUp_DuplicateEmailRegistration_ShouldFail()
+        {
+            // Предполагаем, что есть поле auth типа Authentication
+            // Если его нет, нужно создать экземпляр
+            var auth = new ApiTests.Pages.Authentication();
+
+            // Создаем уникальный email для теста
+            string duplicateEmail = $"duplicate_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
+
+            // Первая регистрация
+            var firstResult = await auth.RegisterUser(
+                firstName: "Alice",
+                lastName: "Brown",
+                email: duplicateEmail,
+                password: _defaultPassword
+            );
+
+            Assert.That(firstResult.statusCode, Is.EqualTo(HttpStatusCode.OK),
+                "First registration should be successful");
+
+            // Вторая регистрация с тем же email
+            var secondResult = await auth.RegisterUser(
+                firstName: "John",
+                lastName: "Smith",
+                email: duplicateEmail,
+                password: _defaultPassword
+            );
+
+            Assert.That(secondResult.statusCode, Is.AnyOf(HttpStatusCode.InternalServerError, HttpStatusCode.Conflict),
+                "Second registration with the same email should fail with Conflict");
         }
     }
 }

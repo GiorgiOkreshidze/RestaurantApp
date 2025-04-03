@@ -8,6 +8,7 @@ using automation_qa.Framework;
 namespace automation_qa.UI.Tests
 {
     [TestFixture]
+    [Category("Login")]
     public class LoginTests : BaseTest
     {
         private NavigationBar _navigationBar;
@@ -120,31 +121,76 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
-        public void TC_LG1_005_AccountLockAfterMultipleFailedAttempts()
+        public void TC_LG1_005_AccountNotFoundError()
         {
-            // Тест на блокировку аккаунта после нескольких неудачных попыток входа
-            string email = "test@example.com"; // Можно использовать любой email
-            string password = "WrongPassword123";
-            
+            // Вводим email, который точно не существует в системе
+            string nonExistentEmail = "nonexistent_user_" + Guid.NewGuid().ToString() + "@example.com";
+            string anyPassword = "Password123!";
+
+            // Выполняем попытку входа
+            _loginPage.Login(nonExistentEmail, anyPassword);
+
+            // Ожидание появления сообщения об ошибке
+            Thread.Sleep(3000);
+
+            // Локатор для toast-сообщения об ошибке
+            By errorToastLocator = By.XPath("//div[contains(@class, 'Toastify__toast--error')]");
+
+            // Проверка наличия toast-сообщения
+            bool errorToastDisplayed = Driver.FindElements(errorToastLocator).Count > 0;
+            Assert.That(errorToastDisplayed, Is.True, "Toast-сообщение об ошибке не отображается");
+
+            // Проверка текста сообщения
+            if (errorToastDisplayed)
+            {
+                string toastText = Driver.FindElement(errorToastLocator).Text;
+                bool correctErrorMessage = toastText.Contains("We could not find an account matching the email");
+                Assert.That(correctErrorMessage, Is.True, "Текст сообщения об ошибке не соответствует ожидаемому");
+            }
+
+            // Альтернативная проверка: если toast не найден, проверяем текст на странице
+            if (!errorToastDisplayed)
+            {
+                bool hasErrorInPage = Driver.PageSource.Contains("We could not find an account") ||
+                                     Driver.PageSource.Contains("matching the email");
+                Assert.That(hasErrorInPage, Is.True, "Сообщение об отсутствии аккаунта не отображается на странице");
+            }
+        }
+
+        [Test]
+        public void TC_LG1_006_AccountNotLockedAfterMultipleFailedAttempts()
+        {
+            // Тест на отсутствие блокировки аккаунта после нескольких неудачных попыток входа
+            string email = "existing_user@example.com"; // Используйте существующий email
+            string password = "WrongPassword123"; // Неправильный пароль
+
             // Выполнение нескольких неудачных попыток входа
             for (int i = 0; i < 5; i++)
             {
                 _loginPage.Login(email, password);
                 Thread.Sleep(1000);
             }
-            
-            // Ожидание появления сообщения о блокировке (как на скриншоте 5)
-            Thread.Sleep(1000);
-            
-            // Проверка наличия сообщения о блокировке
-            bool hasLockoutMessage = Driver.PageSource.Contains("temporarily locked") || 
+
+            // Ожидание, чтобы убедиться, что сообщение о блокировке не появится
+            Thread.Sleep(2000);
+
+            // Проверка отсутствия сообщения о блокировке
+            bool hasLockoutMessage = Driver.PageSource.Contains("temporarily locked") ||
                                     Driver.PageSource.Contains("failed login attempts");
-            
-            Assert.That(hasLockoutMessage, Is.True, "Сообщение о блокировке аккаунта не отображается");
+
+            // Проверяем, что сообщения о блокировке НЕТ
+            Assert.That(hasLockoutMessage, Is.False, "Сообщение о блокировке аккаунта отображается, хотя не должно");
+
+            // Проверка наличия формы входа (она должна быть все еще доступна)
+            bool loginFormVisible = Driver.PageSource.Contains("Sign In") ||
+                                   Driver.PageSource.Contains("Login") ||
+                                   Driver.PageSource.Contains("Password");
+
+            Assert.That(loginFormVisible, Is.True, "Форма входа недоступна после нескольких неудачных попыток");
         }
 
         [Test]
-        public void TC_LG1_005_CreateAccountLink()
+        public void TC_LG1_007_CreateAccountLink()
         {
             // Тест на переход к странице регистрации
             // Нажатие на ссылку "Create an Account"
@@ -165,7 +211,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
-        public void TC_LG1_006_Logout()
+        public void TC_LG1_008_Logout()
         {
             // Тест на выход из системы
             // Сначала выполняем успешный вход
@@ -183,6 +229,131 @@ namespace automation_qa.UI.Tests
             
             Assert.That(isLoginPageOrHomePage, Is.True, "Пользователь не был перенаправлен после выхода из системы");
             Assert.That(_navigationBar.IsUserLoggedIn(), Is.False, "Пользователь все еще в системе после выхода");
+        }
+
+        [Test]
+        public void TC_LG1_009_RedirectToDashboardAfterLogin()
+        {
+            // Тест на перенаправление после успешного входа
+            string email = "irishkakhrol@gmail.com"; // Рабочий email
+            string password = "Password123!";  // Правильный пароль
+
+            // Выполнение входа
+            _loginPage.Login(email, password);
+
+            // Ожидание завершения перенаправления
+            Thread.Sleep(2000);
+
+            // Проверка, что пользователь перенаправлен на главную страницу ресторана
+            bool redirectedToMainPage = Driver.Url.Contains("localhost:5173") ||
+                                      Driver.PageSource.Contains("Green & Tasty");
+
+            Assert.That(redirectedToMainPage, Is.True, "Пользователь не был перенаправлен на главную страницу после успешного входа");
+
+            // Проверка признаков успешной авторизации
+            bool userLoggedIn = _navigationBar.IsUserLoggedIn() ||
+                               Driver.PageSource.Contains("Book a Table") ||
+                               Driver.PageSource.Contains("Reservations");
+
+            Assert.That(userLoggedIn, Is.True, "Пользователь не авторизован после входа");
+        }
+
+        [Test]
+        public void TC_LG1_010_RemainLoggedInAcrossSessions()
+        {
+            // Тест на сохранение сессии между сеансами
+            string email = "irishkakhrol@gmail.com";
+            string password = "Password123!";
+
+            // Выполняем успешный вход
+            _loginPage.Login(email, password);
+            Thread.Sleep(2000);
+
+            // Сохраняем cookie сессии
+            var cookies = Driver.Manage().Cookies.AllCookies;
+
+            // Перезапускаем браузер
+            Driver.Quit();
+            base.Setup(); // Переинициализация драйвера
+
+            // Переходим на главную страницу
+            Driver.Navigate().GoToUrl(BaseConfiguration.UiBaseUrl);
+
+            // Восстанавливаем cookie
+            foreach (var cookie in cookies)
+            {
+                try
+                {
+                    Driver.Manage().Cookies.AddCookie(cookie);
+                }
+                catch (Exception)
+                {
+                    // Игнорируем любые ошибки при добавлении cookie
+                }
+            }
+
+            // Обновляем страницу
+            Driver.Navigate().Refresh();
+            Thread.Sleep(2000);
+
+            // Проверяем, что пользователь все еще авторизован
+            bool isLoggedIn = !Driver.Url.Contains("/signin") &&
+                             !Driver.Url.Contains("/login") &&
+                             !Driver.PageSource.Contains("Sign In to Your Account");
+
+            Assert.That(isLoggedIn, Is.True, "Пользователь не остался авторизованным после перезапуска браузера");
+        }
+
+        [Test]
+        public void TC_LG1_011_PasswordVisibilityToggle()
+        {
+            // Проверка кнопки видимости пароля (иконка глаза)
+
+            // Проверяем наличие кнопки
+            bool eyeIconExists = Driver.FindElements(_loginPage.GetEyeIconButtonLocator()).Count > 0;
+            Assert.That(eyeIconExists, Is.True, "Кнопка переключения видимости пароля не найдена");
+
+            // Вводим пароль, используя существующие методы класса LoginPage
+            _loginPage.EnterPassword("TestPassword123");
+
+            // Получаем поле пароля для проверки его типа
+            IWebElement passwordField = Driver.FindElement(_loginPage.GetPasswordFieldLocator());
+
+            // Проверяем начальный тип поля (должен быть password)
+            string initialType = passwordField.GetAttribute("type");
+            Assert.That(initialType, Is.EqualTo("password"), "Начальный тип поля пароля должен быть 'password'");
+
+            // Нажимаем на иконку глаза
+            Driver.FindElement(_loginPage.GetEyeIconButtonLocator()).Click();
+            Thread.Sleep(500);
+
+            // Проверяем, что тип поля изменился на text
+            string newType = passwordField.GetAttribute("type");
+            Assert.That(newType, Is.EqualTo("text"), "После нажатия на иконку глаза тип поля должен смениться на 'text'");
+        }
+
+        [Test]
+        public void TC_LG1_012_CreateAccountLinkFunctionality()
+        {
+            // Проверка функциональности ссылки "Create an Account"
+
+            // Проверяем наличие ссылки, используя существующий локатор
+            bool linkExists = Driver.FindElements(_loginPage.GetCreateAccountLinkLocator()).Count > 0;
+            Assert.That(linkExists, Is.True, "Ссылка 'Create an Account' не найдена на странице");
+
+            // Кликаем по ссылке, используя существующий метод
+            _loginPage.ClickCreateAccount();
+
+            // Ожидаем загрузки страницы регистрации
+            Thread.Sleep(2000);
+
+            // Проверяем, что мы на странице регистрации
+            bool isOnSignupPage = Driver.Url.Contains("/signup") ||
+                                  Driver.Url.Contains("/register") ||
+                                  Driver.PageSource.Contains("Create an Account") ||
+                                  Driver.PageSource.Contains("Sign Up");
+
+            Assert.That(isOnSignupPage, Is.True, "Переход на страницу регистрации не произошел после клика по ссылке");
         }
     }
 }

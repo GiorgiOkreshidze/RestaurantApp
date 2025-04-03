@@ -86,5 +86,68 @@ namespace ApiTests.Pages
 
             return (response.StatusCode, responseBody);
         }
+
+        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> CreateReservation(
+            string? token = null,
+            string? locationId = null,
+            string? tableId = null,
+            string? date = null,
+            string? startTime = null,
+            string? endTime = null,
+            int guests = 0,
+            string? name = null,
+            string? email = null,
+            string? phone = null,
+            string? specialRequests = null)
+        {
+            var request = CreatePostRequest("/reservations/client");
+
+            // Добавляем заголовок авторизации, если предоставлен токен
+            if (!string.IsNullOrEmpty(token))
+            {
+                request.AddHeader("Authorization", $"Bearer {token}");
+            }
+
+            // Создаем объект с данными бронирования
+            var reservationData = new
+            {
+                locationId,
+                tableId,
+                date,
+                startTime,
+                endTime,
+                guests,
+                name,
+                email,
+                phone,
+                specialRequests
+            };
+
+            // Добавляем тело запроса в формате JSON
+            request.AddJsonBody(reservationData);
+
+            // Выполняем POST-запрос
+            var response = await ExecutePostRequestAsync(request);
+
+            // Логируем результат
+            Console.WriteLine($"CreateReservation response status: {response.StatusCode}");
+            Console.WriteLine($"CreateReservation response content: {response.Content}");
+
+            // Парсим ответ
+            JObject? responseBody = null;
+            if (!string.IsNullOrEmpty(response.Content))
+            {
+                try
+                {
+                    responseBody = JObject.Parse(response.Content);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error parsing response: {ex.Message}");
+                }
+            }
+
+            return (response.StatusCode, responseBody);
+        }
     }
 }

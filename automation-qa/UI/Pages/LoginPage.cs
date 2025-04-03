@@ -19,6 +19,8 @@ namespace automation_qa.UI.Pages
         private readonly By _emailError = By.XPath("/html/body/div/div/div/section/div/form/div/div[1]/p");
         private readonly By _passwordError = By.XPath("/html/body/div/div/div/section/div/form/div/div[2]/p");
         private readonly By _generalError = By.CssSelector(".bg-error-light");
+        private readonly By errorToastLocator = By.XPath("//div[contains(@class, 'Toastify__toast--error') and contains(@class, 'Toastify__toast-theme--light')]");
+        private readonly By eyeIconButton = By.XPath("/html/body/div/div/div/section/div/form/div/div[2]/div/button");
 
         public LoginPage(IWebDriver driver)
         {
@@ -65,6 +67,11 @@ namespace automation_qa.UI.Pages
             return _emailError;
         }
 
+        public By GetPasswordFieldLocator()
+        {
+            return _passwordField;
+        }
+
         public By GetPasswordErrorLocator()
         {
             return _passwordError;
@@ -99,5 +106,16 @@ namespace automation_qa.UI.Pages
         {
             return _emailField;
         }
+
+        public By GetCreateAccountLinkLocator()
+        {
+            return _createAccountLink;
+        }
+
+        public By GetEyeIconButtonLocator()
+        {
+            return eyeIconButton;
+        }
+
     }
 }

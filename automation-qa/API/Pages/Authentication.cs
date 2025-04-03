@@ -61,23 +61,26 @@ namespace ApiTests.Pages
             string email, string password)
         {
             var request = CreatePostRequest("/signin");
-
             var loginData = new
             {
                 email,
                 password
             };
-
             request.AddJsonBody(loginData);
-
             var response = await ExecutePostRequestAsync(request);
             JObject responseBody = null;
-
             try
             {
                 if (!string.IsNullOrEmpty(response.Content))
                 {
                     responseBody = JObject.Parse(response.Content);
+
+                    // Проверяем наличие accessToken в ответе
+                    if (responseBody.ContainsKey("idToken") && !responseBody.ContainsKey("accessToken"))
+                    {
+                        // Если accessToken отсутствует, но есть idToken - используем idToken как accessToken
+                        responseBody["accessToken"] = responseBody["idToken"];
+                    }
                 }
                 else
                 {
@@ -88,7 +91,6 @@ namespace ApiTests.Pages
             {
                 responseBody = new JObject();
             }
-
             return (response.StatusCode, responseBody);
         }
 
@@ -165,20 +167,28 @@ namespace ApiTests.Pages
         /// <param name="accessToken">User's access token</param>
         /// <returns>Tuple containing HTTP status code and user data as JObject</returns>
         public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> GetUserProfile(
-            string idToken, string accessToken)
+            string idToken, string accessToken = null)
         {
-            if (string.IsNullOrEmpty(accessToken))
+            // Изменение проверки, делаем accessToken опциональным
+            if (string.IsNullOrEmpty(idToken))
             {
-                throw new ArgumentNullException(nameof(accessToken), "Access token must be provided.");
+                throw new ArgumentNullException(nameof(idToken), "ID token must be provided.");
             }
 
             var request = CreateGetRequest("/users/profile");
 
+            // Всегда добавляем идентификационный токен в заголовок
             request.AddHeader("Authorization", $"Bearer {idToken}");
-            request.AddHeader("X-Amz-Security-Token", accessToken);
+
+            // Добавляем accessToken только если он предоставлен
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                request.AddHeader("X-Amz-Security-Token", accessToken);
+            }
+
             request.AddHeader("Date", DateTime.UtcNow.ToString("r"));
 
-            Console.WriteLine($"Getting profile with Bearer idToken header: {{idToken.Substring(0, Math.Min(20, idToken.Length))}}...");
+            Console.WriteLine($"Getting profile with Bearer idToken header: {idToken.Substring(0, Math.Min(20, idToken.Length))}...");
             var response = await ExecuteGetRequestAsync(request);
 
             JObject responseBody = null;

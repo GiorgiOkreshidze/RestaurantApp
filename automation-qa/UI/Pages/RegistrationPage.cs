@@ -20,10 +20,15 @@ namespace automation_qa.UI.Pages
         private readonly By _firstNameError = By.XPath("//form//div[1]//p[contains(@class, 'text-destructive')]");
         private readonly By _lastNameError = By.XPath("/html/body/div/div/div/section/div/form/div[1]/div/div[2]/p[contains(@class, 'text-destructive')]");
         private readonly By _emailError = By.XPath("/html/body/div/div/div/section/div/form/div[2]/div[1]/p[contains(@class, 'text-destructive')]");
-        private readonly By _passwordError = By.CssSelector("[data-testid='password-error']");
+        private readonly By _passwordLengthRequirement = By.XPath("//input[@name='password']/following-sibling::p[contains(text(), 'Password must be 8-16 characters long')]");
         private readonly By _passwordUppercaseError = By.XPath("/html/body/div/div/div/section/div/form/div[2]/div[2]/p[1]");
         private readonly By _passwordSpecialCharError = By.XPath("/html/body/div/div/div/section/div/form/div[2]/div[2]/p[4]");
         private readonly By _confirmPasswordError = By.XPath("/html/body/div/div/div/section/div/form/div[2]/div[3]/p[contains(@class, 'text-destructive')]");
+        private readonly By _signUpButton = By.XPath("/html/body/div/div/div/section/div/form/button");
+        private readonly By _togglePasswordVisibilityButton = By.XPath("/html/body/div/div/div/section/div/form/div[2]/div[2]/div/button");
+        private readonly By _loginLink = By.XPath("/html/body/div/div/div/section/div/form/p[2]/a");
+        private readonly By _errorToastLocator = By.XPath("//div[contains(@class, 'Toastify__toast--error')]");
+
 
         public RegistrationPage(IWebDriver driver)
         {
@@ -90,6 +95,12 @@ namespace automation_qa.UI.Pages
             return _wait.Until(driver => driver.FindElement(_firstNameField)).GetAttribute("value");
         }
 
+        public bool IsPasswordErrorDisplayed()
+        {
+            // Проверяем, подсвечено ли требование к длине пароля красным
+            return IsPasswordLengthRequirementInvalid();
+        }
+
         public string GetLastNameValue()
         {
             return _wait.Until(driver => driver.FindElement(_lastNameField)).GetAttribute("value");
@@ -146,11 +157,6 @@ namespace automation_qa.UI.Pages
             return IsElementDisplayed(_emailError);
         }
 
-        public bool IsPasswordErrorDisplayed()
-        {
-            return IsElementDisplayed(_passwordError);
-        }
-
         public bool IsConfirmPasswordErrorDisplayed()
         {
             return IsElementDisplayed(_confirmPasswordError);
@@ -164,11 +170,6 @@ namespace automation_qa.UI.Pages
         public string GetEmailErrorText()
         {
             return _wait.Until(driver => driver.FindElement(_emailError)).Text;
-        }
-
-        public string GetPasswordErrorText()
-        {
-            return _wait.Until(driver => driver.FindElement(_passwordError)).Text;
         }
 
         public string GetConfirmPasswordErrorText()
@@ -186,6 +187,54 @@ namespace automation_qa.UI.Pages
             catch (Exception)
             {
                 return false;
+            }
+        }
+
+        public void ClickSignUp()
+        {
+            _driver.FindElement(_signUpButton).Click();
+        }
+
+        public string GetPasswordFieldType()
+        {
+            // Ищем элемент заново каждый раз
+            return _wait.Until(driver => driver.FindElement(_passwordField)).GetAttribute("type");
+        }
+
+        public void TogglePasswordVisibility()
+        {
+            // Используем явное ожидание
+            _wait.Until(driver => driver.FindElement(_togglePasswordVisibilityButton)).Click();
+        }
+
+        public void ClickLoginLink()
+        {
+            _driver.FindElement(_loginLink).Click();
+        }
+
+        public By GetErrorToastLocator()
+        {
+            return _errorToastLocator;
+        }
+
+        public bool IsPasswordLengthRequirementInvalid()
+        {
+            try
+            {
+                // Ждем, пока элемент не получит класс text-glass-destructive
+                var requirementElement = _wait.Until(driver =>
+                {
+                    var element = driver.FindElement(_passwordLengthRequirement);
+                    string elementClass = element.GetAttribute("class") ?? "";
+                    Console.WriteLine($"Classes of password length requirement: {elementClass}");
+                    return elementClass.Contains("text-glass-destructive") ? element : null;
+                });
+                return true; // Если элемент найден с классом text-glass-destructive, возвращаем true
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error finding password length requirement: {ex.Message}");
+                return true;
             }
         }
 

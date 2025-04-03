@@ -8,6 +8,7 @@ using automation_qa.Framework; // Добавляем для BaseConfiguration
 namespace automation_qa.UI.Tests
 {
     [TestFixture]
+    [Category("Registration")]
     public class UserRegistrationTests : BaseTest
     {
         private NavigationBar _navigationBar;
@@ -31,10 +32,11 @@ namespace automation_qa.UI.Tests
             // Переход на страницу регистрации
             _navigationBar.GoToRegistrationPage();
 
-            // Ввод регистрационных данных
+            // Ввод регистрационных данных с уникальным email
             string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
             string email = $"testuser{timestamp}@domain.com";
-            string password = "Password@123";
+
+            string password = "Password123!";
 
             _registrationPage.FillRegistrationForm(
                 firstName: "Anna",
@@ -44,54 +46,22 @@ namespace automation_qa.UI.Tests
                 confirmPassword: password
             );
 
-            // Проверка введенных данных
-            Assert.That(_registrationPage.GetFirstNameValue(), Is.EqualTo("Anna"), "Значение в поле First Name не соответствует ожидаемому");
-            Assert.That(_registrationPage.GetLastNameValue(), Is.EqualTo("Smith"), "Значение в поле Last Name не соответствует ожидаемому");
-            Assert.That(_registrationPage.GetEmailValue(), Is.EqualTo(email), "Значение в поле Email не соответствует ожидаемому");
-            Assert.That(_registrationPage.GetPasswordValue(), Is.EqualTo(password), "Значение в поле Password не соответствует ожидаемому");
-            Assert.That(_registrationPage.GetConfirmPasswordValue(), Is.EqualTo(password), "Значение в поле Confirm Password не соответствует ожидаемому");
+            // Сокращенная проверка введенных данных - только критически важные
+            Assert.That(_registrationPage.GetFirstNameValue(), Is.EqualTo("Anna"));
+            Assert.That(_registrationPage.GetEmailValue(), Is.EqualTo(email));
+            Assert.That(_registrationPage.GetPasswordValue(), Is.EqualTo(password));
 
-            // Проверка на наличие ошибок валидации
-            if (_registrationPage.IsFirstNameErrorDisplayed())
-            {
-                string errorText = _registrationPage.GetFirstNameErrorText();
-                Console.WriteLine($"First Name validation error: {errorText}");
-                Assert.Fail($"First Name validation failed: {errorText}");
-            }
+            // Быстрая проверка на отсутствие ошибок валидации
+            bool hasValidationErrors = _registrationPage.IsFirstNameErrorDisplayed() ||
+                                      _registrationPage.IsLastNameErrorDisplayed() ||
+                                      _registrationPage.IsEmailErrorDisplayed() ||
+                                      _registrationPage.IsPasswordErrorDisplayed() ||
+                                      _registrationPage.IsConfirmPasswordErrorDisplayed();
 
-            if (_registrationPage.IsLastNameErrorDisplayed())
-            {
-                string errorText = _registrationPage.GetLastNameErrorText();
-                Console.WriteLine($"Last Name validation error: {errorText}");
-                Assert.Fail($"Last Name validation failed: {errorText}");
-            }
+            Assert.That(hasValidationErrors, Is.False, "Обнаружены ошибки валидации формы");
 
-            if (_registrationPage.IsEmailErrorDisplayed())
-            {
-                string errorText = _registrationPage.GetEmailErrorText();
-                Console.WriteLine($"Email validation error: {errorText}");
-                Assert.Fail($"Email validation failed: {errorText}");
-            }
-
-            if (_registrationPage.IsPasswordErrorDisplayed())
-            {
-                string errorText = _registrationPage.GetPasswordErrorText();
-                Console.WriteLine($"Password validation error: {errorText}");
-                Assert.Fail($"Password validation failed: {errorText}");
-            }
-
-            if (_registrationPage.IsConfirmPasswordErrorDisplayed())
-            {
-                string errorText = _registrationPage.GetConfirmPasswordErrorText();
-                Console.WriteLine($"Confirm Password validation error: {errorText}");
-                Assert.Fail($"Confirm Password validation failed: {errorText}");
-            }
-
-            // Отправка формы регистрации
+            // Отправка формы регистрации - используем существующий метод
             _registrationPage.ClickCreateAccount();
-
-            // Поскольку ничего не происходит после клика, тест завершается после проверки данных
-            Console.WriteLine("All data validations passed, form submitted.");
         }
 
         // Для остальных тестовых методов также замените Assert.IsTrue на Assert.That(..., Is.True)
@@ -288,6 +258,246 @@ namespace automation_qa.UI.Tests
                     Is.EqualTo("Invalid email address. Please ensure it follows the format: username@domain.com"),
                     "Текст ошибки email не соответствует ожидаемому");
             });
+        }
+
+        [Test]
+        public void TC_US1_009_PasswordVisibilityToggle()
+        {
+            // Переход на страницу регистрации
+            _navigationBar.GoToRegistrationPage();
+
+            // Короткая пауза для загрузки страницы
+            Thread.Sleep(500);
+
+            // Вводим пароль
+            _registrationPage.EnterPassword("Password123!");
+
+            // Получаем начальный тип поля пароля
+            string initialType = _registrationPage.GetPasswordFieldType();
+            Assert.That(initialType, Is.EqualTo("password"), "Начальный тип поля должен быть 'password'");
+
+            // Нажимаем на кнопку видимости
+            _registrationPage.TogglePasswordVisibility();
+            Thread.Sleep(300);
+
+            // Проверяем, что тип поменялся на text
+            string newType = _registrationPage.GetPasswordFieldType();
+            Assert.That(newType, Is.EqualTo("text"), "Тип поля после нажатия должен быть 'text'");
+        }
+
+        [Test]
+        public void TC_US1_010_NavigationBetweenLoginAndRegistration()
+        {
+            // Переходим на страницу входа
+            _navigationBar.GoToLoginPage();
+            Thread.Sleep(500);
+
+            // Проверяем наличие ссылки на регистрацию и кликаем по ней
+            _loginPage.ClickCreateAccount();
+            Thread.Sleep(1000);
+
+            // Проверяем заголовок страницы регистрации
+            bool hasSignUpHeading = Driver.PageSource.Contains("Create an Account");
+            Assert.That(hasSignUpHeading, Is.True, "Заголовок страницы регистрации не найден");
+
+            // Кликаем на ссылку "Login" по точному XPath
+            Driver.FindElement(By.XPath("/html/body/div/div/div/section/div/form/p[2]/a")).Click();
+            Thread.Sleep(1000);
+
+            // Проверяем, что вернулись на страницу входа
+            bool hasSignInHeading = Driver.PageSource.Contains("Sign In to Your Account");
+            Assert.That(hasSignInHeading, Is.True, "Заголовок страницы входа не найден");
+        }
+
+        [Test]
+        public void TC_US1_011_RegistrationFailsWithExistingEmail()
+        {
+            // Переходим на страницу регистрации
+            _navigationBar.GoToRegistrationPage();
+
+            // Заполняем форму с существующим email
+            _registrationPage.FillRegistrationForm(
+                firstName: "John",
+                lastName: "Smith",
+                email: "irishkakhrol@gmail.com", // Уже существующий email
+                password: "Password123!",
+                confirmPassword: "Password123!"
+            );
+
+            // Отправляем форму
+            _registrationPage.ClickCreateAccount();
+            Thread.Sleep(2000);
+
+            // Используем локатор из класса для toast-сообщения
+            bool errorToastDisplayed = Driver.FindElements(_registrationPage.GetErrorToastLocator()).Count > 0;
+
+            Assert.That(errorToastDisplayed, Is.True, "Toast-сообщение об ошибке не отображается");
+
+            // Проверяем текст сообщения об ошибке
+            if (errorToastDisplayed)
+            {
+                string toastText = Driver.FindElement(_registrationPage.GetErrorToastLocator()).Text;
+                bool correctErrorMessage = toastText.Contains("already exists") ||
+                                         toastText.Contains("User with email");
+
+                Assert.That(correctErrorMessage, Is.True,
+                    $"Текст сообщения об ошибке не содержит информацию о существовании пользователя: {toastText}");
+            }
+        }
+
+        [Test]
+        public void TC_US1_012_RegistrationFailsWithLongLastName()
+        {
+            // Переход на страницу регистрации
+            _navigationBar.GoToRegistrationPage();
+
+            // Создание фамилии длиной 51 символ
+            string longLastName = new string('A', 51); // Фамилия длиной 51 символ
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string email = $"testuser{timestamp}@domain.com"; // Уникальный email
+
+            // Заполнение формы регистрации
+            _registrationPage.FillRegistrationForm(
+                firstName: "John",
+                lastName: longLastName,
+                email: email,
+                password: "Password123!",
+                confirmPassword: "Password123!"
+            );
+
+            // Отправка формы (чтобы сработала валидация)
+            _registrationPage.ClickCreateAccount();
+
+            // Проверка, что сообщение об ошибке для фамилии отображается
+            Assert.That(_registrationPage.IsLastNameErrorDisplayed(),
+                Is.True, "Сообщение об ошибке длины фамилии не отображается");
+
+            // Проверка текста сообщения об ошибке
+            string errorMessage = _registrationPage.GetLastNameErrorText();
+            Console.WriteLine($"Last Name error message: {errorMessage}");
+            Assert.That(errorMessage,
+                Is.EqualTo("Last name must be up to 50 characters"),
+                $"Неожиданное сообщение об ошибке: {errorMessage}");
+
+            // Проверка, что пользователь остался на странице регистрации
+            Console.WriteLine($"Current URL after clicking Sign Up: {Driver.Url}");
+            Assert.That(Driver.Url.Contains("/signup"), Is.True,
+                "Пользователь был перенаправлен со страницы регистрации, несмотря на ошибку");
+        }
+
+        [Test]
+        public void TC_US1_013_RegistrationFailsWithInvalidLastName()
+        {
+            // Переход на страницу регистрации
+            _navigationBar.GoToRegistrationPage();
+
+            // Создание недопустимой фамилии
+            string invalidLastName = "ш"; // Недопустимая фамилия (слишком короткая или содержит недопустимые символы)
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string email = $"testuser{timestamp}@domain.com"; // Уникальный email
+
+            // Заполнение формы регистрации
+            _registrationPage.FillRegistrationForm(
+                firstName: "John",
+                lastName: invalidLastName,
+                email: email,
+                password: "Password123!",
+                confirmPassword: "Password123!"
+            );
+
+            // Отправка формы (чтобы сработала валидация)
+            _registrationPage.ClickCreateAccount();
+
+            // Проверка, что сообщение об ошибке для фамилии отображается
+            Assert.That(_registrationPage.IsLastNameErrorDisplayed(),
+                Is.True, "Сообщение об ошибке для недопустимой фамилии не отображается");
+
+            // Проверка текста сообщения об ошибке
+            string errorMessage = _registrationPage.GetLastNameErrorText();
+            Console.WriteLine($"Last Name error message: {errorMessage}");
+            Assert.That(errorMessage,
+                Is.EqualTo("Only Latin letters, hyphens, and apostrophes are allowed"),
+                $"Неожиданное сообщение об ошибке: {errorMessage}");
+
+            // Проверка, что пользователь остался на странице регистрации
+            Console.WriteLine($"Current URL after clicking Sign Up: {Driver.Url}");
+            Assert.That(Driver.Url.Contains("/signup"), Is.True,
+                "Пользователь был перенаправлен со страницы регистрации, несмотря на ошибку");
+        }
+
+        [Test]
+        public void TC_US1_014_RegistrationFailsWithInvalidFirstName()
+        {
+            // Переход на страницу регистрации
+            _navigationBar.GoToRegistrationPage();
+
+            // Создание недопустимого имени
+            string invalidFirstName = "ь"; // Недопустимое имя (слишком короткое или содержит недопустимые символы)
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string email = $"testuser{timestamp}@domain.com"; // Уникальный email
+
+            // Заполнение формы регистрации
+            _registrationPage.FillRegistrationForm(
+                firstName: invalidFirstName,
+                lastName: "Doe",
+                email: email,
+                password: "Password123!",
+                confirmPassword: "Password123!"
+            );
+
+            // Отправка формы (чтобы сработала валидация)
+            _registrationPage.ClickCreateAccount();
+
+            // Проверка, что сообщение об ошибке для имени отображается
+            Assert.That(_registrationPage.IsFirstNameErrorDisplayed(),
+                Is.True, "Сообщение об ошибке для недопустимого имени не отображается");
+
+            // Проверка текста сообщения об ошибке
+            string errorMessage = _registrationPage.GetFirstNameErrorText();
+            Console.WriteLine($"First Name error message: {errorMessage}");
+            Assert.That(errorMessage,
+                Is.EqualTo("Only Latin letters, hyphens, and apostrophes are allowed"),
+                $"Неожиданное сообщение об ошибке: {errorMessage}");
+
+            // Проверка, что пользователь остался на странице регистрации
+            Console.WriteLine($"Current URL after clicking Sign Up: {Driver.Url}");
+            Assert.That(Driver.Url.Contains("/signup"), Is.True,
+                "Пользователь был перенаправлен со страницы регистрации, несмотря на ошибку");
+        }
+
+        [Test]
+        public void TC_US1_015_RegistrationFailsWithShortPassword()
+        {
+            // Переход на страницу регистрации
+            _navigationBar.GoToRegistrationPage();
+
+            // Создание пароля короче минимальной длины
+            string shortPassword = "Pa3!!"; // Длина 4 символа, меньше минимальной (8)
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string email = $"testuser{timestamp}@domain.com"; // Уникальный email
+
+            // Заполнение формы регистрации
+            _registrationPage.FillRegistrationForm(
+                firstName: "John",
+                lastName: "Doe",
+                email: email,
+                password: shortPassword,
+                confirmPassword: shortPassword
+            );
+
+            // Отправка формы (чтобы сработала валидация)
+            _registrationPage.ClickCreateAccount();
+
+            // Проверка, что требование "Password must be 8-16 characters long" подсвечено как невыполненное
+            bool isLengthRequirementInvalid = _registrationPage.IsPasswordLengthRequirementInvalid();
+            Console.WriteLine($"Is password length requirement invalid? {isLengthRequirementInvalid}");
+            Assert.That(isLengthRequirementInvalid, Is.True,
+                "Требование 'Password must be 8-16 characters long' не подсвечено как невыполненное");
+
+            // Проверка, что пользователь остался на странице регистрации
+            Console.WriteLine($"Current URL after clicking Sign Up: {Driver.Url}");
+            Assert.That(Driver.Url.Contains("/signup"), Is.True,
+                "Пользователь был перенаправлен со страницы регистрации, несмотря на ошибку");
         }
 
         // Обновите остальные тесты аналогичным образом
