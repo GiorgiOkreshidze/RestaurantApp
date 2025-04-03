@@ -79,6 +79,7 @@ export const useWaiterReservationDialog = (props: Props) => {
           timeFrom: time.split(" - ")[0],
           timeTo: time.split(" - ")[1],
           customerName: customerName ?? "",
+          customerId: selectedCustomer?.id ?? "",
         }),
       ).unwrap();
       props.onSuccessCallback();

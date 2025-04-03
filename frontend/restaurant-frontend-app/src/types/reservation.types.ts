@@ -42,6 +42,7 @@ export interface UpsertWaiterReservationRequestParams
   extends UpsertReservationRequestParams {
   clientType: UserType;
   customerName?: string;
+  customerId: string;
 }
 
 export interface GetReservationRequestParams {
