@@ -25,7 +25,7 @@ export const bookingFormSlice = createSlice({
   name: "bookingForm",
   initialState,
   reducers: {
-    setLocationIdAction: (state, { payload: data }) => {
+    setLocationAction: (state, { payload: data }) => {
       state.locationId = data;
     },
 
@@ -53,7 +53,7 @@ export const bookingFormSlice = createSlice({
 
 export const bookingFormReducer = bookingFormSlice.reducer;
 export const {
-  setLocationIdAction,
+  setLocationAction,
   setDateAction,
   setTimeAction,
   increaseGuestsAction,

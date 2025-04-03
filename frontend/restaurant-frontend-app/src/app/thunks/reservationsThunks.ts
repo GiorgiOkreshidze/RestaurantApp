@@ -1,7 +1,9 @@
 import type { GlobalErrorMessage } from "@/types";
 import type {
+  GetReservationRequestParams,
   Reservation,
-  ReservationUpsertRequestParams,
+  UpsertReservationRequestParams,
+  UpsertWaiterReservationRequestParams,
 } from "@/types/reservation.types";
 import axiosApi from "@/utils/axiosApi";
 import { serverRoute } from "@/utils/constants";
@@ -10,11 +12,17 @@ import { isAxiosError } from "axios";
 
 export const getReservations = createAsyncThunk<
   Reservation[],
-  void,
+  GetReservationRequestParams,
   { rejectValue: GlobalErrorMessage }
->("reservations", async (_, { rejectWithValue }) => {
+>("reservations", async (params, { rejectWithValue }) => {
   try {
-    const response = await axiosApi.get(serverRoute.reservations);
+    const response = await axiosApi.get(serverRoute.reservations, {
+      params: {
+        date: params.date,
+        timeFrom: params.timeFrom,
+        tableNumber: params.tableNumber,
+      },
+    });
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response) {
@@ -26,7 +34,7 @@ export const getReservations = createAsyncThunk<
 
 export const upsertClientReservation = createAsyncThunk<
   Reservation,
-  ReservationUpsertRequestParams,
+  UpsertReservationRequestParams,
   { rejectValue: GlobalErrorMessage }
 >("reservations/client", async (reservationMutation, { rejectWithValue }) => {
   try {
@@ -57,3 +65,25 @@ export const deleteClientReservation = createAsyncThunk<
     throw e;
   }
 });
+
+export const upsertWaiterReservation = createAsyncThunk<
+  Reservation,
+  UpsertWaiterReservationRequestParams,
+  { rejectValue: GlobalErrorMessage }
+>(
+  "api/reservations/waiter",
+  async (reservationMutation, { rejectWithValue }) => {
+    try {
+      const response = await axiosApi.post<Reservation>(
+        serverRoute.upsertWaiterReservation,
+        reservationMutation,
+      );
+      return response.data;
+    } catch (e) {
+      if (isAxiosError(e) && e.response) {
+        return rejectWithValue(e.response.data);
+      }
+      throw e;
+    }
+  },
+);

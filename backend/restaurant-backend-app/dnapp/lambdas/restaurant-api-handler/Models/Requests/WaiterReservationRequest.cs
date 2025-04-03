@@ -1,35 +1,14 @@
 ﻿using System.Text.Json.Serialization;
-using Function.Models.Interfaces;
+using Function.Models.Requests.Base;
 using Function.Models.User;
 
 namespace Function.Models.Requests;
 
-public class WaiterReservationRequest : IReservationRequest
+public class WaiterReservationRequest : BaseReservationRequest
 {
-    [JsonPropertyName("id")]
-    public string? Id { get; set; }
-    
-    [JsonPropertyName("locationId")]
-    public string LocationId { get; set; }
-    
-    [JsonPropertyName("tableId")]
-    public string TableId { get; set; }
- 
-    [JsonPropertyName("date")]
-    public string Date { get; set; }
-    
-    [JsonPropertyName("guestsNumber")]
-    public string GuestsNumber { get; set; }
- 
-    [JsonPropertyName("timeFrom")]
-    public string TimeFrom { get; set; }
- 
-    [JsonPropertyName("timeTo")]
-    public string TimeTo { get; set; }
-    
     [JsonPropertyName("clientType")]
     public required ClientType ClientType { get; set; }
     
-    [JsonPropertyName("customerName")]
-    public required string CustomerName { get; set; }
+    [JsonPropertyName("customerId")]
+    public string? CustomerId { get; set; }
 }

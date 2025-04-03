@@ -5,15 +5,16 @@ import { PageBodyHeader, PageBodySection } from "./PageBody";
 interface Props {
   isLoading?: boolean;
   dishes: Dish[];
+  title: string;
 }
 
-export const Dishes: React.FC<Props> = ({ dishes }) => {
+export const Dishes: React.FC<Props> = ({ dishes, title }) => {
   return (
     <PageBodySection>
       <PageBodyHeader>
-        <Text variant="h2">Most Popular Dishes</Text>
+        <Text variant="h2">{title}</Text>
       </PageBodyHeader>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-8">
         {dishes.slice(0, 4).map((item) => (
           <DishCard
             key={item.id}

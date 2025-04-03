@@ -80,3 +80,19 @@ export const signout = createAsyncThunk<
     throw e;
   }
 });
+
+export const getAllUsers = createAsyncThunk<
+  UserDataResponse[],
+  void,
+  { rejectValue: GlobalErrorMessage }
+>("users", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.get<UserDataResponse[]>(serverRoute.users);
+    return response.data;
+  } catch (e) {
+    if (isAxiosError(e) && e.response) {
+      return rejectWithValue(e.response.data);
+    }
+    throw e;
+  }
+});

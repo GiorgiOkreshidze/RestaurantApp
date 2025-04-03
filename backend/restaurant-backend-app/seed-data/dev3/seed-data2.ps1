@@ -4,7 +4,6 @@ $prefix = "tm2-"
 $syndicateFile = "../../.syndicate-config-dev/syndicate.yml"
 $tablesSeedFile = "../seed-data-tables.json"
 $reservationsSeedFile = "../seed-data-reservations.json"
-$feedbacksSeedFile = "../seed-data-feedbacks.json"
 $tempFile = "seed-data-processed.json"
 
 # Get the suffix from syndicate.yml
@@ -17,7 +16,6 @@ if (-not $resourcesSuffix) {
 # Construct table names
 $tablesTable = "$prefix" + "Tables" + "$resourcesSuffix"
 $reservationsTable = "$prefix" + "Reservations" + "$resourcesSuffix"
-$feedbacksTable = "$prefix" + "LocationFeedbacks" + "$resourcesSuffix"
 
 # Check if seed files exist
 if (-not (Test-Path $tablesSeedFile)) {
@@ -28,10 +26,6 @@ if (-not (Test-Path $reservationsSeedFile)) {
     Write-Error "Seed file $reservationsSeedFile not found!"
     exit 1
 }
-if (-not (Test-Path $feedbacksSeedFile)) {
-    Write-Error "Seed file $feedbacksSeedFile not found!"
-    exit 1
-}
 
 
 # Process JSON: Update table names
@@ -39,18 +33,15 @@ try {
     # Read JSON files and extract the inner arrays
     $tablesData = Get-Content $tablesSeedFile -Raw | ConvertFrom-Json
     $reservationsData = Get-Content $reservationsSeedFile -Raw | ConvertFrom-Json
-    $feedbacksData = Get-Content $feedbacksSeedFile -Raw | ConvertFrom-Json
 
      # Extract the 'Locations' array
     $tablesItems = $tablesData.Tables
     $reservationsItems = $reservationsData.Reservations
-    $feedbacksItems = $feedbacksData.LocationFeedbacks
 
     # Create the request structure
     $requestItems = @{
         "$tablesTable" = $tablesItems
         "$reservationsTable" = $reservationsItems
-        "$feedbacksTable" = $feedbacksItems
     }
 
     # Write to temp file without BOM
@@ -75,4 +66,4 @@ Invoke-Expression $awsCommand
 # Clean up
 Remove-Item $tempFile -ErrorAction SilentlyContinue
 
-Write-Host "Seeded data into $tablesTable and $reservationsTable and $feedbacksTable"
+Write-Host "Seeded data into $tablesTable and $reservationsTable"

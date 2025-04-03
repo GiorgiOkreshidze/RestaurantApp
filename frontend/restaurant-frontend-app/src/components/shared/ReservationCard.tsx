@@ -60,7 +60,7 @@ export const ReservationCard = ({
           onClick={async () => {
             try {
               await dispatch(deleteClientReservation(reservation.id)).unwrap();
-              await dispatch(getReservations()).unwrap();
+              await dispatch(getReservations({})).unwrap();
               console.log("Reservation deleted");
             } catch (error) {
               console.log("Reservation deleting failed:", error);

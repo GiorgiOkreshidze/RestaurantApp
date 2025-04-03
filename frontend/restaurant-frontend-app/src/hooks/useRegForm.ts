@@ -4,12 +4,13 @@ import { z } from "zod";
 import { useAppDispatch } from "@/app/hooks";
 import { register } from "@/app/thunks/userThunks";
 import { useNavigate } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export const useRegForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [passwordTouched, setPasswordTouched] = useState(false);
 
   const passwordSchema = z.string().superRefine((value, ctx) => {
     if (!/[A-Z]/.test(value)) {
@@ -101,6 +102,7 @@ export const useRegForm = () => {
   const passwordWatch = form.watch("password");
 
   useEffect(() => {
+    if (!passwordWatch && !passwordTouched) return;
     form.trigger("confirmPassword");
   }, [passwordWatch, form]);
 

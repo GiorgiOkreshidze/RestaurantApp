@@ -4,7 +4,7 @@ $prefix = "tm2-"
 $syndicateFile = "../../.syndicate-config-dev/syndicate.yml"
 $locationsSeedFile = "../seed-data-locations.json"
 $dishesSeedFile = "../seed-data-dishes.json"
-$waitersSeedFile = "../seed-data-waiters.json"
+$employeesSeedFile = "../seed-data-employee-info.json"
 $reservationsSeedFile = "../seed-data-reservations.json"
 $tempFile = "seed-data-processed.json"
 
@@ -18,7 +18,7 @@ if (-not $resourcesSuffix) {
 # Construct table names
 $locationsTable = "$prefix" + "Locations" + "$resourcesSuffix"
 $dishesTable = "$prefix" + "Dishes" + "$resourcesSuffix"
-$waitersTable = "$prefix" + "Waiters" + "$resourcesSuffix"
+$employeesTable = "$prefix" + "EmployeeInfo" + "$resourcesSuffix"
 $reservationsTable = "$prefix" + "Reservations" + "$resourcesSuffix"
 
 # Check if seed files exist
@@ -30,12 +30,8 @@ if (-not (Test-Path $dishesSeedFile)) {
     Write-Error "Seed file $dishesSeedFile not found!"
     exit 1
 }
-if (-not (Test-Path $waitersSeedFile)) {
-    Write-Error "Seed file $waitersSeedFile not found!"
-    exit 1
-}
-if (-not (Test-Path $waitersSeedFile)) {
-    Write-Error "Seed file $reservationsSeedFile not found!"
+if (-not (Test-Path $employeesSeedFile)) {
+    Write-Error "Seed file $employeesSeedFile not found!"
     exit 1
 }
 
@@ -44,19 +40,19 @@ try {
     # Read JSON files and extract the inner arrays
     $locationsData = Get-Content $locationsSeedFile -Raw | ConvertFrom-Json
     $dishesData = Get-Content $dishesSeedFile -Raw | ConvertFrom-Json
-    $waitersData = Get-Content $waitersSeedFile -Raw | ConvertFrom-Json
+    $employeesData = Get-Content $employeesSeedFile -Raw | ConvertFrom-Json
     $reservationsData = Get-Content $reservationsSeedFile -Raw | ConvertFrom-Json
     
     $locationsItems = $locationsData.Locations  # Extract the 'Locations' array
     $dishesItems = $dishesData.Dishes
-    $waitersItems = $waitersData.Waiters
+    $employeesItems = $employeesData.EmployeeInfo
     $reservationsItems = $reservationsData.Reservations
 
     # Create the request structure
     $requestItems = @{
         "$locationsTable" = $locationsItems
         "$dishesTable" = $dishesItems
-        "$waitersTable" = $waitersItems
+        "$employeesTable" = $employeesItems
         "$reservationsTable" = $reservationsItems
     }
 

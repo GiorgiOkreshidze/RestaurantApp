@@ -1,5 +1,5 @@
+import { Location } from "@/types/location.types";
 import { LocationsCard, Text } from "../ui";
-import { Location } from "@/types";
 import { PageBodyHeader, PageBodySection } from "./PageBody";
 
 interface Props {

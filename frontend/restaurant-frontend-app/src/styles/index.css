@@ -2,8 +2,6 @@
 @import "./tw-utilities.css";
 @import "./fonts.css";
 
-
-
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
@@ -145,6 +143,10 @@ body {
   min-block-size: 100vh;
 }
 
+.test {
+  /* grid-template-columns: repeat(auto-fit, minmax(0, auto)); */
+}
+
 @theme {
   /* ==================================== */
   /* PREFERABLE VARIABLES */
@@ -181,7 +183,7 @@ body {
 
   --color-accent: var(--color-primary-light);
   --color-popover: var(--color-neutral-0);
-  
+
   /* FONTS */
   /* In "tw-utilities.css" file */
 

@@ -5,33 +5,41 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/SelectPrimitives";
-import type { JSX } from "react";
+import { useEffect, type JSX } from "react";
 import { Button, Spinner } from "../ui";
 import { ChevronDownIcon, ClockIcon } from "../icons";
-import { isToday } from "date-fns";
+import { isPast, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { RichTimeSlot } from "@/types";
-import { timeString24hToTimeString12h } from "@/utils/dateTime";
+import {
+  timeString24hToDateObj,
+  timeString24hToTimeString12h,
+} from "@/utils/dateTime";
 
-export const TimeSlotPicker = ({
-  items,
-  className,
-  value,
-  setValue,
-  loading,
-  selectedDate,
-}: {
-  items: RichTimeSlot[];
-  Icon?: () => JSX.Element;
-  className?: string;
-  value?: string | null;
-  setValue: (value: string) => void;
-  loading?: boolean;
-  selectedDate: string;
-}) => {
+export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
+  const {
+    items,
+    className,
+    value,
+    setValue,
+    loading,
+    selectedDate,
+    disablePastTimes,
+  } = props;
+
   const handleChange = (id: string) => {
     setValue(id === "null" ? "" : id);
   };
+
+  useEffect(() => {
+    if (
+      disablePastTimes && isToday(selectedDate) && value
+        ? isPast(timeString24hToDateObj(value?.split("-")[0]))
+        : false
+    ) {
+      setValue("");
+    }
+  }, [props.selectedDate]);
 
   return (
     <SelectRoot value={value ?? ""} onValueChange={handleChange}>
@@ -52,7 +60,9 @@ export const TimeSlotPicker = ({
           <SelectItem
             key={timeSlot.rangeString}
             value={timeSlot.rangeString}
-            disabled={isToday(selectedDate) && timeSlot.isPast}
+            disabled={
+              disablePastTimes && isToday(selectedDate) && timeSlot.isPast
+            }
           >
             {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
             {timeString24hToTimeString12h(timeSlot.endString)}
@@ -62,3 +72,14 @@ export const TimeSlotPicker = ({
     </SelectRoot>
   );
 };
+
+interface TimeSlotPickerProps {
+  items: RichTimeSlot[];
+  Icon?: () => JSX.Element;
+  className?: string;
+  value: string | null;
+  setValue: (value: string) => void;
+  loading?: boolean;
+  selectedDate: string;
+  disablePastTimes?: boolean;
+}
