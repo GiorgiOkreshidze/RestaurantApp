@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/DropdownMenu";
 import { useSelector } from "react-redux";
-import { selectUser } from "@/app/slices/userSlice";
+import { logout, selectUser } from "@/app/slices/userSlice";
 import { Link } from "react-router";
 import { useAppDispatch } from "@/app/hooks";
 import { signout } from "@/app/thunks/userThunks";
@@ -47,11 +47,11 @@ export const UserMenu = () => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() =>
-            dispatch(
+          onClick={async () => {
+            await dispatch(
               signout({ refreshToken: user?.tokens.refreshToken ?? "" }),
-            ).unwrap()
-          }
+            ).unwrap();
+          }}
         >
           <LogOutIcon className="size-[24px] mr-[1rem]" />
           <Text variant="bodyBold">Sign Out</Text>

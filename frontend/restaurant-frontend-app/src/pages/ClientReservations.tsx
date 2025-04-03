@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useAppDispatch } from "@/app/hooks";
 import { getReservations } from "@/app/thunks/reservationsThunks";
 
-export const Reservations = () => {
+export const ClientReservations = () => {
   const dispatch = useAppDispatch();
   const reservations = useSelector(selectReservations);
   const reservationsLoading = useSelector(selectReservationsLoading);
@@ -21,7 +21,7 @@ export const Reservations = () => {
   useEffect(() => {
     dispatch(getReservations({}));
   }, []);
-
+  console.log(reservations);
   return (
     <>
       <PageHeading />

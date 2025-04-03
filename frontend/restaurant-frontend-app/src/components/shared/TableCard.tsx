@@ -20,7 +20,7 @@ export const TableCard = ({ table }: { table: TableUI }) => {
 
   return (
     <li className="@container bg-card rounded overflow-hidden shadow-card">
-      <article className="grid @max-[650px]:grid-rows-[200px_auto] @[650px]:grid-cols-[200px_1fr]">
+      <article className="grid h-full @max-[650px]:grid-rows-[200px_auto] @[650px]:grid-cols-[200px_1fr]">
         <div>
           <img
             className="block object-cover w-full h-full"

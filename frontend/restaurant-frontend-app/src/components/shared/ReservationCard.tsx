@@ -11,6 +11,7 @@ import {
   deleteClientReservation,
   getReservations,
 } from "@/app/thunks/reservationsThunks";
+import { isPast, parse } from "date-fns";
 
 export const ReservationCard = ({
   reservation,
@@ -25,7 +26,10 @@ export const ReservationCard = ({
     timeSlot,
     guestsNumber,
     tableNumber,
+    locationId,
+    tableId,
   } = reservation;
+
   return (
     <Card {...props} className="flex flex-col gap-[3rem]">
       <div className="flex items-start justify-between gap-[0.5rem]">
@@ -56,7 +60,12 @@ export const ReservationCard = ({
           variant="tertiary"
           size="sm"
           className="relative before:absolute before:content[''] before:bottom-0 before:left-0 before:w-full before:h-[1px] before:bg-black disabled:before:bg-disabled"
-          disabled={status === "Cancelled"}
+          disabled={
+            status === "Cancelled" ||
+            isPast(
+              parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
+            )
+          }
           onClick={async () => {
             try {
               await dispatch(deleteClientReservation(reservation.id)).unwrap();
@@ -77,13 +86,18 @@ export const ReservationCard = ({
           tableNumber={tableNumber}
           initGuests={Number.parseInt(guestsNumber)}
           maxGuests={Number.parseInt(guestsNumber)}
-          locationId={""}
-          tableId={""}
+          locationId={locationId}
+          tableId={tableId}
         >
           <Button
             variant="secondary"
             size="l"
-            disabled={status === "Cancelled"}
+            disabled={
+              status === "Cancelled" ||
+              isPast(
+                parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
+              )
+            }
           >
             Edit
           </Button>

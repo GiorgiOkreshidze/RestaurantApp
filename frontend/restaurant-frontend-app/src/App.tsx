@@ -4,7 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
 import { useEffect } from "react";
-import { Reservations } from "./pages/Reservations";
+import { ClientReservations } from "./pages/ClientReservations";
 import { Booking } from "./pages/Booking";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "./app/hooks";
@@ -97,7 +97,7 @@ function App() {
           path="/reservations"
           element={
             <ProtectedRoute>
-              <Reservations />
+              <ClientReservations />
             </ProtectedRoute>
           }
         />

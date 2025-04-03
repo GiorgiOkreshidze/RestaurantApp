@@ -9,7 +9,7 @@ import {
   DialogTrigger,
   Text,
 } from "../ui";
-import { useCreateReservationDialog } from "@/hooks/useCreateReservationDialog";
+import { useWaiterReservationDialog } from "@/hooks/useWaiterReservationDialog";
 import {
   CustomerPicker,
   DatePicker,
@@ -22,8 +22,8 @@ import { UserType } from "@/types/user.types";
 import { LOCATION_TABLES, TIME_SLOTS } from "@/utils/constants";
 import { LocationIcon } from "../icons";
 
-export const CreateReservationDialog = (props: Props) => {
-  const state = useCreateReservationDialog({
+export const WaiterReservationDialog = (props: Props) => {
+  const state = useWaiterReservationDialog({
     initTable: props.table,
     initDate: props.date,
   });

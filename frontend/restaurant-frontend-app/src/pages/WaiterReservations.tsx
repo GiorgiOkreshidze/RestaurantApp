@@ -1,5 +1,5 @@
 import {
-  CreateReservationDialog,
+  WaiterReservationDialog,
   PageBody,
   PageHeading,
   ReservationCard,
@@ -52,7 +52,7 @@ export const WaiterReservation = () => {
                   .join(" - ")}`
               : null}
           </Text>
-          <CreateReservationDialog
+          <WaiterReservationDialog
             date={store.date}
             time={store.time}
             table={store.table}
@@ -61,7 +61,7 @@ export const WaiterReservation = () => {
               <PlusIcon />
               <span>Create New Reservation</span>
             </Button>
-          </CreateReservationDialog>
+          </WaiterReservationDialog>
         </div>
         <div className="grow content-center">
           {reservationsLoading ? (

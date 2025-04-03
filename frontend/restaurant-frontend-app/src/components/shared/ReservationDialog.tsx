@@ -12,7 +12,7 @@ import {
   Text,
 } from "../ui";
 import { dateObjToDateStringUI } from "@/utils/dateTime";
-import { useReservationDialogForm } from "@/hooks/useReservationDialogForm";
+import { useClientReservationDialog } from "@/hooks/useClientReservationDialog";
 import type {
   Reservation,
   ReservationDialogProps,
@@ -40,7 +40,7 @@ export const ReservationDialog = ({
     setIsConfirmDialogOpen(true);
     setIsReservationDialogOpen(false);
   };
-  const form = useReservationDialogForm({
+  const form = useClientReservationDialog({
     ...props,
     reservation,
     onSuccessCallback,
@@ -93,6 +93,7 @@ export const ReservationDialog = ({
                 setValue={form.setTime}
                 className="w-full mt-[1rem]"
                 selectedDate={form.date}
+                disablePastTimes
               />
             </div>
             <Button

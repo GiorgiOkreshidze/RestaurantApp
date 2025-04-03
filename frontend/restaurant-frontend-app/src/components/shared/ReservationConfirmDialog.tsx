@@ -74,7 +74,7 @@ export const ReservationConfirmDialog = ({
             size="l"
             onClick={async () => {
               await onCancelReservation();
-              toast.success("Reservation completed successfully");
+              toast.success("Reservation canceled successfully");
               onOpenChange(false);
             }}
           >

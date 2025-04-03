@@ -11,7 +11,7 @@ import { dateObjToDateStringServer } from "@/utils/dateTime";
 import { type FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 
-export const useReservationDialogForm = ({
+export const useClientReservationDialog = ({
   onSuccessCallback,
   reservation,
   ...props

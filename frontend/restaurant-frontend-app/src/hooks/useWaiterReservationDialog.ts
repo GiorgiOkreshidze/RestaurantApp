@@ -14,7 +14,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-export const useCreateReservationDialog = (props: Props) => {
+export const useWaiterReservationDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const selectOptions = useSelector(selectSelectOptions);
   const selectOptionsLoading = useSelector(selectSelectOptionsLoading);
