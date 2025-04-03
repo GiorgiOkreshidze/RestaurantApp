@@ -7,7 +7,6 @@ import { SearchMagnifierIcon } from "../icons";
 import { useEffect, useRef } from "react";
 import { LOCATION_TABLES } from "@/utils/constants";
 import { useSelector } from "react-redux";
-import { selectWaiterReservationsForm } from "@/app/slices/waiterReservationsSlice";
 import { selectUser } from "@/app/slices/userSlice";
 
 export const WaiterReservationsForm = () => {

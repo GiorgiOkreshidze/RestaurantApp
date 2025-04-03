@@ -23,6 +23,7 @@ export interface Reservation {
   userEmail: string;
   userInfo: string;
   createdAt: string;
+  editableTill: string;
 }
 
 export interface UpsertReservationRequestParams {

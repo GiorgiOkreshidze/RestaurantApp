@@ -21,8 +21,27 @@ import {
 export const useBookingForm = () => {
   const dispatch = useAppDispatch();
   const selectOptions = useSelector(selectSelectOptions);
-  const formState = bookingFormState();
-  const { locationId, date, guests, time, setTime, setLocation } = formState;
+  const formState = useSelector(selectBookingFormState);
+  const formActions = {
+    setLocation: (locationId: string) => {
+      dispatch(setLocationAction(locationId));
+    },
+    setDate: (date: string) => {
+      dispatch(setDateAction(date));
+    },
+    setTime: (time: string) => {
+      dispatch(setTimeAction(time));
+    },
+    increaseGuests: () => {
+      dispatch(increaseGuestsAction());
+    },
+    decreaseGuests: () => {
+      dispatch(decreaseGuestsAction());
+    },
+  };
+
+  const { locationId, date, guests, time } = formState;
+  const { setTime, setLocation } = formActions;
 
   useEffect(() => {
     if (!selectOptions.length) return;
@@ -60,30 +79,5 @@ export const useBookingForm = () => {
     }
   };
 
-  return { onSubmit, ...formState };
-};
-
-export const bookingFormState = () => {
-  const dispatch = useAppDispatch();
-  const formState = useSelector(selectBookingFormState);
-
-  const formActions = {
-    setLocation: (locationId: string) => {
-      dispatch(setLocationAction(locationId));
-    },
-    setDate: (date: string) => {
-      dispatch(setDateAction(date));
-    },
-    setTime: (time: string) => {
-      dispatch(setTimeAction(time));
-    },
-    increaseGuests: () => {
-      dispatch(increaseGuestsAction());
-    },
-    decreaseGuests: () => {
-      dispatch(decreaseGuestsAction());
-    },
-  };
-
-  return { ...formState, ...formActions };
+  return { onSubmit, ...formState, ...formActions };
 };

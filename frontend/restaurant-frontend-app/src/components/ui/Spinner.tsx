@@ -30,7 +30,7 @@ export const Spinner = ({
         <stop offset={1} stopColor={color} stopOpacity={0} />
       </radialGradient>
       <circle
-        transform-origin="center"
+        style={{ transformOrigin: "center" }}
         fill="none"
         stroke={color}
         strokeWidth={15}
@@ -53,7 +53,7 @@ export const Spinner = ({
         />
       </circle>
       <circle
-        transform-origin="center"
+        style={{ transformOrigin: "center" }}
         fill="none"
         opacity={0.2}
         stroke={color}

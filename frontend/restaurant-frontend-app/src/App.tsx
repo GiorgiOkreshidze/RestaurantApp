@@ -4,7 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
 import { useEffect } from "react";
-import { Reservations } from "./pages/Reservations";
+import { ClientReservations } from "./pages/ClientReservations";
 import { Booking } from "./pages/Booking";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "./app/hooks";
@@ -15,13 +15,11 @@ import {
 } from "./app/slices/locationsSlice";
 import { getPopularDishes } from "./app/thunks/dishesThunks";
 import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
-import { selectReservations } from "./app/slices/reservationsSlice";
 import { ProtectedRoute } from "./components/routeComponents/ProtectedRoute";
 import { PublicRoute } from "./components/routeComponents/PublicRoute";
 
 import { USER_ROLE } from "./utils/constants";
 import { selectUser } from "./app/slices/userSlice";
-import { getReservations } from "./app/thunks/reservationsThunks";
 
 function App() {
   const location = useLocation();
@@ -30,7 +28,7 @@ function App() {
   const popularDishes = useSelector(selectPopularDishes);
   const locations = useSelector(selectLocations);
   const selectOptions = useSelector(selectSelectOptions);
-  const reservations = useSelector(selectReservations);
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -53,12 +51,6 @@ function App() {
       dispatch(getSelectOptions());
     }
   }, [dispatch, selectOptions.length]);
-
-  useEffect(() => {
-    if (!reservations.length) {
-      dispatch(getReservations({}));
-    }
-  }, [dispatch, reservations.length, selectOptions.length]);
 
   return (
     <>
@@ -105,7 +97,7 @@ function App() {
           path="/reservations"
           element={
             <ProtectedRoute>
-              <Reservations />
+              <ClientReservations />
             </ProtectedRoute>
           }
         />
