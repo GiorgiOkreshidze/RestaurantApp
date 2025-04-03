@@ -1,34 +1,24 @@
-import { ComponentProps } from "react";
 import { Card } from "./Card";
 import { Badge, Button, Text } from "../ui";
 import { CalendarIcon, ClockIcon, LocationIcon, PeopleIcon } from "../icons";
 
 import { ClientReservationDialog } from "./ClientReservationDialog";
 import { Reservation } from "@/types/reservation.types";
-import { dateStringServerToDateObject } from "@/utils/dateTime";
 import { useAppDispatch } from "@/app/hooks";
 import {
   deleteClientReservation,
   getReservations,
 } from "@/app/thunks/reservationsThunks";
 import { isPast, parse } from "date-fns";
+import {
+  dateObjToDateStringUI,
+  dateStringServerToDateObject,
+  timeString24hToTimeString12h,
+} from "@/utils/dateTime";
 
-export const ReservationCard = ({
-  reservation,
-  ...props
-}: ComponentProps<"div"> & { reservation: Reservation }) => {
+export const ReservationCard = (props: { reservation: Reservation }) => {
   const dispatch = useAppDispatch();
-  const {
-    id,
-    locationAddress,
-    status,
-    date,
-    timeSlot,
-    guestsNumber,
-    tableNumber,
-    locationId,
-    tableId,
-  } = reservation;
+  const { reservation } = props;
 
   return (
     <Card {...props} className="flex flex-col gap-[3rem]">
@@ -36,23 +26,37 @@ export const ReservationCard = ({
         <div className="flex flex-col gap-[0.5rem]">
           <div className="flex items-center gap-[0.5rem]">
             <LocationIcon className="size-[16px] text-primary" />
-            <Text variant="bodyBold">{locationAddress}</Text>
+            <Text tag="span" variant="bodyBold">
+              {reservation.locationAddress}, Table {reservation.tableNumber}
+            </Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <CalendarIcon className="size-[16px] stroke-primary" />
-            <Text variant="bodyBold">{date}</Text>
+            <Text variant="bodyBold">
+              {dateObjToDateStringUI(reservation.date)}
+            </Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <ClockIcon className="size-[16px] stroke-primary" />
-            <Text variant="bodyBold">{timeSlot}</Text>
+            <Text variant="bodyBold">
+              {timeString24hToTimeString12h(
+                reservation.timeSlot.split(" - ")[0],
+              )}
+            </Text>
+            <Text variant="bodyBold"> - </Text>
+            <Text variant="bodyBold">
+              {timeString24hToTimeString12h(
+                reservation.timeSlot.split(" - ")[1],
+              )}
+            </Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <PeopleIcon className="size-[16px] stroke-primary" />
-            <Text variant="bodyBold">{guestsNumber} Guests</Text>
+            <Text variant="bodyBold">{reservation.guestsNumber} Guests</Text>
           </div>
         </div>
-        <Badge status={status} className="text-nowrap">
-          {status}
+        <Badge status={reservation.status} className="text-nowrap">
+          {reservation.status}
         </Badge>
       </div>
       <footer className="flex items-center gap-[1rem] justify-end">
@@ -61,7 +65,7 @@ export const ReservationCard = ({
           size="sm"
           className="relative before:absolute before:content[''] before:bottom-0 before:left-0 before:w-full before:h-[1px] before:bg-black disabled:before:bg-disabled"
           disabled={
-            status === "Cancelled" ||
+            reservation.status === "Cancelled" ||
             isPast(
               parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
             )
@@ -79,21 +83,22 @@ export const ReservationCard = ({
           Cancel
         </Button>
         <ClientReservationDialog
-          key={id}
-          locationAddress={locationAddress}
-          date={dateStringServerToDateObject(date)}
-          initTime={timeSlot.replace(/\s/g, "")}
-          tableNumber={tableNumber}
-          initGuests={Number.parseInt(guestsNumber)}
-          maxGuests={Number.parseInt(guestsNumber)}
-          locationId={locationId}
-          tableId={tableId}
+          key={reservation.id}
+          reservationId={reservation.id}
+          locationId={reservation.locationId}
+          locationAddress={reservation.locationAddress}
+          tableId={reservation.tableId}
+          tableNumber={reservation.tableNumber}
+          date={dateStringServerToDateObject(reservation.date)}
+          initTime={reservation.timeSlot}
+          initGuests={Number.parseInt(reservation.guestsNumber)}
+          maxGuests={Number.parseInt(reservation.guestsNumber)}
         >
           <Button
             variant="secondary"
             size="l"
             disabled={
-              status === "Cancelled" ||
+              reservation.status === "Cancelled" ||
               isPast(
                 parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
               )

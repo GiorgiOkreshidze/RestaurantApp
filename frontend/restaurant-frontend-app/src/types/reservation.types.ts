@@ -49,14 +49,3 @@ export interface GetReservationRequestParams {
   timeFrom?: string /* HH:MM (24H) */;
   tableNumber?: string;
 }
-
-export interface ReservationDialogProps {
-  locationAddress: string;
-  locationId: string;
-  tableId: string;
-  tableNumber: string;
-  date: string;
-  initTime: string;
-  initGuests: number;
-  maxGuests: number;
-}

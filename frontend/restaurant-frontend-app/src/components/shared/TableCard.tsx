@@ -47,14 +47,15 @@ export const TableCard = ({ table }: { table: TableUI }) => {
             {availableSlots.slice(0, 5).map((timeSlot) => (
               <ClientReservationDialog
                 key={timeSlot.id}
+                reservationId={null}
+                locationId={table.locationId}
                 locationAddress={table.locationAddress}
-                date={table.date}
-                initTime={timeSlot.rangeString ?? bookingForm.time}
+                tableId={table.tableId}
                 tableNumber={table.tableNumber}
+                date={table.date}
+                initTime={timeSlot.rangeString}
                 initGuests={bookingForm.guests}
                 maxGuests={Number.parseInt(table.capacity)}
-                locationId={table.locationId}
-                tableId={table.tableId}
               >
                 <TimeSlot>
                   {timeString24hToTimeString12h(timeSlot.startString)} -{" "}

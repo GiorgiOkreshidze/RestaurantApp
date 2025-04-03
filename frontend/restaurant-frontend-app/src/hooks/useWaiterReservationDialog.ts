@@ -1,13 +1,6 @@
 import { useAppDispatch } from "@/app/hooks";
-import {
-  selectSelectOptions,
-  selectSelectOptionsLoading,
-} from "@/app/slices/locationsSlice";
-import {
-  selectUser,
-  selectAllUsers,
-  selectAllUsersLoading,
-} from "@/app/slices/userSlice";
+import { selectSelectOptions, selectSelectOptionsLoading } from "@/app/slices/locationsSlice";
+import { selectUser, selectAllUsers, selectAllUsersLoading } from "@/app/slices/userSlice";
 import { upsertWaiterReservation } from "@/app/thunks/reservationsThunks";
 import { UserType } from "@/types/user.types";
 import { FormEvent, useEffect, useState } from "react";
@@ -68,8 +61,8 @@ export const useWaiterReservationDialog = (props: Props) => {
           locationId: waiter?.locationId ?? "",
           tableNumber: table,
           tableId: table,
-          timeFrom: time.split("-")[0],
-          timeTo: time.split("-")[1],
+          timeFrom: time.split(" - ")[0],
+          timeTo: time.split(" - ")[1],
           customerName: customerName,
         }),
       );

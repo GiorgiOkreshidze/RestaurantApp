@@ -1,60 +1,55 @@
 import { useAppDispatch } from "@/app/hooks";
 import {
   deleteClientReservation,
+  getReservations,
   upsertClientReservation,
 } from "@/app/thunks/reservationsThunks";
-import type {
-  Reservation,
-  ReservationDialogProps,
-} from "@/types/reservation.types";
+import { ClientReservationDialogProps } from "@/components/shared/ClientReservationDialog";
 import { dateObjToDateStringServer } from "@/utils/dateTime";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-export const useClientReservationDialog = ({
-  onSuccessCallback,
-  reservation,
-  ...props
-}: ReservationDialogProps & {
-  onSuccessCallback: (reservation: Reservation) => void;
-  reservation?: Reservation;
-}) => {
-  const maxGuests = props.maxGuests;
-  const [time, setTime] = useState(reservation?.timeSlot ?? props.initTime);
-  const [guests, setGuests] = useState(
-    reservation?.guestsNumber
-      ? Number.parseInt(reservation.guestsNumber)
-      : props.initGuests,
-  );
+export const useClientReservationDialog = (props: Props) => {
   const dispatch = useAppDispatch();
-  const increaseGuests = () => {
-    setGuests(guests < maxGuests ? guests + 1 : maxGuests);
-  };
+  const [reservationId, setReservationId] = useState(props.reservationId);
+  const [selectedTime, setSelectedTime] = useState(props.initTime);
+  const [selectedGuests, setSelectedGuests] = useState(props.initGuests);
 
+  useEffect(() => {
+    setSelectedGuests(props.initGuests);
+  }, [props.initGuests]);
+
+  const increaseGuests = () => {
+    setSelectedGuests(
+      selectedGuests < props.maxGuests ? selectedGuests + 1 : props.maxGuests,
+    );
+  };
   const decreaseGuests = () => {
-    setGuests(guests > 1 ? guests - 1 : 1);
+    setSelectedGuests(selectedGuests > 1 ? selectedGuests - 1 : 1);
   };
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!time) {
+    if (!selectedTime) {
       toast.error("Select 'Time'");
       return;
     }
     try {
       const data = await dispatch(
         upsertClientReservation({
-          ...(reservation?.id && { id: reservation.id }),
+          id: reservationId ?? undefined,
           locationId: props.locationId,
           date: dateObjToDateStringServer(props.date),
-          timeFrom: time.split("-")[0],
-          timeTo: time.split("-")[1],
+          timeFrom: selectedTime.split(" - ")[0],
+          timeTo: selectedTime.split(" - ")[1],
           tableNumber: props.tableNumber,
-          guestsNumber: String(guests),
+          guestsNumber: String(selectedGuests),
           tableId: props.tableId,
         }),
       ).unwrap();
-      onSuccessCallback(data);
+      setReservationId(data.id);
+      props.onSuccessCallback();
+      await dispatch(getReservations({}));
       console.log("Reservation created", data);
     } catch (error) {
       if (error instanceof Error) {
@@ -67,9 +62,10 @@ export const useClientReservationDialog = ({
   };
 
   const onCancelReservation = async () => {
-    if (!reservation) return;
     try {
-      await dispatch(deleteClientReservation(reservation.id)).unwrap();
+      if (!reservationId) throw new Error("There is no 'reservationId'");
+      await dispatch(deleteClientReservation(reservationId)).unwrap();
+      await dispatch(getReservations({}));
       console.log("Reservation deleted");
     } catch (error) {
       console.log("Reservation deleting failed:", error);
@@ -78,12 +74,23 @@ export const useClientReservationDialog = ({
 
   return {
     onSubmit,
-    time,
-    setTime,
-    guests,
+    selectedTime,
+    setSelectedTime,
     increaseGuests,
     decreaseGuests,
     onCancelReservation,
-    ...props,
+    selectedGuests,
+    setSelectedGuests,
+    reservationId,
+    setReservationId,
+    locationAddress: props.locationAddress,
+    tableNumber: props.tableNumber,
+    date: props.date,
+    maxGuests: props.maxGuests,
   };
 };
+
+interface Props extends ClientReservationDialogProps {
+  id?: string;
+  onSuccessCallback: () => void;
+}

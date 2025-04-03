@@ -47,7 +47,7 @@ export const WaiterReservation = () => {
             {store.date ? dateObjToDateStringUI(store.date) : ""}{" "}
             {store?.time
               ? `, ${store.time
-                  .split("-")
+                  .split(" - ")
                   .map((time) => timeString24hToTimeString12h(time))
                   .join(" - ")}`
               : null}

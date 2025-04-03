@@ -20,6 +20,7 @@ import { PublicRoute } from "./components/routeComponents/PublicRoute";
 
 import { USER_ROLE } from "./utils/constants";
 import { selectUser } from "./app/slices/userSlice";
+import { setLocationAction } from "./app/slices/bookingFormSlice";
 
 function App() {
   const location = useLocation();
@@ -46,11 +47,12 @@ function App() {
     }
   }, [dispatch, locations.length]);
 
-  useEffect(() => {
+  useEffect(() => {(async () => {
     if (!selectOptions.length) {
-      dispatch(getSelectOptions());
+      const selectOptions = await dispatch(getSelectOptions()).unwrap();
+      dispatch(setLocationAction(selectOptions[0].id));
     }
-  }, [dispatch, selectOptions.length]);
+  })()}, [dispatch, selectOptions.length]);
 
   return (
     <>
