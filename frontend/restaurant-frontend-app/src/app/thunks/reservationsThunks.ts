@@ -17,11 +17,7 @@ export const getReservations = createAsyncThunk<
 >("reservations", async (params, { rejectWithValue }) => {
   try {
     const response = await axiosApi.get(serverRoute.reservations, {
-      params: {
-        date: params.date,
-        timeFrom: params.timeFrom,
-        tableNumber: params.tableNumber,
-      },
+      params,
     });
     return response.data;
   } catch (e) {

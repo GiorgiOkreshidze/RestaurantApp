@@ -4,7 +4,8 @@ export type ReservationStatus =
   | "Reserved"
   | "In Progress"
   | "Cancelled"
-  | "Finished";
+  | "Finished"
+  | "On Stop";
 
 export interface Reservation {
   id: string;

@@ -3,7 +3,7 @@ import { Card } from "./Card";
 import { Badge, Button, Text } from "../ui";
 import { CalendarIcon, ClockIcon, LocationIcon, PeopleIcon } from "../icons";
 
-import { ReservationDialog } from "./ReservationDialog";
+import { ClientReservationDialog } from "./ClientReservationDialog";
 import { Reservation } from "@/types/reservation.types";
 import { dateStringServerToDateObject } from "@/utils/dateTime";
 import { useAppDispatch } from "@/app/hooks";
@@ -78,7 +78,7 @@ export const ReservationCard = ({
         >
           Cancel
         </Button>
-        <ReservationDialog
+        <ClientReservationDialog
           key={id}
           locationAddress={locationAddress}
           date={dateStringServerToDateObject(date)}
@@ -101,7 +101,7 @@ export const ReservationCard = ({
           >
             Edit
           </Button>
-        </ReservationDialog>
+        </ClientReservationDialog>
       </footer>
     </Card>
   );

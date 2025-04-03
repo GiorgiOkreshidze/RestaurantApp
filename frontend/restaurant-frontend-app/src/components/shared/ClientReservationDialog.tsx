@@ -21,7 +21,7 @@ import { TIME_SLOTS } from "@/utils/constants";
 import { useSelector } from "react-redux";
 import { selectReservationCreatingLoading } from "@/app/slices/reservationsSlice";
 
-export const ReservationDialog = ({
+export const ClientReservationDialog = ({
   className,
   children,
   ...props

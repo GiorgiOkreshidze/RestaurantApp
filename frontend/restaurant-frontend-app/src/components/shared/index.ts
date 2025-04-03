@@ -28,7 +28,7 @@ export { PageBodyHeader } from "./PageBody";
 export { GuestsNumber } from "./GuestsNumber";
 export { Tooltip } from "./Tooltip";
 export { TimeSlotPicker } from "./TimeSlotPicker";
-export { ReservationDialog } from "./ReservationDialog";
+export { ClientReservationDialog as ReservationDialog } from "./ClientReservationDialog";
 export { ReservationConfirmDialog } from "./ReservationConfirmDialog";
 export { WaiterReservationsForm } from "./WaiterReservationsForm";
 export { TablePicker } from "./TablePicker";
