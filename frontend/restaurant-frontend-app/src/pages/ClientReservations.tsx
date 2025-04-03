@@ -21,11 +21,14 @@ export const ClientReservations = () => {
   useEffect(() => {
     dispatch(getReservations({}));
   }, []);
-  console.log(reservations);
+
   return (
     <>
       <PageHeading />
-      <PageBody variant="smallerPadding" className="grow content-center">
+      <PageBody
+        variant="smallerPadding"
+        className={cn("grow", !reservations.length && "content-center")}
+      >
         {reservationsLoading ? (
           <Spinner />
         ) : reservations?.length > 0 ? (

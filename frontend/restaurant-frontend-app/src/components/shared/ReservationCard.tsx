@@ -35,7 +35,7 @@ export const ReservationCard = ({
       <div className="flex items-start justify-between gap-[0.5rem]">
         <div className="flex flex-col gap-[0.5rem]">
           <div className="flex items-center gap-[0.5rem]">
-            <LocationIcon className="size-[16px] stroke-primary" />
+            <LocationIcon className="size-[16px] text-primary" />
             <Text variant="bodyBold">{locationAddress}</Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">

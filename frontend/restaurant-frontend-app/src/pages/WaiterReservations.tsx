@@ -67,7 +67,7 @@ export const WaiterReservation = () => {
           {reservationsLoading ? (
             <Spinner />
           ) : reservations?.length > 0 ? (
-            <div className="grid gap-[2rem] lg:grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">
+            <div className="grid gap-[2rem] lg:grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
               {reservations.map((reservation) => (
                 <ReservationCard
                   key={reservation.id}
