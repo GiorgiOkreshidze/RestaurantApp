@@ -32,7 +32,6 @@ public class SignInAction
         var password = body["password"].GetString();
 
         ActionUtils.ValidateEmail(email);
-        ActionUtils.ValidatePassword(password);
         
         var authResponse = await _authenticationService.SignIn(email!, password!);
         return ActionUtils.FormatResponse(200, authResponse);
