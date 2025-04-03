@@ -70,7 +70,7 @@ public class ReservationService : IReservationService
         {
             WaiterReservationRequest waiterRequest => await ProcessWaiterReservation(waiterRequest, reservation, userId, location.Id),
             ClientReservationRequest clientRequest => await ProcessClientReservation(clientRequest, reservation, userId),
-            _ => throw new UnsupportedOperationException("Unsupported ReservationRequest type")
+            _ => throw new Amazon.CognitoIdentityProvider.Model.UnsupportedOperationException("Unsupported ReservationRequest type")
         };
     }
     
