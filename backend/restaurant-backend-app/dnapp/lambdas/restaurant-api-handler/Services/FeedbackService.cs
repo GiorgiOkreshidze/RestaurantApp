@@ -32,6 +32,8 @@ public class FeedbackService : IFeedbackService
     {
         return await _feedbackRepository.GetLocationFeedbacksAsync(queryParameters);
     }
+
+
     
     public async Task AddFeedbackAsync(ReservationFeedbackRequest reservationFeedbackRequest, string userId)
     {
@@ -72,5 +74,10 @@ public class FeedbackService : IFeedbackService
         var field = value.GetType().GetField(value.ToString());
         var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
         return attribute == null ? value.ToString() : attribute.Description;
+    }
+
+    public async Task<int> TotalItemCountAsync()
+    {
+        return await _feedbackRepository.GetTotalItemCount();
     }
 }
