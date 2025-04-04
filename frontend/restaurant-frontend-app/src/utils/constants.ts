@@ -20,7 +20,7 @@ export const serverRoute = {
   tables: "bookings/tables",
   users: "users",
   upsertWaiterReservation: "reservations/waiter",
-  giveReservationFeedback: "giveReservationFeedback",
+  giveReservationFeedback: "feedbacks",
 };
 
 export const USER_ROLE = {
