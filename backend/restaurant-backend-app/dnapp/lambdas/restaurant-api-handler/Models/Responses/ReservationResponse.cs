@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+namespace Function.Models.Responses
+{
+    public class ReservationResponse
+    {
+        [JsonPropertyName("id")]
+        public required string Id { get; set; }
+        [JsonPropertyName("date")]
+        public required string Date { get; set; }
+        [JsonPropertyName("feedbackId")]
+        public required string FeedbackId { get; set; }
+        [JsonPropertyName("guestsNumber")]
+        public required string GuestsNumber { get; set; }
+        [JsonPropertyName("locationAddress")]
+        public required string LocationAddress { get; set; }
+        [JsonPropertyName("preOrder")]
+        public required string PreOrder { get; set; }
+        [JsonPropertyName("status")]
+        public required string Status { get; set; }
+        [JsonPropertyName("tableNumber")]
+        public required string TableNumber { get; set; }
+        [JsonPropertyName("timeSlot")]
+        public required string TimeSlot { get; set; }
+        [JsonPropertyName("userInfo")]
+        public required string UserInfo { get; set; }
+        [JsonPropertyName("editableTill")]
+        public required string EditableTill { get; set; } // Computed or set based on business rules
+    }
+}

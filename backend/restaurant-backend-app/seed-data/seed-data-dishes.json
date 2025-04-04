@@ -1,0 +1,56 @@
+﻿{
+  "Dishes": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "dish_001" },
+          "name": { "S": "Chicken Tikka Masala" },
+          "price": { "S": "17.50" },
+          "weight": { "S": "450g" },
+          "imageUrl": { "S": "https://example.com/chicken-tikka-masala.jpg" },
+          "isPopular": { "BOOL": true },
+          "locationId": { "S": "loc_001" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "dish_002" },
+          "name": { "S": "Cheeseburger" },
+          "price": { "S": "9.99" },
+          "weight": { "S": "350g" },
+          "imageUrl": { "S": "https://example.com/cheeseburger.jpg" },
+          "isPopular": { "BOOL": true },
+          "locationId": { "S": "loc_001" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "dish_003" },
+          "name": { "S": "Sushi Platter" },
+          "price": { "S": "25.99" },
+          "weight": { "S": "600g" },
+          "imageUrl": { "S": "https://example.com/sushi-platter.jpg" },
+          "isPopular": { "BOOL": false },
+          "locationId": { "S": "loc_002" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "dish_004" },
+          "name": { "S": "Mac & Cheese" },
+          "price": { "S": "10.99" },
+          "weight": { "S": "450g" },
+          "imageUrl": { "S": "https://example.com/mac-and-cheese.jpg" },
+          "isPopular": { "BOOL": true },
+          "locationId": { "S": "loc_003" }
+        }
+      }
+    }
+  ]
+}

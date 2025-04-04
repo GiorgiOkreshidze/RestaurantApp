@@ -1,0 +1,50 @@
+﻿# Ignore all files that start with a dot
+.*
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# IDE-specific
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.snl
+*.sln
+
+# Rider
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+.history/
+
+# Build/Output directories
+bin/
+obj/
+debug/
+release/
+*.dll
+*.pdb
+*.exe
+
+# Package dependencies
+*.nuget/
+packages/
+*.nupkg
+project.lock.json
+**/project.lock.json
+*.props
+*.targets
+
+# Logs
+*.log
+
+# Temporary files
+*.bak
+*.swp
+~$*.*

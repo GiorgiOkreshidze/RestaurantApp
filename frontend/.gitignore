@@ -1,0 +1,56 @@
+﻿# Ignore all files that start with a dot
+.*
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# IDE-specific
+# WebStorm/JetBrains
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+.history/
+
+# Visual Studio
+.vs/
+
+# Node.js
+/node_modules/
+/yarn-error.log
+npm-debug.log*
+yarn-debug.log*
+yarn-lock.json
+package-lock.json
+
+# Build output
+/dist/
+/.build/
+/coverage/
+
+# Temporary files and cache
+*.log
+*.tmp
+*.swp
+~$*.*
+*.pid
+*.seed
+*.pid.lock
+
+# React-specific files
+build/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Dependency directories
+/elm-stuff/
+/generated/
+/jspm_packages/
+
+# Test-related
+jest/
+*.test.js

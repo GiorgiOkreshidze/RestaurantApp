@@ -1,0 +1,112 @@
+﻿{
+  "Reservations": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "res_001" },
+          "locationId": { "S": "loc_001" },
+          "tableNumber": { "S": "1" },
+          "date": { "S": "2025-03-22" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "12:15" },
+          "timeTo": { "S": "13:45" },
+          "locationAddress": { "S": "48 Rustaveli Avenue" },
+          "feedbackId": { "S": "fb_001" },
+          "preOrder": { "S": "Vegetarian Meal" },
+          "status": { "S": "Canceled" },
+          "userInfo": { "S": "John Doe, john@example.com" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "res_002" },
+          "locationId": { "S": "loc_001" },
+          "tableNumber": { "S": "1" },
+          "date": { "S": "2025-03-22" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "17:30" },
+          "timeTo": { "S": "19:00" },
+          "locationAddress": { "S": "48 Rustaveli Avenue" },
+          "feedbackId": { "S": "fb_001" },
+          "preOrder": { "S": "Vegetarian Meal" },
+          "status": { "S": "Reserved" },
+          "userInfo": { "S": "John Doe, john@example.com" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "res_003" },
+          "locationId": { "S": "loc_002" },
+          "tableNumber": { "S": "3" },
+          "date": { "S": "2025-03-22" },
+          "guestsNumber": { "S": "6" },
+          "timeFrom": { "S": "21:00" },
+          "timeTo": { "S": "22:30" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
+          "feedbackId": { "S": "fb_002" },
+          "preOrder": { "S": "Steak Dinner" },
+          "status": { "S": "Reserved" },
+          "userInfo": { "S": "Jane Smith, jane@example.com" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "res_004" },
+          "locationId": { "S": "loc_002" },
+          "tableNumber": { "S": "1" },
+          "date": { "S": "2025-03-22" },
+          "guestsNumber": { "S": "2" },
+          "timeFrom": { "S": "19:15" },
+          "timeTo": { "S": "20:45" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
+          "feedbackId": { "S": "fb_002" },
+          "preOrder": { "S": "Steak Dinner" },
+          "status": { "S": "Reserved" },
+          "userInfo": { "S": "Jane Smith, jane@example.com" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "res_005" },
+          "locationId": { "S": "loc_003" },
+          "tableNumber": { "S": "4" },
+          "date": { "S": "2025-03-22" },
+          "guestsNumber": { "S": "6" },
+          "timeFrom": { "S": "19:15" },
+          "timeTo": { "S": "20:45" },
+          "locationAddress": { "S": "9 Abashidze Street" },
+          "feedbackId": { "S": "fb_003" },
+          "preOrder": { "S": "Seafood Platter" },
+          "status": { "S": "Canceled" },
+          "userInfo": { "S": "Alice Johnson, alice@example.com" }
+        }
+      }
+    },
+     {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "res_006" },
+          "locationId": { "S": "loc_003" },
+          "tableNumber": { "S": "1" },
+          "date": { "S": "2025-03-22" },
+          "guestsNumber": { "S": "5" },
+          "timeFrom": { "S": "21:00" },
+          "timeTo": { "S": "22:30" },
+          "locationAddress": { "S": "9 Abashidze Street" },
+          "feedbackId": { "S": "fb_003" },
+          "preOrder": { "S": "Seafood Platter" },
+          "status": { "S": "Canceled" },
+          "userInfo": { "S": "Alice Johnson, alice@example.com" }
+        }
+      }
+    }
+  ]
+}

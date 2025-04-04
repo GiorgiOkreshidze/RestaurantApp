@@ -1,0 +1,75 @@
+/* ==================================== */
+/* FONTS */
+/* ==================================== */
+@utility fontset-h1 {
+  font-size: 3rem; /* 48px */
+  line-height: 1; /* 48px */
+  font-weight: 500;
+}
+
+@utility fontset-h2 {
+  font-size: 1.5rem; /* 24px */
+  line-height: 2.5rem; /* 40px */
+  font-weight: 500;
+}
+
+@utility fontset-h3 {
+  font-size: 1.125rem; /* 18px */
+  line-height: 2rem; /* 32px */
+  font-weight: 500;
+}
+
+@utility fontset-blockTitle {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 300;
+}
+
+@utility fontset-body {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 300;
+}
+
+@utility fontset-bodyBold {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 500;
+}
+
+@utility fontset-caption {
+  font-size: 0.75rem; /* 12px */
+  line-height: 1rem; /* 16px */
+  font-weight: 300;
+}
+
+@utility fontset-link {
+  font-size: 0.75rem; /* 12px */
+  line-height: 1rem; /* 16px */
+  font-weight: 700;
+}
+
+@utility fontset-buttonPrimary {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 700;
+}
+
+@utility fontset-buttonSecondary {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 500;
+}
+
+@utility fontset-navigation {
+  font-size: 1.25rem; /* 20px */
+  line-height: 2rem; /* 32px */
+  font-weight: 500;
+}
+
+/* ==================================== */
+/* FONT-SIZE */
+/* ==================================== */
+@utility dynamic-title-size {
+  font-size: clamp(1rem, 5vw, 5rem);
+}

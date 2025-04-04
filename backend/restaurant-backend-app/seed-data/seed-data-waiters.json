@@ -1,0 +1,28 @@
+﻿{
+  "Waiters": [
+  {
+    "PutRequest": {
+      "Item": {
+        "id": { "S": "waiter_001" },
+        "email": { "S": "laydyGaga98@example.com" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "id": { "S": "waiter_002" },
+        "email": { "S": "johnyDepp007@example.com" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "id": { "S": "waiter_003" },
+        "email": { "S": "kylieJenner69@example.com" }
+      }
+    }
+  }
+]
+}
