@@ -16,6 +16,12 @@ public class ReservationResponse
     [JsonPropertyName("locationAddress")]
     public required string LocationAddress { get; set; }
     
+    [JsonPropertyName("locationId")]
+    public required string LocationId { get; set; }
+    
+    [JsonPropertyName("tableId")]
+    public required string TableId { get; set; }
+    
     [JsonPropertyName("preOrder")]
     public required string PreOrder { get; set; }
     
@@ -24,6 +30,9 @@ public class ReservationResponse
     
     [JsonPropertyName("tableNumber")]
     public required string TableNumber { get; set; }
+    
+    [JsonPropertyName("tableCapacity")]
+    public required string TableCapacity { get; set; }
     
     [JsonPropertyName("timeFrom")]
     public required string TimeFrom { get; set; }

@@ -102,6 +102,9 @@ public class Mapper
             UserInfo = item.TryGetValue("userInfo", out var userInfoValue) ? userInfoValue.S : string.Empty,
             CreatedAt = item.TryGetValue("createdAt", out var createAtValue) ? createAtValue.S : string.Empty,
             UserEmail = item.TryGetValue("userEmail", out var userEmailValue) ? userEmailValue.S : string.Empty,
+            TableCapacity = item.TryGetValue("tableCapacity", out var tableCapacityValue)
+                ? tableCapacityValue.S
+                : string.Empty,
         }).ToList();
     }
 
@@ -131,6 +134,7 @@ public class Mapper
                          Enum.TryParse<ClientType>(clientType, out var parsedClientType) 
                 ? parsedClientType 
                 : ClientType.VISITOR,
+            TableCapacity = doc.TryGetValue("tableCapacity", out var tableCapacity) ? tableCapacity : string.Empty,
         }).ToList();
     }
 
@@ -142,7 +146,10 @@ public class Mapper
             Date = reservation.Date,
             GuestsNumber = reservation.GuestsNumber,
             LocationAddress = reservation.LocationAddress,
+            LocationId = reservation.LocationId,
+            TableId = reservation.TableId,
             TableNumber = reservation.TableNumber,
+            TableCapacity = reservation.TableCapacity,
             TimeSlot = reservation.TimeSlot,
             TimeFrom = reservation.TimeFrom,
             Status = reservation.Status,

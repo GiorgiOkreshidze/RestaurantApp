@@ -24,7 +24,7 @@ export const CustomerPicker = (props: Props) => {
             placeholder="Enter customer's name"
             onBlur={() => {
               if (isOpen) return;
-              !customerId && setValue("");
+              if (!customerId) setValue("");
             }}
           />
         </PopoverTrigger>
@@ -49,7 +49,7 @@ export const CustomerPicker = (props: Props) => {
                   key={customer.id}
                   value={customer.id}
                   className="fontset-bodyBold hover:bg-green-100 outline-hidden py-[0.25rem] px-[0.5rem] focus:bg-green-100 cursor-pointer data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
-                  onClick={(e) => {
+                  onClick={() => {
                     setCustomerId(customer.id);
                     setIsOpen(false);
                     setValue(`${customer.firstName} ${customer.lastName}`);

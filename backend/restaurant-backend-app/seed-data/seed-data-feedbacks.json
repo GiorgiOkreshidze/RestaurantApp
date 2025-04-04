@@ -8,11 +8,11 @@
           "comment": { "S": "Great place!" },
           "userName": { "S": "Salome Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar1.jpg" },
-          "date": { "S": "2025-03-17T12:00:00Z" },
-          "type": { "S": "SERVICE-QUALITY" },
+          "date": { "S": "2025-04-24T12:00:00Z" },
+          "type": { "S": "SERVICE_QUALITY" },
           "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "reservationId": { "S":  "1a7b9370-3d4e-42b9-a283-12f4a545bf88"},
-          "type#date": { "S": "SERVICE_QUALITY#2025-03-17T12:00:00Z" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-04-22T12:00:00Z" },
           "locationId#type": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99#SERVICE_QUALITY" },
           "reservationId#type": { "S": "1a7b9370-3d4e-42b9-a283-12f4a545bf88#SERVICE_QUALITY" }
         }
@@ -24,14 +24,14 @@
           "id": { "S": "6e6a173e-67c5-43e8-a0a5-2810833cf248" },
           "rate": { "N": "4" },
           "comment": { "S": "Nice experience, but a bit crowded." },
-          "userName": { "S": "Dora Doe" },
+          "userName": { "S": "Roman Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar2.jpg" },
-          "date": { "S": "2025-03-16T14:30:00Z" },
-          "type": { "S": "SERVICE-QUALITY" },
-          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "date": { "S": "2025-04-23T14:30:00Z" },
+          "type": { "S": "SERVICE_QUALITY" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "reservationId": { "S":  "bded1291-4f92-4e16-91fc-3a79a1d6725e"},
-          "type#date": { "S": "SERVICE_QUALITY#2025-03-16T14:30:00Z" },
-          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#SERVICE_QUALITY" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-04-23T14:30:00Z" },
+          "locationId#type": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99#SERVICE_QUALITY" },
           "reservationId#type": { "S": "bded1291-4f92-4e16-91fc-3a79a1d6725e#SERVICE_QUALITY" }
         }
       }
@@ -42,14 +42,14 @@
           "id": { "S": "b8e7c75a-bd92-44ef-8cf0-6e5f01d158db" },
           "rate": { "N": "3" },
           "comment": { "S": "Average experience." },
-          "userName": { "S": "Roman Doe" },
+          "userName": { "S": "Dora Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar3.jpg" },
           "date": { "S": "2025-02-02T10:15:00Z" },
-          "type": { "S": "CUISINE-EXPERIENCE" },
-          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "reservationId": { "S":  "2a18dd45-e609-4bd4-8219-42392a9168bd"},
           "type#date": { "S": "SERVICE_QUALITY#2025-02-02T10:15:00Z" },
-          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#SERVICE_QUALITY" },
+          "locationId#type": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99#SERVICE_QUALITY" },
           "reservationId#type": { "S": "2a18dd45-e609-4bd4-8219-42392a9168bd#SERVICE_QUALITY" }
         }
       }
@@ -60,15 +60,159 @@
           "id": { "S": "f31c20cb-b2be-4e7b-9228-ff315497487b" },
           "rate": { "N": "2" },
           "comment": { "S": "Do not like it." },
-          "userName": { "S": "Dora Doe" },
+          "userName": { "S": "Temirlan Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar4.jpg" },
-          "date": { "S": "2025-02-03T13:30:00Z" },
-          "type": { "S": "CUISINE-EXPERIENCE" },
-          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "date": { "S": "2025-02-04T13:30:00Z" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "reservationId": { "S":  "adeddaef-c271-4915-bf70-48dd95735dc5"},
-          "type#date": { "S": "SERVICE_QUALITY#2025-02-03T13:30:00Z" },
-          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#SERVICE_QUALITY" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-02-04T13:30:00Z" },
+          "locationId#type": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99#SERVICE_QUALITY" },
           "reservationId#type": { "S": "adeddaef-c271-4915-bf70-48dd95735dc5#SERVICE_QUALITY" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "f31c20cb-b2be-4e7b-9228-ff315497487b" },
+          "rate": { "N": "4" },
+          "comment": { "S": "Great food, loved the dinner special!" },
+          "userName": { "S": "Temirlan Doe" },
+          "userAvatarUrl": { "S": "https://example.com/avatar1.jpg" },
+          "date": { "S": "2025-04-10T19:45:00Z" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "reservationId": { "S": "a1b2c3d4-e5f6-4g7h-8i9j-0k1l2m3n4o5p" },
+          "type#date": { "S": "CUISINE_EXPERIENCE#2025-04-10T19:45:00Z" },
+          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#CUISINE_EXPERIENCE" },
+          "reservationId#type": { "S": "a1b2c3d4-e5f6-4g7h-8i9j-0k1l2m3n4o5p#CUISINE_EXPERIENCE" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "g42d31dc-c3cf-5f8c-a339-gg426508598c" },
+          "rate": { "N": "3" },
+          "comment": { "S": "Service was slow, but the lunch was decent." },
+          "userName": { "S": "Dora Doe" },
+          "userAvatarUrl": { "S": "https://example.com/avatar2.jpg" },
+          "date": { "S": "2025-04-15T14:45:00Z" },
+          "type": { "S": "SERVICE_QUALITY" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "reservationId": { "S": "b2c3d4e5-f6g7-4h8i-9j0k-1l2m3n4o5p6" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-04-15T14:45:00Z" },
+          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#SERVICE_QUALITY" },
+          "reservationId#type": { "S": "b2c3d4e5-f6g7-4h8i-9j0k-1l2m3n4o5p6#SERVICE_QUALITY" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "h53e42ed-d4dg-6g9d-b44a-hh5376196a9d" },
+          "rate": { "N": "5" },
+          "comment": { "S": "Amazing group dinner, staff was fantastic!" },
+          "userName": { "S": "Giorgi O Doe" },
+          "userAvatarUrl": { "S": "https://example.com/avatar3.jpg" },
+          "date": { "S": "2025-04-20T21:15:00Z" },
+          "type": { "S": "SERVICE_QUALITY" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "reservationId": { "S": "c3d4e5f6-g7h8-4i9j-0k1l-2m3n4o5p6q7" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-04-20T21:15:00Z" },
+          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#SERVICE_QUALITY" },
+          "reservationId#type": { "S": "c3d4e5f6-g7h8-4i9j-0k1l-2m3n4o5p6q7#SERVICE_QUALITY" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "i64f53fe-e5eh-7h0e-c55b-ii6487207b0e" },
+          "rate": { "N": "2" },
+          "comment": { "S": "Party platter was underwhelming." },
+          "userName": { "S": "Giorgi B Doe" },
+          "userAvatarUrl": { "S": "https://example.com/avatar4.jpg" },
+          "date": { "S": "2025-04-25T19:15:00Z" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "reservationId": { "S": "d4e5f6g7-h8i9-4j0k-1l2m-3n4o5p6q7r8" },
+          "type#date": { "S": "CUISINE_EXPERIENCE#2025-04-25T19:15:00Z" },
+          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#CUISINE_EXPERIENCE" },
+          "reservationId#type": { "S": "d4e5f6g7-h8i9-4j0k-1l2m-3n4o5p6q7r8#CUISINE_EXPERIENCE" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "j75g64gf-f6fi-8i1f-d66c-jj7598318c1f" },
+          "rate": { "N": "4" },
+          "comment": { "S": "Brunch was tasty, service was good." },
+          "userName": { "S": "Salome Doe" },
+          "userAvatarUrl": { "S": "https://example.com/avatar5.jpg" },
+          "date": { "S": "2025-04-12T14:15:00Z" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "reservationId": { "S": "e5f6g7h8-i9j0-4k1l-2m3n-4o5p6q7r8s9" },
+          "type#date": { "S": "CUISINE_EXPERIENCE#2025-04-12T14:15:00Z" },
+          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#CUISINE_EXPERIENCE" },
+          "reservationId#type": { "S": "e5f6g7h8-i9j0-4k1l-2m3n-4o5p6q7r8s9#CUISINE_EXPERIENCE" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "k86h75hg-g7gj-9j2g-e77d-kk8609429d2g" },
+          "rate": { "N": "5" },
+          "comment": { "S": "Perfect afternoon tea, highly recommend!" },
+          "userName": { "S": "Irina Doe" },
+          "userAvatarUrl": { "S": "https://example.com/avatar6.jpg" },
+          "date": { "S": "2025-04-18T16:45:00Z" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "reservationId": { "S": "f6g7h8i9-j0k1-4l2m-3n4o-5p6q7r8s9t0" },
+          "type#date": { "S": "CUISINE_EXPERIENCE#2025-04-18T16:45:00Z" },
+          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#CUISINE_EXPERIENCE" },
+          "reservationId#type": { "S": "f6g7h8i9-j0k1-4l2m-3n4o-5p6q7r8s9t0#CUISINE_EXPERIENCE" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "l97i86ih-h8hk-0k3h-f88e-ll9710530e3h" },
+          "rate": { "N": "3" },
+          "comment": { "S": "Food was great, but the wait was too long." },
+          "userName": { "S": "Roman Doe" },
+          "userAvatarUrl": { "S": "https://example.com/avatar7.jpg" },
+          "date": { "S": "2025-04-22T22:15:00Z" },
+          "type": { "S": "SERVICE_QUALITY" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "reservationId": { "S": "g7h8i9j0-k1l2-4m3n-4o5p-6q7r8s9t0u1" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-04-22T22:15:00Z" },
+          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#SERVICE_QUALITY" },
+          "reservationId#type": { "S": "g7h8i9j0-k1l2-4m3n-4o5p-6q7r8s9t0u1#SERVICE_QUALITY" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "m08j97ji-i9il-1l4i-g99f-mm0821641f4i" },
+          "rate": { "N": "4" },
+          "comment": { "S": "Good experience, large group was well handled." },
+          "userName": { "S": "Temirlan Doe" },
+          "userAvatarUrl": { "S": "https://example.com/avatar1.jpg" },
+          "date": { "S": "2025-04-28T20:45:00Z" },
+          "type": { "S": "SERVICE_QUALITY" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "reservationId": { "S": "h8i9j0k1-l2m3-4n4o-5p6q-7r8s9t0u1v2" },
+          "type#date": { "S": "SERVICE_QUALITY#2025-04-28T20:45:00Z" },
+          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#SERVICE_QUALITY" },
+          "reservationId#type": { "S": "h8i9j0k1-l2m3-4n4o-5p6q-7r8s9t0u1v2#SERVICE_QUALITY" }
         }
       }
     }

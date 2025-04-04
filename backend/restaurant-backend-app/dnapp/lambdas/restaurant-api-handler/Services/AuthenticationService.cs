@@ -52,7 +52,7 @@ public class AuthenticationService : IAuthenticationService
         }
         catch (UserNotFoundException)
         {
-            throw new ResourceNotFoundException("We could not find an account matching the email.");
+            throw new UnauthorizedException("Incorrect email or password. Try again or create an account.");
         }
         catch (NotAuthorizedException)
         {

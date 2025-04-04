@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   deleteClientReservation,
   getReservations,
+  giveReservationFeedback,
   upsertClientReservation,
+  upsertWaiterReservation,
 } from "../thunks/reservationsThunks";
 import type { Reservation } from "@/types/reservation.types";
 import { toast } from "react-toastify";
@@ -13,6 +15,7 @@ interface reservationsState {
   reservation: Reservation | null;
   reservationCreatingLoading: boolean;
   reservationDeletingLoading: boolean;
+  giveReservationFeedbackLoading: boolean;
 }
 
 const initialState: reservationsState = {
@@ -21,6 +24,7 @@ const initialState: reservationsState = {
   reservation: null,
   reservationCreatingLoading: false,
   reservationDeletingLoading: false,
+  giveReservationFeedbackLoading: false,
 };
 
 export const reservationsSlice = createSlice({
@@ -69,6 +73,40 @@ export const reservationsSlice = createSlice({
       .addCase(deleteClientReservation.rejected, (state) => {
         state.reservationDeletingLoading = false;
       });
+
+    builder
+      .addCase(upsertWaiterReservation.pending, (state) => {
+        state.reservationCreatingLoading = true;
+      })
+      .addCase(
+        upsertWaiterReservation.fulfilled,
+        (state, { payload: data }) => {
+          state.reservationCreatingLoading = false;
+          state.reservation = data;
+        },
+      )
+      .addCase(
+        upsertWaiterReservation.rejected,
+        (state, { payload: errorResponse }) => {
+          state.reservationCreatingLoading = false;
+          toast.error(errorResponse?.message);
+        },
+      );
+
+    builder
+      .addCase(giveReservationFeedback.pending, (state) => {
+        state.giveReservationFeedbackLoading = true;
+      })
+      .addCase(giveReservationFeedback.fulfilled, (state) => {
+        state.giveReservationFeedbackLoading = false;
+      })
+      .addCase(
+        giveReservationFeedback.rejected,
+        (state, { payload: errorResponse }) => {
+          state.giveReservationFeedbackLoading = false;
+          toast.error(errorResponse?.message);
+        },
+      );
   },
   selectors: {
     selectReservations: (state) => state.reservations,
@@ -77,6 +115,8 @@ export const reservationsSlice = createSlice({
       state.reservationCreatingLoading,
     selectReservationDeletingLoading: (state) =>
       state.reservationDeletingLoading,
+    selectGiveReservationFeedbackLoading: (state) =>
+      state.giveReservationFeedbackLoading,
   },
 });
 
@@ -86,4 +126,5 @@ export const {
   selectReservationsLoading,
   selectReservationCreatingLoading,
   selectReservationDeletingLoading,
+  selectGiveReservationFeedbackLoading,
 } = reservationsSlice.selectors;

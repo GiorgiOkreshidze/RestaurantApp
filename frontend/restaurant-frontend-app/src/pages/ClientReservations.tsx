@@ -13,23 +13,27 @@ import { useEffect } from "react";
 import { useAppDispatch } from "@/app/hooks";
 import { getReservations } from "@/app/thunks/reservationsThunks";
 
-export const Reservations = () => {
+export const ClientReservations = () => {
   const dispatch = useAppDispatch();
   const reservations = useSelector(selectReservations);
   const reservationsLoading = useSelector(selectReservationsLoading);
 
   useEffect(() => {
+    if (reservations.length) return;
     dispatch(getReservations({}));
   }, []);
 
   return (
     <>
       <PageHeading />
-      <PageBody variant="smallerPadding" className="grow content-center">
+      <PageBody
+        variant="smallerPadding"
+        className={cn("grow", !reservations.length && "content-center")}
+      >
         {reservationsLoading ? (
           <Spinner />
         ) : reservations?.length > 0 ? (
-          <div className="grow-1 content-start grid gap-[2rem] lg:grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">
+          <div className="grow-1 content-start grid gap-[2rem] lg:grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
             {reservations.map((reservation) => (
               <ReservationCard key={reservation.id} reservation={reservation} />
             ))}

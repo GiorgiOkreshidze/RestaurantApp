@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 export const useRegForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [passwordTouched] = useState(false);
 
   const passwordSchema = z.string().superRefine((value, ctx) => {
     if (!/[A-Z]/.test(value)) {

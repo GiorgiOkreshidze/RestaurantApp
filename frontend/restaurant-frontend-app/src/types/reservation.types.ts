@@ -4,7 +4,8 @@ export type ReservationStatus =
   | "Reserved"
   | "In Progress"
   | "Cancelled"
-  | "Finished";
+  | "Finished"
+  | "On Stop";
 
 export interface Reservation {
   id: string;
@@ -23,6 +24,7 @@ export interface Reservation {
   userEmail: string;
   userInfo: string;
   createdAt: string;
+  editableTill: string;
 }
 
 export interface UpsertReservationRequestParams {
@@ -40,6 +42,7 @@ export interface UpsertWaiterReservationRequestParams
   extends UpsertReservationRequestParams {
   clientType: UserType;
   customerName?: string;
+  customerId: string;
 }
 
 export interface GetReservationRequestParams {
@@ -48,13 +51,10 @@ export interface GetReservationRequestParams {
   tableNumber?: string;
 }
 
-export interface ReservationDialogProps {
-  locationAddress: string;
-  locationId: string;
-  tableId: string;
-  tableNumber: string;
-  date: string;
-  initTime: string;
-  initGuests: number;
-  maxGuests: number;
+export interface GiveReservationFeedback {
+  cuisineComment: string;
+  cuisineRating: string;
+  reservationId: string;
+  serviceComment: string;
+  serviceRating: string;
 }

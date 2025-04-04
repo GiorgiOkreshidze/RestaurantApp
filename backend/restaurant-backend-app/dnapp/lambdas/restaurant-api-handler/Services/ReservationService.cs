@@ -57,6 +57,7 @@ public class ReservationService : IReservationService
             LocationAddress = location.Address,
             LocationId = location.Id,
             PreOrder = "NOT IMPLEMENTED YET",
+            TableCapacity = table.Capacity,
             Status = ReservationStatus.Reserved.ToString(),
             TableId = reservationRequest.TableId,
             TableNumber = table.TableNumber,
@@ -235,7 +236,7 @@ public class ReservationService : IReservationService
             var existingTimeFrom = TimeSpan.Parse(existingReservation.TimeFrom);
             var existingTimeTo = TimeSpan.Parse(existingReservation.TimeTo);
 
-            if (newTimeFrom <= existingTimeTo && newTimeTo >= existingTimeFrom)
+            if (newTimeFrom <= existingTimeTo && newTimeTo >= existingTimeFrom && existingReservation.Id != request.Id)
             {
                 if (existingReservation.UserEmail == userEmail)
                 {
@@ -265,7 +266,7 @@ public class ReservationService : IReservationService
 
         return reservationCounts
             .OrderBy(x => x.Value)
-            .FirstOrDefault().Key ?? throw new Exception($"No waiters available for location ID: {locationId} after counting reservations");
+            .FirstOrDefault().Key ?? throw new ResourceNotFoundException($"No waiters available for location ID: {locationId} after counting reservations");
     }
 
     private async Task ValidateModificationPermissionsForWaiter(Reservation newReservation, string waiterId)

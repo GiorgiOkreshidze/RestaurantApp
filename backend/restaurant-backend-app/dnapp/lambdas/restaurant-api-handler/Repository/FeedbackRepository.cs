@@ -228,4 +228,16 @@ public class FeedbackRepository : IFeedbackRepository
         
         return doc.ToAttributeMap();
     }
+
+    public async Task<int> GetTotalItemCount()
+    {
+        var request = new ScanRequest
+        {
+            TableName = _locationFeedbacksTableName,
+            Select = "COUNT"
+        };
+
+        var response = await _dynamoDbClient.ScanAsync(request);
+        return response.Count;
+    }
 }

@@ -11,21 +11,10 @@ import { ChevronDownIcon, ClockIcon } from "../icons";
 import { isPast, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { RichTimeSlot } from "@/types";
-import {
-  timeString24hToDateObj,
-  timeString24hToTimeString12h,
-} from "@/utils/dateTime";
+import { timeString24hToDateObj, timeString24hToTimeString12h } from "@/utils/dateTime";
 
 export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
-  const {
-    items,
-    className,
-    value,
-    setValue,
-    loading,
-    selectedDate,
-    disablePastTimes,
-  } = props;
+  const { items, className, value, setValue, loading, selectedDate, disablePastTimes } = props;
 
   const handleChange = (id: string) => {
     setValue(id === "null" ? "" : id);
@@ -34,7 +23,7 @@ export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
   useEffect(() => {
     if (
       disablePastTimes && isToday(selectedDate) && value
-        ? isPast(timeString24hToDateObj(value?.split("-")[0]))
+        ? isPast(timeString24hToDateObj(value?.split(" - ")[0]))
         : false
     ) {
       setValue("");
@@ -46,11 +35,7 @@ export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
       <SelectTrigger className={cn("w-full", className)} asChild>
         <Button variant="trigger" size="trigger">
           {<ClockIcon className="size-[1.5rem]" />}
-          {loading ? (
-            <span>Loading...</span>
-          ) : (
-            <SelectValue placeholder="Time" />
-          )}
+          {loading ? <span>Loading...</span> : <SelectValue placeholder="Time" />}
           {loading ? <Spinner className="size-[1em]" /> : <ChevronDownIcon />}
         </Button>
       </SelectTrigger>
@@ -60,9 +45,7 @@ export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
           <SelectItem
             key={timeSlot.rangeString}
             value={timeSlot.rangeString}
-            disabled={
-              disablePastTimes && isToday(selectedDate) && timeSlot.isPast
-            }
+            disabled={disablePastTimes && isToday(selectedDate) && timeSlot.isPast}
           >
             {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
             {timeString24hToTimeString12h(timeSlot.endString)}

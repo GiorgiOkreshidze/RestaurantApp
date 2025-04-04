@@ -8,6 +8,7 @@ interface Props {
 }
 
 export const Locations: React.FC<Props> = ({ locations }) => {
+
   return (
     <PageBodySection>
       <PageBodyHeader>

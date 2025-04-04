@@ -47,11 +47,11 @@ export const UserMenu = () => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() =>
-            dispatch(
+          onClick={async () => {
+            await dispatch(
               signout({ refreshToken: user?.tokens.refreshToken ?? "" }),
-            ).unwrap()
-          }
+            ).unwrap();
+          }}
         >
           <LogOutIcon className="size-[24px] mr-[1rem]" />
           <Text variant="bodyBold">Sign Out</Text>

@@ -32,8 +32,9 @@ public class GetLocationFeedbacksAction
             var parameters = ExtractParameters(request);
             var sortOptions = ParseSortParameters(request);
             var (feedbacks, nextToken) = await GetPaginatedFeedbacks(parameters, sortOptions);
+            var totalItemCount = await TotalItemCount();
 
-            var responseBody = BuildResponseBody(feedbacks, nextToken, parameters, sortOptions);
+            var responseBody = BuildResponseBody(feedbacks, nextToken, parameters, sortOptions, (int)Math.Ceiling((double)totalItemCount / parameters.PageSize));
 
             return new APIGatewayProxyResponse
             {
@@ -175,7 +176,8 @@ public class GetLocationFeedbacksAction
         List<LocationFeedback> content,
         string? nextPageToken,
         LocationFeedbacksParameters parameters,
-        (string SortProperty, string SortDirection) sortOptions)
+        (string SortProperty, string SortDirection) sortOptions,
+        int totalPageCount)
     {
         return new
         {
@@ -201,6 +203,7 @@ public class GetLocationFeedbacksAction
                 ignoreCase = true
             },
             first = parameters.Page == 0,
+            totalPages = totalPageCount,
             numberOfElements = content.Count,
             pageable = new
             {
@@ -220,5 +223,10 @@ public class GetLocationFeedbacksAction
                 unpaged = false
             }
         };
+    }
+
+    private async Task<int> TotalItemCount()
+    {
+        return await _feedbackService.TotalItemCountAsync();
     }
 }

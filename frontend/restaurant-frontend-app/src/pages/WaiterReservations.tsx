@@ -1,5 +1,5 @@
 import {
-  CreateReservationDialog,
+  WaiterReservationDialog,
   PageBody,
   PageHeading,
   ReservationCard,
@@ -34,7 +34,7 @@ export const WaiterReservation = () => {
   useEffect(() => {
     dispatch(getReservations({}));
     dispatch(getAllUsers());
-  }, [dispatch]);
+  }, []);
 
   return (
     <>
@@ -43,16 +43,16 @@ export const WaiterReservation = () => {
         <WaiterReservationsForm />
         <div className="flex flex-col gap-[1rem] my-[2rem] justify-between items-center md:flex-row">
           <Text variant="h3">
-            You have {reservations.length} reservations for{" "}
+            You have {reservations.length} reservations{" "}
             {store.date ? dateObjToDateStringUI(store.date) : ""}{" "}
             {store?.time
               ? `, ${store.time
-                  .split("-")
+                  .split(" - ")
                   .map((time) => timeString24hToTimeString12h(time))
                   .join(" - ")}`
               : null}
           </Text>
-          <CreateReservationDialog
+          <WaiterReservationDialog
             date={store.date}
             time={store.time}
             table={store.table}
@@ -61,13 +61,13 @@ export const WaiterReservation = () => {
               <PlusIcon />
               <span>Create New Reservation</span>
             </Button>
-          </CreateReservationDialog>
+          </WaiterReservationDialog>
         </div>
         <div className="grow content-center">
           {reservationsLoading ? (
             <Spinner />
           ) : reservations?.length > 0 ? (
-            <div className="grid gap-[2rem] lg:grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">
+            <div className="grid gap-[2rem] lg:grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
               {reservations.map((reservation) => (
                 <ReservationCard
                   key={reservation.id}

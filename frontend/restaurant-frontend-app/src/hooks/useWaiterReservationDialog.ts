@@ -3,6 +3,7 @@ import {
   selectSelectOptions,
   selectSelectOptionsLoading,
 } from "@/app/slices/locationsSlice";
+import { selectReservationCreatingLoading } from "@/app/slices/reservationsSlice";
 import {
   selectUser,
   selectAllUsers,
@@ -10,16 +11,21 @@ import {
 } from "@/app/slices/userSlice";
 import { upsertWaiterReservation } from "@/app/thunks/reservationsThunks";
 import { UserType } from "@/types/user.types";
+import { LOCATION_TABLES } from "@/utils/constants";
+import { dateObjToDateStringServer } from "@/utils/dateTime";
 import { FormEvent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-export const useCreateReservationDialog = (props: Props) => {
+export const useWaiterReservationDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const selectOptions = useSelector(selectSelectOptions);
   const selectOptionsLoading = useSelector(selectSelectOptionsLoading);
+  const reservationCreatingLoading = useSelector(
+    selectReservationCreatingLoading,
+  );
   const waiter = useSelector(selectUser);
-  const [userType, setUserType] = useState(UserType.Visitor);
+  const [userType, setUserType] = useState(UserType.VISITOR);
   const allCustomers = useSelector(selectAllUsers);
   const allCustomersLoading = useSelector(selectAllUsersLoading);
   const [customerId, setCustomerId] = useState("");
@@ -29,7 +35,8 @@ export const useCreateReservationDialog = (props: Props) => {
   const [date, setDate] = useState(props.initDate);
   const [table, setTable] = useState(props.initTable);
   const selectedCustomer = allCustomers?.find((c) => c.id === customerId);
-  const customerName = `${selectedCustomer?.firstName} ${selectedCustomer?.lastName}`;
+  const customerName =
+    `${selectedCustomer?.firstName ?? ""} ${selectedCustomer?.lastName ?? ""}`.trim();
 
   useEffect(() => {
     setTable(props.initTable);
@@ -49,7 +56,7 @@ export const useCreateReservationDialog = (props: Props) => {
     if (!waiter?.locationId) {
       toast.error("The Waiter should have id of Location'");
     }
-    if (userType === UserType.Customer && !customerId) {
+    if (userType === UserType.CUSTOMER && !customerId) {
       toast.error("Select 'Customer'");
     }
     if (!time) {
@@ -63,18 +70,27 @@ export const useCreateReservationDialog = (props: Props) => {
       await dispatch(
         upsertWaiterReservation({
           clientType: userType,
-          date: date,
+          date: dateObjToDateStringServer(date),
           guestsNumber: String(guests),
           locationId: waiter?.locationId ?? "",
-          tableNumber: table,
+          tableNumber:
+            LOCATION_TABLES.find((t) => t.tableId === table)?.tableNumber ?? "",
           tableId: table,
-          timeFrom: time.split("-")[0],
-          timeTo: time.split("-")[1],
-          customerName: customerName,
+          timeFrom: time.split(" - ")[0],
+          timeTo: time.split(" - ")[1],
+          customerName: customerName ?? "",
+          customerId: selectedCustomer?.id ?? "",
         }),
-      );
-    } catch (e) {
-      console.log(e);
+      ).unwrap();
+      props.onSuccessCallback();
+      toast.success("New Reservation has been created successfully.");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Reservation creating failed:", error);
+        toast.error(
+          `Reservation creating failed: ${"message" in error ? error.message : ""}`,
+        );
+      }
     }
   };
 
@@ -98,10 +114,12 @@ export const useCreateReservationDialog = (props: Props) => {
     onSubmit,
     date,
     setDate,
+    reservationCreatingLoading,
   };
 };
 
 interface Props {
   initTable: string;
   initDate: string;
+  onSuccessCallback: () => void;
 }
