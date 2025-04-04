@@ -22,7 +22,7 @@ namespace Function.Services
         private readonly IReportFormatter _reportFormatter;
 
         private const string FromEmail = "wojomi5508@macho3.com";
-        private const string ToEmail = "xohefi1609@motivue.com";
+        private const string ToEmail = "kamaro5226@provko.com";
 
         public ReportSenderService(
             IReportRepository reportRepository,
