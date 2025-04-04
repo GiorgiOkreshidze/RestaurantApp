@@ -1,5 +1,12 @@
 import React from "react";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/Pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../ui/Pagination";
 
 interface PaginationProps {
   currentPage: number;
@@ -14,7 +21,7 @@ export const CustomPagination: React.FC<PaginationProps> = ({
 }) => {
   const getPaginationItems = () => {
     const pages: (number | string)[] = [];
-    const maxVisiblePages = 5; 
+    const maxVisiblePages = 5;
 
     if (totalPages <= maxVisiblePages) {
       for (let i = 1; i <= totalPages; i++) {
@@ -42,9 +49,9 @@ export const CustomPagination: React.FC<PaginationProps> = ({
       <PaginationItem key={index}>
         {typeof page === "number" ? (
           <PaginationLink
-            href="#"
             isActive={page === currentPage}
             onClick={() => onPageChange(page)}
+            className="cursor-pointer"
           >
             {page}
           </PaginationLink>

@@ -4,9 +4,20 @@ import { Button, Text } from "../ui";
 
 import { useSelector } from "react-redux";
 import { selectOneLocation } from "@/app/slices/locationsSlice";
+import { useNavigate } from "react-router";
+import { useAppDispatch } from "@/app/hooks";
+import { setLocationAction } from "@/app/slices/bookingFormSlice";
 
 export const LocationHero = () => {
   const oneLocation = useSelector(selectOneLocation);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const bookTable = () => {
+    dispatch(setLocationAction(oneLocation?.id));
+    navigate("/booking");
+  };
+
   return (
     <Container>
       <div className="flex gap-20 justify-between ">
@@ -35,7 +46,9 @@ export const LocationHero = () => {
             </Text>
           </div>
 
-          <Button className="!mt-auto">Book a Table</Button>
+          <Button className="!mt-auto" onClick={bookTable}>
+            Book a Table
+          </Button>
         </div>
         <div
           className="w-full h-[500px] rounded-3xl bg-cover bg-center"

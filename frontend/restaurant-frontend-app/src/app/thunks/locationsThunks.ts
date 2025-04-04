@@ -65,7 +65,7 @@ export const getFeedbacksOfLocation = createAsyncThunk<
     try {
       const response = await axiosApi.get(
         `${serverRoute.locations}/${params.id}/${serverRoute.feedbacks}`,
-        { params: { type: params.type, sort: params.sort, size: "4" } }
+        { params: { type: params.type, sort: params.sort, size: "100" } }
       );
       return response.data;
     } catch (e) {

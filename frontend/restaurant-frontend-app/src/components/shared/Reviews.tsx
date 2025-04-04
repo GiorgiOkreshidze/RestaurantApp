@@ -1,19 +1,11 @@
 import { Review, SortOptionType } from "@/types";
 import { useEffect, useMemo, useState } from "react";
-import { Pagination, Text } from "../ui";
+import { Text } from "../ui";
 import { Container } from "./Container";
 import { ReviewsCard } from "@/components/ui/ReviewsCard";
 import { useAppDispatch } from "@/app/hooks";
 import { getFeedbacksOfLocation } from "@/app/thunks/locationsThunks";
 import { SortingOptions } from "./SortingOptions";
-import {
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "../ui/Pagination";
 import { CustomPagination } from "./CustomPagination";
 import { useSelector } from "react-redux";
 import { selectFeedbacksLoading } from "@/app/slices/locationsSlice";
@@ -48,6 +40,37 @@ export const Reviews: React.FC<Props> = ({ feedbacks, id }) => {
     ],
     []
   );
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="block h-[324px] mx-auto">
+          <Loader />;
+        </div>
+      );
+    }
+
+    if (feedbacks.length === 0) {
+      return (
+        <div className="h-[324px] flex flex-col items-center justify-center">
+          <Text variant="h3" className="mb-2">
+            No feedbacks found
+          </Text>
+          <Text variant="bodyBold">
+            Try changing your filters or check back later.
+          </Text>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex gap-8">
+        {feedbacks.map((review) => (
+          <ReviewsCard key={review.id} review={review} />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div>
@@ -97,43 +120,13 @@ export const Reviews: React.FC<Props> = ({ feedbacks, id }) => {
           />
         </div>
 
-        <div className="flex gap-8">
-          {loading ? (
-            <div className="h-[324px] mx-auto">
-              <Loader />
-            </div>
-          ) : (
-            <>
-              {feedbacks.map((review) => (
-                <ReviewsCard key={review.id} review={review} />
-              ))}
-            </>
-          )}
-        </div>
+        {renderContent()}
 
-        {/* <CustomPagination totalPages={}/> */}
-
-        {/* <Pagination className="mt-6">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                2
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">3</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination> */}
+        <CustomPagination
+          currentPage={page}
+          totalPages={Math.round(feedbacks.length / 4)}
+          onPageChange={setPage}
+        />
       </Container>
     </div>
   );

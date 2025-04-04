@@ -19,7 +19,7 @@ export const OneDishDialog: React.FC<Props> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTitle></DialogTitle>
-      <DialogContent>
+      <DialogContent className="gap-0">
         {loading ? (
           <Loader />
         ) : (
@@ -29,14 +29,16 @@ export const OneDishDialog: React.FC<Props> = ({
               alt={dish?.name}
               className="w-[300px] h-[300px] block mx-auto"
             />
-            <Text variant="h3">{dish?.name}</Text>
-            <Text>{dish?.description}</Text>
-            <Text>
+            <Text variant="h3" className="my-6">
+              {dish?.name}
+            </Text>
+            <Text className="mb-3">{dish?.description}</Text>
+            <Text className="mb-3">
               <b>Calories: </b>
               {dish?.calories}
             </Text>
 
-            <div>
+            <div className="mb-3">
               <Text>
                 <b>Proteins: </b>
                 {dish?.proteins}
@@ -50,6 +52,10 @@ export const OneDishDialog: React.FC<Props> = ({
                 {dish?.carbohydrates}
               </Text>
             </div>
+
+            <Text className="mb-6">
+              <b>Vitamins and minerals:</b> {dish?.vitamins}
+            </Text>
 
             <div className="flex items-center justify-between">
               <Text variant="h3">{dish?.price}</Text>

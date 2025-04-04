@@ -63,13 +63,21 @@ function PaginationLink({
 
 function PaginationPrevious({
   className,
+  disabled,
+  onClick,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) {
+}: React.ComponentProps<typeof PaginationLink> & { disabled?: boolean }) {
   return (
     <PaginationLink
       aria-label="Go to previous page"
       size="l"
-      className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
+      className={cn(
+        "cursor-pointer gap-1 px-2.5 sm:pl-2.5",
+        disabled ? "opacity-50 pointer-events-none" : "",
+        className
+      )}
+      href={disabled ? "#" : props.href}
+      onClick={disabled ? undefined : onClick}
       {...props}
     >
       <span className="hidden sm:block">&lt;&lt;</span>
@@ -79,13 +87,21 @@ function PaginationPrevious({
 
 function PaginationNext({
   className,
+  disabled,
+  onClick,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) {
+}: React.ComponentProps<typeof PaginationLink> & { disabled?: boolean }) {
   return (
     <PaginationLink
-      aria-label="Go to next page"
+      aria-label="Go to previous page"
       size="l"
-      className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
+      className={cn(
+        "cursor-pointer gap-1 px-2.5 sm:pl-2.5",
+        disabled ? "opacity-50 pointer-events-none" : "",
+        className
+      )}
+      href={disabled ? "#" : props.href}
+      onClick={disabled ? undefined : onClick}
       {...props}
     >
       <span className="hidden sm:block">&gt;&gt;</span>
