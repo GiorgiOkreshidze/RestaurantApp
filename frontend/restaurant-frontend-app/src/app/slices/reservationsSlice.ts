@@ -115,6 +115,8 @@ export const reservationsSlice = createSlice({
       state.reservationCreatingLoading,
     selectReservationDeletingLoading: (state) =>
       state.reservationDeletingLoading,
+    selectGiveReservationFeedbackLoading: (state) =>
+      state.giveReservationFeedbackLoading,
   },
 });
 
@@ -124,4 +126,5 @@ export const {
   selectReservationsLoading,
   selectReservationCreatingLoading,
   selectReservationDeletingLoading,
+  selectGiveReservationFeedbackLoading,
 } = reservationsSlice.selectors;
