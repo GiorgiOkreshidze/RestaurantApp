@@ -51,7 +51,7 @@
           "tableNumber": { "S": "1" },
           "capacity": { "N": "2" },
           "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
-          "locationAddress": { "S": "14 Baratashvili Street" }
+          "locationAddress": { "S": "9 Abashidze Street" }
         }
       }
     },
@@ -62,7 +62,7 @@
           "tableNumber": { "S": "2" },
           "capacity": { "N": "4" },
           "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
-          "locationAddress": { "S": "14 Baratashvili Street" }
+          "locationAddress": { "S": "9 Abashidze Street" }
         }
       }
     },
@@ -73,7 +73,7 @@
           "tableNumber": { "S": "3" },
           "capacity": { "N": "6" },
           "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
-          "locationAddress": { "S": "14 Baratashvili Street" }
+          "locationAddress": { "S": "9 Abashidze Street" }
         }
       }
     },
@@ -84,7 +84,7 @@
           "tableNumber": { "S": "4" },
           "capacity": { "N": "10" },
           "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
-          "locationAddress": { "S": "14 Baratashvili Street" }
+          "locationAddress": { "S": "9 Abashidze Street" }
         }
       }
     },
@@ -95,7 +95,7 @@
           "tableNumber": { "S": "1" },
           "capacity": { "N": "6" },
           "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
-          "locationAddress": { "S": "9 Abashidze Street" }
+          "locationAddress": { "S": "14 Baratashvili Street" }
         }
       }
     },
@@ -106,7 +106,7 @@
           "tableNumber": { "S": "2" },
           "capacity": { "N": "4" },
           "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
-          "locationAddress": { "S": "9 Abashidze Street" }
+          "locationAddress": { "S": "14 Baratashvili Street" }
         }
       }
     },
@@ -117,7 +117,7 @@
           "tableNumber": { "S": "3" },
           "capacity": { "N": "10" },
           "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
-          "locationAddress": { "S": "9 Abashidze Street" }
+          "locationAddress": { "S": "14 Baratashvili Street" }
         }
       }
     },
@@ -128,7 +128,7 @@
           "tableNumber": { "S": "4" },
           "capacity": { "N": "10" },
           "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
-          "locationAddress": { "S": "9 Abashidze Street" }
+          "locationAddress": { "S": "14 Baratashvili Street" }
         }
       }
     }

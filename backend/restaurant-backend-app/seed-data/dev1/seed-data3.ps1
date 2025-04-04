@@ -8,7 +8,7 @@ $tempFile = "seed-data-processed.json"
 # Get the suffix from syndicate.yml
 $resourcesSuffix = (Get-Content $syndicateFile | Where-Object { $_ -match "resources_suffix:" }) -replace "resources_suffix:\s*", ""
 if (-not $resourcesSuffix) {
-    $resourcesSuffix = "-dev1"
+    $resourcesSuffix = "-dev5"
     Write-Host "No suffix found in syndicate.yml, defaulting to $resourcesSuffix"
 }
 
