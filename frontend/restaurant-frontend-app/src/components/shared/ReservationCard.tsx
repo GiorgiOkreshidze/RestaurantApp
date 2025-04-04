@@ -15,9 +15,13 @@ import {
   dateStringServerToDateObject,
   timeString24hToTimeString12h,
 } from "@/utils/dateTime";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/app/slices/userSlice";
+import { USER_ROLE } from "@/utils/constants";
 
 export const ReservationCard = (props: { reservation: Reservation }) => {
   const dispatch = useAppDispatch();
+  const user = useSelector(selectUser);
   const { reservation } = props;
 
   return (
@@ -82,31 +86,18 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
         >
           Cancel
         </Button>
-        <ClientReservationDialog
-          key={reservation.id}
-          reservationId={reservation.id}
-          locationId={reservation.locationId}
-          locationAddress={reservation.locationAddress}
-          tableId={reservation.tableId}
-          tableNumber={reservation.tableNumber}
-          date={dateStringServerToDateObject(reservation.date)}
-          initTime={reservation.timeSlot}
-          initGuests={Number.parseInt(reservation.guestsNumber)}
-          maxGuests={Number.parseInt(reservation.guestsNumber)}
+        <Button
+          variant="secondary"
+          size="l"
+          disabled={
+            reservation.status === "Cancelled" ||
+            isPast(
+              parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
+            )
+          }
         >
-          <Button
-            variant="secondary"
-            size="l"
-            disabled={
-              reservation.status === "Cancelled" ||
-              isPast(
-                parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
-              )
-            }
-          >
-            Edit
-          </Button>
-        </ClientReservationDialog>
+          {user?.role === USER_ROLE.CUSTOMER ? "Edit" : "Postpone"}
+        </Button>
       </footer>
     </Card>
   );
