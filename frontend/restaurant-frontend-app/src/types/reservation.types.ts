@@ -50,3 +50,11 @@ export interface GetReservationRequestParams {
   timeFrom?: string /* HH:MM (24H) */;
   tableNumber?: string;
 }
+
+export interface GiveReservationFeedback {
+  cuisineComment: string;
+  cuisineRating: string;
+  reservationId: string;
+  serviceComment: string;
+  serviceRating: string;
+}

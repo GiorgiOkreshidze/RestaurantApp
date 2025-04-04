@@ -47,6 +47,7 @@ export const AvailableTimeSlotsDialog = ({
         <div className="grid grid-cols-2 gap-[0.5rem] mt-[1rem]">
           {availableSlots.map((timeSlot) => (
             <ClientReservationDialog
+              reservationId={null}
               key={timeSlot.id}
               locationAddress={table.locationAddress}
               date={table.date}

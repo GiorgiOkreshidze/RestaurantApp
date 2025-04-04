@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   deleteClientReservation,
   getReservations,
+  giveReservationFeedback,
   upsertClientReservation,
   upsertWaiterReservation,
 } from "../thunks/reservationsThunks";
@@ -14,6 +15,7 @@ interface reservationsState {
   reservation: Reservation | null;
   reservationCreatingLoading: boolean;
   reservationDeletingLoading: boolean;
+  giveReservationFeedbackLoading: boolean;
 }
 
 const initialState: reservationsState = {
@@ -22,6 +24,7 @@ const initialState: reservationsState = {
   reservation: null,
   reservationCreatingLoading: false,
   reservationDeletingLoading: false,
+  giveReservationFeedbackLoading: false,
 };
 
 export const reservationsSlice = createSlice({
@@ -86,6 +89,21 @@ export const reservationsSlice = createSlice({
         upsertWaiterReservation.rejected,
         (state, { payload: errorResponse }) => {
           state.reservationCreatingLoading = false;
+          toast.error(errorResponse?.message);
+        },
+      );
+
+    builder
+      .addCase(giveReservationFeedback.pending, (state) => {
+        state.giveReservationFeedbackLoading = true;
+      })
+      .addCase(giveReservationFeedback.fulfilled, (state) => {
+        state.giveReservationFeedbackLoading = false;
+      })
+      .addCase(
+        giveReservationFeedback.rejected,
+        (state, { payload: errorResponse }) => {
+          state.giveReservationFeedbackLoading = false;
           toast.error(errorResponse?.message);
         },
       );

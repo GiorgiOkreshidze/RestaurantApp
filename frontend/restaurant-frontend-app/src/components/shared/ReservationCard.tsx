@@ -1,8 +1,6 @@
 import { Card } from "./Card";
 import { Badge, Button, Text } from "../ui";
 import { CalendarIcon, ClockIcon, LocationIcon, PeopleIcon } from "../icons";
-
-import { ClientReservationDialog } from "./ClientReservationDialog";
 import { Reservation } from "@/types/reservation.types";
 import { useAppDispatch } from "@/app/hooks";
 import {
@@ -12,12 +10,12 @@ import {
 import { isPast, parse } from "date-fns";
 import {
   dateObjToDateStringUI,
-  dateStringServerToDateObject,
   timeString24hToTimeString12h,
 } from "@/utils/dateTime";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
 import { USER_ROLE } from "@/utils/constants";
+import { ReservationFeedbackDialog } from ".";
 
 export const ReservationCard = (props: { reservation: Reservation }) => {
   const dispatch = useAppDispatch();
@@ -86,18 +84,27 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
         >
           Cancel
         </Button>
-        <Button
-          variant="secondary"
-          size="l"
-          disabled={
-            reservation.status === "Cancelled" ||
-            isPast(
-              parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
-            )
-          }
-        >
-          {user?.role === USER_ROLE.CUSTOMER ? "Edit" : "Postpone"}
-        </Button>
+        {reservation.status === "In Progress" &&
+        user?.role === USER_ROLE.CUSTOMER ? (
+          <ReservationFeedbackDialog reservationId={reservation.id}>
+            <Button variant="secondary" size="l">
+              Leave Feadback
+            </Button>
+          </ReservationFeedbackDialog>
+        ) : (
+          <Button
+            variant="secondary"
+            size="l"
+            disabled={
+              reservation.status === "Cancelled" ||
+              isPast(
+                parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
+              )
+            }
+          >
+            {user?.role === USER_ROLE.CUSTOMER ? "Edit" : "Postpone"}
+          </Button>
+        )}
       </footer>
     </Card>
   );

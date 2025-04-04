@@ -36,3 +36,6 @@ export { WaiterReservationDialog } from "./WaiterReservationDialog";
 export { LocationPicker } from "./LocationPicker";
 export { UserPicker } from "./UserPicker";
 export { CustomerPicker } from "./CustomerPicker";
+export { ReservationFeedbackDialog } from "./ReservationFeedbackDialog";
+export { StarRating } from "./StarRating";
+export { Textarea } from "./Textarea";
