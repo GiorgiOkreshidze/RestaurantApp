@@ -30,6 +30,9 @@ public class Reservation
 
     [JsonPropertyName("tableId")]
     public required string TableId { get; set; }
+    
+    [JsonPropertyName("tableCapacity")]
+    public required string TableCapacity { get; set; }
 
     [JsonPropertyName("tableNumber")]
     public required string TableNumber { get; set; }
