@@ -28,7 +28,7 @@ namespace Function.Actions.Reservations
 
             if (role != Roles.Waiter)
             {
-                ActionUtils.FormatResponse(403, new { message = "Unauthorized: You don't have permission to access this resource." });
+                throw new UnauthorizedException("You don't have permission to access this resource.");
             }
 
             string reservationId;
@@ -42,9 +42,9 @@ namespace Function.Actions.Reservations
                 throw new ArgumentException("Reservation id is required.");
             }
 
-            var complete = await _reservationService.CompleteReservationAsync(reservationId);
+            await _reservationService.CompleteReservationAsync(reservationId);
 
-            return ActionUtils.FormatResponse(200, complete);
+            return ActionUtils.FormatResponse(200, new { message = "Reservation was completed successfully" });
         }
     }
 }

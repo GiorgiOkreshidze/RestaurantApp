@@ -31,6 +31,9 @@ public class ReservationResponse
     [JsonPropertyName("tableNumber")]
     public required string TableNumber { get; set; }
     
+    [JsonPropertyName("tableCapacity")]
+    public required string TableCapacity { get; set; }
+    
     [JsonPropertyName("timeFrom")]
     public required string TimeFrom { get; set; }
     

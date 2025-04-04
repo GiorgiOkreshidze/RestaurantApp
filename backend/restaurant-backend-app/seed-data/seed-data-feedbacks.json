@@ -9,7 +9,7 @@
           "userName": { "S": "Salome Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar1.jpg" },
           "date": { "S": "2025-04-24T12:00:00Z" },
-          "type": { "S": "SERVICE-QUALITY" },
+          "type": { "S": "SERVICE_QUALITY" },
           "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "reservationId": { "S":  "1a7b9370-3d4e-42b9-a283-12f4a545bf88"},
           "type#date": { "S": "SERVICE_QUALITY#2025-04-22T12:00:00Z" },
@@ -27,7 +27,7 @@
           "userName": { "S": "Roman Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar2.jpg" },
           "date": { "S": "2025-04-23T14:30:00Z" },
-          "type": { "S": "SERVICE-QUALITY" },
+          "type": { "S": "SERVICE_QUALITY" },
           "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "reservationId": { "S":  "bded1291-4f92-4e16-91fc-3a79a1d6725e"},
           "type#date": { "S": "SERVICE_QUALITY#2025-04-23T14:30:00Z" },
@@ -45,7 +45,7 @@
           "userName": { "S": "Dora Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar3.jpg" },
           "date": { "S": "2025-02-02T10:15:00Z" },
-          "type": { "S": "CUISINE-EXPERIENCE" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
           "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "reservationId": { "S":  "2a18dd45-e609-4bd4-8219-42392a9168bd"},
           "type#date": { "S": "SERVICE_QUALITY#2025-02-02T10:15:00Z" },
@@ -63,7 +63,7 @@
           "userName": { "S": "Temirlan Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar4.jpg" },
           "date": { "S": "2025-02-04T13:30:00Z" },
-          "type": { "S": "CUISINE-EXPERIENCE" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
           "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "reservationId": { "S":  "adeddaef-c271-4915-bf70-48dd95735dc5"},
           "type#date": { "S": "SERVICE_QUALITY#2025-02-04T13:30:00Z" },
@@ -81,12 +81,12 @@
           "userName": { "S": "Temirlan Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar1.jpg" },
           "date": { "S": "2025-04-10T19:45:00Z" },
-          "type": { "S": "CUISINE-EXPERIENCE" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
           "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
           "reservationId": { "S": "a1b2c3d4-e5f6-4g7h-8i9j-0k1l2m3n4o5p" },
-          "type#date": { "S": "CUISINE-EXPERIENCE#2025-04-10T19:45:00Z" },
-          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#CUISINE-EXPERIENCE" },
-          "reservationId#type": { "S": "a1b2c3d4-e5f6-4g7h-8i9j-0k1l2m3n4o5p#CUISINE-EXPERIENCE" }
+          "type#date": { "S": "CUISINE_EXPERIENCE#2025-04-10T19:45:00Z" },
+          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#CUISINE_EXPERIENCE" },
+          "reservationId#type": { "S": "a1b2c3d4-e5f6-4g7h-8i9j-0k1l2m3n4o5p#CUISINE_EXPERIENCE" }
         }
       }
     },
@@ -135,12 +135,12 @@
           "userName": { "S": "Giorgi B Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar4.jpg" },
           "date": { "S": "2025-04-25T19:15:00Z" },
-          "type": { "S": "CUISINE-EXPERIENCE" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
           "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
           "reservationId": { "S": "d4e5f6g7-h8i9-4j0k-1l2m-3n4o5p6q7r8" },
-          "type#date": { "S": "CUISINE-EXPERIENCE#2025-04-25T19:15:00Z" },
-          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#CUISINE-EXPERIENCE" },
-          "reservationId#type": { "S": "d4e5f6g7-h8i9-4j0k-1l2m-3n4o5p6q7r8#CUISINE-EXPERIENCE" }
+          "type#date": { "S": "CUISINE_EXPERIENCE#2025-04-25T19:15:00Z" },
+          "locationId#type": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7#CUISINE_EXPERIENCE" },
+          "reservationId#type": { "S": "d4e5f6g7-h8i9-4j0k-1l2m-3n4o5p6q7r8#CUISINE_EXPERIENCE" }
         }
       }
     },
@@ -153,12 +153,12 @@
           "userName": { "S": "Salome Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar5.jpg" },
           "date": { "S": "2025-04-12T14:15:00Z" },
-          "type": { "S": "CUISINE-EXPERIENCE" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
           "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
           "reservationId": { "S": "e5f6g7h8-i9j0-4k1l-2m3n-4o5p6q7r8s9" },
-          "type#date": { "S": "CUISINE-EXPERIENCE#2025-04-12T14:15:00Z" },
-          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#CUISINE-EXPERIENCE" },
-          "reservationId#type": { "S": "e5f6g7h8-i9j0-4k1l-2m3n-4o5p6q7r8s9#CUISINE-EXPERIENCE" }
+          "type#date": { "S": "CUISINE_EXPERIENCE#2025-04-12T14:15:00Z" },
+          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#CUISINE_EXPERIENCE" },
+          "reservationId#type": { "S": "e5f6g7h8-i9j0-4k1l-2m3n-4o5p6q7r8s9#CUISINE_EXPERIENCE" }
         }
       }
     },
@@ -171,12 +171,12 @@
           "userName": { "S": "Irina Doe" },
           "userAvatarUrl": { "S": "https://example.com/avatar6.jpg" },
           "date": { "S": "2025-04-18T16:45:00Z" },
-          "type": { "S": "CUISINE-EXPERIENCE" },
+          "type": { "S": "CUISINE_EXPERIENCE" },
           "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
           "reservationId": { "S": "f6g7h8i9-j0k1-4l2m-3n4o-5p6q7r8s9t0" },
-          "type#date": { "S": "CUISINE-EXPERIENCE#2025-04-18T16:45:00Z" },
-          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#CUISINE-EXPERIENCE" },
-          "reservationId#type": { "S": "f6g7h8i9-j0k1-4l2m-3n4o-5p6q7r8s9t0#CUISINE-EXPERIENCE" }
+          "type#date": { "S": "CUISINE_EXPERIENCE#2025-04-18T16:45:00Z" },
+          "locationId#type": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f#CUISINE_EXPERIENCE" },
+          "reservationId#type": { "S": "f6g7h8i9-j0k1-4l2m-3n4o-5p6q7r8s9t0#CUISINE_EXPERIENCE" }
         }
       }
     },

@@ -57,6 +57,7 @@ public class ReservationService : IReservationService
             LocationAddress = location.Address,
             LocationId = location.Id,
             PreOrder = "NOT IMPLEMENTED YET",
+            TableCapacity = table.Capacity,
             Status = ReservationStatus.Reserved.ToString(),
             TableId = reservationRequest.TableId,
             TableNumber = table.TableNumber,

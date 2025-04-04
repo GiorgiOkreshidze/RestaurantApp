@@ -42,7 +42,7 @@ public class ReservationRepository : IReservationRepository
                                "#locationAddress = :locationAddress, #locationId = :locationId, #preOrder = :preOrder, #status = :status, " +
                                "#tableNumber = :tableNumber, #tableId = :tableId, #timeFrom = :timeFrom, #timeTo = :timeTo, " +
                                "#timeSlot = :timeSlot, #userInfo = :userInfo, #userEmail = :userEmail, #waiterId = :waiterId," +
-                               "#clientType = :clientType",
+                               "#clientType = :clientType, #tableCapacity = :tableCapacity",
             ExpressionAttributeNames = new Dictionary<string, string>
             {
                 { "#createdAt", "createdAt" },
@@ -61,6 +61,7 @@ public class ReservationRepository : IReservationRepository
                 { "#waiterId", "waiterId" },
                 { "#userEmail", "userEmail" },
                 { "#clientType", "clientType"},
+                { "#tableCapacity", "tableCapacity" }
             },
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
@@ -80,6 +81,7 @@ public class ReservationRepository : IReservationRepository
                 { ":waiterId", new AttributeValue { S = reservation.WaiterId } },
                 { ":userEmail", new AttributeValue  { S = reservation.UserEmail } },
                 { ":clientType", new AttributeValue  { S = reservation.ClientType.ToString() } },
+                { ":tableCapacity", new AttributeValue  { S = reservation.TableCapacity } }
             }
         };
 

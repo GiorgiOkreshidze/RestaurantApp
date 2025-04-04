@@ -34,7 +34,7 @@
           "description": { "S": "A cozy retreat in the mountains, perfect for remote work." },
           "totalCapacity": { "S": "4" },
           "averageOccupancy": { "S": "99" },
-          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/compresed/ruben-ramirez-xhKG01FN2uk-unsplash+1+(1).jpg" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/compresed/ruben-ramirez-uk-unsplash.jpg" },
           "rating": { "S": "4.7" }
         }
       }
