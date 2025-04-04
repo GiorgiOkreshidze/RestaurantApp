@@ -10,12 +10,14 @@ import {
 import { isPast, parse } from "date-fns";
 import {
   dateObjToDateStringUI,
+  dateStringServerToDateObject,
   timeString24hToTimeString12h,
 } from "@/utils/dateTime";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
 import { USER_ROLE } from "@/utils/constants";
-import { ReservationFeedbackDialog } from ".";
+import { ReservationDialog, ReservationFeedbackDialog } from ".";
+import { ClientReservationDialog } from "./ClientReservationDialog";
 
 export const ReservationCard = (props: { reservation: Reservation }) => {
   const dispatch = useAppDispatch();
@@ -92,18 +94,35 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
             </Button>
           </ReservationFeedbackDialog>
         ) : (
-          <Button
-            variant="secondary"
-            size="l"
-            disabled={
-              reservation.status === "Cancelled" ||
-              isPast(
-                parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
-              )
-            }
+          <ClientReservationDialog
+            key={reservation.id}
+            reservationId={reservation.id}
+            locationId={reservation.locationId}
+            locationAddress={reservation.locationAddress}
+            tableId={reservation.tableId}
+            tableNumber={reservation.tableNumber}
+            date={dateStringServerToDateObject(reservation.date)}
+            initTime={reservation.timeSlot}
+            initGuests={Number.parseInt(reservation.guestsNumber)}
+            maxGuests={Number.parseInt(reservation.guestsNumber)}
           >
-            {user?.role === USER_ROLE.CUSTOMER ? "Edit" : "Postpone"}
-          </Button>
+            <Button
+              variant="secondary"
+              size="l"
+              disabled={
+                reservation.status === "Cancelled" ||
+                isPast(
+                  parse(
+                    reservation.editableTill,
+                    "yyyy-MM-dd HH:mm",
+                    new Date(),
+                  ),
+                )
+              }
+            >
+              {user?.role === USER_ROLE.CUSTOMER ? "Edit" : "Postpone"}
+            </Button>
+          </ClientReservationDialog>
         )}
       </footer>
     </Card>
