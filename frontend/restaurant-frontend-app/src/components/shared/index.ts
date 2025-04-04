@@ -30,6 +30,7 @@ export { Tooltip } from "./Tooltip";
 export { TimeSlotPicker } from "./TimeSlotPicker";
 export { ClientReservationDialog as ReservationDialog } from "./ClientReservationDialog";
 export { ReservationConfirmDialog } from "./ReservationConfirmDialog";
+export { CustomPagination } from "./CustomPagination";
 export { WaiterReservationsForm } from "./WaiterReservationsForm";
 export { TablePicker } from "./TablePicker";
 export { WaiterReservationDialog } from "./WaiterReservationDialog";

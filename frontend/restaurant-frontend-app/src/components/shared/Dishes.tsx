@@ -1,6 +1,12 @@
 import { DishCard, Text } from "../ui";
 import type { Dish } from "@/types";
 import { PageBodyHeader, PageBodySection } from "./PageBody";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectOneDish, selectOneDishLoading } from "@/app/slices/dishesSlice";
+import { useAppDispatch } from "@/app/hooks";
+import { OneDishDialog } from "./OneDishDialog";
+import { getOneDish } from "@/app/thunks/dishesThunks";
 
 interface Props {
   isLoading?: boolean;
@@ -9,6 +15,20 @@ interface Props {
 }
 
 export const Dishes: React.FC<Props> = ({ dishes, title }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const oneDish = useSelector(selectOneDish);
+  const oneDishLoading = useSelector(selectOneDishLoading);
+  const dispatch = useAppDispatch();
+
+  const fetchOneDish = async (id: string) => {
+    setIsOpen(true);
+    await dispatch(getOneDish(id));
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
+
   return (
     <PageBodySection>
       <PageBodyHeader>
@@ -22,9 +42,16 @@ export const Dishes: React.FC<Props> = ({ dishes, title }) => {
             price={item.price}
             weight={item.weight}
             imageUrl={item.imageUrl}
+            onClick={() => fetchOneDish(item.id)}
           />
         ))}
       </div>
+      <OneDishDialog
+        dish={oneDish}
+        isOpen={isOpen}
+        onOpenChange={handleOpenChange}
+        loading={oneDishLoading}
+      />
     </PageBodySection>
   );
 };

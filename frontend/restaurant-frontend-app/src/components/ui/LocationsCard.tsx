@@ -1,10 +1,7 @@
 import React from "react";
 import { Text } from "./Text";
 import { LocationIcon } from "../icons";
-import locationImg from "../../assets/images/location.jpg";
 import { useNavigate } from "react-router";
-import { useAppDispatch } from "@/app/hooks";
-import { setOneLocation } from "@/app/slices/locationsSlice";
 import { Location } from "@/types/location.types";
 
 interface Props {
@@ -13,10 +10,8 @@ interface Props {
 
 export const LocationsCard: React.FC<Props> = ({ location }) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   const onClick = () => {
-    dispatch(setOneLocation(location));
     navigate(`/locations/${location.id}`);
     window.scrollTo(0, 0);
   };
@@ -28,7 +23,7 @@ export const LocationsCard: React.FC<Props> = ({ location }) => {
     >
       <div
         className="w-full h-[140px] bg-cover bg-center rounded-t-2xl"
-        style={{ backgroundImage: `url(${locationImg})` }}
+        style={{ backgroundImage: `url(${location.imageUrl})` }}
         aria-label={`Location card for ${location.imageUrl}`}
       ></div>
       <div className="p-6">

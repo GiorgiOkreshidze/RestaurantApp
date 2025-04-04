@@ -52,5 +52,6 @@ export {
   TooltipProvider,
 } from "./TooltipPrimitives";
 export { Spinner } from "./Spinner.tsx";
+export { Pagination } from "./Pagination";
 export { RadioGroup, RadioGroupItem } from "./RadioGroup";
 export { Tabs, TabsList, TabsTrigger, TabsContent } from "./Tabs";
