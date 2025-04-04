@@ -26,7 +26,7 @@ public class LocationFeedbackFactory : ILocationFeedbackFactory
                 UserName = user.GetFullName(),
                 UserAvatarUrl = user.ImageUrl,
                 Date = currentDate,
-                Type = "CUISINE-EXPERIENCE",
+                Type = "CUISINE_EXPERIENCE",
                 LocationId = reservation.LocationId,
                 ReservationId = reservation.Id
             });
@@ -42,7 +42,7 @@ public class LocationFeedbackFactory : ILocationFeedbackFactory
                 UserName = user.GetFullName(),
                 UserAvatarUrl = user.ImageUrl,
                 Date = currentDate,
-                Type = "SERVICE-QUALITY",
+                Type = "SERVICE_QUALITY",
                 LocationId = reservation.LocationId,
                 ReservationId = reservation.Id
             });
