@@ -91,12 +91,20 @@ type SortOptionType = {
   label: string;
 };
 
+export interface FeedbacksResponse {
+  content: Review[];
+}
+
 export interface Review {
-  name: string;
+  id: string;
+  userName: string;
+  userAvatarUrl: string;
   date: string;
-  rating: number;
-  review: string;
-  image: string;
+  rate: number;
+  comment: string;
+  date: string;
+  type: string;
+  locationId: string;
 }
 
 export interface RichTimeSlot {

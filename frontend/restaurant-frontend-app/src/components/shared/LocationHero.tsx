@@ -2,7 +2,6 @@ import { Container, BrandTitle } from ".";
 import { LocationIcon, StarIcon } from "../icons";
 import { Button, Text } from "../ui";
 
-import LocationImage from "../../assets/images/location.jpg";
 import { useSelector } from "react-redux";
 import { selectOneLocation } from "@/app/slices/locationsSlice";
 
@@ -40,7 +39,7 @@ export const LocationHero = () => {
         </div>
         <div
           className="w-full h-[500px] rounded-3xl bg-cover bg-center"
-          style={{ backgroundImage: `url(${LocationImage})` }}
+          style={{ backgroundImage: `url(${oneLocation?.imageUrl})` }}
         ></div>
       </div>
     </Container>
