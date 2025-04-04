@@ -32,9 +32,11 @@ export const Booking = () => {
           <Spinner />
         ) : (
           <ul className="grid gap-[2rem] lg:grid-cols-2">
-            {tables?.map((table) => (
-              <TableCard key={table.tableId} table={table} />
-            ))}
+            {tables
+              ?.filter((table) => table.availableSlots.length > 0)
+              .map((table) => (
+                <TableCard key={table.tableId} table={table} />
+              ))}
           </ul>
         )}
       </PageBody>

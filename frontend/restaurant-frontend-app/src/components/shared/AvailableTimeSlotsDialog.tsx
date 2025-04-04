@@ -9,11 +9,12 @@ import {
 import { ReactElement } from "react";
 import { timeString24hToTimeString12h } from "@/utils/dateTime";
 import { format } from "date-fns";
-import { ReservationDialog } from "./ReservationDialog";
+import { ClientReservationDialog } from "./ClientReservationDialog";
 import { TimeSlot } from "./TimeSlot";
 import { TableUI } from "@/types/tables.types";
-import { useBookingFormStore } from "@/app/useBookingFormStore";
 import { RichTimeSlot } from "@/types";
+import { useSelector } from "react-redux";
+import { selectBookingFormState } from "@/app/slices/bookingFormSlice";
 
 export const AvailableTimeSlotsDialog = ({
   children,
@@ -26,7 +27,7 @@ export const AvailableTimeSlotsDialog = ({
   table: TableUI;
   availableSlots: RichTimeSlot[];
 }) => {
-  const bookingForm = useBookingFormStore();
+  const bookingForm = useSelector(selectBookingFormState);
   return (
     <Dialog>
       <DialogTrigger className={className} asChild>
@@ -45,7 +46,8 @@ export const AvailableTimeSlotsDialog = ({
         </DialogHeader>
         <div className="grid grid-cols-2 gap-[0.5rem] mt-[1rem]">
           {availableSlots.map((timeSlot) => (
-            <ReservationDialog
+            <ClientReservationDialog
+              reservationId={null}
               key={timeSlot.id}
               locationAddress={table.locationAddress}
               date={table.date}
@@ -60,7 +62,7 @@ export const AvailableTimeSlotsDialog = ({
                 {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
                 {timeString24hToTimeString12h(timeSlot.endString)}
               </TimeSlot>
-            </ReservationDialog>
+            </ClientReservationDialog>
           ))}
         </div>
       </DialogContent>

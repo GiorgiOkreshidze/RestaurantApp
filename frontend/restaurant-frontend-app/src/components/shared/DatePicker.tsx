@@ -2,25 +2,33 @@ import { Button } from "@/components/ui/";
 import { Calendar } from "@/components/ui/";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/";
 import { CalendarIcon, ChevronDownIcon } from "../icons";
-import { format } from "date-fns";
 import { useState, type PropsWithChildren } from "react";
+import { dateObjToDateStringUI } from "@/utils/dateTime";
+import { cn } from "@/lib/utils";
 
 export function DatePicker({
   value,
   setValue,
+  className,
   ...props
 }: PropsWithChildren & {
   value: string;
   setValue: (date: string) => void;
+  className?: string;
 }) {
   const [isOpened, setIsOpened] = useState(false);
   return (
     <Popover open={isOpened} onOpenChange={setIsOpened}>
       <PopoverTrigger asChild>
-        <Button variant="trigger" size="trigger" className="w-full" {...props}>
-          <CalendarIcon className="size-[1.5rem] w-full" />
+        <Button
+          variant="trigger"
+          size="trigger"
+          className={cn("w-full", className)}
+          {...props}
+        >
+          <CalendarIcon className="size-[1.5rem]" />
           <span className="whitespace-nowrap">
-            {format(value, "PP") || "Pick a date"}
+            {value ? dateObjToDateStringUI(value) : "Pick a date"}
           </span>
           <ChevronDownIcon />
         </Button>
@@ -29,12 +37,16 @@ export function DatePicker({
         <Calendar
           mode="single"
           selected={new Date(value)}
-          onSelect={(date) =>
-            setValue(date ? date.toString() : value.toString())
-          }
+          onSelect={(date) => {
+            if (!date) {
+              setValue("");
+            } else {
+              setValue(date.toString());
+            }
+            setIsOpened(false);
+          }}
           initialFocus
           disabled={{ before: new Date() }}
-          onDayClick={() => setIsOpened(false)}
         />
       </PopoverContent>
     </Popover>

@@ -14,6 +14,10 @@ using SimpleLambdaFunction.Repository;
 using Function.Actions;
 using Amazon.CognitoIdentityProvider.Model;
 using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
+using Amazon.SQS.Model;
+using Amazon.SQS;
+using System.Text.Json;
+using Function.Models.Responses;
 using Function.Models.Requests.Base;
 
 namespace Function.Services;
@@ -25,6 +29,9 @@ public class ReservationService : IReservationService
     private readonly ILocationRepository _locationRepository;
     private readonly ITableRepository _tableRepository;
     private readonly IWaiterRepository _waiterRepository;
+    private readonly AmazonSQSClient _amazonSqsClient;
+
+    private readonly string? _sqsQueueName = Environment.GetEnvironmentVariable("SQS_EVENTS_QUEUE_NAME");
 
     public ReservationService()
     {
@@ -33,27 +40,18 @@ public class ReservationService : IReservationService
         _locationRepository = new LocationRepository();
         _tableRepository = new TableRepository();
         _waiterRepository = new WaiterRepository();
+        _amazonSqsClient = new AmazonSQSClient();
     }
 
     public async Task<Reservation> UpsertReservationAsync(BaseReservationRequest reservationRequest, string userId)
     {
-        var user = await ValidateUser(userId);
         ValidateTimeSlot(reservationRequest);
-      
         var location = await _locationRepository.GetLocationByIdAsync(reservationRequest.LocationId);
         var table = await GetAndValidateTable(reservationRequest.TableId, reservationRequest.GuestsNumber);
-        await CheckForConflictingReservations(reservationRequest, location.Address, user.Email);
-        
-        var reservationId = Guid.NewGuid().ToString();
-
-        if (reservationRequest.Id != null)
-        {
-            reservationId = reservationRequest.Id;
-        }
 
         var reservation = new Reservation
         {
-            Id = reservationId,
+            Id = reservationRequest.Id ?? Guid.NewGuid().ToString(),
             Date = reservationRequest.Date,
             GuestsNumber = reservationRequest.GuestsNumber,
             LocationAddress = location.Address,
@@ -65,34 +63,15 @@ public class ReservationService : IReservationService
             TimeFrom = reservationRequest.TimeFrom,
             TimeTo = reservationRequest.TimeTo,
             TimeSlot = reservationRequest.TimeFrom + " - " + reservationRequest.TimeTo,
-            UserEmail = user.Email,
             CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
         };
-        
-        switch (reservationRequest)
-        {
-            case WaiterReservationRequest waiterRequest:
-                 HandleWaiterReservation(waiterRequest, reservation, user);
-                 break;
-            case ClientReservationRequest:
-                HandleClientReservation(reservation, user);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported ReservationRequest type");
-        }
 
-        var reservationExists = await _reservationRepository.ReservationExistsAsync(reservation.Id);
-        
-        if (!reservationExists)
+        return reservationRequest switch
         {
-            reservation.WaiterId ??= await GetLeastBusyWaiter(reservation.LocationId, reservation.Date);
-        }
-        else
-        {
-            await ValidateModificationPermissions(reservation, user);
-        }
-        
-        return await _reservationRepository.UpsertReservationAsync(reservation);
+            WaiterReservationRequest waiterRequest => await ProcessWaiterReservation(waiterRequest, reservation, userId, location.Id),
+            ClientReservationRequest clientRequest => await ProcessClientReservation(clientRequest, reservation, userId),
+            _ => throw new Amazon.CognitoIdentityProvider.Model.UnsupportedOperationException("Unsupported ReservationRequest type")
+        };
     }
     
     public async Task<List<Reservation>> GetReservationsAsync(ReservationsQueryParameters queryParams, string userId, string email, Roles role)
@@ -110,6 +89,67 @@ public class ReservationService : IReservationService
     public async Task CancelReservationAsync(string reservationId)
     {
         await _reservationRepository.CancelReservation(reservationId);
+    }
+
+    private async Task<Reservation> ProcessWaiterReservation(
+    WaiterReservationRequest request,
+    Reservation reservation,
+    string waiterId, string locationId)
+    {
+        reservation.ClientType = request.ClientType;
+        reservation.WaiterId = waiterId;
+
+        var waiter = await ValidateUser(waiterId);
+   
+        if (waiter.LocationId != locationId)
+        {
+            throw new UnauthorizedException("Waiter cannot create reservations for a different location.");
+        }
+
+        var reservationExists = await _reservationRepository.ReservationExistsAsync(reservation.Id);
+
+        if (reservationExists)
+        {
+            await ValidateModificationPermissionsForWaiter(reservation, waiterId);
+        }
+
+        if (request.ClientType == ClientType.CUSTOMER && request.CustomerId != null)
+        {
+            var customer = await ValidateUser(request.CustomerId);
+            reservation.UserEmail = customer.Email;
+            reservation.UserInfo = $"Customer {customer.FirstName} {customer.LastName}";
+
+            await CheckForConflictingReservations(request, reservation.LocationAddress, customer.Email);
+        }
+        else
+        {
+            reservation.UserEmail = waiter.Email;
+            reservation.UserInfo = $"Waiter {waiter.GetFullName()} (Visitor)";
+
+            await CheckForConflictingReservations(request, reservation.LocationAddress, waiter.Email);
+        }
+
+        return await _reservationRepository.UpsertReservationAsync(reservation);
+    }
+
+    private async Task<Reservation> ProcessClientReservation(ClientReservationRequest request, Reservation reservation, string userId)
+    {
+        var user = await ValidateUser(userId);
+        HandleClientReservation(reservation, user);
+
+        await CheckForConflictingReservations(request, reservation.LocationAddress, user.Email);
+        var isNewReservation = !await _reservationRepository.ReservationExistsAsync(reservation.Id);
+
+        if (isNewReservation)
+        {
+            reservation.WaiterId ??= await GetLeastBusyWaiter(reservation.LocationId, reservation.Date);
+        }
+        else
+        {
+            await ValidateModificationPermissionsForClient(reservation, user);
+        }
+
+        return await _reservationRepository.UpsertReservationAsync(reservation);
     }
 
     private async Task<User> ValidateUser(string userId)
@@ -170,6 +210,13 @@ public class ReservationService : IReservationService
         return table;
     }
 
+    private void HandleClientReservation(Reservation reservation, User user)
+    {
+        reservation.UserEmail = user.Email;
+        reservation.UserInfo = user.GetFullName();
+        reservation.ClientType = ClientType.CUSTOMER;
+    }
+
     private async Task CheckForConflictingReservations(
     BaseReservationRequest request,
     string locationAddress,
@@ -188,7 +235,7 @@ public class ReservationService : IReservationService
             var existingTimeFrom = TimeSpan.Parse(existingReservation.TimeFrom);
             var existingTimeTo = TimeSpan.Parse(existingReservation.TimeTo);
 
-            if (newTimeFrom <= existingTimeTo && newTimeTo >= existingTimeFrom)
+            if (newTimeFrom <= existingTimeTo && newTimeTo >= existingTimeFrom && existingReservation.Id != request.Id)
             {
                 if (existingReservation.UserEmail == userEmail)
                 {
@@ -204,34 +251,7 @@ public class ReservationService : IReservationService
         }
     }
 
-    private void HandleWaiterReservation(
-    WaiterReservationRequest request,
-    Reservation reservation,
-    User user)
-    {
-        if (user.Role != Roles.Waiter)
-        {
-            throw new UnauthorizedException("Only waiters can create or modify waiter reservations");
-        }
-
-        reservation.ClientType = request.ClientType;
-        reservation.UserInfo = request.ClientType switch
-        {
-            ClientType.CUSTOMER => $"Customer {request.CustomerName}",
-            ClientType.VISITOR => $"Waiter {user.GetFullName()} (Visitor)",
-            _ => reservation.UserInfo
-        };
-        reservation.WaiterId = user.Id;
-    }
-
-    private void HandleClientReservation(Reservation reservation, User user)
-    {
-        reservation.UserEmail = user.Email;
-        reservation.UserInfo = user.GetFullName();
-        reservation.ClientType = ClientType.CUSTOMER;
-    }
-
-    private async Task<string> GetLeastBusyWaiter(string locationId, string date) // Change parameter to locationId
+    private async Task<string> GetLeastBusyWaiter(string locationId, string date)
     {
         var waiters = await _waiterRepository.GetWaitersByLocationAsync(locationId);
         
@@ -245,32 +265,79 @@ public class ReservationService : IReservationService
 
         return reservationCounts
             .OrderBy(x => x.Value)
-            .FirstOrDefault().Key ?? throw new Exception($"No waiters available for location ID: {locationId} after counting reservations");
+            .FirstOrDefault().Key ?? throw new ResourceNotFoundException($"No waiters available for location ID: {locationId} after counting reservations");
     }
 
-    private async Task ValidateModificationPermissions(Reservation newReservation, User user)
+    private async Task ValidateModificationPermissionsForWaiter(Reservation newReservation, string waiterId)
     {
         var existingReservation = await _reservationRepository.GetReservationByIdAsync(newReservation.Id);
 
-        // Check if user is either the customer or assigned waiter
-        if (user.Email != existingReservation.UserEmail && user.Id != existingReservation.WaiterId)
+        if (waiterId != existingReservation.WaiterId)
+        {
+            throw new UnauthorizedException("Only assigned waiter can modify this reservation");
+        }
+        
+        ValidateReservationTimeLock(existingReservation);
+    }
+
+    private async Task ValidateModificationPermissionsForClient(Reservation newReservation, User user)
+    {
+        var existingReservation = await _reservationRepository.GetReservationByIdAsync(newReservation.Id);
+
+        if (user.Email != existingReservation.UserEmail)
         {
             throw new UnauthorizedException("Only the customer or assigned waiter can modify this reservation");
         }
-        
         newReservation.WaiterId = existingReservation.WaiterId;
-        newReservation.UserEmail = existingReservation.UserEmail;
+        ValidateReservationTimeLock(existingReservation);
+    }
 
-        // Check 30-minute lock
+    private void ValidateReservationTimeLock(Reservation reservation)
+    {
         var reservationDateTime = DateTime.ParseExact(
-            existingReservation.Date,
+            reservation.Date,
             "yyyy-MM-dd",
             CultureInfo.InvariantCulture
-        ).Add(TimeSpan.Parse(existingReservation.TimeFrom));
+        ).Add(TimeSpan.Parse(reservation.TimeFrom));
 
         if (DateTime.UtcNow > reservationDateTime.AddMinutes(-30))
         {
             throw new ArgumentException("Reservations cannot be modified within 30 minutes of start time");
         }
     }
+    public async Task<bool> CompleteReservationAsync(string reservationId)
+    {
+        var reservation = await _reservationRepository.GetReservationByIdAsync(reservationId);
+        reservation.Status = ReservationStatus.Finished.ToString();
+
+        await _reservationRepository.UpsertReservationAsync(reservation);
+        await SendEventToSQS("reservation", reservation);
+
+        return true;
+    }
+
+
+    private async Task SendEventToSQS<T>(string eventType, T payload)
+    {
+        var getQueueUrlRequest = new GetQueueUrlRequest
+        {
+            QueueName = _sqsQueueName
+        };
+        var getQueueUrlResponse = await _amazonSqsClient.GetQueueUrlAsync(getQueueUrlRequest);
+        var queueUrl = getQueueUrlResponse.QueueUrl;
+
+        var messageBody = JsonSerializer.Serialize(new
+        {
+            eventType,
+            payload
+        });
+
+        var sendMessageRequest = new SendMessageRequest
+        {
+            QueueUrl = queueUrl,
+            MessageBody = messageBody
+        };
+
+        await _amazonSqsClient.SendMessageAsync(sendMessageRequest);
+    } 
 }

@@ -9,6 +9,6 @@ public class WaiterReservationRequest : BaseReservationRequest
     [JsonPropertyName("clientType")]
     public required ClientType ClientType { get; set; }
     
-    [JsonPropertyName("customerName")]
-    public required string CustomerName { get; set; }
+    [JsonPropertyName("customerId")]
+    public string? CustomerId { get; set; }
 }

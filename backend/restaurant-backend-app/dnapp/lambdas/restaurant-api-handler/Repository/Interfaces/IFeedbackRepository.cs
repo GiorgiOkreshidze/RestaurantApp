@@ -10,4 +10,6 @@ public interface IFeedbackRepository
     Task<(List<LocationFeedback>, string?)> GetLocationFeedbacksAsync(LocationFeedbackQueryParameters queryParameters);
     
     Task UpsertFeedbackByReservationAndTypeAsync(LocationFeedback feedback);
+
+    Task<int> GetTotalItemCount();
 }

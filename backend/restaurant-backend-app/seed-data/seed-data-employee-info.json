@@ -29,6 +29,16 @@
         "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" }
       }
     }
-  }
+  },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "36ce0b15-7438-473a-b243-6920091d5038" },
+          "email": { "S": "johnCena46@example.com" },
+          "role": { "S": "Waiter" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" }
+        }
+      }
+    }
 ]
 }

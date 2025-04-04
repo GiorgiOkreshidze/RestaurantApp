@@ -1,13 +1,12 @@
 import { cn } from "@/lib/utils";
-import { ComponentPropsWithRef } from "react";
+import { ComponentProps } from "react";
 
-const Input = ({
+export const Input = ({
   className,
   type = "text",
-  ref,
   isInvalid,
   ...props
-}: ComponentPropsWithRef<"input"> & {
+}: ComponentProps<"input"> & {
   isInvalid?: boolean;
 }) => {
   return (
@@ -18,10 +17,7 @@ const Input = ({
         isInvalid && "styleSet-input-invalid",
         className,
       )}
-      ref={ref}
       {...props}
     />
   );
 };
-
-export { Input };

@@ -5,13 +5,12 @@ $syndicateFile = "../../.syndicate-config-dev/syndicate.yml"
 $locationsSeedFile = "../seed-data-locations.json"
 $dishesSeedFile = "../seed-data-dishes.json"
 $employeesSeedFile = "../seed-data-employee-info.json"
-$reservationsSeedFile = "../seed-data-reservations.json"
 $tempFile = "seed-data-processed.json"
 
 # Get the suffix from syndicate.yml
 $resourcesSuffix = (Get-Content $syndicateFile | Where-Object { $_ -match "resources_suffix:" }) -replace "resources_suffix:\s*", ""
 if (-not $resourcesSuffix) { 
-    $resourcesSuffix = "-dev1"
+    $resourcesSuffix = "-dev5"
     Write-Host "No suffix found in syndicate.yml, defaulting to $resourcesSuffix"
 }
 
@@ -19,7 +18,6 @@ if (-not $resourcesSuffix) {
 $locationsTable = "$prefix" + "Locations" + "$resourcesSuffix"
 $dishesTable = "$prefix" + "Dishes" + "$resourcesSuffix"
 $employeesTable = "$prefix" + "EmployeeInfo" + "$resourcesSuffix"
-$reservationsTable = "$prefix" + "Reservations" + "$resourcesSuffix"
 
 # Check if seed files exist
 if (-not (Test-Path $locationsSeedFile)) {
@@ -41,19 +39,16 @@ try {
     $locationsData = Get-Content $locationsSeedFile -Raw | ConvertFrom-Json
     $dishesData = Get-Content $dishesSeedFile -Raw | ConvertFrom-Json
     $employeesData = Get-Content $employeesSeedFile -Raw | ConvertFrom-Json
-    $reservationsData = Get-Content $reservationsSeedFile -Raw | ConvertFrom-Json
     
     $locationsItems = $locationsData.Locations  # Extract the 'Locations' array
     $dishesItems = $dishesData.Dishes
     $employeesItems = $employeesData.EmployeeInfo
-    $reservationsItems = $reservationsData.Reservations
 
     # Create the request structure
     $requestItems = @{
         "$locationsTable" = $locationsItems
         "$dishesTable" = $dishesItems
         "$employeesTable" = $employeesItems
-        "$reservationsTable" = $reservationsItems
     }
 
     # Write to temp file without BOM

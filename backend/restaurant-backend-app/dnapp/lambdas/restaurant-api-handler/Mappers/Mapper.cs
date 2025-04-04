@@ -115,7 +115,7 @@ public class Mapper
             LocationAddress = doc.TryGetValue("locationAddress", out var locationAddress)
                 ? locationAddress
                 : string.Empty,
-            LocationId = doc.TryGetValue("locationId", out var locationId) ? locationAddress : string.Empty,
+            LocationId = doc.TryGetValue("locationId", out var locationId) ? locationId : string.Empty,
             TableId = doc.TryGetValue("tableId", out var tableId) ? tableId : string.Empty,
             TableNumber = doc.TryGetValue("tableNumber", out var tableNumber) ? tableNumber : string.Empty,
             TimeFrom = doc.TryGetValue("timeFrom", out var timeFrom) ? timeFrom : string.Empty,
@@ -142,6 +142,8 @@ public class Mapper
             Date = reservation.Date,
             GuestsNumber = reservation.GuestsNumber,
             LocationAddress = reservation.LocationAddress,
+            LocationId = reservation.LocationId,
+            TableId = reservation.TableId,
             TableNumber = reservation.TableNumber,
             TimeSlot = reservation.TimeSlot,
             TimeFrom = reservation.TimeFrom,

@@ -1,33 +1,52 @@
-import { useBookingFormStore } from "@/app/useBookingFormStore";
 import {
   dateObjToDateStringServer,
   timeString24hToDateObj,
 } from "@/utils/dateTime";
 import { useEffect, type FormEvent } from "react";
 import { useAppDispatch } from "../app/hooks";
-import { fetchTables } from "@/app/thunks/tablesThunk";
-import { isPast } from "date-fns";
+import { getTables } from "@/app/thunks/tablesThunk";
+import { isPast, isToday } from "date-fns";
 import { useSelector } from "react-redux";
-import { selectSelectOptions } from "@/app/slices/locationsSlice";
 import { toast } from "react-toastify";
+import {
+  decreaseGuestsAction,
+  increaseGuestsAction,
+  selectBookingFormState,
+  setDateAction,
+  setLocationAction,
+  setTimeAction,
+} from "@/app/slices/bookingFormSlice";
 
 export const useBookingForm = () => {
   const dispatch = useAppDispatch();
-  const formStore = useBookingFormStore();
-  const selectOptions = useSelector(selectSelectOptions);
-  const { locationId, date, guests, time, setTime, setLocationId } = formStore;
+  const formState = useSelector(selectBookingFormState);
+  const formActions = {
+    setLocation: (locationId: string) => {
+      dispatch(setLocationAction(locationId));
+    },
+    setDate: (date: string) => {
+      dispatch(setDateAction(date));
+    },
+    setTime: (time: string) => {
+      dispatch(setTimeAction(time));
+    },
+    increaseGuests: () => {
+      dispatch(increaseGuestsAction());
+    },
+    decreaseGuests: () => {
+      dispatch(decreaseGuestsAction());
+    },
+  };
+
+  const { locationId, date, guests, time } = formState;
+  const { setTime } = formActions;
 
   useEffect(() => {
-    if (!selectOptions.length) return;
-    setLocationId(selectOptions[0].id);
-  }, [selectOptions, setLocationId]);
-
-  useEffect(() => {
-    if (!time) return;
+    if (!time || !isToday(date)) return;
     if (isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
       setTime("");
     }
-  }, [date, setTime, time]);
+  }, [date]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -35,17 +54,17 @@ export const useBookingForm = () => {
       toast.warning("Location and Date are required");
       return;
     }
-    if (isPast(date) && isPast(timeString24hToDateObj(time.split("-")[0]))) {
+    if (isPast(date) && isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
       toast.warning("Date and Time can't be in past");
       return;
     }
     try {
       await dispatch(
-        fetchTables({
+        getTables({
           locationId,
           date: dateObjToDateStringServer(date),
           guests: String(guests),
-          time: time.split("-")[0],
+          time: time.split(" - ")[0],
         }),
       );
     } catch (e) {
@@ -53,5 +72,5 @@ export const useBookingForm = () => {
     }
   };
 
-  return { onSubmit, ...formStore };
+  return { onSubmit, ...formState, ...formActions };
 };

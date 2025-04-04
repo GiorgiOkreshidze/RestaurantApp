@@ -1,10 +1,10 @@
 import { Route, Routes, useLocation } from "react-router";
-import { Home, Auth, Location, Menu } from "./pages";
+import { Home, Auth, Location, Menu, WaiterReservation } from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavBar } from "./components/shared";
 import { useEffect } from "react";
-import { Reservations } from "./pages/Reservations";
+import { ClientReservations } from "./pages/ClientReservations";
 import { Booking } from "./pages/Booking";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "./app/hooks";
@@ -15,10 +15,12 @@ import {
 } from "./app/slices/locationsSlice";
 import { getPopularDishes } from "./app/thunks/dishesThunks";
 import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
-import { getReservations } from "./app/thunks/reservationsThunks";
-import { selectReservations } from "./app/slices/reservationsSlice";
 import { ProtectedRoute } from "./components/routeComponents/ProtectedRoute";
 import { PublicRoute } from "./components/routeComponents/PublicRoute";
+
+import { USER_ROLE } from "./utils/constants";
+import { selectUser } from "./app/slices/userSlice";
+import { setLocationAction } from "./app/slices/bookingFormSlice";
 
 function App() {
   const location = useLocation();
@@ -27,7 +29,7 @@ function App() {
   const popularDishes = useSelector(selectPopularDishes);
   const locations = useSelector(selectLocations);
   const selectOptions = useSelector(selectSelectOptions);
-  const reservations = useSelector(selectReservations);
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -45,17 +47,12 @@ function App() {
     }
   }, [dispatch, locations.length]);
 
-  useEffect(() => {
+  useEffect(() => {(async () => {
     if (!selectOptions.length) {
-      dispatch(getSelectOptions());
+      const selectOptions = await dispatch(getSelectOptions()).unwrap();
+      dispatch(setLocationAction(selectOptions[0].id));
     }
-  }, [dispatch, selectOptions.length]);
-
-  useEffect(() => {
-    if (!reservations.length) {
-      dispatch(getReservations());
-    }
-  }, [dispatch, reservations.length, selectOptions.length]);
+  })()}, [dispatch, selectOptions.length]);
 
   return (
     <>
@@ -66,7 +63,13 @@ function App() {
         </header>
       )}
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            user?.role === USER_ROLE.WAITER ? <WaiterReservation /> : <Home />
+          }
+        />
+
         <Route
           path="/menu"
           element={
@@ -96,7 +99,7 @@ function App() {
           path="/reservations"
           element={
             <ProtectedRoute>
-              <Reservations />
+              <ClientReservations />
             </ProtectedRoute>
           }
         />

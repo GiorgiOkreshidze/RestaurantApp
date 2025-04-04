@@ -12,6 +12,8 @@ export interface User {
     refreshToken: string;
   };
 
+  id: string;
+  locationId?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -115,4 +117,12 @@ export interface RichTimeSlot {
   startDate: string;
   endDate: string;
   isPast: boolean;
+}
+
+export interface LocationTable {
+  tableId: string;
+  tableNumber: string;
+  capacity: string;
+  locationId: string;
+  locationAddress: string;
 }

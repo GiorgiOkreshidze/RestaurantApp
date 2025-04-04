@@ -16,7 +16,7 @@ const initialState: BookingFormState = {
   date: TIME_SLOTS.filter((slot) => !slot.isPast).length
     ? new Date().toString()
     : startOfTomorrow().toString(),
-  time: "",
+  time: TIME_SLOTS.find((slot) => !slot.isPast)?.rangeString ?? TIME_SLOTS[0].rangeString,
   guests: 2,
   timeSlots: TIME_SLOTS,
 };
@@ -25,7 +25,7 @@ export const bookingFormSlice = createSlice({
   name: "bookingForm",
   initialState,
   reducers: {
-    setLocationIdAction: (state, { payload: data }) => {
+    setLocationAction: (state, { payload: data }) => {
       state.locationId = data;
     },
 
@@ -53,10 +53,11 @@ export const bookingFormSlice = createSlice({
 
 export const bookingFormReducer = bookingFormSlice.reducer;
 export const {
-  setLocationIdAction,
+  setLocationAction,
   setDateAction,
   setTimeAction,
   increaseGuestsAction,
   decreaseGuestsAction,
 } = bookingFormSlice.actions;
+
 export const { selectBookingFormState } = bookingFormSlice.selectors;

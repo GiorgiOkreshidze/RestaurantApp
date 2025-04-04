@@ -1,0 +1,122 @@
+import { PropsWithChildren, useState } from "react";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Spinner,
+  Text,
+} from "../ui";
+import { useWaiterReservationDialog } from "@/hooks/useWaiterReservationDialog";
+import {
+  CustomerPicker,
+  DatePicker,
+  GuestsNumber,
+  TablePicker,
+  TimeSlotPicker,
+  UserPicker,
+} from ".";
+import { UserType } from "@/types/user.types";
+import { LOCATION_TABLES, TIME_SLOTS } from "@/utils/constants";
+import { LocationIcon } from "../icons";
+
+export const WaiterReservationDialog = (props: Props) => {
+  const [isCurrentDialogOpen, setIsCurrentDialogOpen] = useState(false);
+  const onSuccessCallback = () => {
+    setIsCurrentDialogOpen(!isCurrentDialogOpen);
+  };
+  const state = useWaiterReservationDialog({
+    initTable: props.table,
+    initDate: props.date,
+    onSuccessCallback,
+  });
+
+  return (
+    <Dialog open={isCurrentDialogOpen} onOpenChange={setIsCurrentDialogOpen}>
+      <DialogTrigger className={props.className} asChild>
+        {props.children}
+      </DialogTrigger>
+      <DialogContent className="bg-neutral-100">
+        <DialogHeader>
+          <DialogTitle className="!fontset-h2">New Reservation</DialogTitle>
+        </DialogHeader>
+        <form className="flex flex-col gap-[2rem]" onSubmit={state.onSubmit}>
+          <div className="border-neutral-200 bg-card py-[1rem] px-[1.5rem] flex items-center gap-[0.5rem] border rounded">
+            <LocationIcon className="text-primary" />
+            <Text variant="bodyBold">
+              {state.selectOptionsLoading
+                ? "Loading..."
+                : state.selectOptions.find(
+                    (loc) => loc.id === state.waiter?.locationId,
+                  )?.address}
+            </Text>
+          </div>
+          <UserPicker
+            userType={state.userType}
+            setUserType={state.setUserType}
+          />
+          {state.userType === UserType.CUSTOMER && (
+            <CustomerPicker
+              customerId={state.customerId}
+              setCustomerId={state.setCustomerId}
+              customerList={state.allCustomers}
+            />
+          )}
+
+          <GuestsNumber
+            guests={state.guests}
+            increase={state.increaseGuests}
+            decrease={state.decreaseGuests}
+          />
+
+          <div>
+            <Text variant="h3">Date & Time</Text>
+            <Text variant="body">
+              Please choose your preferred time from the dropdowns below
+            </Text>
+            <DatePicker
+              value={state.date}
+              setValue={state.setDate}
+              className="mt-[1rem] w-full"
+            />
+            <TimeSlotPicker
+              items={TIME_SLOTS}
+              value={state.time}
+              setValue={state.setTime}
+              selectedDate={state.date}
+              disablePastTimes
+              className="mt-[1rem]"
+            />
+          </div>
+
+          <TablePicker
+            table={state.table}
+            tableList={LOCATION_TABLES.filter(
+              (table) => table.locationId === state.waiter?.locationId,
+            )}
+            setTable={state.setTable}
+          />
+          <DialogFooter>
+            <Button type="submit" className="w-full">
+              {state.reservationCreatingLoading ? (
+                <Spinner />
+              ) : (
+                "Make a Reservation"
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+interface Props extends PropsWithChildren {
+  className?: string;
+  date: string;
+  time: string;
+  table: string;
+}

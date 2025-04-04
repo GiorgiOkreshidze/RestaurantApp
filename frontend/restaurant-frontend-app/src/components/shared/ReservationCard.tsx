@@ -1,54 +1,64 @@
-import { ComponentProps } from "react";
 import { Card } from "./Card";
 import { Badge, Button, Text } from "../ui";
 import { CalendarIcon, ClockIcon, LocationIcon, PeopleIcon } from "../icons";
-
-import { ReservationDialog } from "./ReservationDialog";
 import { Reservation } from "@/types/reservation.types";
-import { dateStringServerToDateObject } from "@/utils/dateTime";
 import { useAppDispatch } from "@/app/hooks";
 import {
   deleteClientReservation,
   getReservations,
 } from "@/app/thunks/reservationsThunks";
+import { isPast, parse } from "date-fns";
+import {
+  dateObjToDateStringUI,
+  timeString24hToTimeString12h,
+} from "@/utils/dateTime";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/app/slices/userSlice";
+import { USER_ROLE } from "@/utils/constants";
+import { ReservationFeedbackDialog } from ".";
 
-export const ReservationCard = ({
-  reservation,
-  ...props
-}: ComponentProps<"div"> & { reservation: Reservation }) => {
+export const ReservationCard = (props: { reservation: Reservation }) => {
   const dispatch = useAppDispatch();
-  const {
-    id,
-    locationAddress,
-    status,
-    date,
-    timeSlot,
-    guestsNumber,
-    tableNumber,
-  } = reservation;
+  const user = useSelector(selectUser);
+  const { reservation } = props;
+
   return (
     <Card {...props} className="flex flex-col gap-[3rem]">
       <div className="flex items-start justify-between gap-[0.5rem]">
         <div className="flex flex-col gap-[0.5rem]">
           <div className="flex items-center gap-[0.5rem]">
-            <LocationIcon className="size-[16px] stroke-primary" />
-            <Text variant="bodyBold">{locationAddress}</Text>
+            <LocationIcon className="size-[16px] text-primary" />
+            <Text tag="span" variant="bodyBold">
+              {reservation.locationAddress}, Table {reservation.tableNumber}
+            </Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <CalendarIcon className="size-[16px] stroke-primary" />
-            <Text variant="bodyBold">{date}</Text>
+            <Text variant="bodyBold">
+              {dateObjToDateStringUI(reservation.date)}
+            </Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <ClockIcon className="size-[16px] stroke-primary" />
-            <Text variant="bodyBold">{timeSlot}</Text>
+            <Text variant="bodyBold">
+              {timeString24hToTimeString12h(
+                reservation.timeSlot.split(" - ")[0],
+              )}
+            </Text>
+            <Text variant="bodyBold"> - </Text>
+            <Text variant="bodyBold">
+              {timeString24hToTimeString12h(
+                reservation.timeSlot.split(" - ")[1],
+              )}
+            </Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <PeopleIcon className="size-[16px] stroke-primary" />
-            <Text variant="bodyBold">{guestsNumber} Guests</Text>
+            <Text variant="bodyBold">{reservation.guestsNumber} Guests</Text>
           </div>
         </div>
-        <Badge status={status} className="text-nowrap">
-          {status}
+        <Badge status={reservation.status} className="text-nowrap">
+          {reservation.status}
         </Badge>
       </div>
       <footer className="flex items-center gap-[1rem] justify-end">
@@ -56,11 +66,16 @@ export const ReservationCard = ({
           variant="tertiary"
           size="sm"
           className="relative before:absolute before:content[''] before:bottom-0 before:left-0 before:w-full before:h-[1px] before:bg-black disabled:before:bg-disabled"
-          disabled={status === "Cancelled"}
+          disabled={
+            reservation.status === "Cancelled" ||
+            isPast(
+              parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
+            )
+          }
           onClick={async () => {
             try {
               await dispatch(deleteClientReservation(reservation.id)).unwrap();
-              await dispatch(getReservations()).unwrap();
+              await dispatch(getReservations({})).unwrap();
               console.log("Reservation deleted");
             } catch (error) {
               console.log("Reservation deleting failed:", error);
@@ -69,25 +84,27 @@ export const ReservationCard = ({
         >
           Cancel
         </Button>
-        <ReservationDialog
-          key={id}
-          locationAddress={locationAddress}
-          date={dateStringServerToDateObject(date)}
-          initTime={timeSlot.replace(/\s/g, "")}
-          tableNumber={tableNumber}
-          initGuests={Number.parseInt(guestsNumber)}
-          maxGuests={Number.parseInt(guestsNumber)}
-          locationId={""}
-          tableId={""}
-        >
+        {reservation.status === "In Progress" &&
+        user?.role === USER_ROLE.CUSTOMER ? (
+          <ReservationFeedbackDialog reservationId={reservation.id}>
+            <Button variant="secondary" size="l">
+              Leave Feadback
+            </Button>
+          </ReservationFeedbackDialog>
+        ) : (
           <Button
             variant="secondary"
             size="l"
-            disabled={status === "Cancelled"}
+            disabled={
+              reservation.status === "Cancelled" ||
+              isPast(
+                parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
+              )
+            }
           >
-            Edit
+            {user?.role === USER_ROLE.CUSTOMER ? "Edit" : "Postpone"}
           </Button>
-        </ReservationDialog>
+        )}
       </footer>
     </Card>
   );

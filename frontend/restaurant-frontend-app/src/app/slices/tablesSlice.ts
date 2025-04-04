@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { TableUI } from "../../types/tables.types";
-import { fetchTables } from "../thunks/tablesThunk";
+import { getTables } from "../thunks/tablesThunk";
 import {
   dateStringServerToDateObject,
   timeString24hToDateObj,
@@ -23,10 +23,10 @@ export const tablesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTables.pending, (state) => {
+      .addCase(getTables.pending, (state) => {
         state.tablesLoading = true;
       })
-      .addCase(fetchTables.fulfilled, (state, { payload }) => {
+      .addCase(getTables.fulfilled, (state, { payload }) => {
         state.tablesLoading = false;
         state.tables = payload.data
           .map((table) => ({
@@ -34,10 +34,10 @@ export const tablesSlice = createSlice({
             date: dateStringServerToDateObject(payload.date),
             availableSlots: table.availableSlots
               .map((timeSlot) => ({
-                id: `${timeSlot.start}-${timeSlot.end}`,
+                id: `${timeSlot.start} - ${timeSlot.end}`,
                 startString: timeSlot.start,
                 endString: timeSlot.end,
-                rangeString: `${timeSlot.start}-${timeSlot.end}`,
+                rangeString: `${timeSlot.start} - ${timeSlot.end}`,
                 startDate: timeString24hToDateObj(timeSlot.start),
                 endDate: timeString24hToDateObj(timeSlot.end),
                 isPast: isPast(timeString24hToDateObj(timeSlot.start)),
@@ -46,10 +46,10 @@ export const tablesSlice = createSlice({
           }))
           .sort(
             (a, b) =>
-              Number.parseInt(a.tableNumber) - Number.parseInt(b.tableNumber)
+              Number.parseInt(a.tableNumber) - Number.parseInt(b.tableNumber),
           );
       })
-      .addCase(fetchTables.rejected, (state) => {
+      .addCase(getTables.rejected, (state) => {
         state.tablesLoading = false;
       });
   },
