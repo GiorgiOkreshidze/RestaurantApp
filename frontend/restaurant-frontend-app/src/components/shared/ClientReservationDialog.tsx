@@ -13,71 +13,51 @@ import {
 } from "../ui";
 import { dateObjToDateStringUI } from "@/utils/dateTime";
 import { useClientReservationDialog } from "@/hooks/useClientReservationDialog";
-import type {
-  Reservation,
-  ReservationDialogProps,
-} from "@/types/reservation.types";
 import { TIME_SLOTS } from "@/utils/constants";
 import { useSelector } from "react-redux";
 import { selectReservationCreatingLoading } from "@/app/slices/reservationsSlice";
 
-export const ReservationDialog = ({
-  className,
-  children,
-  ...props
-}: ReservationDialogProps & {
-  className?: string;
-  children: ReactElement;
-}) => {
-  const [reservation, setReservation] = useState<Reservation>();
-  const [isReservationDialogOpen, setIsReservationDialogOpen] = useState(false);
+export const ClientReservationDialog = (
+  props: ClientReservationDialogProps,
+) => {
+  const [isCurrentDialogOpen, setIsCurrentDialogOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-  const reservationCreatingLoading = useSelector(
-    selectReservationCreatingLoading,
-  );
-  const onSuccessCallback = (reservation: Reservation) => {
-    setReservation(reservation);
-    setIsConfirmDialogOpen(true);
-    setIsReservationDialogOpen(false);
+  const creatingLoading = useSelector(selectReservationCreatingLoading);
+  const onSuccessCallback = () => {
+    setIsCurrentDialogOpen(!isCurrentDialogOpen);
+    setIsConfirmDialogOpen(!isConfirmDialogOpen);
   };
-  const form = useClientReservationDialog({
-    ...props,
-    reservation,
-    onSuccessCallback,
-  });
+  const state = useClientReservationDialog({ ...props, onSuccessCallback });
 
   return (
     <>
-      <Dialog
-        open={isReservationDialogOpen}
-        onOpenChange={setIsReservationDialogOpen}
-      >
-        <DialogTrigger className={className} asChild>
-          {children}
-        </DialogTrigger>
+      <Dialog open={isCurrentDialogOpen} onOpenChange={setIsCurrentDialogOpen}>
+        <DialogTrigger asChild>{props.children}</DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="!fontset-h2">
-              Make a Reservation
+              {state.reservationId
+                ? "Edit the Reservation"
+                : "Make a Reservation"}
             </DialogTitle>
             <DialogDescription className="!fontset-body text-foreground">
               You are making a reservation at{" "}
               <b>
-                {form.locationAddress}, Table {form.tableNumber}
+                {state.locationAddress}, Table {state.tableNumber}
               </b>{" "}
-              for <b>{dateObjToDateStringUI(form.date)}</b>
+              for <b>{dateObjToDateStringUI(state.date)}</b>
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={form.onSubmit}>
+          <form onSubmit={state.onSubmit}>
             <Text variant="h3">Guests</Text>
             <Text variant="caption">Please specify the number of guests.</Text>
             <Text variant="caption">
-              Table seating capacity: {form.maxGuests} people
+              Table seating capacity: {state.maxGuests} people
             </Text>
             <GuestsNumber
-              guests={form.guests}
-              increase={form.increaseGuests}
-              decrease={form.decreaseGuests}
+              guests={state.selectedGuests}
+              increase={state.increaseGuests}
+              decrease={state.decreaseGuests}
               className="mt-[1.5rem]"
             />
             <Text variant="h3" className="mt-[2rem]">
@@ -89,10 +69,10 @@ export const ReservationDialog = ({
             <div>
               <TimeSlotPicker
                 items={TIME_SLOTS}
-                value={form.time}
-                setValue={form.setTime}
+                value={state.selectedTime}
+                setValue={state.setSelectedTime}
                 className="w-full mt-[1rem]"
-                selectedDate={form.date}
+                selectedDate={state.date}
                 disablePastTimes
               />
             </div>
@@ -102,8 +82,10 @@ export const ReservationDialog = ({
               size="xl"
               className="mt-[2.5rem] w-full"
             >
-              {reservationCreatingLoading ? (
+              {creatingLoading ? (
                 <Spinner color="var(--color-white)" className="size-[1.5rem]" />
+              ) : state.reservationId ? (
+                "Edit reservation"
               ) : (
                 "Make a Reservation"
               )}
@@ -114,14 +96,27 @@ export const ReservationDialog = ({
       <ReservationConfirmDialog
         open={isConfirmDialogOpen}
         onOpenChange={setIsConfirmDialogOpen}
-        guests={form.guests}
-        date={form.date}
-        time={form.time}
-        locationAddress={form.locationAddress}
-        tableNumber={form.tableNumber}
-        setIsReservationDialogOpen={setIsReservationDialogOpen}
-        onCancelReservation={form.onCancelReservation}
+        guests={state.selectedGuests}
+        date={state.date}
+        time={state.selectedTime}
+        locationAddress={state.locationAddress}
+        tableNumber={state.tableNumber}
+        setIsReservationDialogOpen={setIsCurrentDialogOpen}
+        onCancelReservation={state.onCancelReservation}
       />
     </>
   );
 };
+
+export interface ClientReservationDialogProps {
+  children: ReactElement;
+  reservationId: string | null;
+  locationId: string;
+  locationAddress: string;
+  tableId: string;
+  tableNumber: string;
+  date: string;
+  initTime: string;
+  initGuests: number;
+  maxGuests: number;
+}

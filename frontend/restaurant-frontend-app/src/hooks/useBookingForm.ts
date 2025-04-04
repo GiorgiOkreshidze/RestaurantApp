@@ -5,9 +5,8 @@ import {
 import { useEffect, type FormEvent } from "react";
 import { useAppDispatch } from "../app/hooks";
 import { getTables } from "@/app/thunks/tablesThunk";
-import { isPast } from "date-fns";
+import { isPast, isToday } from "date-fns";
 import { useSelector } from "react-redux";
-import { selectSelectOptions } from "@/app/slices/locationsSlice";
 import { toast } from "react-toastify";
 import {
   decreaseGuestsAction,
@@ -20,7 +19,6 @@ import {
 
 export const useBookingForm = () => {
   const dispatch = useAppDispatch();
-  const selectOptions = useSelector(selectSelectOptions);
   const formState = useSelector(selectBookingFormState);
   const formActions = {
     setLocation: (locationId: string) => {
@@ -41,19 +39,14 @@ export const useBookingForm = () => {
   };
 
   const { locationId, date, guests, time } = formState;
-  const { setTime, setLocation } = formActions;
+  const { setTime } = formActions;
 
   useEffect(() => {
-    if (!selectOptions.length) return;
-    setLocation(selectOptions[0].id);
-  }, [selectOptions]);
-
-  useEffect(() => {
-    if (!time) return;
+    if (!time || !isToday(date)) return;
     if (isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
       setTime("");
     }
-  }, [date, setTime, time]);
+  }, [date]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -61,7 +54,7 @@ export const useBookingForm = () => {
       toast.warning("Location and Date are required");
       return;
     }
-    if (isPast(date) && isPast(timeString24hToDateObj(time.split("-")[0]))) {
+    if (isPast(date) && isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
       toast.warning("Date and Time can't be in past");
       return;
     }
@@ -71,7 +64,7 @@ export const useBookingForm = () => {
           locationId,
           date: dateObjToDateStringServer(date),
           guests: String(guests),
-          time: time.split("-")[0],
+          time: time.split(" - ")[0],
         }),
       );
     } catch (e) {

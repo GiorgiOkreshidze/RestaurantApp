@@ -53,10 +53,15 @@ export const ReservationConfirmDialog = ({
           <DialogDescription className="!fontset-body text-foreground flex flex-col gap-[0.75rem]">
             <Text tag="span" className="!fontset-body text-foreground">
               Your table reservation at <b>Green & Tasty</b> for{" "}
-              <b>{guests} people</b> on {dateObjToDateStringUI(date)}, from{" "}
-              <b>{time && timeString24hToTimeString12h(time.split("-")[0])}</b>{" "}
+              <b>{guests} people</b> on <b>{dateObjToDateStringUI(date)}</b>,
+              from{" "}
+              <b>
+                {time && timeString24hToTimeString12h(time.split(" - ")[0])}
+              </b>{" "}
               to{" "}
-              <b>{time && timeString24hToTimeString12h(time.split("-")[1])}</b>{" "}
+              <b>
+                {time && timeString24hToTimeString12h(time.split(" - ")[1])}
+              </b>{" "}
               at <b>Table {tableNumber}</b> has been successfully made.
             </Text>
             <Text tag="span" className="!fontset-body text-foreground">

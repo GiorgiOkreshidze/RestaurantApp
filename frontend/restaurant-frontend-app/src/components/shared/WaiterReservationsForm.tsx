@@ -4,7 +4,7 @@ import { TimeSlotPicker } from "./TimeSlotPicker";
 import { TablePicker } from "./TablePicker";
 import { Button } from "../ui";
 import { SearchMagnifierIcon } from "../icons";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { LOCATION_TABLES } from "@/utils/constants";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
@@ -13,10 +13,6 @@ export const WaiterReservationsForm = () => {
   const state = useWaiterReservations();
   const submitButton = useRef<HTMLButtonElement>(null);
   const waiter = useSelector(selectUser);
-
-  useEffect(() => {
-    submitButton?.current?.click();
-  }, [state.date]);
 
   return (
     <form

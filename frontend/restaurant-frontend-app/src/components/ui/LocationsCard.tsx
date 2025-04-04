@@ -5,7 +5,7 @@ import locationImg from "../../assets/images/location.jpg";
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "@/app/hooks";
 import { setOneLocation } from "@/app/slices/locationsSlice";
-import { Location } from "@/types";
+import { Location } from "@/types/location.types";
 
 interface Props {
   location: Location;

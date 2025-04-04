@@ -1,6 +1,7 @@
 import type { GlobalErrorMessage } from "@/types";
 import type {
   GetReservationRequestParams,
+  GiveReservationFeedback,
   Reservation,
   UpsertReservationRequestParams,
   UpsertWaiterReservationRequestParams,
@@ -17,11 +18,7 @@ export const getReservations = createAsyncThunk<
 >("reservations", async (params, { rejectWithValue }) => {
   try {
     const response = await axiosApi.get(serverRoute.reservations, {
-      params: {
-        date: params.date,
-        timeFrom: params.timeFrom,
-        tableNumber: params.tableNumber,
-      },
+      params,
     });
     return response.data;
   } catch (e) {
@@ -80,10 +77,32 @@ export const upsertWaiterReservation = createAsyncThunk<
       );
       return response.data;
     } catch (e) {
-      if (isAxiosError(e) && e.response) {
-        return rejectWithValue(e.response.data);
+      if (isAxiosError(e)) {
+        return e.response
+          ? rejectWithValue(e.response.data)
+          : rejectWithValue({ message: e.message });
       }
       throw e;
     }
   },
 );
+
+export const giveReservationFeedback = createAsyncThunk<
+  void,
+  GiveReservationFeedback,
+  { rejectValue: GlobalErrorMessage }
+>("feedbacks", async (params, { rejectWithValue }) => {
+  try {
+    await axiosApi.post<Reservation>(
+      serverRoute.giveReservationFeedback,
+      params,
+    );
+  } catch (e) {
+    if (isAxiosError(e)) {
+      return e.response
+        ? rejectWithValue(e.response.data)
+        : rejectWithValue({ message: e.message });
+    }
+    throw e;
+  }
+});

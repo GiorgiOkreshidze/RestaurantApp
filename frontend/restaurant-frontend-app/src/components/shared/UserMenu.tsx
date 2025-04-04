@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/DropdownMenu";
 import { useSelector } from "react-redux";
-import { logout, selectUser } from "@/app/slices/userSlice";
+import { selectUser } from "@/app/slices/userSlice";
 import { Link } from "react-router";
 import { useAppDispatch } from "@/app/hooks";
 import { signout } from "@/app/thunks/userThunks";

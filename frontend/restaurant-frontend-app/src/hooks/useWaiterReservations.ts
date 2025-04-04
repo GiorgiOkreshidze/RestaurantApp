@@ -6,6 +6,7 @@ import {
   setFormTimeAction,
 } from "@/app/slices/waiterReservationsSlice";
 import { getReservations } from "@/app/thunks/reservationsThunks";
+import { LOCATION_TABLES } from "@/utils/constants";
 import { dateObjToDateStringServer } from "@/utils/dateTime";
 import { FormEvent } from "react";
 import { useSelector } from "react-redux";
@@ -29,6 +30,10 @@ export const useWaiterReservations = () => {
           date: formState.date
             ? dateObjToDateStringServer(formState.date)
             : undefined,
+          timeFrom: formState.time.split(" - ")[0] || undefined,
+          tableNumber: LOCATION_TABLES.find(
+            (table) => table.tableId === formState.table,
+          )?.tableNumber,
         }),
       );
     } catch (e) {

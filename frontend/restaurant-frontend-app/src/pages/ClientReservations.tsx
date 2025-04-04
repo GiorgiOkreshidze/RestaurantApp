@@ -19,6 +19,7 @@ export const ClientReservations = () => {
   const reservationsLoading = useSelector(selectReservationsLoading);
 
   useEffect(() => {
+    if (reservations.length) return;
     dispatch(getReservations({}));
   }, []);
 

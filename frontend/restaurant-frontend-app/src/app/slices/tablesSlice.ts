@@ -34,10 +34,10 @@ export const tablesSlice = createSlice({
             date: dateStringServerToDateObject(payload.date),
             availableSlots: table.availableSlots
               .map((timeSlot) => ({
-                id: `${timeSlot.start}-${timeSlot.end}`,
+                id: `${timeSlot.start} - ${timeSlot.end}`,
                 startString: timeSlot.start,
                 endString: timeSlot.end,
-                rangeString: `${timeSlot.start}-${timeSlot.end}`,
+                rangeString: `${timeSlot.start} - ${timeSlot.end}`,
                 startDate: timeString24hToDateObj(timeSlot.start),
                 endDate: timeString24hToDateObj(timeSlot.end),
                 isPast: isPast(timeString24hToDateObj(timeSlot.start)),
@@ -46,7 +46,7 @@ export const tablesSlice = createSlice({
           }))
           .sort(
             (a, b) =>
-              Number.parseInt(a.tableNumber) - Number.parseInt(b.tableNumber)
+              Number.parseInt(a.tableNumber) - Number.parseInt(b.tableNumber),
           );
       })
       .addCase(getTables.rejected, (state) => {

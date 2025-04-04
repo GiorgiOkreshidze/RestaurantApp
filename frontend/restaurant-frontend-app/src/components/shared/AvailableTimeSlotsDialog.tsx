@@ -9,7 +9,7 @@ import {
 import { ReactElement } from "react";
 import { timeString24hToTimeString12h } from "@/utils/dateTime";
 import { format } from "date-fns";
-import { ReservationDialog } from "./ReservationDialog";
+import { ClientReservationDialog } from "./ClientReservationDialog";
 import { TimeSlot } from "./TimeSlot";
 import { TableUI } from "@/types/tables.types";
 import { RichTimeSlot } from "@/types";
@@ -46,7 +46,8 @@ export const AvailableTimeSlotsDialog = ({
         </DialogHeader>
         <div className="grid grid-cols-2 gap-[0.5rem] mt-[1rem]">
           {availableSlots.map((timeSlot) => (
-            <ReservationDialog
+            <ClientReservationDialog
+              reservationId={null}
               key={timeSlot.id}
               locationAddress={table.locationAddress}
               date={table.date}
@@ -61,7 +62,7 @@ export const AvailableTimeSlotsDialog = ({
                 {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
                 {timeString24hToTimeString12h(timeSlot.endString)}
               </TimeSlot>
-            </ReservationDialog>
+            </ClientReservationDialog>
           ))}
         </div>
       </DialogContent>
