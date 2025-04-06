@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Create a Waiters page
 - Create Waiters page navigation
 
+#### 2. Food Menu Browsing
+
+- Create Menu page
+- Implement navigation menu page filtering
+
+#### 3. Feedback and Rating
+
+- Implement leave feedback form
+
 ## [1.0.0] - 2025-03-20
 ### Added
 
