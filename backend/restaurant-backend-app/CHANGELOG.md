@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-04-04
+### Added
+
+#### 1. Reservation Management for Waiters
+
+- Add POST /api/reservations/waiter endpoint for waiter to manage reservations
+
+#### 2. Food Menu Browsing
+
+- Create GET /dishes and GET /dishes/{id} endpoints
+- Create GET /location/{id} endpoint
+
+#### 3. Reports for Restaurant Managers
+
+- Create automated report generation for session statistics
+
+### Changed
+
+- Update GET /reservations endpoint to support waiter-specific use cases
+- Include locationId in waiter profile response
+- Removed Authorizer from the refresh token process
+
+### Fixed
+
+- Prevent multiple identical reservations for the same date and time by the same user
+
 ## [1.0.0] - 2025-03-20
 ### Added
 
