@@ -27,6 +27,7 @@ if (-not (Test-Path $reservationsSeedFile)) {
     exit 1
 }
 
+
 # Process JSON: Update table names
 try {
     # Read JSON files and extract the inner arrays
@@ -65,4 +66,4 @@ Invoke-Expression $awsCommand
 # Clean up
 Remove-Item $tempFile -ErrorAction SilentlyContinue
 
-Write-Host "Seeded data into $locationsTable and $dishesTable"
+Write-Host "Seeded data into $tablesTable and $reservationsTable"

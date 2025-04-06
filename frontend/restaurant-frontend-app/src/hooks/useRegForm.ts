@@ -4,11 +4,46 @@ import { z } from "zod";
 import { useAppDispatch } from "@/app/hooks";
 import { register } from "@/app/thunks/userThunks";
 import { useNavigate } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export const useRegForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [passwordTouched] = useState(false);
+
+  const passwordSchema = z.string().superRefine((value, ctx) => {
+    if (!/[A-Z]/.test(value)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "At least one uppercase letter required",
+      });
+    }
+    if (!/[a-z]/.test(value)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "At least one lowercase letter required",
+      });
+    }
+    if (!/[0-9]/.test(value)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "At least one number required",
+      });
+    }
+    if (!/[!@#$%^&*()\-+_=[\]{};:'",<.>/?\\|]/.test(value)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "At least one character required",
+      });
+    }
+    if (value.length < 8 || value.length > 16) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Password must be 8-16 characters long",
+      });
+    }
+  });
 
   const formSchema = z
     .object({
@@ -34,44 +69,22 @@ export const useRegForm = () => {
         message:
           "Invalid email address. Please ensure it follows the format: username@domain.com",
       }),
-      password: z.string().superRefine((value, ctx) => {
-        if (!/[A-Z]/.test(value)) {
-          ctx.addIssue({
-            code: "custom",
-            message: "At least one uppercase letter required",
-          });
-        }
-        if (!/[a-z]/.test(value)) {
-          ctx.addIssue({
-            code: "custom",
-            message: "At least one lowercase letter required",
-          });
-        }
-        if (!/[0-9]/.test(value)) {
-          ctx.addIssue({
-            code: "custom",
-            message: "At least one number required",
-          });
-        }
-        if (!/[!@#$%^&*()\-+_=[\]{};:'",<.>/?\\|]/.test(value)) {
-          ctx.addIssue({
-            code: "custom",
-            message: "At least one character required",
-          });
-        }
-        if (value.length < 8 || value.length > 16) {
-          ctx.addIssue({
-            code: "custom",
-            message: "Password must be 8-16 characters long",
-          });
-        }
-      }),
+      password: passwordSchema,
       confirmPassword: z.string(),
     })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Confirm password must match new password",
-      path: ["confirmPassword"],
-    });
+    .refine(
+      (data) => {
+        const passwordResult = passwordSchema.safeParse(data.password);
+        if (!passwordResult.success) {
+          return false;
+        }
+        return data.password === data.confirmPassword;
+      },
+      {
+        message: "Confirm password must match new password",
+        path: ["confirmPassword"],
+      },
+    );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -89,6 +102,7 @@ export const useRegForm = () => {
   const passwordWatch = form.watch("password");
 
   useEffect(() => {
+    if (!passwordWatch && !passwordTouched) return;
     form.trigger("confirmPassword");
   }, [passwordWatch, form]);
 
@@ -98,7 +112,10 @@ export const useRegForm = () => {
       console.log("Registration successful:", result);
       navigate("/signin");
     } catch (error) {
-      console.error("Registration failed:", error);
+      if (error instanceof Error) {
+        console.error("Registration failed:", error);
+        toast.error(error.message);
+      }
     }
   };
 

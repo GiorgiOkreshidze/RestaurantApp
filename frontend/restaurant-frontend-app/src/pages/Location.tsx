@@ -1,11 +1,21 @@
-import { Container, Dishes, LocationHero, Reviews } from "@/components/shared";
+import {
+  Container,
+  Dishes,
+  LocationHero,
+  PageBody,
+  Reviews,
+} from "@/components/shared";
 import { Text } from "@/components/ui";
 import { NavLink, useParams } from "react-router";
 import { useAppDispatch } from "@/app/hooks";
 import { useEffect } from "react";
-import { getSpecialityDishes } from "@/app/thunks/locationsThunks";
+import {
+  getOneLocation,
+  getSpecialityDishes,
+} from "@/app/thunks/locationsThunks";
 import { useSelector } from "react-redux";
 import {
+  selectFeedbacks,
   selectOneLocation,
   selectSpecialityDishes,
 } from "@/app/slices/locationsSlice";
@@ -14,7 +24,14 @@ export const Location = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const specialityDishes = useSelector(selectSpecialityDishes);
+  const feedbacks = useSelector(selectFeedbacks);
   const oneLocation = useSelector(selectOneLocation);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getOneLocation(id));
+    }
+  }, [id, dispatch]);
 
   useEffect(() => {
     if (id) {
@@ -25,7 +42,7 @@ export const Location = () => {
   return (
     <>
       {/* Breadcrumbs, пока что захардкоженный */}
-      <Container className="py-0">
+      <Container>
         <div className="mb-8 flex items-center">
           <NavLink to={"/"}>
             <Text variant="caption"> Main Page &gt;</Text>
@@ -40,9 +57,11 @@ export const Location = () => {
 
       <LocationHero />
 
-      <Dishes title="Specialty Dishes" dishes={specialityDishes} />
+      <PageBody>
+        <Dishes title="Specialty Dishes" dishes={specialityDishes} />
+      </PageBody>
 
-      <Reviews />
+      <Reviews feedbacks={feedbacks} id={id} />
     </>
   );
 };

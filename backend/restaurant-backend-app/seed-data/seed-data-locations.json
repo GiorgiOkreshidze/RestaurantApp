@@ -3,12 +3,12 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "loc_001" },
+          "id": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
           "address": { "S": "48 Rustaveli Avenue" },
           "description": { "S": "A spacious coworking space with modern amenities." },
           "totalCapacity": { "S": "4" },
           "averageOccupancy": { "S": "12" },
-          "imageUrl": { "S": "https://example.com/location1.jpg" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/compresed/kaja-sariwating-6XMIzhk91_Y-unsplash+1.jpg" },
           "rating": { "S": "4.5" }
         }
       }
@@ -16,12 +16,12 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "loc_002" },
-          "address": { "S": "14 Baratashvili Street" },
+          "id": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "address": { "S": "9 Abashidze Street" },
           "description": { "S": "A beachfront lounge with stunning views and great ambiance." },
           "totalCapacity": { "S": "4" },
           "averageOccupancy": { "S": "78" },
-          "imageUrl": { "S": "https://example.com/location2.jpg" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/compresed/kayleigh-harrington-yhn4okt6ci0-unsplash+1.jpg" },
           "rating": { "S": "4.8" }
         }
       }
@@ -29,12 +29,12 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "loc_003" },
+          "id": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
           "address": { "S": "14 Baratashvili Street" },
           "description": { "S": "A cozy retreat in the mountains, perfect for remote work." },
           "totalCapacity": { "S": "4" },
           "averageOccupancy": { "S": "99" },
-          "imageUrl": { "S": "https://example.com/location3.jpg" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/compresed/ruben-ramirez-uk-unsplash.jpg" },
           "rating": { "S": "4.7" }
         }
       }

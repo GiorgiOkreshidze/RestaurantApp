@@ -7,7 +7,10 @@ import {
 } from "@/components/ui/";
 import { LogOutIcon, UserCircledIcon, UserIcon } from "../icons";
 import { Text } from "../ui";
-import { DropdownMenuItem, DropdownMenuLabel } from "../ui/DropdownMenu";
+import {
+  DropdownMenuItem,
+  DropdownMenuLabel,
+} from "@/components/ui/DropdownMenu";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
 import { Link } from "react-router";
@@ -20,11 +23,11 @@ export const UserMenu = () => {
 
   return (
     <DropdownMenu>
-      <Button asChild variant="tertiary" size="sm">
-        <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
+        <Button variant="tertiary" size="sm">
           <UserCircledIcon className="size-[24px]" />
-        </DropdownMenuTrigger>
-      </Button>
+        </Button>
+      </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
         className="bg-neutral-0 p-0 shadow-card rounded border-none min-w-[216px]"
@@ -44,11 +47,11 @@ export const UserMenu = () => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() =>
-            dispatch(
+          onClick={async () => {
+            await dispatch(
               signout({ refreshToken: user?.tokens.refreshToken ?? "" }),
-            ).unwrap()
-          }
+            ).unwrap();
+          }}
         >
           <LogOutIcon className="size-[24px] mr-[1rem]" />
           <Text variant="bodyBold">Sign Out</Text>

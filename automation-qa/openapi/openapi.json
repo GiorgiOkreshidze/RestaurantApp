@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://q03v2fjbe5.execute-api.eu-west-2.amazonaws.com/{basePath}",
+      "url": "https://bc19bl6ydl.execute-api.eu-west-2.amazonaws.com/{basePath}",
       "description": "Development server",
       "variables": {
         "basePath": {
@@ -1087,6 +1087,35 @@
         "summary": "Get user reservations",
         "description": "Retrieves all reservations for the authenticated user",
         "operationId": "getUserReservations",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "description": "date to filter by",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "timeFrom",
+            "in": "query",
+            "description": "timeFrom to filter by",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tableNumber",
+            "in": "query",
+            "description": "table number to filter by",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "security": [
           {
             "authorizer": []
@@ -1113,23 +1142,17 @@
                 "example": [
                   {
                     "id": "30001",
-                    "locationId": "1001",
-                    "locationName": "Riverside Restaurant",
+                    "feedbackId": "1001",
+                    "guestsNumber": "2",
                     "date": "2025-04-15",
-                    "time": "19:00",
-                    "guests": 4,
-                    "status": "confirmed",
-                    "createdAt": "2025-03-10T14:30:00Z"
-                  },
-                  {
-                    "id": "30002",
-                    "locationId": "1002",
-                    "locationName": "City Bistro",
-                    "date": "2025-04-20",
-                    "time": "20:30",
-                    "guests": 2,
-                    "status": "confirmed",
-                    "createdAt": "2025-03-12T10:15:00Z"
+                    "locationAddress": "19:00",
+                    "preOrder": "Seafood Platter",
+                    "tableNumber": "2",
+                    "timeFrom": "17:00",
+                    "timeTo": "19:00",
+                    "timeSlot": "",
+                    "userInfo": "John Doe, john@example.com",
+                    "editableTill": "2025-03-22 16:30"
                   }
                 ]
               }
@@ -1182,6 +1205,17 @@
         "summary": "Create a new reservation",
         "description": "Reservation created/updated successfully, to update provide existing reservation id",
         "operationId": "createClientReservation",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-amz-security-token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The access token for the authenticated user"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {

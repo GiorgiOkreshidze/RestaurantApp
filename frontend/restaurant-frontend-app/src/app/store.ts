@@ -12,6 +12,9 @@ import { usersReducer } from "./slices/userSlice";
 import { dishesReducer } from "./slices/dishesSlice";
 import { locationsReducer } from "./slices/locationsSlice";
 import { reservationsReducer } from "./slices/reservationsSlice";
+import { tablesReducer } from "./slices/tablesSlice";
+import { bookingFormReducer } from "./slices/bookingFormSlice";
+import { waiterReservationsReducer } from "./slices/waiterReservationsSlice";
 
 const usersPersistConfig = {
   key: "restaurant:users",
@@ -24,6 +27,9 @@ const rootReducer = combineReducers({
   dishes: dishesReducer,
   locations: locationsReducer,
   reservations: reservationsReducer,
+  tables: tablesReducer,
+  bookingForm: bookingFormReducer,
+  waiterReservations: waiterReservationsReducer,
 });
 
 export const store = configureStore({

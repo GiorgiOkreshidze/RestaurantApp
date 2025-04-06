@@ -9,7 +9,7 @@ import { apiURL } from "./constants";
 import { logout, setUser } from "@/app/slices/userSlice";
 
 const axiosApi: AxiosInstance = axios.create({
-  baseURL: "https://k3pn4shr72.execute-api.eu-west-2.amazonaws.com/api",
+  baseURL: apiURL,
 });
 
 let isRefreshing = false;
@@ -39,6 +39,7 @@ const refreshTokenRequest = async (store: Store<RootState>) => {
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
+  skipRefreshToken?: boolean;
 }
 
 const addInterceptors = (store: Store<RootState>) => {
@@ -46,10 +47,7 @@ const addInterceptors = (store: Store<RootState>) => {
     const user = store.getState().users.user;
     if (user?.tokens) {
       config.headers["Authorization"] = `Bearer ${user.tokens.idToken}`;
-      console.log(config.url);
-      if (config.url === "users/profile") {
-        config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
-      }
+      config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
     }
     return config;
   });
@@ -57,15 +55,28 @@ const addInterceptors = (store: Store<RootState>) => {
   axiosApi.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
+      console.log(
+        "Interceptor caught error:",
+        error.response?.status,
+        error.config?.url,
+      );
+
       const originalRequest = error.config as
         | CustomAxiosRequestConfig
         | undefined;
 
+      const isAuthRequest = originalRequest?.url?.includes("signin");
+
       if (
         error.response?.status === 401 &&
         originalRequest &&
-        !originalRequest._retry
+        !originalRequest._retry &&
+        !isAuthRequest &&
+        !originalRequest.skipRefreshToken
       ) {
+        console.log("Token expired. Refreshing...");
+        originalRequest._retry = true;
+
         if (isRefreshing) {
           return new Promise((resolve) => {
             refreshSubscribers.push((tokens) => {
@@ -78,7 +89,6 @@ const addInterceptors = (store: Store<RootState>) => {
           });
         }
 
-        originalRequest._retry = true;
         isRefreshing = true;
 
         try {
@@ -95,6 +105,7 @@ const addInterceptors = (store: Store<RootState>) => {
           return axiosApi(originalRequest);
         } catch (err) {
           isRefreshing = false;
+          console.error("Refresh token request failed. Logging out.");
           return Promise.reject(err);
         }
       }
@@ -104,5 +115,14 @@ const addInterceptors = (store: Store<RootState>) => {
   );
 };
 
-export { addInterceptors };
+const createAuthRequest = (
+  config: InternalAxiosRequestConfig,
+): CustomAxiosRequestConfig => {
+  return {
+    ...config,
+    skipRefreshToken: true,
+  };
+};
+
+export { addInterceptors, createAuthRequest };
 export default axiosApi;

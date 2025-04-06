@@ -12,6 +12,8 @@ export interface User {
     refreshToken: string;
   };
 
+  id: string;
+  locationId?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -44,7 +46,7 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
-export interface UserDataResponse extends Omit<User, "tokens"> {}
+export type UserDataResponse = Omit<User, "tokens">;
 
 export interface RegistrationFields extends UserFields {
   confirmPassword: string;
@@ -72,41 +74,55 @@ export interface Dish {
   price: string;
   weight: string;
   imageUrl: string;
+  state?: string;
 }
 
-export interface Location {
-  id: string;
-  address: string;
+export interface ExtendedDish extends Dish {
   description: string;
-  totalCapacity: string;
-  averageOccupancy: string;
-  imageUrl: string;
-  rating: string;
+  calories: string;
+  carbohydrates: string;
+  fats: string;
+  proteins: string;
+  vitamins: string;
+}
+
+type CategoryType = "Appetizers" | "MainCourse" | "Desserts" | "";
+
+type SortOptionType = {
+  id: string;
+  label: string;
+};
+
+export interface FeedbacksResponse {
+  content: Review[];
 }
 
 export interface Review {
-  name: string;
+  id: string;
+  userName: string;
+  userAvatarUrl: string;
   date: string;
-  rating: number;
-  review: string;
-  image: string;
+  rate: number;
+  comment: string;
+  date: string;
+  type: string;
+  locationId: string;
 }
 
-export type ReservationStatus =
-  | "Reserved"
-  | "In Progress"
-  | "Canceled"
-  | "Finished";
-
-export interface Reservation {
-  date: string;
-  feedbackId: string;
-  guestsNumber: string;
+export interface RichTimeSlot {
   id: string;
-  locationAddress: string;
-  preOrder: string;
-  status: ReservationStatus;
+  startString: string;
+  endString: string;
+  rangeString: string;
+  startDate: string;
+  endDate: string;
+  isPast: boolean;
+}
+
+export interface LocationTable {
+  tableId: string;
   tableNumber: string;
-  timeSlot: string;
-  userInfo: string;
+  capacity: string;
+  locationId: string;
+  locationAddress: string;
 }

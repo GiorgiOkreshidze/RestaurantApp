@@ -1,6 +1,11 @@
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 
-export const Spinner = ({ ...props }: ComponentProps<"svg">) => {
+export const Spinner = ({
+  color = "var(--color-primary, #00ad0c)",
+  ...props
+}: ComponentProps<"svg"> & {
+  color?: string;
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,6 +14,7 @@ export const Spinner = ({ ...props }: ComponentProps<"svg">) => {
       height="50"
       {...props}
     >
+      <title>Spinner</title>
       <radialGradient
         id="a12"
         cx={0.66}
@@ -17,32 +23,16 @@ export const Spinner = ({ ...props }: ComponentProps<"svg">) => {
         fy={0.3125}
         gradientTransform="scale(1.5)"
       >
-        <stop offset={0} stopColor="var(--color-primary, #00ad0c)" />
-        <stop
-          offset={0.3}
-          stopColor="var(--color-primary, #00ad0c)"
-          stopOpacity={0.9}
-        />
-        <stop
-          offset={0.6}
-          stopColor="var(--color-primary, #00ad0c)"
-          stopOpacity={0.6}
-        />
-        <stop
-          offset={0.8}
-          stopColor="var(--color-primary, #00ad0c)"
-          stopOpacity={0.3}
-        />
-        <stop
-          offset={1}
-          stopColor="var(--color-primary, #00ad0c)"
-          stopOpacity={0}
-        />
+        <stop offset={0} stopColor={color} />
+        <stop offset={0.3} stopColor={color} stopOpacity={0.9} />
+        <stop offset={0.6} stopColor={color} stopOpacity={0.6} />
+        <stop offset={0.8} stopColor={color} stopOpacity={0.3} />
+        <stop offset={1} stopColor={color} stopOpacity={0} />
       </radialGradient>
       <circle
-        // transform-origin="center"
+        style={{ transformOrigin: "center" }}
         fill="none"
-        stroke="url(#a12)"
+        stroke={color}
         strokeWidth={15}
         strokeLinecap="round"
         strokeDasharray="200 1000"
@@ -63,10 +53,10 @@ export const Spinner = ({ ...props }: ComponentProps<"svg">) => {
         />
       </circle>
       <circle
-        // transform-origin="center"
+        style={{ transformOrigin: "center" }}
         fill="none"
         opacity={0.2}
-        stroke="var(--color-primary, #00ad0c)"
+        stroke={color}
         strokeWidth={15}
         strokeLinecap="round"
         cx={100}

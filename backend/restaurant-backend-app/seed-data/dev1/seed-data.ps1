@@ -4,22 +4,20 @@ $prefix = "tm2-"
 $syndicateFile = "../../.syndicate-config-dev/syndicate.yml"
 $locationsSeedFile = "../seed-data-locations.json"
 $dishesSeedFile = "../seed-data-dishes.json"
-$waitersSeedFile = "../seed-data-waiters.json"
-$reservationsSeedFile = "../seed-data-reservations.json"
+$employeesSeedFile = "../seed-data-employee-info.json"
 $tempFile = "seed-data-processed.json"
 
 # Get the suffix from syndicate.yml
 $resourcesSuffix = (Get-Content $syndicateFile | Where-Object { $_ -match "resources_suffix:" }) -replace "resources_suffix:\s*", ""
 if (-not $resourcesSuffix) { 
-    $resourcesSuffix = "-dev1"
+    $resourcesSuffix = "-dev5"
     Write-Host "No suffix found in syndicate.yml, defaulting to $resourcesSuffix"
 }
 
 # Construct table names
 $locationsTable = "$prefix" + "Locations" + "$resourcesSuffix"
 $dishesTable = "$prefix" + "Dishes" + "$resourcesSuffix"
-$waitersTable = "$prefix" + "Waiters" + "$resourcesSuffix"
-$reservationsTable = "$prefix" + "Reservations" + "$resourcesSuffix"
+$employeesTable = "$prefix" + "EmployeeInfo" + "$resourcesSuffix"
 
 # Check if seed files exist
 if (-not (Test-Path $locationsSeedFile)) {
@@ -30,12 +28,8 @@ if (-not (Test-Path $dishesSeedFile)) {
     Write-Error "Seed file $dishesSeedFile not found!"
     exit 1
 }
-if (-not (Test-Path $waitersSeedFile)) {
-    Write-Error "Seed file $waitersSeedFile not found!"
-    exit 1
-}
-if (-not (Test-Path $waitersSeedFile)) {
-    Write-Error "Seed file $reservationsSeedFile not found!"
+if (-not (Test-Path $employeesSeedFile)) {
+    Write-Error "Seed file $employeesSeedFile not found!"
     exit 1
 }
 
@@ -44,20 +38,17 @@ try {
     # Read JSON files and extract the inner arrays
     $locationsData = Get-Content $locationsSeedFile -Raw | ConvertFrom-Json
     $dishesData = Get-Content $dishesSeedFile -Raw | ConvertFrom-Json
-    $waitersData = Get-Content $waitersSeedFile -Raw | ConvertFrom-Json
-    $reservationsData = Get-Content $reservationsSeedFile -Raw | ConvertFrom-Json
+    $employeesData = Get-Content $employeesSeedFile -Raw | ConvertFrom-Json
     
     $locationsItems = $locationsData.Locations  # Extract the 'Locations' array
     $dishesItems = $dishesData.Dishes
-    $waitersItems = $waitersData.Waiters
-    $reservationsItems = $reservationsData.Reservations
+    $employeesItems = $employeesData.EmployeeInfo
 
     # Create the request structure
     $requestItems = @{
         "$locationsTable" = $locationsItems
         "$dishesTable" = $dishesItems
-        "$waitersTable" = $waitersItems
-        "$reservationsTable" = $reservationsItems
+        "$employeesTable" = $employeesItems
     }
 
     # Write to temp file without BOM

@@ -3,7 +3,7 @@
   {
     "PutRequest": {
       "Item": {
-        "id": { "S": "waiter_001" },
+        "id": { "S": "aab435b8-0ad1-4d7e-b0e9-205e913ca91c" },
         "email": { "S": "laydyGaga98@example.com" }
       }
     }
@@ -11,7 +11,7 @@
   {
     "PutRequest": {
       "Item": {
-        "id": { "S": "waiter_002" },
+        "id": { "S": "b6a81989-b253-47ef-88eb-c1dcb017fc8d" },
         "email": { "S": "johnyDepp007@example.com" }
       }
     }
@@ -19,7 +19,7 @@
   {
     "PutRequest": {
       "Item": {
-        "id": { "S": "waiter_003" },
+        "id": { "S": "fa2df8b1-c558-42b4-a409-0b2970806a43" },
         "email": { "S": "kylieJenner69@example.com" }
       }
     }

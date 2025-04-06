@@ -1,33 +1,57 @@
-import { Container } from "./container";
 import { DishCard, Text } from "../ui";
-import { Dish } from "@/types";
+import type { Dish } from "@/types";
+import { PageBodyHeader, PageBodySection } from "./PageBody";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectOneDish, selectOneDishLoading } from "@/app/slices/dishesSlice";
+import { useAppDispatch } from "@/app/hooks";
+import { OneDishDialog } from "./OneDishDialog";
+import { getOneDish } from "@/app/thunks/dishesThunks";
 
 interface Props {
-  title: string;
   isLoading?: boolean;
   dishes: Dish[];
+  title: string;
 }
 
-export const Dishes: React.FC<Props> = ({ title, dishes }) => {
+export const Dishes: React.FC<Props> = ({ dishes, title }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const oneDish = useSelector(selectOneDish);
+  const oneDishLoading = useSelector(selectOneDishLoading);
+  const dispatch = useAppDispatch();
+
+  const fetchOneDish = async (id: string) => {
+    setIsOpen(true);
+    await dispatch(getOneDish(id));
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
+
   return (
-    <div>
-      <Container className="!py-[64px]">
-        <Text variant="h2" className="mb-10">
-          {title}
-        </Text>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
-          {/* <div className="flex flex-wrap gap-8"> */}
-          {dishes.slice(0, 4).map((item, index) => (
-            <DishCard
-              key={index}
-              name={item.name}
-              price={item.price}
-              weight={item.weight}
-              imageUrl={item.imageUrl}
-            />
-          ))}
-        </div>
-      </Container>
-    </div>
+    <PageBodySection>
+      <PageBodyHeader>
+        <Text variant="h2">{title}</Text>
+      </PageBodyHeader>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-8">
+        {dishes.slice(0, 4).map((item) => (
+          <DishCard
+            key={item.id}
+            name={item.name}
+            price={item.price}
+            weight={item.weight}
+            imageUrl={item.imageUrl}
+            onClick={() => fetchOneDish(item.id)}
+          />
+        ))}
+      </div>
+      <OneDishDialog
+        dish={oneDish}
+        isOpen={isOpen}
+        onOpenChange={handleOpenChange}
+        loading={oneDishLoading}
+      />
+    </PageBodySection>
   );
 };

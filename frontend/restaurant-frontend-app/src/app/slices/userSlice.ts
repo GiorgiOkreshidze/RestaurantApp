@@ -1,6 +1,12 @@
-import { User } from "@/types";
+import { User, UserDataResponse } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { getUserData, login, register, signout } from "../thunks/userThunks";
+import {
+  getUserData,
+  getAllUsers,
+  login,
+  register,
+  signout,
+} from "../thunks/userThunks";
 import { toast } from "react-toastify";
 
 interface UserState {
@@ -9,6 +15,8 @@ interface UserState {
   loginLoading: boolean;
   userDataLoading: boolean;
   signoutLoading: boolean;
+  allUsers: UserDataResponse[] | null;
+  allUsersLoading: boolean;
 }
 
 const initialState: UserState = {
@@ -17,6 +25,8 @@ const initialState: UserState = {
   loginLoading: false,
   userDataLoading: false,
   signoutLoading: false,
+  allUsers: null,
+  allUsersLoading: false,
 };
 
 export const userSlice = createSlice({
@@ -37,18 +47,6 @@ export const userSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, { payload: data }) => {
         state.registerLoading = false;
-        // state.user = {
-        //   tokens: {
-        //     accessToken: data.accessToken,
-        //     idToken: data.idToken,
-        //     refreshToken: data.refreshToken,
-        //   },
-        //   name: state.user?.name || "",
-        //   lastName: state.user?.lastName || "",
-        //   email: state.user?.email || "",
-        //   role: state.user?.role || "",
-        //   imageUrl: state.user?.imageUrl || "",
-        // };
         toast.success(data.message);
       })
       .addCase(register.rejected, (state, { payload: errorResponse }) => {
@@ -66,6 +64,8 @@ export const userSlice = createSlice({
           state.user.tokens = data;
         } else {
           state.user = {
+            locationId: "",
+            id: "",
             tokens: data,
             firstName: "",
             lastName: "",
@@ -74,9 +74,11 @@ export const userSlice = createSlice({
             imageUrl: "",
           };
         }
+        toast.success("Successfully logged in!");
       })
-      .addCase(login.rejected, (state) => {
+      .addCase(login.rejected, (state, { payload: errorResponse }) => {
         state.loginLoading = false;
+        toast.error(errorResponse?.message);
       });
 
     builder
@@ -86,14 +88,17 @@ export const userSlice = createSlice({
       .addCase(getUserData.fulfilled, (state, { payload: data }) => {
         state.userDataLoading = false;
         if (state.user) {
+          state.user.id = data.id;
+          state.user.locationId = data.locationId;
           state.user.firstName = data.firstName;
           state.user.lastName = data.lastName;
           state.user.email = data.email;
           state.user.role = data.role;
         }
       })
-      .addCase(getUserData.rejected, (state) => {
+      .addCase(getUserData.rejected, (state, { payload: errorResponse }) => {
         state.userDataLoading = false;
+        toast.error(errorResponse?.message);
       });
 
     builder
@@ -104,18 +109,39 @@ export const userSlice = createSlice({
         state.signoutLoading = false;
         state.user = null;
       })
-      .addCase(signout.rejected, (state) => {
+      .addCase(signout.rejected, (state, { payload: errorResponse }) => {
         state.signoutLoading = false;
+        toast.error(errorResponse?.message);
+      });
+
+    builder
+      .addCase(getAllUsers.pending, (state) => {
+        state.allUsersLoading = true;
+      })
+      .addCase(getAllUsers.fulfilled, (state, { payload: data }) => {
+        state.allUsersLoading = false;
+        state.allUsers = data;
+      })
+      .addCase(getAllUsers.rejected, (state, { payload: errorResponse }) => {
+        state.allUsersLoading = false;
+        toast.error(errorResponse?.message);
       });
   },
   selectors: {
     selectUser: (state) => state.user,
-    selectRegisterLoading: (state) => state.registerLoading,
     selectLoginLoading: (state) => state.loginLoading,
+    selectRegisterLoading: (state) => state.registerLoading,
+    selectAllUsers: (state) => state.allUsers,
+    selectAllUsersLoading: (state) => state.allUsersLoading,
   },
 });
 
 export const usersReducer = userSlice.reducer;
 export const { setUser, logout } = userSlice.actions;
-export const { selectUser, selectRegisterLoading, selectLoginLoading } =
-  userSlice.selectors;
+export const {
+  selectUser,
+  selectRegisterLoading,
+  selectLoginLoading,
+  selectAllUsers,
+  selectAllUsersLoading,
+} = userSlice.selectors;

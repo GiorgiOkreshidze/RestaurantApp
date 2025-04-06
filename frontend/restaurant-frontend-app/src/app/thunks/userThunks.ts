@@ -41,7 +41,7 @@ export const login = createAsyncThunk<
     );
     return response.data;
   } catch (e) {
-    if (isAxiosError(e) && e.response && e.response.status === 422) {
+    if (isAxiosError(e) && e.response) {
       return rejectWithValue(e.response.data);
     }
     throw e;
@@ -57,7 +57,7 @@ export const getUserData = createAsyncThunk<
     const response = await axiosApi.get<UserDataResponse>(serverRoute.userData);
     return response.data;
   } catch (e) {
-    if (isAxiosError(e) && e.response && e.response.status === 422) {
+    if (isAxiosError(e) && e.response) {
       return rejectWithValue(e.response.data);
     }
     throw e;
@@ -71,11 +71,26 @@ export const signout = createAsyncThunk<
 >("signout", async (signOutMutation, { rejectWithValue }) => {
   try {
     await axiosApi.post(serverRoute.signOut, signOutMutation);
-
     console.log("Logged out successfully");
     return;
   } catch (e) {
-    if (isAxiosError(e) && e.response && e.response.status === 422) {
+    if (isAxiosError(e) && e.response) {
+      return rejectWithValue(e.response.data);
+    }
+    throw e;
+  }
+});
+
+export const getAllUsers = createAsyncThunk<
+  UserDataResponse[],
+  void,
+  { rejectValue: GlobalErrorMessage }
+>("users", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.get<UserDataResponse[]>(serverRoute.users);
+    return response.data;
+  } catch (e) {
+    if (isAxiosError(e) && e.response) {
       return rejectWithValue(e.response.data);
     }
     throw e;

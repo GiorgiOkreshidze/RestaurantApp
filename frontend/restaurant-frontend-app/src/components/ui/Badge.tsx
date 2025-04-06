@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cn } from "@/lib/utils";
-import { ReservationStatus } from "@/types";
+import { ReservationStatus } from "@/types/reservation.types";
 
 export const Badge = ({
   className,
@@ -21,8 +21,9 @@ export const Badge = ({
         "fontset-caption inline-flex items-center justify-center rounded px-[0.75rem]",
         status === "Reserved" && "bg-orange-100",
         status === "In Progress" && "bg-blue-100",
-        status === "Canceled" && "bg-red-100",
+        status === "Cancelled" && "bg-red-100",
         status === "Finished" && "bg-green-100",
+        status === "On Stop" && "bg-red-100",
         className,
       )}
       {...props}

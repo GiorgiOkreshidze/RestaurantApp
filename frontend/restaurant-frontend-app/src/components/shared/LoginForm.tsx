@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
-import { PasswordField } from "../ui/PasswordField";
+import { PasswordField } from "@/components/ui/PasswordField";
 import { useLoginForm } from "@/hooks/useLoginForm";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
@@ -27,7 +27,6 @@ export function LoginForm({ className, ...props }: ComponentProps<"form">) {
   return (
     <Form {...form}>
       <form
-        // autoComplete="on"
         className={cn(className, "flex flex-col")}
         onSubmit={form.handleSubmit(onSubmit)}
         aria-labelledby="login-form-title"
@@ -80,7 +79,7 @@ export function LoginForm({ className, ...props }: ComponentProps<"form">) {
                   {formState.errors.password?.message ? (
                     <FormMessage />
                   ) : (
-                    <FormDescription></FormDescription>
+                    <FormDescription />
                   )}
                 </FormItem>
               );
@@ -93,13 +92,13 @@ export function LoginForm({ className, ...props }: ComponentProps<"form">) {
           disabled={isLoading}
         >
           {isLoading ? (
-            <span className="animate-spin border-2 border-t-transparent border-white w-5 h-5 rounded-full"></span>
+            <span className="animate-spin border-2 border-t-transparent border-white w-5 h-5 rounded-full" />
           ) : (
             "Sign In"
           )}
         </Button>
         <Text className="mt-[16px]" variant="caption">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <CustomLink asChild>
             <Link to="/signup">Create an Account</Link>
           </CustomLink>

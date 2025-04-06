@@ -1,7 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,500;0,700&display=swap");
-
 @import "tailwindcss";
 @import "./tw-utilities.css";
+@import "./fonts.css";
 
 @plugin "tailwindcss-animate";
 
@@ -129,16 +128,23 @@ html {
 
 body {
   margin: 0;
-  background: #f7f7f7;
-  overflow-y: scroll;
-  min-block-size: 100vh;
   min-inline-size: 320px;
+  /* min-block-size: 100vh; */
+
+  font-family: "Poppins";
+
+  background: var(--color-neutral-100);
+  overflow-y: scroll;
 }
 
 #root {
   display: flex;
   flex-direction: column;
   min-block-size: 100vh;
+}
+
+.test {
+  /* grid-template-columns: repeat(auto-fit, minmax(0, auto)); */
 }
 
 @theme {
@@ -154,6 +160,7 @@ body {
 
   --color-background: var(--color-neutral-100, #f7f7f7);
   --color-foreground: var(--color-neutral-900, #232323);
+  --color-muted-foreground: oklch(from var(--color-foreground) 0.8 c h);
 
   --color-disabled: var(--color-neutral-400, #898989);
 
@@ -162,17 +169,25 @@ body {
   --color-destructive: var(--color-red-400, #d70c0c);
   --color-destructive-shadow: rgba(from var(--color-destructive) r g b / 0.2);
 
-  --color-card-background: var(--color-neutral-0, #ffffff);
+  --color-card: var(--color-neutral-0, #ffffff);
   --color-card-shadow: rgba(from #c2c2c2 r g b / 0.2);
 
+  /* INPUT */
   --color-input-background: var(--color-neutral-0, #ffffff);
+  --color-input-foreground: var(--color-foreground, #232323);
+  --color-input-foreground-disabled: var(--color-neutral-400, #898989);
+  --color-input-placeholder: var(--color-neutral-400, #898989);
+  --shadow-input-primary: 0 0 8px 0 var(--color-primary-shadow);
+  --shadow-input-destructive: 0 0 8px 0 var(--color-destructive-shadow);
+  --radius-input: 0.5rem;
+
+  --color-accent: var(--color-primary-light);
+  --color-popover: var(--color-neutral-0);
 
   /* FONTS */
   /* In "tw-utilities.css" file */
 
   /* SHADOWS */
-  --shadow-input-primary: 0 0 8px 0 var(--color-primary-shadow);
-  --shadow-input-destructive: 0 0 8px 0 var(--color-destructive-shadow);
   --shadow-card: 0 0 10px 4px var(--color-card-shadow);
 
   /* RADIUS */
@@ -183,7 +198,7 @@ body {
   /* OTHER VARIABLES */
   /* ==================================== */
   /* FONT-FAMILIES */
-  --font-poppins: "Poppins", "sans-serif";
+  /* --font-poppins: "Poppins", "sans-serif"; */
 
   /* COLORS */
   --color-neutral-0: #ffffff;
@@ -206,14 +221,4 @@ body {
 
   --color-red-100: #fce9ed;
   --color-red-400: #d70c0c;
-}
-
-@layer base {
-  * {
-    /* @apply border-border outline-ring/50; */
-  }
-  body {
-    /* @apply bg-background text-foreground; */
-    font-family: var(--font-poppins);
-  }
 }

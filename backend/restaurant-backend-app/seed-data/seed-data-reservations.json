@@ -3,108 +3,414 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "res_001" },
-          "locationId": { "S": "loc_001" },
+          "id": { "S": "cd13a50b-2b5e-4c17-bf44-13a44567495f" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
+          "tableId": { "S": "04ba5b37-8fbd-4f5f-8354-0b75078a790a" },
           "tableNumber": { "S": "1" },
-          "date": { "S": "2025-03-22" },
+          "tableCapacity": { "S": "4" },
+          "date": { "S": "2025-04-22" },
           "guestsNumber": { "S": "4" },
-          "timeFrom": { "S": "12:15" },
-          "timeTo": { "S": "13:45" },
+          "timeFrom": { "S": "08:15" },
+          "timeTo": { "S": "09:45" },
+          "timeSlot": { "S": "08:15 - 09:45" },
           "locationAddress": { "S": "48 Rustaveli Avenue" },
-          "feedbackId": { "S": "fb_001" },
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "John Doe, john@example.com" }
+          "userInfo": { "S": "Temirlan Doe" },
+          "userEmail": {"S":  "temirlan@example.com"},
+          "waiterId": { "S": "66325214-c061-70df-ac8e-8b24eb7ec059" },
+          "createdAt": { "S": "2025-03-08T10:15:00Z" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "res_002" },
-          "locationId": { "S": "loc_001" },
+          "id": { "S": "9b6032c0-105c-4fd3-99c2-6770bffce801" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
+          "tableId": { "S": "04ba5b37-8fbd-4f5f-8354-0b75078a790a" },
           "tableNumber": { "S": "1" },
-          "date": { "S": "2025-03-22" },
+          "tableCapacity": { "S": "4" },
+          "date": { "S": "2025-04-22" },
           "guestsNumber": { "S": "4" },
-          "timeFrom": { "S": "17:30" },
-          "timeTo": { "S": "19:00" },
+          "timeFrom": { "S": "13:30" },
+          "timeTo": { "S": "15:00" },
+          "timeSlot": { "S": "13:30 - 15:00" },
           "locationAddress": { "S": "48 Rustaveli Avenue" },
-          "feedbackId": { "S": "fb_001" },
           "preOrder": { "S": "Vegetarian Meal" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "John Doe, john@example.com" }
+          "userInfo": { "S": "Irina Doe" },
+          "userEmail": {"S":  "irina@example.com"},
+          "waiterId": { "S": "868272a4-60f1-707f-8bad-3b070737ffbb" },
+          "createdAt": { "S": "2025-03-12T10:15:00Z" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "res_003" },
-          "locationId": { "S": "loc_002" },
+          "id": { "S": "c7286b00-bb90-4261-8412-904646202e82" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "tableId": { "S": "07095e7b-5cc9-40d2-a1d8-65aecdf5a2d9" },
           "tableNumber": { "S": "3" },
-          "date": { "S": "2025-03-22" },
+          "tableCapacity": { "S": "6" },
+          "date": { "S": "2025-04-22" },
           "guestsNumber": { "S": "6" },
-          "timeFrom": { "S": "21:00" },
-          "timeTo": { "S": "22:30" },
-          "locationAddress": { "S": "14 Baratashvili Street" },
-          "feedbackId": { "S": "fb_002" },
+          "timeFrom": { "S": "17:00" },
+          "timeTo": { "S": "18:30" },
+          "timeSlot": { "S": "17:00 - 18:30" },
+          "locationAddress": { "S": "9 Abashidze Street" },
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "Jane Smith, jane@example.com" }
+          "userInfo": { "S": "Giorgi Doe" },
+          "userEmail": {"S":  "giorgi@example.com"},
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
+          "createdAt": { "S": "2025-03-09T10:15:00Z" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "res_004" },
-          "locationId": { "S": "loc_002" },
+          "id": { "S": "39527434-b435-45c3-b53e-3cb7084c0626" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "tableId": { "S": "c25f24b6-f305-4cd7-a6b6-54f126794c78" },
           "tableNumber": { "S": "1" },
-          "date": { "S": "2025-03-22" },
+          "tableCapacity": { "S": "2" },
+          "date": { "S": "2025-04-22" },
           "guestsNumber": { "S": "2" },
-          "timeFrom": { "S": "19:15" },
-          "timeTo": { "S": "20:45" },
-          "locationAddress": { "S": "14 Baratashvili Street" },
-          "feedbackId": { "S": "fb_002" },
+          "timeFrom": { "S": "15:15" },
+          "timeTo": { "S": "16:45" },
+          "timeSlot": { "S": "15:15 - 16:45" },
+          "locationAddress": { "S": "9 Abashidze Street" },
           "preOrder": { "S": "Steak Dinner" },
           "status": { "S": "Reserved" },
-          "userInfo": { "S": "Jane Smith, jane@example.com" }
+          "userInfo": { "S": "Salome Doe" },
+          "userEmail": {"S":  "salome@example.com"},
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
+          "createdAt": { "S": "2025-03-10T10:15:00Z" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "res_005" },
-          "locationId": { "S": "loc_003" },
+          "id": { "S": "91e48b82-26e9-49e9-bd79-71c9b1bc9d75" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "tableId": { "S": "604acc18-d0f6-4d0d-af5c-b14a9aeaa559" },
           "tableNumber": { "S": "4" },
-          "date": { "S": "2025-03-22" },
+          "tableCapacity": { "S": "10" },
+          "date": { "S": "2025-04-22" },
           "guestsNumber": { "S": "6" },
-          "timeFrom": { "S": "19:15" },
-          "timeTo": { "S": "20:45" },
-          "locationAddress": { "S": "9 Abashidze Street" },
-          "feedbackId": { "S": "fb_003" },
+          "timeFrom": { "S": "15:15" },
+          "timeTo": { "S": "16:45" },
+          "timeSlot": { "S": "15:15 - 16:45" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "Alice Johnson, alice@example.com" }
+          "userInfo": { "S": "Dora Doe" },
+          "userEmail": {"S":  "dora@example.com"},
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
+          "createdAt": { "S": "2025-03-11T10:15:00Z" }
         }
       }
     },
-     {
+    {
       "PutRequest": {
         "Item": {
-          "id": { "S": "res_006" },
-          "locationId": { "S": "loc_003" },
+          "id": { "S": "0371cd32-6848-4ec3-a4c3-5249cecf274a" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "tableId": { "S": "42f7291d-0997-4e74-8740-880533094881" },
           "tableNumber": { "S": "1" },
-          "date": { "S": "2025-03-22" },
+          "tableCapacity": { "S": "6" },
+          "date": { "S": "2025-04-22" },
           "guestsNumber": { "S": "5" },
-          "timeFrom": { "S": "21:00" },
-          "timeTo": { "S": "22:30" },
-          "locationAddress": { "S": "9 Abashidze Street" },
-          "feedbackId": { "S": "fb_003" },
+          "timeFrom": { "S": "17:00" },
+          "timeTo": { "S": "18:30" },
+          "timeSlot": { "S": "17:00 - 18:30" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
           "preOrder": { "S": "Seafood Platter" },
           "status": { "S": "Canceled" },
-          "userInfo": { "S": "Alice Johnson, alice@example.com" }
+          "userInfo": { "S": "Roman Doe" },
+          "userEmail": {"S":  "roman@example.com"},
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
+          "createdAt": { "S": "2025-02-12T10:15:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "1a7b9370-3d4e-42b9-a283-12f4a545bf88" },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" },
+          "tableId": { "S": "04ba5b37-8fbd-4f5f-8354-0b75078a790a"},
+          "tableNumber": { "S": "1" },
+          "tableCapacity": { "S": "4" },
+          "date": { "S": "2025-04-22" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "10:00" },
+          "timeTo": { "S": "11:30" },
+          "timeSlot": { "S": "10:00 - 11:30" },
+          "locationAddress": { "S": "48 Rustaveli Avenue" },
+          "preOrder": { "S": "Breakfast Special" },
+          "status": { "S": "In Progress" },
+          "userInfo": { "S": "Salome Doe" },
+          "userEmail": { "S": "salome@example.com" },
+          "waiterId": { "S": "868272a4-60f1-707f-8bad-3b070737ffbb" },
+          "createdAt": { "S": "2025-04-20T10:15:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "bded1291-4f92-4e16-91fc-3a79a1d6725e" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "tableId": { "S": "04ba5b37-8fbd-4f5f-8354-0b75078a790a" },
+          "tableNumber": { "S": "1" },
+          "tableCapacity": { "S": "4" },
+          "date": { "S": "2025-04-22" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "12:00" },
+          "timeTo": { "S": "13:30" },
+          "timeSlot": { "S": "12:00 - 13:30" },
+          "locationAddress": { "S": "9 Abashidze Street" },
+          "preOrder": { "S": "Lunch Special" },
+          "status": { "S": "Finished" },
+          "userInfo": { "S": "Roam Doe" },
+          "userEmail": { "S": "roman@example.com" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
+          "createdAt": { "S": "2025-04-20T10:30:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "2a18dd45-e609-4bd4-8219-42392a9168bd" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "tableId": { "S": "04ba5b37-8fbd-4f5f-8354-0b75078a790a" },
+          "tableNumber": { "S": "1" },
+          "tableCapacity": { "S": "4" },
+          "date": { "S": "2025-02-01" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "12:00" },
+          "timeTo": { "S": "13:30" },
+          "timeSlot": { "S": "12:00 - 13:30" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
+          "preOrder": { "S": "Lunch Special" },
+          "status": { "S": "Finished" },
+          "userInfo": { "S": "Dora Doe" },
+          "userEmail": { "S": "dora@example.com" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
+          "createdAt": { "S": "2025-02-01T10:30:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "adeddaef-c271-4915-bf70-48dd95735dc5" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "tableId": { "S": "04ba5b37-8fbd-4f5f-8354-0b75078a790a" },
+          "tableNumber": { "S": "1" },
+          "tableCapacity": { "S": "4" },
+          "date": { "S": "2025-02-03" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "12:00" },
+          "timeTo": { "S": "13:30" },
+          "timeSlot": { "S": "12:00 - 13:30" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
+          "preOrder": { "S": "Lunch Special" },
+          "status": { "S": "Finished" },
+          "userInfo": { "S": "Dora Doe" },
+          "userEmail": { "S": "dora@example.com" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
+          "createdAt": { "S": "2025-02-03T10:30:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "a1b2c3d4-e5f6-4g7h-8i9j-0k1l2m3n4o5p" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "tableId": { "S": "c25f24b6-f305-4cd7-a6b6-54f126794c78" },
+          "tableNumber": { "S": "1" },
+          "tableCapacity": { "S": "2" },
+          "date": { "S": "2025-04-10" },
+          "guestsNumber": { "S": "2" },
+          "timeFrom": { "S": "18:00" },
+          "timeTo": { "S": "19:30" },
+          "timeSlot": { "S": "18:00 - 19:30" },
+          "locationAddress": { "S": "9 Abashidze Street" },
+          "preOrder": { "S": "Dinner Special" },
+          "status": { "S": "In Progress" },
+          "userInfo": { "S": "Temirlan Doe" },
+          "userEmail": { "S": "temirlan@example.com" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
+          "createdAt": { "S": "2025-04-03T15:00:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "b2c3d4e5-f6g7-4h8i-9j0k-1l2m3n4o5p6" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "tableId": { "S": "9f9e2205-dc13-438b-802e-5824ad1889eb" },
+          "tableNumber": { "S": "2" },
+          "tableCapacity": { "S": "4" },
+          "date": { "S": "2025-04-15" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "13:00" },
+          "timeTo": { "S": "14:30" },
+          "timeSlot": { "S": "13:00 - 14:30" },
+          "locationAddress": { "S": "9 Abashidze Street" },
+          "preOrder": { "S": "Lunch Special" },
+          "status": { "S": "Finished" },
+          "userInfo": { "S": "Dora Doe" },
+          "userEmail": { "S": "dora@example.com" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
+          "createdAt": { "S": "2025-04-03T10:00:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "c3d4e5f6-g7h8-4i9j-0k1l-2m3n4o5p6q7" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "tableId": { "S": "07095e7b-5cc9-40d2-a1d8-65aecdf5a2d9" },
+          "tableNumber": { "S": "3" },
+          "tableCapacity": { "S": "6" },
+          "date": { "S": "2025-04-20" },
+          "guestsNumber": { "S": "6" },
+          "timeFrom": { "S": "19:00" },
+          "timeTo": { "S": "21:00" },
+          "timeSlot": { "S": "19:00 - 21:00" },
+          "locationAddress": { "S": "9 Abashidze Street" },
+          "preOrder": { "S": "Group Dinner" },
+          "status": { "S": "In Progress" },
+          "userInfo": { "S": "Giorgi O Doe" },
+          "userEmail": { "S": "giorgio@example.com" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
+          "createdAt": { "S": "2025-04-03T16:00:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "d4e5f6g7-h8i9-4j0k-1l2m-3n4o5p6q7r8" },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" },
+          "tableId": { "S": "b8801e52-ba42-463e-b5cd-68c4604e223e" },
+          "tableNumber": { "S": "4" },
+          "tableCapacity": { "S": "10" },
+          "date": { "S": "2025-04-25" },
+          "guestsNumber": { "S": "8" },
+          "timeFrom": { "S": "17:00" },
+          "timeTo": { "S": "19:00" },
+          "timeSlot": { "S": "17:00 - 19:00" },
+          "locationAddress": { "S": "9 Abashidze Street" },
+          "preOrder": { "S": "Party Platter" },
+          "status": { "S": "Finished" },
+          "userInfo": { "S": "Giorgi B Doe" },
+          "userEmail": { "S": "giorgib@example.com" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
+          "createdAt": { "S": "2025-04-03T14:00:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "e5f6g7h8-i9j0-4k1l-2m3n-4o5p6q7r8s9" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "tableId": { "S": "42f7291d-0997-4e74-8740-880533094881" },
+          "tableNumber": { "S": "1" },
+          "tableCapacity": { "S": "6" },
+          "date": { "S": "2025-04-12" },
+          "guestsNumber": { "S": "6" },
+          "timeFrom": { "S": "12:30" },
+          "timeTo": { "S": "14:00" },
+          "timeSlot": { "S": "12:30 - 14:00" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
+          "preOrder": { "S": "Brunch Special" },
+          "status": { "S": "In Progress" },
+          "userInfo": { "S": "Salome Doe" },
+          "userEmail": { "S": "salome@example.com" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
+          "createdAt": { "S": "2025-04-03T09:00:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "f6g7h8i9-j0k1-4l2m-3n4o-5p6q7r8s9t0" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "tableId": { "S": "d7561080-cc9b-497d-ad38-88f264efbbfc" },
+          "tableNumber": { "S": "2" },
+          "tableCapacity": { "S": "4" },
+          "date": { "S": "2025-04-18" },
+          "guestsNumber": { "S": "4" },
+          "timeFrom": { "S": "15:00" },
+          "timeTo": { "S": "16:30" },
+          "timeSlot": { "S": "15:00 - 16:30" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
+          "preOrder": { "S": "Afternoon Tea" },
+          "status": { "S": "Finished" },
+          "userInfo": { "S": "Irina Doe" },
+          "userEmail": { "S": "irina@example.com" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
+          "createdAt": { "S": "2025-04-03T12:00:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "g7h8i9j0-k1l2-4m3n-4o5p-6q7r8s9t0u1" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "tableId": { "S": "146bc291-2926-4a0b-90a2-a54975d2cbba" },
+          "tableNumber": { "S": "3" },
+          "tableCapacity": { "S": "10" },
+          "date": { "S": "2025-04-22" },
+          "guestsNumber": { "S": "8" },
+          "timeFrom": { "S": "20:00" },
+          "timeTo": { "S": "22:00" },
+          "timeSlot": { "S": "20:00 - 22:00" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
+          "preOrder": { "S": "Dinner Party" },
+          "status": { "S": "In Progress" },
+          "userInfo": { "S": "Roman Doe" },
+          "userEmail": { "S": "roman@example.com" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
+          "createdAt": { "S": "2025-04-03T17:00:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "h8i9j0k1-l2m3-4n4o-5p6q-7r8s9t0u1v2" },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" },
+          "tableId": { "S": "604acc18-d0f6-4d0d-af5c-b14a9aeaa559" },
+          "tableNumber": { "S": "4" },
+          "tableCapacity": { "S": "10" },
+          "date": { "S": "2025-04-28" },
+          "guestsNumber": { "S": "10" },
+          "timeFrom": { "S": "18:30" },
+          "timeTo": { "S": "20:30" },
+          "timeSlot": { "S": "18:30 - 20:30" },
+          "locationAddress": { "S": "14 Baratashvili Street" },
+          "preOrder": { "S": "Large Group Special" },
+          "status": { "S": "Finished" },
+          "userInfo": { "S": "Temirlan Doe" },
+          "userEmail": { "S": "temirlan@example.com" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
+          "createdAt": { "S": "2025-04-03T15:30:00Z" }
         }
       }
     }

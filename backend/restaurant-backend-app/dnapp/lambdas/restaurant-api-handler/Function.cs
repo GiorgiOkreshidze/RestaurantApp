@@ -1,8 +1,15 @@
+using System;
 using System.Collections.Generic;
+using System.Security.Authentication;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
+using Function.Actions;
+using Function.ApiHandler;
+using Function.Exceptions;
+using ResourceNotFoundException = Function.Exceptions.ResourceNotFoundException;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -20,10 +27,39 @@ public class Function
     public async Task<APIGatewayProxyResponse> FunctionHandler(APIGatewayProxyRequest request, ILambdaContext context)
     {
         context.Logger.LogInformation("Incoming serialized request: " + JsonSerializer.Serialize(request));
+        
+        APIGatewayProxyResponse result;
 
-        var result = await _apiHandler.HandleRequest(request, context);
+        try
+        {
+            result = await _apiHandler.HandleRequest(request, context);
+        }
+        catch (ArgumentException e)
+        {
+            result = ActionUtils.FormatResponse(400, new { message = e.Message });
+        }
+        catch (AuthenticationException e)
+        {
+            result = ActionUtils.FormatResponse(401, new { message = e.Message });
+        }
+        catch (UnauthorizedException e)
+        {
+            result = ActionUtils.FormatResponse(403, new { message = e.Message });
+        }
+        catch (ResourceNotFoundException e)
+        {
+            result = ActionUtils.FormatResponse(404, new { message = e.Message });
+        }
+        catch (ResourceAlreadyExistsException e)
+        {
+            result = ActionUtils.FormatResponse(409, new { message = e.Message });
+        }
+        catch (Exception e)
+        {
+            context.Logger.LogError(e.Message);
+            result = ActionUtils.FormatResponse(500, new { message = "Ops... An error occured. Please try-again later." });
+        }
 
-        // I didn't found any examples/other solutions to add them on configuration.
         result.Headers = new Dictionary<string, string>
         {
             { "Access-Control-Allow-Origin", "*" },

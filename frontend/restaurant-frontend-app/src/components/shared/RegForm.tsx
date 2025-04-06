@@ -16,7 +16,7 @@ import {
 import { ComponentProps, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useRegForm } from "@/hooks/useRegForm";
-import { PasswordField } from "../ui/PasswordField";
+import { PasswordField } from "@/components/ui/PasswordField";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
 import { selectRegisterLoading } from "@/app/slices/userSlice";
@@ -40,51 +40,49 @@ export function RegForm({ className, ...props }: ComponentProps<"form">) {
         <Text variant="h2" tag="h1">
           Create an Account
         </Text>
-        <FormFieldSet className="flex flex-col mt-[2rem] md:mt-[4rem]">
-          <div className="flex  items-center gap-4">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field, formState }) => (
-                <FormItem className="">
-                  <FormLabel>First Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      isInvalid={Boolean(formState.errors.firstName?.message)}
-                      placeholder="Enter your First Name"
-                      {...field}
-                    />
-                  </FormControl>
-                  {formState.errors.firstName?.message ? (
-                    <FormMessage />
-                  ) : (
-                    <FormDescription>e.g. Jonson</FormDescription>
-                  )}
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field, formState }) => (
-                <FormItem className="">
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      isInvalid={Boolean(formState.errors.lastName?.message)}
-                      placeholder="Enter your Last Name"
-                      {...field}
-                    />
-                  </FormControl>
-                  {formState.errors.lastName?.message ? (
-                    <FormMessage />
-                  ) : (
-                    <FormDescription>e.g. Doe</FormDescription>
-                  )}
-                </FormItem>
-              )}
-            />
-          </div>
+        <FormFieldSet className="grid gap-[1.5rem] lg:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field, formState }) => (
+              <FormItem className="">
+                <FormLabel>First Name</FormLabel>
+                <FormControl>
+                  <Input
+                    isInvalid={Boolean(formState.errors.firstName?.message)}
+                    placeholder="Enter your First Name"
+                    {...field}
+                  />
+                </FormControl>
+                {formState.errors.firstName?.message ? (
+                  <FormMessage />
+                ) : (
+                  <FormDescription>e.g. Jonson</FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field, formState }) => (
+              <FormItem className="">
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input
+                    isInvalid={Boolean(formState.errors.lastName?.message)}
+                    placeholder="Enter your Last Name"
+                    {...field}
+                  />
+                </FormControl>
+                {formState.errors.lastName?.message ? (
+                  <FormMessage />
+                ) : (
+                  <FormDescription>e.g. Doe</FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
         </FormFieldSet>
         <FormFieldSet className="flex flex-col">
           <FormField
@@ -153,7 +151,7 @@ export function RegForm({ className, ...props }: ComponentProps<"form">) {
         </FormFieldSet>
         <Button type="submit" className="mt-[1.5rem]" disabled={isLoading}>
           {isLoading ? (
-            <span className="animate-spin border-2 border-t-transparent border-white w-5 h-5 rounded-full"></span>
+            <span className="animate-spin border-2 border-t-transparent border-white w-5 h-5 rounded-full" />
           ) : (
             "Sign Up"
           )}

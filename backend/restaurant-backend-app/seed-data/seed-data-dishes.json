@@ -3,52 +3,168 @@
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "dish_001" },
-          "name": { "S": "Chicken Tikka Masala" },
-          "price": { "S": "17.50" },
-          "weight": { "S": "450g" },
-          "imageUrl": { "S": "https://example.com/chicken-tikka-masala.jpg" },
+          "id": { "S": "03915567-4385-4455-91f5-9e6c8cc695fd" },
+          "name": { "S": "Pineapple Tart with Vanilla Souffle" },
+          "price": { "S": "6" },
+          "weight": { "S": "130 g" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/compresed/Dish+picture+(1).png" },
+          "calories": { "S": "480 kcal" },
+          "carbohydrates": { "S": "15-20 g" },
+          "description": { "S": "Sweet, tropical pineapple tart topped with light, fluffy vanilla souffle." },
+          "dishType": { "S": "Desserts" },
+          "fats": { "S": "28-32 g" },
+          "proteins": { "S": "35-40 g" },
+          "state": { "S": "Active" },
+          "vitamins": { "S": "Vitamin B6, Vitamin B12, Vitamin D" },
           "isPopular": { "BOOL": true },
-          "locationId": { "S": "loc_001" }
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "dish_002" },
-          "name": { "S": "Cheeseburger" },
-          "price": { "S": "9.99" },
-          "weight": { "S": "350g" },
-          "imageUrl": { "S": "https://example.com/cheeseburger.jpg" },
+          "id": { "S": "39f71b8f-987f-4cde-bb51-4ea0757932af" },
+          "name": { "S": "Avocado Pine Nut Bowl" },
+          "price": { "S": "15" },
+          "weight": { "S": "430 g" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/compresed/Dish+picture+(2).png" },
+          "calories": { "S": "550 kcal" },
+          "carbohydrates": { "S": "35-40 g" },
+          "description": { "S": "Creamy avocado mixed with crunchy pine nuts in a savory bowl." },
+          "dishType": { "S": "MainCourse" },
+          "fats": { "S": "38-42 g" },
+          "proteins": { "S": "25-30 g" },
+          "state": { "S": "Active" },
+          "vitamins": { "S": "Vitamin B12, Calcium, Zinc" },
           "isPopular": { "BOOL": true },
-          "locationId": { "S": "loc_001" }
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "dish_003" },
-          "name": { "S": "Sushi Platter" },
-          "price": { "S": "25.99" },
-          "weight": { "S": "600g" },
-          "imageUrl": { "S": "https://example.com/sushi-platter.jpg" },
+          "id": { "S": "ed3f1f9b-7412-42ea-84aa-04c9b85ab67a" },
+          "name": { "S": "Asparagus salad" },
+          "price": { "S": "17" },
+          "weight": { "S": "430 g" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/compresed/Dish+picture+(3).png" },
+          "calories": { "S": "420 kcal" },
+          "carbohydrates": { "S": "40-45 g" },
+          "description": { "S": "Fresh, crisp asparagus tossed in a light, tangy salad." },
+          "dishType": { "S": "Appetizers" },
+          "fats": { "S": "15-20 g" },
+          "proteins": { "S": "35-40 g" },
+          "state": { "S": "On Stop" },
+          "vitamins": { "S": "Omega-3, Vitamin D, Vitamin B12" },
           "isPopular": { "BOOL": false },
-          "locationId": { "S": "loc_002" }
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "id": { "S": "dish_004" },
-          "name": { "S": "Mac & Cheese" },
-          "price": { "S": "10.99" },
-          "weight": { "S": "450g" },
-          "imageUrl": { "S": "https://example.com/mac-and-cheese.jpg" },
+          "id": { "S": "df5d475c-7de0-409c-95e7-1b389e921948" },
+          "name": { "S": "Roasted Sweet Potato & Lentil Salad" },
+          "price": { "S": "10" },
+          "weight": { "S": "430 g" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/compresed/Dish+picture+(4).png" },
+          "calories": { "S": "620 kcal" },
+          "carbohydrates": { "S": "55-60 g" },
+          "description": { "S": "Warm, roasted sweet potatoes paired with hearty lentils in a flavorful salad." },
+          "dishType": { "S": "MainCourse" },
+          "fats": { "S": "35-40 g" },
+          "proteins": { "S": "20-25 g" },
+          "state": { "S": "Active" },
+          "vitamins": { "S": "Calcium, Vitamin A, Vitamin B12" },
           "isPopular": { "BOOL": true },
-          "locationId": { "S": "loc_003" }
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "204aa910-7095-4ff3-a9d4-379e7d44cedb" },
+          "name": { "S": "Chocolate Mousse with Berries" },
+          "price": { "S": "9" },
+          "weight": { "S": "250 g" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/compresed/Dish+picture+(5).png" },
+          "calories": { "S": "503 kcal" },
+          "carbohydrates": { "S": "30-35 g" },
+          "description": { "S": "Rich, velvety chocolate mousse topped with juicy, fresh berries." },
+          "dishType": { "S": "Desserts" },
+          "fats": { "S": "33-35 g" },
+          "proteins": { "S": "18-30 g" },
+          "state": { "S": "On Stop" },
+          "vitamins": { "S": "Vitamin C, Vitamin A, calcium and iron" },
+          "isPopular": { "BOOL": false },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "a77b72ad-0537-4354-9986-547b9937be78" },
+          "name": { "S": "Avocado and Egg Toast" },
+          "price": { "S": "9" },
+          "weight": { "S": "180 g" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/compresed/Dish+picture+(6).png" },
+          "calories": { "S": "503 kcal" },
+          "carbohydrates": { "S": "30-35 g" },
+          "description": { "S": "Creamy avocado and a perfectly cooked egg on crisp toast." },
+          "dishType": { "S": "Appetizers" },
+          "fats": { "S": "33-35 g" },
+          "proteins": { "S": "18-30 g" },
+          "state": { "S": "Active" },
+          "vitamins": { "S": "Vitamins A, C, E, and B12" },
+          "isPopular": { "BOOL": true },
+          "locationId": { "S": "3a88c365-970b-4a7a-a206-bc5282b9b25f" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "75cf91de-a9b4-4fdf-9533-c7c38500de4c" },
+          "name": { "S": "Spring Salad" },
+          "price": { "S": "14" },
+          "weight": { "S": "430 g" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/compresed/Dish+picture+(7).png" },
+          "calories": { "S": "503 kcal" },
+          "carbohydrates": { "S": "30-35 g" },
+          "description": { "S": "Light, vibrant mix of fresh greens and seasonal veggies." },
+          "dishType": { "S": "MainCourse" },
+          "fats": { "S": "33-35 g" },
+          "proteins": { "S": "18-30 g" },
+          "state": { "S": "On Stop" },
+          "vitamins": { "S": "Vitamins A, C, K, and folate" },
+          "isPopular": { "BOOL": true },
+          "locationId": { "S": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "eb8bc656-cbb8-4a78-a81a-c59f74ac00a0" },
+          "name": { "S": "Fresh Strawberry Mint Salad" },
+          "price": { "S": "15" },
+          "weight": { "S": "430 g" },
+          "imageUrl": { "S": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/compresed/Dish+picture.png" },
+          "calories": { "S": "400 kcal" },
+          "carbohydrates": { "S": "30-35 g" },
+          "description": { "S": "A refreshing mix of juicy strawberries and aromatic mint." },
+          "dishType": { "S": "MainCourse" },
+          "fats": { "S": "20-35 g" },
+          "proteins": { "S": "18-30 g" },
+          "state": { "S": "Active" },
+          "vitamins": { "S": "Vitamin C, Vitamin K, and folate." },
+          "isPopular": { "BOOL": true },
+          "locationId": { "S": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7" }
         }
       }
     }
