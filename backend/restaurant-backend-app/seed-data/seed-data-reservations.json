@@ -18,7 +18,7 @@
           "status": { "S": "Canceled" },
           "userInfo": { "S": "Temirlan Doe" },
           "userEmail": {"S":  "temirlan@example.com"},
-          "waiterId": { "S": "369232b4-a071-7060-09c2-1e016b57e807" },
+          "waiterId": { "S": "66325214-c061-70df-ac8e-8b24eb7ec059" },
           "createdAt": { "S": "2025-03-08T10:15:00Z" }
         }
       }
@@ -41,7 +41,7 @@
           "status": { "S": "Reserved" },
           "userInfo": { "S": "Irina Doe" },
           "userEmail": {"S":  "irina@example.com"},
-          "waiterId": { "S": "06827254-d081-7011-2f59-a477925e7121" },
+          "waiterId": { "S": "868272a4-60f1-707f-8bad-3b070737ffbb" },
           "createdAt": { "S": "2025-03-12T10:15:00Z" }
         }
       }
@@ -64,7 +64,7 @@
           "status": { "S": "Reserved" },
           "userInfo": { "S": "Giorgi Doe" },
           "userEmail": {"S":  "giorgi@example.com"},
-          "waiterId": { "S": "36e292c4-f011-70cf-ab43-00b9e22ecd82" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
           "createdAt": { "S": "2025-03-09T10:15:00Z" }
         }
       }
@@ -87,7 +87,7 @@
           "status": { "S": "Reserved" },
           "userInfo": { "S": "Salome Doe" },
           "userEmail": {"S":  "salome@example.com"},
-          "waiterId": { "S": "36e292c4-f011-70cf-ab43-00b9e22ecd82" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
           "createdAt": { "S": "2025-03-10T10:15:00Z" }
         }
       }
@@ -110,7 +110,7 @@
           "status": { "S": "Canceled" },
           "userInfo": { "S": "Dora Doe" },
           "userEmail": {"S":  "dora@example.com"},
-          "waiterId": { "S": "866232a4-d011-70d5-473d-0dc04ab6fa5b" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
           "createdAt": { "S": "2025-03-11T10:15:00Z" }
         }
       }
@@ -133,7 +133,7 @@
           "status": { "S": "Canceled" },
           "userInfo": { "S": "Roman Doe" },
           "userEmail": {"S":  "roman@example.com"},
-          "waiterId": { "S": "866232a4-d011-70d5-473d-0dc04ab6fa5b" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
           "createdAt": { "S": "2025-02-12T10:15:00Z" }
         }
       }
@@ -156,7 +156,7 @@
           "status": { "S": "In Progress" },
           "userInfo": { "S": "Salome Doe" },
           "userEmail": { "S": "salome@example.com" },
-          "waiterId": { "S": "06827254-d081-7011-2f59-a477925e7121" },
+          "waiterId": { "S": "868272a4-60f1-707f-8bad-3b070737ffbb" },
           "createdAt": { "S": "2025-04-20T10:15:00Z" }
         }
       }
@@ -179,7 +179,7 @@
           "status": { "S": "Finished" },
           "userInfo": { "S": "Roam Doe" },
           "userEmail": { "S": "roman@example.com" },
-          "waiterId": { "S": "36e292c4-f011-70cf-ab43-00b9e22ecd82" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
           "createdAt": { "S": "2025-04-20T10:30:00Z" }
         }
       }
@@ -202,7 +202,7 @@
           "status": { "S": "Finished" },
           "userInfo": { "S": "Dora Doe" },
           "userEmail": { "S": "dora@example.com" },
-          "waiterId": { "S": "866232a4-d011-70d5-473d-0dc04ab6fa5b" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
           "createdAt": { "S": "2025-02-01T10:30:00Z" }
         }
       }
@@ -225,7 +225,7 @@
           "status": { "S": "Finished" },
           "userInfo": { "S": "Dora Doe" },
           "userEmail": { "S": "dora@example.com" },
-          "waiterId": { "S": "866232a4-d011-70d5-473d-0dc04ab6fa5b" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
           "createdAt": { "S": "2025-02-03T10:30:00Z" }
         }
       }
@@ -248,7 +248,7 @@
           "status": { "S": "In Progress" },
           "userInfo": { "S": "Temirlan Doe" },
           "userEmail": { "S": "temirlan@example.com" },
-          "waiterId": { "S": "36e292c4-f011-70cf-ab43-00b9e22ecd82" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
           "createdAt": { "S": "2025-04-03T15:00:00Z" }
         }
       }
@@ -271,7 +271,7 @@
           "status": { "S": "Finished" },
           "userInfo": { "S": "Dora Doe" },
           "userEmail": { "S": "dora@example.com" },
-          "waiterId": { "S": "36e292c4-f011-70cf-ab43-00b9e22ecd82" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
           "createdAt": { "S": "2025-04-03T10:00:00Z" }
         }
       }
@@ -294,7 +294,7 @@
           "status": { "S": "In Progress" },
           "userInfo": { "S": "Giorgi O Doe" },
           "userEmail": { "S": "giorgio@example.com" },
-          "waiterId": { "S": "36e292c4-f011-70cf-ab43-00b9e22ecd82" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
           "createdAt": { "S": "2025-04-03T16:00:00Z" }
         }
       }
@@ -317,7 +317,7 @@
           "status": { "S": "Finished" },
           "userInfo": { "S": "Giorgi B Doe" },
           "userEmail": { "S": "giorgib@example.com" },
-          "waiterId": { "S": "36e292c4-f011-70cf-ab43-00b9e22ecd82" },
+          "waiterId": { "S": "f662c294-f0e1-70cc-214e-b5f25ad2e096" },
           "createdAt": { "S": "2025-04-03T14:00:00Z" }
         }
       }
@@ -340,7 +340,7 @@
           "status": { "S": "In Progress" },
           "userInfo": { "S": "Salome Doe" },
           "userEmail": { "S": "salome@example.com" },
-          "waiterId": { "S": "866232a4-d011-70d5-473d-0dc04ab6fa5b" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
           "createdAt": { "S": "2025-04-03T09:00:00Z" }
         }
       }
@@ -363,7 +363,7 @@
           "status": { "S": "Finished" },
           "userInfo": { "S": "Irina Doe" },
           "userEmail": { "S": "irina@example.com" },
-          "waiterId": { "S": "866232a4-d011-70d5-473d-0dc04ab6fa5b" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
           "createdAt": { "S": "2025-04-03T12:00:00Z" }
         }
       }
@@ -386,7 +386,7 @@
           "status": { "S": "In Progress" },
           "userInfo": { "S": "Roman Doe" },
           "userEmail": { "S": "roman@example.com" },
-          "waiterId": { "S": "866232a4-d011-70d5-473d-0dc04ab6fa5b" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
           "createdAt": { "S": "2025-04-03T17:00:00Z" }
         }
       }
@@ -409,7 +409,7 @@
           "status": { "S": "Finished" },
           "userInfo": { "S": "Temirlan Doe" },
           "userEmail": { "S": "temirlan@example.com" },
-          "waiterId": { "S": "866232a4-d011-70d5-473d-0dc04ab6fa5b" },
+          "waiterId": { "S": "b6a2b234-a051-7012-b4b7-4a5417528299" },
           "createdAt": { "S": "2025-04-03T15:30:00Z" }
         }
       }
