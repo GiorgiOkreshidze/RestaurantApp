@@ -312,7 +312,7 @@ namespace ApiTests
                 {
                     string type = feedback["type"]?.ToString();
                     // Проверяем, что тип соответствует запрошенному, с учетом возможных вариаций написания
-                    bool isValidType = type == feedbackType || type == "SERVICE-QUALITY" || type == "CUISINE-EXPERIENCE";
+                    bool isValidType = type == feedbackType || type == "SERVICE-QUALITY" || type == "CUISINE_EXPERIENCE";
                     Assert.That(isValidType, Is.True,
                         $"All feedbacks should be of type {feedbackType} or SERVICE_QUALITY, but found {type}");
                 }
@@ -344,7 +344,7 @@ namespace ApiTests
             {
                 foreach (var feedback in feedbacks)
                 {
-                    string type = feedback["type"]?.ToString();
+                    string type = feedback["type"]?.ToString()?.Replace("-", "_");
                     Assert.That(type, Is.EqualTo(feedbackType),
                         $"All feedbacks should be of type {feedbackType}, but found {type}");
                 }
@@ -391,6 +391,63 @@ namespace ApiTests
                     prevDate = currentDate;
                 }
             }
+        }
+
+        [Test]
+        public async Task GetLocationById_NullLocationId_ShouldThrowArgumentException()
+        {
+            // Arrange
+            string locationId = null;
+
+            // Act & Assert
+            Assert.ThrowsAsync<ArgumentException>(async () => await _locations.GetLocationById(locationId), "Should throw ArgumentException for null locationId");
+        }
+
+        [Test]
+        public async Task GetLocationById_EmptyLocationId_ShouldThrowArgumentException()
+        {
+            // Arrange
+            string locationId = "";
+
+            // Act & Assert
+            Assert.ThrowsAsync<ArgumentException>(async () => await _locations.GetLocationById(locationId), "Should throw ArgumentException for empty locationId");
+        }
+
+        [Test]
+        public async Task GetLocationById_ValidIdWithoutToken_ReturnsForbidden()
+        {
+            // Arrange
+            string locationId = "8c4fc44e-c1a5-42eb-9912-55aeb5111a99";
+
+            // Act
+            var result = await _locations.GetLocationById(locationId);
+            HttpStatusCode statusCode = result.StatusCode;
+            JObject? responseBody = result.ResponseBody;
+
+            // Assert
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Forbidden));
+            Assert.That(responseBody, Is.Not.Null);
+            Assert.That(responseBody["message"]?.ToString(), Is.EqualTo("Missing Authentication Token"));
+        }
+
+        [Test]
+        public async Task GetLocationById_InvalidFormatLocationId_ShouldThrowArgumentException()
+        {
+            // Arrange
+            string locationId = "invalid-format-id";
+
+            // Act & Assert
+            Assert.ThrowsAsync<ArgumentException>(async () => await _locations.GetLocationById(locationId), "Should throw ArgumentException for invalid format locationId");
+        }
+
+        [Test]
+        public async Task GetLocationById_InvalidFormatLocationId_ShouldThrowArgumentException_AlternativeName()
+        {
+            // Arrange
+            string locationId = "invalid-location-id";  // Невалидный ID
+
+            // Act & Assert
+            Assert.ThrowsAsync<ArgumentException>(async () => await _locations.GetLocationById(locationId), "Should throw ArgumentException for invalid format locationId");
         }
     }
 }

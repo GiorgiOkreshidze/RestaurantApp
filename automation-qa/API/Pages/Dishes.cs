@@ -35,5 +35,144 @@ namespace ApiTests.Pages
 
             return (response.StatusCode, responseBody);
         }
+
+        /// <summary>
+        /// Retrieves the specialty dishes for a specific restaurant location
+        /// </summary>
+        /// <param name="locationId">ID of the restaurant location</param>
+        /// <returns>Tuple containing the HTTP status code and response body as JArray</returns>
+        public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetSpecialtyDishes(string locationId)
+        {
+            // Проверка входного параметра
+            if (string.IsNullOrEmpty(locationId))
+            {
+                Console.WriteLine("Error: locationId cannot be null or empty");
+                return (HttpStatusCode.BadRequest, null);
+            }
+
+            // Создаем GET запрос с указанием locationId в пути
+            var request = CreateGetRequest($"/locations/{locationId}/specialty-dishes");
+
+            // Выполняем запрос
+            var response = await ExecuteGetRequestAsync(request);
+
+            // Логируем результат
+            Console.WriteLine($"GetSpecialtyDishes response status: {response.StatusCode}");
+            Console.WriteLine($"GetSpecialtyDishes response content: {response.Content}");
+
+            // Парсим ответ в JArray, если он не пустой
+            JArray? responseBody = null;
+            if (!string.IsNullOrEmpty(response.Content))
+            {
+                try
+                {
+                    responseBody = JArray.Parse(response.Content);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error parsing response: {ex.Message}");
+                }
+            }
+
+            return (response.StatusCode, responseBody);
+        }
+
+        /// <summary>
+        /// Получает список всех блюд с возможностью фильтрации по типу и сортировки
+        /// </summary>
+        /// <param name="dishType">Тип блюда для фильтрации (например, "Appetizers", "Desserts")</param>
+        /// <param name="sort">Параметр сортировки (например, "PopularityAsc")</param>
+        /// <returns>Tuple containing the HTTP status code and response body as JArray</returns>
+        public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetAllDishes(string dishType = null, string sort = null)
+        {
+            // Создаем базовый запрос
+            string endpoint = "/dishes";
+
+            // Добавляем параметры запроса, если они предоставлены
+            var queryParams = new List<string>();
+
+            if (!string.IsNullOrEmpty(dishType))
+            {
+                queryParams.Add($"dishType={dishType}");
+            }
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+                queryParams.Add($"sort={sort}");
+            }
+
+            // Формируем URL с параметрами
+            if (queryParams.Count > 0)
+            {
+                endpoint += "?" + string.Join("&", queryParams);
+            }
+
+            // Создаем GET запрос
+            var request = CreateGetRequest(endpoint);
+
+            // Выполняем запрос
+            var response = await ExecuteGetRequestAsync(request);
+
+            // Логируем результат
+            Console.WriteLine($"GetAllDishes response status: {response.StatusCode}");
+            Console.WriteLine($"GetAllDishes response content: {response.Content}");
+
+            // Парсим ответ в JArray, если он не пустой
+            JArray? responseBody = null;
+            if (!string.IsNullOrEmpty(response.Content))
+            {
+                try
+                {
+                    responseBody = JArray.Parse(response.Content);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error parsing response: {ex.Message}");
+                }
+            }
+
+            return (response.StatusCode, responseBody);
+        }
+
+        /// <summary>
+        /// Получает информацию о конкретном блюде по его ID
+        /// </summary>
+        /// <param name="dishId">Идентификатор блюда</param>
+        /// <returns>Tuple containing the HTTP status code and response body as JObject</returns>
+        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> GetDishById(string dishId)
+        {
+            // Проверка входного параметра
+            if (string.IsNullOrEmpty(dishId))
+            {
+                Console.WriteLine("Error: dishId cannot be null or empty");
+                return (HttpStatusCode.BadRequest, null);
+            }
+
+            // Создаем GET запрос с указанием dishId в пути
+            var request = CreateGetRequest($"/dishes/{dishId}");
+
+            // Выполняем запрос
+            var response = await ExecuteGetRequestAsync(request);
+
+            // Логируем результат
+            Console.WriteLine($"GetDishById response status: {response.StatusCode}");
+            Console.WriteLine($"GetDishById response content: {response.Content}");
+
+            // Парсим ответ в JObject, если он не пустой
+            JObject? responseBody = null;
+            if (!string.IsNullOrEmpty(response.Content))
+            {
+                try
+                {
+                    responseBody = JObject.Parse(response.Content);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error parsing response: {ex.Message}");
+                }
+            }
+
+            return (response.StatusCode, responseBody);
+        }
     }
 }

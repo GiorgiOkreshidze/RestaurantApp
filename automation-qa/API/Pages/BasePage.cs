@@ -56,5 +56,17 @@ namespace ApiTests.Pages
                 throw new InvalidOperationException("Response content is empty");
             return JObject.Parse(response.Content);
         }
+
+        protected RestRequest CreateDeleteRequest(string endpoint)
+        {
+            var request = new RestRequest(endpoint, Method.Delete);
+            request.AddHeader("Accept", "application/json");
+            return request;
+        }
+
+        protected async Task<RestResponse> ExecuteDeleteRequestAsync(RestRequest request)
+        {
+            return await _client.ExecuteAsync(request);
+        }
     }
 }

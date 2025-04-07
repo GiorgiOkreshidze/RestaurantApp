@@ -149,5 +149,114 @@ namespace ApiTests.Pages
 
             return (response.StatusCode, responseBody);
         }
+
+        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> CreateReservationByWaiter(
+            string? locationId = null,
+            string? tableId = null,
+            string? date = null,
+            string? timeFrom = null,
+            string? timeTo = null,
+            int guestNumber = 0,
+            string? status = null,
+            string? userEmail = null,
+            string? userInfo = null,
+            DateTime? createdAt = null,
+            string? waiterId = null,
+            string? preorder = null,
+            string? clientType = null,
+            string? token = null)
+        {
+            // Создаем запрос к эндпоинту /reservations/waiter
+            var request = CreatePostRequest("/reservations/waiter");
+
+            // Добавляем заголовок авторизации, если предоставлен токен
+            if (!string.IsNullOrEmpty(token))
+            {
+                request.AddHeader("Authorization", $"Bearer {token}");
+            }
+
+            // Создаем объект с данными резервации
+            var reservationData = new
+            {
+                locationId,
+                tableId,
+                date,
+                timeFrom,
+                timeTo,
+                guestNumber,
+                status,
+                userEmail,
+                userInfo,
+                createdAt = createdAt?.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                waiterId,
+                preorder,
+                clientType
+            };
+
+            // Добавляем тело запроса в формате JSON
+            request.AddJsonBody(reservationData);
+
+            // Выполняем POST-запрос
+            var response = await ExecutePostRequestAsync(request);
+
+            // Логируем результат
+            Console.WriteLine($"CreateReservationByWaiter response status: {response.StatusCode}");
+            Console.WriteLine($"CreateReservationByWaiter response content: {response.Content}");
+
+            // Парсим ответ
+            JObject? responseBody = null;
+            if (!string.IsNullOrEmpty(response.Content))
+            {
+                try
+                {
+                    responseBody = JObject.Parse(response.Content);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error parsing response: {ex.Message}");
+                }
+            }
+
+            return (response.StatusCode, responseBody);
+        }
+
+        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> CancelReservation(
+            string reservationId,
+            string? token = null)
+        {
+            // Для выполнения DELETE запроса нам потребуется добавить два новых метода в класс Reservations
+
+            // 1. Создание DELETE запроса
+            var request = CreateDeleteRequest($"/reservations/{reservationId}");
+
+            // Добавляем заголовок авторизации, если предоставлен токен
+            if (!string.IsNullOrEmpty(token))
+            {
+                request.AddHeader("Authorization", $"Bearer {token}");
+            }
+
+            // 2. Выполнение DELETE запроса
+            var response = await ExecuteDeleteRequestAsync(request);
+
+            // Логируем результат
+            Console.WriteLine($"CancelReservation response status: {response.StatusCode}");
+            Console.WriteLine($"CancelReservation response content: {response.Content}");
+
+            // Парсим ответ
+            JObject? responseBody = null;
+            if (!string.IsNullOrEmpty(response.Content))
+            {
+                try
+                {
+                    responseBody = JObject.Parse(response.Content);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error parsing response: {ex.Message}");
+                }
+            }
+
+            return (response.StatusCode, responseBody);
+        }
     }
 }

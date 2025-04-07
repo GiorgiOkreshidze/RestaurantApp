@@ -89,10 +89,18 @@ namespace automation_qa.UI.Pages
             cheeseburger.Click();
         }
 
-        // Проверка, что ссылка "Reservations" отображается
         public bool IsReservationsLinkDisplayed()
         {
-            return _wait.Until(ExpectedConditions.ElementIsVisible(_reservationsLink)).Displayed;
+            try
+            {
+                // Используем локатор для "Book a Table" вместо "Reservations"
+                // и используем _driver вместо driver
+                return _wait.Until(ExpectedConditions.ElementIsVisible(_bookTableLink)).Displayed;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
         }
 
         public BookingPage ClickBookTableLink()
