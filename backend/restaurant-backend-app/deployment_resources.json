@@ -135,7 +135,7 @@
           "default_error_pattern": true
         }
       },
-      "/location/{id}": {
+      "/locations/{id}": {
         "enable_cors": true,
         "GET": {
           "authorization_type": "NONE",
@@ -240,7 +240,7 @@
           "default_error_pattern": true
         }
       },
-      "/bookings/tables": {
+      "/reservations/tables": {
         "enable_cors": true,
         "GET": {
           "authorization_type": "NONE",

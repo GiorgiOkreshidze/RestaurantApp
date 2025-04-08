@@ -158,7 +158,7 @@ public class ApiHandler
                     }
                 },
                 {
-                    "/location/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/locations/{id}", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getLocationByIdAction.GetLocationByIdAsync }
                     }
@@ -170,7 +170,7 @@ public class ApiHandler
                     }
                 },
                 {
-                    "/bookings/tables", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
+                    "/reservations/tables", new Dictionary<string, Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>>>
                     {
                         { "GET", _getAvailableTablesAction.GetAvailableTables }
                     }
