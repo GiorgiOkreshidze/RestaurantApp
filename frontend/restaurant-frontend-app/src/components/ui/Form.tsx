@@ -217,7 +217,6 @@ const FormDescriptionCircled = ({
 };
 
 export {
-  useFormField,
   Form,
   FormItem,
   FormLabel,

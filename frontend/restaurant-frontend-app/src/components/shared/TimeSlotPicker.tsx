@@ -39,7 +39,7 @@ export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
     ) {
       setValue("");
     }
-  }, [props.selectedDate]);
+  }, [props.selectedDate, disablePastTimes, selectedDate, setValue, value]);
 
   return (
     <SelectRoot value={value ?? ""} onValueChange={handleChange}>
