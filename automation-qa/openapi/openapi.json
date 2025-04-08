@@ -3,7 +3,7 @@
   "info": {
     "title": "Restaurant Reservation API",
     "description": "API for managing restaurant reservations, locations, and user accounts.\nAllows users to browse restaurant locations, make reservations, and manage their profiles.\n",
-    "version": "2025-03-20T00:00:00.000Z",
+    "version": "v2.0.0",
     "contact": {
       "name": "API Support",
       "email": "api-support@example.com"
@@ -11,14 +11,14 @@
   },
   "servers": [
     {
-      "url": "https://bc19bl6ydl.execute-api.eu-west-2.amazonaws.com/{basePath}",
-      "description": "Development server",
-      "variables": {
-        "basePath": {
-          "default": "api",
-          "description": "API base path"
+        "url": "https://xzi78ndtre.execute-api.eu-west-2.amazonaws.com/{basePath}",
+        "description": "Development server",
+        "variables": {
+            "basePath": {
+                "default": "api",
+                "description": "API base path"
+            }
         }
-      }
     }
   ],
   "tags": [
@@ -37,6 +37,14 @@
     {
       "name": "Dishes",
       "description": "Dish and menu related endpoints"
+    },
+    {
+      "name": "Profile",
+      "description": "User Management related endpoints"
+    },
+    {
+      "name": "Feedbacks",
+      "description": "Feedbacks related endpoints"
     }
   ],
   "paths": {
@@ -45,8 +53,8 @@
         "tags": [
           "Authentication"
         ],
-        "summary": "Register a new usera",
-        "description": "Creates a new user account with the provided credentials",
+        "summary": "User sign up",
+        "description": "This method registers a new user and returns their id and refresh token.",
         "operationId": "signUp",
         "requestBody": {
           "required": true,
@@ -85,8 +93,8 @@
               }
             }
           },
-          "400": {
-            "description": "signup failed",
+          "409": {
+            "description": "Failed Operation",
             "headers": {
               "Access-Control-Allow-Origin": {
                 "schema": {
@@ -100,7 +108,7 @@
                   "$ref": "#/components/schemas/SignUpResponse"
                 },
                 "example": {
-                  "message": "Email is already registered. Please use a different email address"
+                  "message": "A user with user@example.com already exists."
                 }
               }
             }
@@ -114,7 +122,7 @@
           "Authentication"
         ],
         "summary": "User login",
-        "description": "Authenticates a user and returns tokens",
+        "description": "Authenticates users and returns Id and Refresh tokens",
         "operationId": "signIn",
         "requestBody": {
           "required": true,
@@ -123,9 +131,35 @@
               "schema": {
                 "$ref": "#/components/schemas/SignInRequest"
               },
-              "example": {
-                "email": "user@example.com",
-                "password": "Password123!"
+              "examples": {
+                "Valid signin Request": {
+                  "description": "Valid Signup Request",
+                  "value": {
+                    "email": "user@example.com",
+                    "password": "Password123!"
+                  }
+                },
+                "Valid signin Waiter_Request": {
+                  "description": "Valid Signup Request",
+                  "value": {
+                    "email": "laydyGaga98@example.com",
+                    "password": "123456789!Xc"
+                  }
+                },
+                "Invalid Email Signin Request": {
+                  "description": "SignUp with wrong email",
+                  "value": {
+                    "email": "user@noexist.com",
+                    "password": "Password123!"
+                  }
+                },
+                "Invalid Password Signin Request": {
+                  "description": "SignUp with wrong email",
+                  "value": {
+                    "email": "user@example.com",
+                    "password": "Password123*"
+                  }
+                }
               }
             }
           }
@@ -148,13 +182,12 @@
                 "example": {
                   "idToken": "eyJraWQiOiJwOXZCYUs0aFBWUWdXMGF2ZkE1U0dRN0N1VHhJNVl...",
                   "refreshToken": "eyJraWQiOiJwOXZCYUs0aFBWUWdXMGF2ZkE1U0dRN0N1V...",
-                  "accessToken": "eyJraWQiOiJNS1hJMkhwWExmZ3hKUllFQW50STRCVGtsakZ...",
                   "expiresIn": 3600
                 }
               }
             }
           },
-          "400": {
+          "401": {
             "description": "Signin failed",
             "headers": {
               "Access-Control-Allow-Origin": {
@@ -169,7 +202,7 @@
                   "$ref": "#/components/schemas/SignUpResponse"
                 },
                 "example": {
-                  "message": "Invalid email format"
+                  "message": "Incorrect email or password. Try again or create an account."
                 }
               }
             }
@@ -218,8 +251,17 @@
                 "schema": {
                   "$ref": "#/components/schemas/SignOutResponse"
                 },
-                "example": {
-                  "message": "Successfully signed out"
+                "examples": {
+                  "Valid Request": {
+                    "value": {
+                      "message": "Successfully signed out"
+                    }
+                  },
+                  "Invalid refresh token": {
+                    "value": {
+                      "message": "Successfully signed out"
+                    }
+                  }
                 }
               }
             }
@@ -246,113 +288,7 @@
                     "value": {
                       "message": "Refresh token is missing"
                     }
-                  },
-                  "authError": {
-                    "value": {
-                      "message": "Sign-out failed: Invalid refresh token"
-                    }
                   }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/auth/refresh": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "summary": "Refresh authentication token",
-        "description": "Generates a new access token using the refresh token",
-        "operationId": "refreshToken",
-        "security": [
-          {
-            "authorizer": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshTokenRequest"
-              },
-              "example": {
-                "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Token refresh successful",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RefreshTokenResponse"
-                },
-                "example": {
-                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                  "expiresIn": 3600
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "examples": {
-                  "missingBody": {
-                    "value": {
-                      "message": "Request body is missing"
-                    }
-                  },
-                  "missingToken": {
-                    "value": {
-                      "message": "Refresh token is missing"
-                    }
-                  },
-                  "authError": {
-                    "value": {
-                      "message": "Token refresh failed: Invalid refresh token"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "message": "An unexpected error occurred"
                 }
               }
             }
@@ -363,7 +299,7 @@
     "/users/profile": {
       "get": {
         "tags": [
-          "Authentication"
+          "Profile"
         ],
         "summary": "Get user profile",
         "description": "Retrieves the authenticated user's profile information using the access token",
@@ -373,17 +309,7 @@
             "authorizer": []
           }
         ],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "x-amz-security-token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The access token for the authenticated user"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "User profile retrieved successfully",
@@ -399,12 +325,29 @@
                 "schema": {
                   "$ref": "#/components/schemas/ProfileInfo"
                 },
-                "example": {
-                  "firstName": "John",
-                  "lastName": "Doe",
-                  "email": "user@example.com",
-                  "role": "Customer",
-                  "imageUrl": "Here should be s3 img url"
+                "examples": {
+                  "customer": {
+                    "value": {
+                      "id": "86029214-50d1-70c1-7d54-cbdc4bb611cc",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "email": "user@example.com",
+                      "imageUrl": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Users/default_user.jpg",
+                      "role": "Customer",
+                      "locationId": null
+                    }
+                  },
+                  "waiter": {
+                    "value": {
+                      "id": "86029214-50d1-70c1-7d54-cbdc4bb611cc",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "email": "user@example.com",
+                      "imageUrl": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Users/default_user.jpg",
+                      "role": "Customer",
+                      "locationId": "j6029214-50d1-70c1-7d54-cbdc4bb611co"
+                    }
+                  }
                 }
               }
             }
@@ -422,13 +365,13 @@
                   }
                 },
                 "example": {
-                  "message": "Unauthorized: No access token found."
+                  "message": "Unauthorized"
                 }
               }
             }
           },
-          "500": {
-            "description": "Internal server error",
+          "400": {
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -440,7 +383,7 @@
                   }
                 },
                 "example": {
-                  "message": "An error occurred while fetching the profile."
+                  "message": "Authorization header empty or invalid."
                 }
               }
             }
@@ -518,6 +461,74 @@
         }
       }
     },
+    "/locations/{id}": {
+      "get": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Gets location by id",
+        "description": "Retrieves a location",
+        "operationId": "GetLocationById",
+        "parameters": [
+          {
+            "description": "id of the location",
+            "example": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Location retrieved successfully",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Location"
+                },
+                "example": {
+                  "id": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99",
+                  "address": "48 Rustaveli Avenue",
+                  "description": "A spacious coworking space with modern amenities.",
+                  "totalCapacity": "4",
+                  "averageOccupancy": "12",
+                  "imageUrl": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Locations/compresed/kaja-sariwating-6XMIzhk91_Y-unsplash+1.jpg",
+                  "rating": "4.5"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "The location with 8c4fc44e-c1a5-42eb-9912-55aeb5111a98 id is not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/locations/select-options": {
       "get": {
         "tags": [
@@ -563,8 +574,7 @@
     "/locations/{id}/speciality-dishes": {
       "get": {
         "tags": [
-          "Locations",
-          "Dishes"
+          "Locations"
         ],
         "summary": "Get specialty dishes for a location",
         "description": "Retrieves the specialty dishes for a specific restaurant location",
@@ -595,7 +605,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Dish"
+                    "$ref": "#/components/schemas/LocationDishResponse"
                   }
                 },
                 "example": [
@@ -604,18 +614,14 @@
                     "name": "Spaghetti Carbonara",
                     "price": 14.99,
                     "imageUrl": "https://example.com/images/carbonara.jpg",
-                    "weight": "280g",
-                    "isPopular": true,
-                    "locationId": "guid"
+                    "weight": "280g"
                   },
                   {
                     "id": "guid",
                     "name": "Tiramisu",
                     "price": 8.99,
                     "weight": "280g",
-                    "imageUrl": "https://example.com/images/tiramisu.jpg",
-                    "isPopular": true,
-                    "locationId": "guid"
+                    "imageUrl": "https://example.com/images/tiramisu.jpg"
                   }
                 ]
               }
@@ -906,12 +912,12 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Dish"
+                    "$ref": "#/components/schemas/PopularDishResponse"
                   }
                 },
                 "example": [
                   {
-                    "id": "guid",
+                    "id": "df5d475c-7de0-409c-95e7-1b389e921948",
                     "name": "Spaghetti Carbonara",
                     "price": 14.99,
                     "imageUrl": "https://example.com/images/carbonara.jpg",
@@ -920,7 +926,7 @@
                     "locationId": "guid"
                   },
                   {
-                    "id": "guid",
+                    "id": "03915567-4385-4455-91f5-9e6c8cc695fd",
                     "name": "Tiramisu",
                     "price": 8.99,
                     "weight": "280g",
@@ -935,7 +941,185 @@
         }
       }
     },
-    "/bookings/tables": {
+    "/dishes": {
+      "get": {
+        "tags": [
+          "Dishes"
+        ],
+        "summary": "Get all dishes",
+        "description": "This endpoint returns a list of dishes based on the filter criteria",
+        "operationId": "getMenu",
+        "parameters": [
+          {
+            "description": "Type of dish",
+            "examples": {
+              "Appetizers": {
+                "description": "Appetizer dish",
+                "value": "APPETIZERS"
+              },
+              "Desserts": {
+                "description": "Dessert dish",
+                "value": "DESSERTS"
+              },
+              "Main courses": {
+                "description": "Main course dish",
+                "value": "MAINCOURSE"
+              }
+            },
+            "in": "query",
+            "name": "dishType",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Sort by",
+            "examples": {
+              "Popularity Ascending": {
+                "description": "Popularity ascending sort",
+                "value": "PopularityAsc"
+              },
+              "Popularity Descending": {
+                "description": "Popularity descending sort",
+                "value": "PopularityDesc"
+              },
+              "Price Ascending": {
+                "description": "Price ascending sort",
+                "value": "PriceAsc"
+              },
+              "Price Descending": {
+                "description": "Price descending sort",
+                "value": "PriceDesc"
+              }
+            },
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All dishes retrieved successfully",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuResponse"
+                  }
+                },
+                "example": [
+                  {
+                    "id": "df5d475c-7de0-409c-95e7-1b389e921948",
+                    "imageUrl": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/mac-and-cheese.jpg",
+                    "name": "Mac & Cheese",
+                    "price": "$10.99",
+                    "weight": "450g",
+                    "dishType": "Desserts",
+                    "state": "Active",
+                    "isPopular": true
+                  },
+                  {
+                    "id": "ed3f1f9b-7412-42ea-84aa-04c9b85ab67a",
+                    "imageUrl": "https://team2-demo-bucket.s3.eu-west-2.amazonaws.com/Images/Dishes/sushi-platter.jpg",
+                    "name": "Sushi Platter",
+                    "price": "$25.99",
+                    "weight": "600g",
+                    "dishType": "Appetizers",
+                    "state": "On Stop",
+                    "isPopular": false
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dishes/{id}": {
+      "get": {
+        "summary": "returns dish by id",
+        "tags": [
+          "Dishes"
+        ],
+        "description": "This endpoint returns a dish by id",
+        "operationId": "getDish",
+        "parameters": [
+          {
+            "description": "id of the dish",
+            "example": "ed3f1f9b-7412-42ea-84aa-04c9b85ab67a",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "examples": {
+                  "Successful dish retrieval": {
+                    "description": "Successful dish retrieval",
+                    "value": {
+                      "calories": "503 kcal",
+                      "carbohydrates": "30-35 g",
+                      "description": "Fresh Strawberry Mint Salad is a delicious and healthy salad that is perfect for a light lunch or dinner. It is made with fresh strawberries, mint, and a tangy vinaigrette dressing. This salad is perfect for a summer picnic or barbecue, and is sure to be a hit with your family and friends.",
+                      "dishType": "APPETIZERS",
+                      "fats": "33-35 g",
+                      "id": "322846d5c951184d705b65d2",
+                      "imageUrl": "https://green-and-tasty.s3.eu-central-1.amazonaws.com/img/ff7863bf-63eb-4f2e-8041-75a81507acff.jpg",
+                      "name": "Fresh Strawberry Mint Salad",
+                      "price": "$12",
+                      "proteins": "18-30 g",
+                      "state": "On Stop",
+                      "vitamins": "Vitamin C, Vitamin A, calcium and iron",
+                      "weight": "430 g"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/DishExtendedResponse"
+                }
+              }
+            },
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Dish not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservations/tables": {
       "get": {
         "tags": [
           "Reservations"
@@ -952,7 +1136,8 @@
             "schema": {
               "type": "string",
               "format": "date"
-            }
+            },
+            "example": "2025-04-22"
           },
           {
             "name": "locationId",
@@ -961,7 +1146,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7"
           },
           {
             "name": "guests",
@@ -1001,21 +1187,77 @@
                 },
                 "example": [
                   {
-                    "tableId": 101,
-                    "capacity": 4,
-                    "availableTimes": [
-                      "18:00",
-                      "18:30",
-                      "19:00"
+                    "tableId": "b8801e52-ba42-463e-b5cd-68c4604e223e",
+                    "tableNumber": "4",
+                    "locationId": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7",
+                    "locationAddress": "9 Abashidze Street",
+                    "capacity": "4",
+                    "availableSlots": [
+                      {
+                        "start": "06:30",
+                        "end": "08:00"
+                      },
+                      {
+                        "start": "08:15",
+                        "end": "09:45"
+                      },
+                      {
+                        "start": "10:00",
+                        "end": "11:30"
+                      },
+                      {
+                        "start": "11:45",
+                        "end": "13:15"
+                      },
+                      {
+                        "start": "13:30",
+                        "end": "15:00"
+                      },
+                      {
+                        "start": "15:15",
+                        "end": "16:45"
+                      },
+                      {
+                        "start": "17:00",
+                        "end": "18:30"
+                      }
                     ]
                   },
                   {
-                    "tableId": 102,
-                    "capacity": 6,
-                    "availableTimes": [
-                      "19:30",
-                      "20:00",
-                      "20:30"
+                    "tableId": "b8801e52-ba42-463e-b5cd-68c4604e223e",
+                    "tableNumber": "2",
+                    "capacity": "6",
+                    "locationId": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7",
+                    "locationAddress": "9 Abashidze Street",
+                    "availableSlots": [
+                      {
+                        "start": "06:30",
+                        "end": "08:00"
+                      },
+                      {
+                        "start": "08:15",
+                        "end": "09:45"
+                      },
+                      {
+                        "start": "10:00",
+                        "end": "11:30"
+                      },
+                      {
+                        "start": "11:45",
+                        "end": "13:15"
+                      },
+                      {
+                        "start": "13:30",
+                        "end": "15:00"
+                      },
+                      {
+                        "start": "15:15",
+                        "end": "16:45"
+                      },
+                      {
+                        "start": "17:00",
+                        "end": "18:30"
+                      }
                     ]
                   }
                 ]
@@ -1198,6 +1440,21 @@
       }
     },
     "/reservations/client": {
+      "get": {
+        "description": "New endpoint",
+        "responses": {
+          "200": {
+            "description": "New response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "": ""
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "Reservations"
@@ -1205,15 +1462,10 @@
         "summary": "Create a new reservation",
         "description": "Reservation created/updated successfully, to update provide existing reservation id",
         "operationId": "createClientReservation",
-        "parameters": [
+        "parameters": [],
+        "security": [
           {
-            "in": "header",
-            "name": "x-amz-security-token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The access token for the authenticated user"
+            "authorizer": []
           }
         ],
         "requestBody": {
@@ -1224,12 +1476,12 @@
                 "$ref": "#/components/schemas/ReservationRequest"
               },
               "example": {
-                "locationId": "1001",
-                "tableNumber": "10",
-                "date": "2025-04-15",
-                "guestsNumber": "4",
-                "timeFrom": "19:00",
-                "timeTo": "20:30"
+                "locationId": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99",
+                "tableId": "04ba5b37-8fbd-4f5f-8354-0b75078a790a",
+                "date": "2025-09-15",
+                "guestsNumber": "2",
+                "timeFrom": "06:30",
+                "timeTo": "08:00"
               }
             }
           }
@@ -1250,18 +1502,171 @@
                   "$ref": "#/components/schemas/Reservation"
                 },
                 "example": {
-                  "id": "30001",
-                  "date": "2025-04-15",
-                  "feedbackId": "NOT IMPLEMENTED YET AND ISN'T REQUIRED",
-                  "guestsNumber": "4",
-                  "locationAddress": "123 River Street, London, SW1A 1AA",
+                  "id": "69b84e82-9327-4a2d-82b9-e39b966a3e55",
+                  "date": "2025-09-22",
+                  "guestsNumber": "2",
+                  "locationId": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99",
+                  "locationAddress": "48 Rustaveli Avenue",
                   "preOrder": "NOT IMPLEMENTED YET",
                   "status": "Reserved",
-                  "tableNumber": "10",
-                  "timeFrom": "19:00",
-                  "timeTo": "20:30",
-                  "timeSlot": "19:00 - 20:30",
-                  "userInfo": "John Doe"
+                  "tableId": "04ba5b37-8fbd-4f5f-8354-0b75078a790a",
+                  "tableNumber": "1",
+                  "timeFrom": "06:30",
+                  "timeTo": "08:00",
+                  "timeSlot": "06:30 - 08:00",
+                  "userInfo": "Joe Doe",
+                  "userEmail": "joedoe@example.com",
+                  "waiterId": "169292b4-5081-70e6-f4dc-a1695648cd31",
+                  "createdAt": "2025-04-03T19:59:28Z",
+                  "clientType": "CUSTOMER"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "The maximum number of guests allowed is 10"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "An error occurred while creating the reservation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservations/waiter": {
+      "post": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Create a new reservation by waiter",
+        "description": "Reservation created/updated successfully by a waiter, to update provide existing reservation id",
+        "operationId": "createWaiterReservation",
+        "parameters": [],
+        "security": [
+          {
+            "authorizer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReservationWaiterRequest"
+              },
+              "examples": {
+                "ReservationForCustomer": {
+                  "description": "Reservation request for a customer by waiter",
+                  "value": {
+                    "locationId": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99",
+                    "tableId": "04ba5b37-8fbd-4f5f-8354-0b75078a790a",
+                    "date": "2025-06-15",
+                    "guestsNumber": "2",
+                    "timeFrom": "17:00",
+                    "timeTo": "18:30",
+                    "customerId": "961282b4-1071-70f6-8b54-c35bea4e224f",
+                    "clientType": "Customer"
+                  }
+                },
+                "ReservationForVisitor": {
+                  "description": "Reservation request for a customer by waiter",
+                  "value": {
+                    "locationId": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99",
+                    "tableId": "04ba5b37-8fbd-4f5f-8354-0b75078a790a",
+                    "date": "2025-08-25",
+                    "guestsNumber": "4",
+                    "timeFrom": "17:00",
+                    "timeTo": "18:30",
+                    "clientType": "VISITOR"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reservation created/updated successfully by a waiter",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reservation"
+                },
+                "examples": {
+                  "ResponseForCustomer": {
+                    "id": "69b84e82-9327-4a2d-82b9-e39b966a3e55",
+                    "date": "2025-09-22",
+                    "guestsNumber": "2",
+                    "locationId": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99",
+                    "locationAddress": "48 Rustaveli Avenue",
+                    "preOrder": "NOT IMPLEMENTED YET",
+                    "status": "Reserved",
+                    "tableId": "04ba5b37-8fbd-4f5f-8354-0b75078a790a",
+                    "tableNumber": "1",
+                    "timeFrom": "06:30",
+                    "timeTo": "08:00",
+                    "timeSlot": "06:30 - 08:00",
+                    "userInfo": "Joe Doe",
+                    "userEmail": "joedoe@example.com",
+                    "waiterId": "169292b4-5081-70e6-f4dc-a1695648cd31",
+                    "createdAt": "2025-04-03T19:59:28Z",
+                    "clientType": "CUSTOMER"
+                  },
+                  "ResponseForVisitor": {
+                    "id": "28ae9db7-b2a3-4036-8fc5-051f98090fb8",
+                    "date": "2025-05-25",
+                    "guestsNumber": "4",
+                    "locationId": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99",
+                    "locationAddress": "48 Rustaveli Avenue",
+                    "preOrder": "NOT IMPLEMENTED YET",
+                    "status": "Reserved",
+                    "tableId": "04ba5b37-8fbd-4f5f-8354-0b75078a790a",
+                    "tableNumber": "1",
+                    "timeFrom": "17:00",
+                    "timeTo": "18:30",
+                    "timeSlot": "17:00 - 18:30",
+                    "userInfo": "Waiter John Cena (Visitor)",
+                    "userEmail": "laydyGaga98@example.com",
+                    "waiterId": "8692b2b4-2041-7043-fced-c4339866c36e",
+                    "createdAt": "2025-04-03T20:43:16Z",
+                    "clientType": "VISITOR"
+                  }
                 }
               }
             }
@@ -1379,6 +1784,145 @@
           }
         }
       }
+    },
+    "/reservations/{id}/complete": {
+      "post": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "mark a reservation completed",
+        "description": "marks a reservation completed",
+        "operationId": "completeReservation",
+        "security": [
+          {
+            "authorizer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the reservation to mark completed",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation completed successfully",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                },
+                "example": {
+                  "message": true
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "An error occurred while cancelling the reservation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedbacks": {
+      "post": {
+        "tags": [
+          "Feedbacks"
+        ],
+        "summary": "Create/Update a new feedback",
+        "description": "Feedback created/updated successfully",
+        "operationId": "createFeedback",
+        "parameters": [],
+        "security": [
+          {
+            "authorizer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackRequest"
+              },
+              "example": {
+                "reservationId": "43a479ef-4aa8-44c2-b72e-783a1f98a591",
+                "cuisineComment": "Excellent Cuisine! Over the top!",
+                "cuisineRating": "4",
+                "serviceComment": "I like it very much",
+                "serviceRating": "4"
+              }
+            }
+          }
+        },
+        "responses": {
+           "200": {
+            "description": "Feedback added successfully",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": {
+                  "message": "Feedback added successfully"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "An error occurred while creating the reservation"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1465,11 +2009,6 @@
             "description": "JWT refresh token used to obtain new access tokens",
             "example": "eyJraWQiOiJwOXZCYUs0aFBWUWdXMGF2ZkE1U0dRN0N1V..."
           },
-          "accessToken": {
-            "type": "string",
-            "description": "JWT access token for API authorization",
-            "example": "eyJraWQiOiJNS1hJMkhwWExmZ3hKUllFQW50STRCVGtsakZ..."
-          },
           "expiresIn": {
             "type": "integer",
             "description": "Token expiration time in seconds",
@@ -1531,6 +2070,11 @@
       "ProfileInfo": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "example": "86029214-50d1-70c1-7d54-cbdc4bb611cc"
+          },
           "firstName": {
             "type": "string",
             "description": "User's first name",
@@ -1547,15 +2091,21 @@
             "description": "User's email address",
             "example": "user@example.com"
           },
+          "imageUrl": {
+            "type": "string",
+            "description": "URL to the user's profile image",
+            "example": "https://example.com/images/profile/john.jpg"
+          },
           "role": {
             "type": "string",
             "description": "User's role in the system",
             "example": "Customer"
           },
-          "imageUrl": {
+          "locationId": {
             "type": "string",
-            "description": "URL to the user's profile image",
-            "example": "https://example.com/images/profile/john.jpg"
+            "format": "uuid",
+            "description": "Location where waiter works, null for user",
+            "example": null
           }
         }
       },
@@ -1565,7 +2115,7 @@
           "id": {
             "type": "string",
             "description": "Unique identifier for the restaurant location",
-            "example": "guid"
+            "example": "8c4fc44e-c1a5-42eb-9912-55aeb5111a98"
           },
           "address": {
             "type": "string",
@@ -1573,21 +2123,19 @@
             "example": "123 River Street, London, SW1A 1AA"
           },
           "averageOccupancy": {
-            "type": "number",
-            "format": "float",
+            "type": "string",
             "description": "Average occupancy rate",
-            "example": 4.7
+            "example": "4.7"
           },
           "rating": {
-            "type": "number",
-            "format": "float",
+            "type": "string",
             "description": "Customer rating",
-            "example": 4.7
+            "example": "4.7"
           },
           "totalCapacity": {
-            "type": "integer",
+            "type": "string",
             "description": "Total capacity of the restaurant",
-            "example": 15
+            "example": "15"
           },
           "imageUrl": {
             "type": "string",
@@ -1621,8 +2169,9 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "description": "Unique identifier for the dish",
-            "example": "guid"
+            "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "name": {
             "type": "string",
@@ -1656,6 +2205,161 @@
             "example": "guid"
           }
         }
+      },
+      "LocationDishResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the dish",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the dish",
+            "example": "Spaghetti Carbonara"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "description": "Price of the dish",
+            "example": 14.99
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "URL to the dish's image",
+            "example": "https://example.com/images/carbonara.jpg"
+          },
+          "weight": {
+            "type": "string",
+            "description": "Weight or portion size of the dish",
+            "example": "280g"
+          }
+        }
+      },
+      "PopularDishResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the dish",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the dish",
+            "example": "Spaghetti Carbonara"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "description": "Price of the dish",
+            "example": 14.99
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "URL to the dish's image",
+            "example": "https://example.com/images/carbonara.jpg"
+          },
+          "weight": {
+            "type": "string",
+            "description": "Weight or portion size of the dish",
+            "example": "280g"
+          }
+        }
+      },
+      "MenuResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the dish",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the dish",
+            "example": "Spaghetti Carbonara"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "description": "Price of the dish",
+            "example": 14.99
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "URL to the dish's image",
+            "example": "https://example.com/images/carbonara.jpg"
+          },
+          "weight": {
+            "type": "string",
+            "description": "Weight or portion size of the dish",
+            "example": "280g"
+          },
+          "isPopular": {
+            "type": "boolean",
+            "description": "Indicates if the dish is popular",
+            "example": true
+          },
+          "dishType": {
+            "type": "string",
+            "description": "Type of the dish",
+            "example": "Dessert"
+          },
+          "state": {
+            "type": "string",
+            "description": "Indicates the availability status of the dish",
+            "example": "On Stop"
+          }
+        }
+      },
+      "DishExtendedResponse": {
+        "properties": {
+          "calories": {
+            "type": "string"
+          },
+          "carbohydrates": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "dishType": {
+            "type": "string"
+          },
+          "fats": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "proteins": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "vitamins": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "string"
+          }
+        },
+        "type": "object"
       },
       "Feedback": {
         "type": "object",
@@ -1711,27 +2415,52 @@
         "type": "object",
         "properties": {
           "tableId": {
-            "type": "integer",
-            "description": "Identifier for the table",
-            "example": 101
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the table",
+            "example": "b8801e52-ba42-463e-b5cd-68c4604e223e"
+          },
+          "tableNumber": {
+            "type": "string",
+            "description": "Table number within the location",
+            "example": "4"
+          },
+          "locationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the location",
+            "example": "e1fcb3b4-bf68-4bcb-b9ba-eac917dafac7"
+          },
+          "locationAddress": {
+            "type": "string",
+            "description": "Physical address of the location",
+            "example": "9 Abashidze Street"
           },
           "capacity": {
-            "type": "integer",
+            "type": "string",
             "description": "Number of seats at the table",
-            "example": 4
+            "example": "4"
           },
-          "availableTimes": {
+          "availableSlots": {
             "type": "array",
             "description": "List of available time slots for reservation",
             "items": {
-              "type": "string",
-              "format": "time"
-            },
-            "example": [
-              "18:00",
-              "18:30",
-              "19:00"
-            ]
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "string",
+                  "format": "time",
+                  "description": "Start time of the slot",
+                  "example": "06:30"
+                },
+                "end": {
+                  "type": "string",
+                  "format": "time",
+                  "description": "End time of the slot",
+                  "example": "08:00"
+                }
+              }
+            }
           }
         }
       },
@@ -1741,17 +2470,12 @@
           "id": {
             "type": "string",
             "description": "Unique identifier for the reservation",
-            "example": 30001
+            "example": "69b84e82-9327-4a2d-82b9-e39b966a3e55"
           },
           "locationId": {
             "type": "string",
             "description": "ID of the restaurant location",
-            "example": 1001
-          },
-          "locationName": {
-            "type": "string",
-            "description": "Name of the restaurant location",
-            "example": "Riverside Restaurant"
+            "example": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99"
           },
           "locationAddress": {
             "type": "string",
@@ -1762,13 +2486,7 @@
             "type": "string",
             "format": "date",
             "description": "Date of the reservation",
-            "example": "2025-04-15T00:00:00.000Z"
-          },
-          "time": {
-            "type": "string",
-            "format": "time",
-            "description": "Time of the reservation",
-            "example": "19:00"
+            "example": "2025-09-22"
           },
           "timeFrom": {
             "type": "string",
@@ -1787,15 +2505,15 @@
             "description": "Time slot representation (from - to)",
             "example": "19:00 - 20:30"
           },
-          "guests": {
-            "type": "integer",
-            "description": "Number of guests",
-            "example": 4
-          },
           "guestsNumber": {
             "type": "string",
             "description": "Number of guests as a string",
             "example": "4"
+          },
+          "tableId": {
+            "type": "string",
+            "description": "Table Id for the reservation",
+            "example": "04ba5b37-8fbd-4f5f-8354-0b75078a790a"
           },
           "tableNumber": {
             "type": "string",
@@ -1814,6 +2532,11 @@
               "Reserved"
             ]
           },
+          "userEmail": {
+            "type": "string",
+            "description": "email of the user who made the reservation",
+            "example": "JohnDoe@example.com"
+          },
           "userInfo": {
             "type": "string",
             "description": "Information about the user who made the reservation",
@@ -1825,15 +2548,20 @@
             "description": "Date and time when the reservation was created",
             "example": "2025-03-10T14:30:00.000Z"
           },
-          "feedbackId": {
+          "waiterId": {
             "type": "string",
-            "description": "ID of the feedback associated with this reservation",
-            "example": "NOT IMPLEMENTED YET AND ISN'T REQUIRED"
+            "description": "ID of the waiter associated with this reservation",
+            "example": "169292b4-5081-70e6-f4dc-a1695648cd31"
           },
           "preOrder": {
             "type": "string",
             "description": "Pre-order information",
             "example": "NOT IMPLEMENTED YET"
+          },
+          "clientType": {
+            "type": "string",
+            "description": "Type of Client",
+            "example": "Customer"
           }
         }
       },
@@ -1853,18 +2581,18 @@
           "locationId": {
             "type": "string",
             "description": "ID of the restaurant location",
-            "example": 1001
+            "example": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99"
           },
-          "tableNumber": {
+          "tableId": {
             "type": "string",
-            "description": "Preferred table number",
-            "example": "10"
+            "description": "Preferred table Id",
+            "example": "04ba5b37-8fbd-4f5f-8354-0b75078a790a"
           },
           "date": {
             "type": "string",
             "format": "date",
             "description": "Date of the reservation",
-            "example": "2025-04-15T00:00:00.000Z"
+            "example": "2025-09-22"
           },
           "guestsNumber": {
             "type": "string",
@@ -1875,13 +2603,106 @@
             "type": "string",
             "format": "time",
             "description": "Start time of the reservation",
-            "example": "19:00"
+            "example": "06:30"
           },
           "timeTo": {
             "type": "string",
             "format": "time",
             "description": "End time of the reservation",
-            "example": "20:30"
+            "example": "08:00"
+          }
+        }
+      },
+      "ReservationWaiterRequest": {
+        "type": "object",
+        "required": [
+          "locationId",
+          "date",
+          "timeFrom",
+          "guestsNumber",
+          "clientType"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID of existing reservation (for updates)"
+          },
+          "locationId": {
+            "type": "string",
+            "description": "ID of the restaurant location",
+            "example": "8c4fc44e-c1a5-42eb-9912-55aeb5111a99"
+          },
+          "tableId": {
+            "type": "string",
+            "description": "Preferred table Id",
+            "example": "04ba5b37-8fbd-4f5f-8354-0b75078a790a"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of the reservation",
+            "example": "2025-09-22"
+          },
+          "guestsNumber": {
+            "type": "string",
+            "description": "Number of guests",
+            "example": "4"
+          },
+          "timeFrom": {
+            "type": "string",
+            "format": "time",
+            "description": "Start time of the reservation",
+            "example": "06:30"
+          },
+          "timeTo": {
+            "type": "string",
+            "format": "time",
+            "description": "End time of the reservation",
+            "example": "08:00"
+          },
+          "clientType": {
+            "type": "string",
+            "description": "type of a client",
+            "example": "Customer"
+          },
+          "customerId": {
+            "type": "string",
+            "description": "id of a customer",
+            "example": "961282b4-1071-70f6-8b54-c35bea4e224f"
+          }
+        }
+      },
+      "FeedbackRequest": {
+        "type": "object",
+        "required": [
+          "reservationId",
+          "cuisineRating",
+          "serviceRating"
+        ],
+        "properties": {
+          "reservationId": {
+            "type": "string",
+            "description": "ID of existing reservation (for updates)"
+          },
+          "cuisineComment": {
+            "type": "string",
+            "description": "feedback on cuisine",
+            "example": "Excellent!"
+          },
+          "cuisineRating": {
+            "type": "string",
+            "description": "Score",
+            "example": "4"
+          },
+          "serviceComment": {
+            "type": "string",
+            "description": "Evaluation of service",
+            "example": "Service was superb!"
+          },
+          "serviceRating": {
+            "type": "string",
+            "description": "Score indicating how much client liked the service",
+            "example": "4"
           }
         }
       }
