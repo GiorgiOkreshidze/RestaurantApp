@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 using ApiTests.Pages;
+using ApiTests.Utilities;
 
 namespace ApiTests
 {
@@ -26,11 +27,18 @@ namespace ApiTests
             string firstName = "John";
             string lastName = "Doe";
             string email = $"regular_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
             // Act - Perform registration
-            var (registerStatus, registeredEmail, _) = await _auth.RegisterUser(firstName, lastName, email, password);
+            var (registerStatus, registeredEmail, registerResponse) = await _auth.RegisterUser(firstName, lastName, email, password);
             Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            // Verify registration success message
+            if (registerResponse != null && registerResponse.ContainsKey("message"))
+            {
+                Assert.That(registerResponse["message"].ToString(), Is.EqualTo("User Registered"),
+                    "Registration response should confirm successful registration");
+            }
 
             // Log in to get tokens
             var (loginStatus, loginResponse) = await _auth.LoginUser(email, password);
@@ -38,7 +46,7 @@ namespace ApiTests
 
             // Extract tokens from the response
             string idToken = loginResponse["idToken"]?.ToString();
-            // Используем idToken и как accessToken
+            // Using idToken as accessToken
             string accessToken = idToken;
 
             Assert.That(idToken, Is.Not.Null.And.Not.Empty, "ID token should not be null or empty");
@@ -46,11 +54,11 @@ namespace ApiTests
             // Get user profile
             var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
 
-            // Обновлено ожидание в соответствии с новым поведением API
+            // Updated expectation according to current API behavior
             Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK),
                 "API should return user profile immediately after login");
 
-            // Теперь можно проверить роль пользователя
+            // Check user role
             Assert.That(userData, Is.Not.Null, "User data should not be null");
             Assert.That(userData["role"]?.ToString(), Is.EqualTo("Customer"),
                 "New user with regular email should have Customer role");
@@ -65,11 +73,18 @@ namespace ApiTests
             string firstName = "Jane";
             string lastName = "Smith";
             string email = $"profile_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
             // Act - Perform registration
-            var (registerStatus, registeredEmail, _) = await _auth.RegisterUser(firstName, lastName, email, password);
+            var (registerStatus, registeredEmail, registerResponse) = await _auth.RegisterUser(firstName, lastName, email, password);
             Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            // Verify registration success message
+            if (registerResponse != null && registerResponse.ContainsKey("message"))
+            {
+                Assert.That(registerResponse["message"].ToString(), Is.EqualTo("User Registered"),
+                    "Registration response should confirm successful registration");
+            }
 
             // Log in to get tokens
             var (loginStatus, loginResponse) = await _auth.LoginUser(email, password);
@@ -77,7 +92,7 @@ namespace ApiTests
 
             // Extract token from the response
             string idToken = loginResponse["idToken"]?.ToString();
-            // Используем idToken и как accessToken
+            // Using idToken as accessToken
             string accessToken = idToken;
 
             Assert.That(idToken, Is.Not.Null.And.Not.Empty, "ID token should not be null or empty");
@@ -85,11 +100,11 @@ namespace ApiTests
             // Get user profile
             var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
 
-            // Обновлено ожидание в соответствии с новым поведением API
+            // Updated expectation according to current API behavior
             Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK),
                 "API should return user profile immediately after login");
 
-            // Теперь можно проверить данные пользователя
+            // Check user data
             Assert.That(userData, Is.Not.Null, "User data should not be null");
             Assert.That(userData["firstName"]?.ToString(), Is.EqualTo(firstName),
                 "User profile should show correct first name");
@@ -112,11 +127,18 @@ namespace ApiTests
             string firstName = "Waiter";
             string lastName = "Test";
             string waiterEmail = "known_waiter@restaurant.com"; // Must be an email from the waiter list
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
             // Act - Perform registration
-            var (registerStatus, registeredEmail, _) = await _auth.RegisterUser(firstName, lastName, waiterEmail, password);
+            var (registerStatus, registeredEmail, registerResponse) = await _auth.RegisterUser(firstName, lastName, waiterEmail, password);
             Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "Waiter registration should succeed");
+
+            // Verify registration success message
+            if (registerResponse != null && registerResponse.ContainsKey("message"))
+            {
+                Assert.That(registerResponse["message"].ToString(), Is.EqualTo("User Registered"),
+                    "Registration response should confirm successful registration");
+            }
 
             // Log in to get token
             var (loginStatus, loginResponse) = await _auth.LoginUser(waiterEmail, password);
@@ -124,7 +146,7 @@ namespace ApiTests
 
             // Extract token from the response
             string idToken = loginResponse["idToken"]?.ToString();
-            // Используем idToken и как accessToken
+            // Using idToken as accessToken
             string accessToken = idToken;
 
             Assert.That(idToken, Is.Not.Null.And.Not.Empty, "ID token should not be null or empty");
@@ -132,11 +154,11 @@ namespace ApiTests
             // Get user profile
             var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
 
-            // Обновлено ожидание в соответствии с новым поведением API
+            // Updated expectation according to current API behavior
             Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK),
                 "API should return user profile immediately after login");
 
-            // Теперь можно проверить роль официанта
+            // Check waiter role
             Assert.That(userData, Is.Not.Null, "User data should not be null");
             Assert.That(userData["role"]?.ToString(), Is.EqualTo("Waiter"),
                 "User with waiter email should have Waiter role");
@@ -148,11 +170,18 @@ namespace ApiTests
         {
             // Arrange - Register a new user
             string email = $"new_user_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
             // Act - Perform registration
-            var (registerStatus, registeredEmail, _) = await _auth.RegisterUser("New", "User", email, password);
+            var (registerStatus, registeredEmail, registerResponse) = await _auth.RegisterUser("New", "User", email, password);
             Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "New user registration should succeed");
+
+            // Verify registration success message
+            if (registerResponse != null && registerResponse.ContainsKey("message"))
+            {
+                Assert.That(registerResponse["message"].ToString(), Is.EqualTo("User Registered"),
+                    "Registration response should confirm successful registration");
+            }
 
             // Log in to get token
             var (loginStatus, loginResponse) = await _auth.LoginUser(email, password);
@@ -160,7 +189,7 @@ namespace ApiTests
 
             // Extract token from the response
             string idToken = loginResponse["idToken"]?.ToString();
-            // Используем idToken и как accessToken
+            // Using idToken as accessToken
             string accessToken = idToken;
 
             Assert.That(idToken, Is.Not.Null.And.Not.Empty, "ID token should not be null or empty");
@@ -168,17 +197,17 @@ namespace ApiTests
             // Get user profile
             var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
 
-            // Обновлено ожидание в соответствии с новым поведением API
+            // Updated expectation according to current API behavior
             Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK),
                 "API should return user profile immediately after login");
 
-            // Теперь можно проверить роль нового пользователя
+            // Check new user role
             Assert.That(userData, Is.Not.Null, "User data should not be null");
             Assert.That(userData["role"], Is.Not.Null,
                 "User profile should include role information");
             Console.WriteLine($"New user role: {userData["role"]}");
 
-            // Для обычных пользователей ожидается роль Customer
+            // For regular users, Customer role is expected
             Assert.That(userData["role"]?.ToString(), Is.EqualTo("Customer"),
                 "New user with regular email should have Customer role");
         }
@@ -186,20 +215,24 @@ namespace ApiTests
         [Test]
         public async Task UsersProfile_UserIdIsPresent()
         {
-            // Arrange - регистрируем пользователя
+            // Arrange - register a user
             string email = $"uid_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
-            await _auth.RegisterUser("Test", "User", email, password);
-            var (_, loginResponse) = await _auth.LoginUser(email, password);
+            var (registerStatus, _, registerResponse) = await _auth.RegisterUser("Test", "User", email, password);
+            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            var (loginStatus, loginResponse) = await _auth.LoginUser(email, password);
+            Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
 
             string idToken = loginResponse["idToken"]?.ToString();
             string accessToken = idToken;
 
-            // Act - получаем профиль
-            var (_, userData) = await _auth.GetUserProfile(idToken, accessToken);
+            // Act - get profile
+            var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
 
-            // Assert - проверяем наличие ID пользователя
+            // Assert - check user ID presence
+            Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK), "Profile request should succeed");
             Assert.That(userData["id"], Is.Not.Null, "User profile should contain user ID");
             Assert.That(userData["id"].ToString(), Is.Not.Empty, "User ID should not be empty");
         }
@@ -207,20 +240,24 @@ namespace ApiTests
         [Test]
         public async Task UsersProfile_DefaultImageUrlIsPresent()
         {
-            // Arrange - регистрируем пользователя
+            // Arrange - register a user
             string email = $"img_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
-            await _auth.RegisterUser("Image", "Test", email, password);
-            var (_, loginResponse) = await _auth.LoginUser(email, password);
+            var (registerStatus, _, registerResponse) = await _auth.RegisterUser("Image", "Test", email, password);
+            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            var (loginStatus, loginResponse) = await _auth.LoginUser(email, password);
+            Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
 
             string idToken = loginResponse["idToken"]?.ToString();
             string accessToken = idToken;
 
-            // Act - получаем профиль
-            var (_, userData) = await _auth.GetUserProfile(idToken, accessToken);
+            // Act - get profile
+            var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
 
-            // Assert - проверяем наличие URL изображения по умолчанию
+            // Assert - check default image URL presence
+            Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK), "Profile request should succeed");
             Assert.That(userData["imageUrl"], Is.Not.Null, "User profile should contain image URL");
             Assert.That(userData["imageUrl"].ToString(), Is.Not.Empty, "Image URL should not be empty");
             Assert.That(userData["imageUrl"].ToString(), Does.Contain("default_user"),
@@ -230,36 +267,36 @@ namespace ApiTests
         [Test]
         public async Task UsersProfile_NameMatchesRegistrationData()
         {
-            // Arrange - регистрируем пользователя с особыми символами в имени
-            string firstName = "John-Martin";  // Упростил символы, чтобы избежать проблем с кодировкой
-            string lastName = "OConnor";       // Упростил символы, чтобы избежать проблем с кодировкой
+            // Arrange - register a user with special characters in name
+            string firstName = "John-Martin";  // Simplified characters to avoid encoding issues
+            string lastName = "OConnor";       // Simplified characters to avoid encoding issues
             string email = $"name_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
-            // Проверка результата регистрации
-            var (registerStatus, _, _) = await _auth.RegisterUser(firstName, lastName, email, password);
+            // Check registration result
+            var (registerStatus, _, registerResponse) = await _auth.RegisterUser(firstName, lastName, email, password);
             Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
 
-            // Вход и получение токенов - добавляем отладочную информацию
+            // Login and get tokens - add debug information
             var (loginStatus, loginResponse) = await _auth.LoginUser(email, password);
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
 
-            // Проверяем, что loginResponse не null и содержит нужные поля
+            // Check that loginResponse is not null and contains required fields
             Assert.That(loginResponse, Is.Not.Null, "Login response should not be null");
             Console.WriteLine($"Login response: {loginResponse}");
 
-            // Проверяем, что idToken существует в ответе
+            // Check that idToken exists in the response
             Assert.That(loginResponse.ContainsKey("idToken"), Is.True, "Login response should contain idToken");
 
-            // Извлекаем idToken и проверяем его
+            // Extract idToken and verify it
             string idToken = loginResponse["idToken"]?.ToString();
             Assert.That(idToken, Is.Not.Null.And.Not.Empty, "ID token should not be null or empty");
             Console.WriteLine($"ID Token: {idToken.Substring(0, Math.Min(20, idToken.Length))}...");
 
-            // Используем idToken как accessToken
+            // Using idToken as accessToken
             string accessToken = idToken;
 
-            // Act - получаем профиль с подробным логированием
+            // Act - get profile with detailed logging
             Console.WriteLine("Requesting user profile...");
             var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
 
@@ -269,11 +306,11 @@ namespace ApiTests
                 Console.WriteLine($"User data: {userData}");
             }
 
-            // Assert - проверяем статус и наличие данных
+            // Assert - check status and data presence
             Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK), "Profile request should succeed");
             Assert.That(userData, Is.Not.Null, "User data should not be null");
 
-            // Проверяем, что имя и фамилия соответствуют регистрационным данным
+            // Check that first and last name match registration data
             Assert.That(userData["firstName"]?.ToString(), Is.EqualTo(firstName),
                 "First name should match exactly what was provided during registration");
             Assert.That(userData["lastName"]?.ToString(), Is.EqualTo(lastName),
@@ -283,22 +320,26 @@ namespace ApiTests
         [Test]
         public async Task UsersProfile_LongNamesAreHandledCorrectly()
         {
-            // Arrange - регистрируем пользователя с длинными именем и фамилией
+            // Arrange - register a user with long first and last names
             string longFirstName = "Johnathanjosephjamesmichael";
             string longLastName = "Smith-Johnson-Williams-Brown-Davis";
             string email = $"longname_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
-            await _auth.RegisterUser(longFirstName, longLastName, email, password);
-            var (_, loginResponse) = await _auth.LoginUser(email, password);
+            var (registerStatus, _, registerResponse) = await _auth.RegisterUser(longFirstName, longLastName, email, password);
+            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            var (loginStatus, loginResponse) = await _auth.LoginUser(email, password);
+            Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
 
             string idToken = loginResponse["idToken"]?.ToString();
             string accessToken = idToken;
 
-            // Act - получаем профиль
-            var (_, userData) = await _auth.GetUserProfile(idToken, accessToken);
+            // Act - get profile
+            var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
 
-            // Assert - проверяем, что длинные имена обрабатываются корректно
+            // Assert - check that long names are handled correctly
+            Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK), "Profile request should succeed");
             Assert.That(userData["firstName"]?.ToString(), Is.EqualTo(longFirstName),
                 "Long first name should be stored and displayed correctly");
             Assert.That(userData["lastName"]?.ToString(), Is.EqualTo(longLastName),
@@ -308,43 +349,53 @@ namespace ApiTests
         [Test]
         public async Task UsersProfile_EmailIsLowercased()
         {
-            // Arrange - регистрируем пользователя с email в смешанном регистре
+            // Arrange - register a user with mixed case email
             string mixedCaseEmail = $"MixedCase_{Guid.NewGuid().ToString("N").Substring(0, 8)}@Example.com";
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
-            await _auth.RegisterUser("Mixed", "Case", mixedCaseEmail, password);
-            var (_, loginResponse) = await _auth.LoginUser(mixedCaseEmail, password);
+            var (registerStatus, _, registerResponse) = await _auth.RegisterUser("Mixed", "Case", mixedCaseEmail, password);
+            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            var (loginStatus, loginResponse) = await _auth.LoginUser(mixedCaseEmail, password);
+            Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
 
             string idToken = loginResponse["idToken"]?.ToString();
             string accessToken = idToken;
 
-            // Act - получаем профиль
-            var (_, userData) = await _auth.GetUserProfile(idToken, accessToken);
+            // Act - get profile
+            var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
 
-            // Assert - проверяем, что email хранится в нижнем регистре
+            // Assert - check that email is stored in lowercase
+            Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK), "Profile request should succeed");
             string storedEmail = userData["email"]?.ToString();
-            Assert.That(storedEmail, Is.EqualTo(mixedCaseEmail.ToLower()) | Is.EqualTo(mixedCaseEmail),
+            Assert.That(storedEmail, Is.AnyOf(mixedCaseEmail.ToLower(), mixedCaseEmail),
                 "Email should be normalized (either stored as lowercase or as provided)");
         }
 
         [Test]
         public async Task UsersProfile_MultipleProfileRequestsReturnSameData()
         {
-            // Arrange - регистрируем пользователя
+            // Arrange - register a user
             string email = $"multi_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
-            await _auth.RegisterUser("Multiple", "Requests", email, password);
-            var (_, loginResponse) = await _auth.LoginUser(email, password);
+            var (registerStatus, _, registerResponse) = await _auth.RegisterUser("Multiple", "Requests", email, password);
+            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            var (loginStatus, loginResponse) = await _auth.LoginUser(email, password);
+            Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
 
             string idToken = loginResponse["idToken"]?.ToString();
             string accessToken = idToken;
 
-            // Act - получаем профиль дважды
-            var (_, firstProfileData) = await _auth.GetUserProfile(idToken, accessToken);
-            var (_, secondProfileData) = await _auth.GetUserProfile(idToken, accessToken);
+            // Act - get profile twice
+            var (firstProfileStatus, firstProfileData) = await _auth.GetUserProfile(idToken, accessToken);
+            var (secondProfileStatus, secondProfileData) = await _auth.GetUserProfile(idToken, accessToken);
 
-            // Assert - проверяем, что данные идентичны
+            // Assert - check that data is identical
+            Assert.That(firstProfileStatus, Is.EqualTo(HttpStatusCode.OK), "First profile request should succeed");
+            Assert.That(secondProfileStatus, Is.EqualTo(HttpStatusCode.OK), "Second profile request should succeed");
+
             Assert.That(secondProfileData["id"]?.ToString(), Is.EqualTo(firstProfileData["id"]?.ToString()),
                 "User ID should be consistent across profile requests");
             Assert.That(secondProfileData["email"]?.ToString(), Is.EqualTo(firstProfileData["email"]?.ToString()),
@@ -356,20 +407,25 @@ namespace ApiTests
         [Test]
         public async Task UsersProfile_ContainsExpectedFields()
         {
-            // Arrange - регистрируем пользователя
+            // Arrange - register a user
             string email = $"fields_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            string password = "StrongPass123!";
+            string password = Config.TestUserPassword;
 
-            await _auth.RegisterUser("Field", "Test", email, password);
-            var (_, loginResponse) = await _auth.LoginUser(email, password);
+            var (registerStatus, _, registerResponse) = await _auth.RegisterUser("Field", "Test", email, password);
+            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            var (loginStatus, loginResponse) = await _auth.LoginUser(email, password);
+            Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
 
             string idToken = loginResponse["idToken"]?.ToString();
             string accessToken = idToken;
 
-            // Act - получаем профиль
-            var (_, userData) = await _auth.GetUserProfile(idToken, accessToken);
+            // Act - get profile
+            var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
 
-            // Assert - проверяем наличие всех ожидаемых полей
+            // Assert - check that all expected fields are present
+            Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK), "Profile request should succeed");
+
             string[] expectedFields = { "id", "firstName", "lastName", "email", "role", "imageUrl" };
 
             foreach (string field in expectedFields)
@@ -377,7 +433,7 @@ namespace ApiTests
                 Assert.That(userData[field], Is.Not.Null, $"User profile should contain {field} field");
             }
 
-            // Проверяем, что нет неожиданных полей с конфиденциальной информацией
+            // Check that there are no unexpected fields with sensitive information
             Assert.That(userData["password"], Is.Null, "User profile should not contain password");
             Assert.That(userData["passwordHash"], Is.Null, "User profile should not contain password hash");
         }

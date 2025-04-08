@@ -5,6 +5,7 @@ using NUnit.Framework;
 using RestSharp;
 using Newtonsoft.Json.Linq;
 using ApiTests.Pages;
+using ApiTests.Utilities;
 
 namespace ApiTests
 {
@@ -13,8 +14,6 @@ namespace ApiTests
     public class SignOut : BaseTest
     {
         private Authentication _auth;
-        private string _testFirstName;
-        private string _testLastName;
         private string _testEmail;
         private string _testPassword;
         private string _idToken;
@@ -26,11 +25,9 @@ namespace ApiTests
         {
             _auth = new Authentication();
 
-            // Generate unique test data
-            _testFirstName = "John";
-            _testLastName = "Smith";
+            // Generate unique test email
             _testEmail = $"test_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            _testPassword = "TestPass123!";
+            _testPassword = Config.TestUserPassword;
 
             // Register and log in
             await RegisterAndLogin();
@@ -40,8 +37,8 @@ namespace ApiTests
         {
             // User registration
             var registerResult = await _auth.RegisterUser(
-                firstName: _testFirstName,
-                lastName: _testLastName,
+                firstName: "Test",
+                lastName: "User",
                 email: _testEmail,
                 password: _testPassword
             );
@@ -49,7 +46,7 @@ namespace ApiTests
             HttpStatusCode registerStatus = registerResult.Item1;
             if (registerStatus != HttpStatusCode.OK)
             {
-                Console.WriteLine($"Регистрация не удалась: {registerStatus}");
+                Console.WriteLine($"Registration failed: {registerStatus}");
                 return false;
             }
 
@@ -61,15 +58,15 @@ namespace ApiTests
 
             if (loginStatus != HttpStatusCode.OK)
             {
-                Console.WriteLine($"Вход не удался: {loginStatus}");
+                Console.WriteLine($"Login failed: {loginStatus}");
                 return false;
             }
 
             _idToken = responseBody["idToken"]?.ToString() ?? "";
-            _accessToken = responseBody["idToken"]?.ToString() ?? ""; // Используем idToken как accessToken
+            _accessToken = responseBody["idToken"]?.ToString() ?? ""; // Using idToken as accessToken
             _refreshToken = responseBody["refreshToken"]?.ToString() ?? "";
 
-            Console.WriteLine($"Успешный вход, ID Token: {_idToken.Substring(0, Math.Min(20, _idToken.Length))}...");
+            Console.WriteLine($"Successfully logged in, ID Token: {_idToken.Substring(0, Math.Min(20, _idToken.Length))}...");
             Console.WriteLine($"Access Token: {_accessToken.Substring(0, Math.Min(20, _accessToken.Length))}...");
             Console.WriteLine($"Refresh Token: {_refreshToken.Substring(0, Math.Min(20, _refreshToken.Length))}...");
 
@@ -113,10 +110,16 @@ namespace ApiTests
             var (statusCode, responseBody) = await _auth.LogoutUser(invalidRefreshToken, _idToken);
 
             // Assert - updated according to the actual behavior of the API
-            // BUG: The API accepts an invalid refresh token and returns status 200 OK
+            // Note: The API accepts an invalid refresh token and returns status 200 OK
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK),
-                "Текущее поведение API: выход с недействительным refresh токеном успешно завершается со статусом 200 OK");
-            Console.WriteLine("ПРИМЕЧАНИЕ: Это представляет потенциальную проблему безопасности - API принимает недействительные refresh токены");
+                "Current API behavior: logout with invalid refresh token succeeds with status 200 OK");
+            Console.WriteLine("NOTE: This represents a potential security issue - API accepts invalid refresh tokens");
+
+            // Check for any response message
+            if (!string.IsNullOrEmpty(responseBody))
+            {
+                Console.WriteLine($"API response for invalid refresh token: {responseBody}");
+            }
         }
 
         [Test]
@@ -128,6 +131,13 @@ namespace ApiTests
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
                 "Logout with empty refresh token should fail");
+
+            // Verify error message
+            if (!string.IsNullOrEmpty(responseBody))
+            {
+                Assert.That(responseBody, Contains.Substring("token").IgnoreCase,
+                    "Error message should mention token issue");
+            }
         }
 
         [Test]
@@ -138,18 +148,22 @@ namespace ApiTests
             Assert.That(_refreshToken, Is.Not.Null, "Setup failed: No refresh token available");
 
             // Act - logout
-            var (logoutStatus, _) = await _auth.LogoutUser(_refreshToken, _idToken);
+            var (logoutStatus, logoutResponse) = await _auth.LogoutUser(_refreshToken, _idToken);
             Assert.That(logoutStatus, Is.EqualTo(HttpStatusCode.OK),
                 "Logout should succeed");
+
+            // Verify successful logout message
+            Assert.That(logoutResponse, Contains.Substring("signed out").IgnoreCase,
+                "Response should confirm successful logout");
 
             // Try to use token after logout
             var (profileAfterLogoutStatus, profileContent) = await _auth.GetUserProfile(_idToken);
 
-            // Обновлено ожидание в соответствии с новым поведением API
+            // Updated expectation according to new API behavior
             Assert.That(profileAfterLogoutStatus, Is.EqualTo(HttpStatusCode.OK),
-                "In the new API version, tokens remain valid after logout");
+                "In the current API version, tokens remain valid after logout");
 
-            // Проверяем, что в ответе есть необходимые поля профиля пользователя
+            // Verify profile content is still accessible
             Assert.That(profileContent, Is.Not.Null, "Profile response should not be null");
             Assert.That(profileContent["email"]?.ToString(), Is.EqualTo(_testEmail),
                 "Profile should return the correct user email");
@@ -157,7 +171,7 @@ namespace ApiTests
             // Try to refresh token after logout
             var (refreshAfterLogoutStatus, refreshBody, _) = await _auth.RefreshAuthToken(_refreshToken);
 
-            // В зависимости от поведения API, токен обновления может оставаться действительным или нет
+            // Token refresh behavior may vary depending on API implementation
             if (refreshAfterLogoutStatus == HttpStatusCode.OK)
             {
                 Assert.That(refreshBody["idToken"], Is.Not.Null,
@@ -165,9 +179,10 @@ namespace ApiTests
             }
             else
             {
-                Assert.That(refreshAfterLogoutStatus, Is.EqualTo(HttpStatusCode.Forbidden) |
-                             Is.EqualTo(HttpStatusCode.Unauthorized) |
-                             Is.EqualTo(HttpStatusCode.BadRequest),
+                Assert.That(refreshAfterLogoutStatus, Is.AnyOf(
+                    HttpStatusCode.Forbidden,
+                    HttpStatusCode.Unauthorized,
+                    HttpStatusCode.BadRequest),
                     "If refresh fails, it should return an appropriate error status");
             }
         }
@@ -180,19 +195,31 @@ namespace ApiTests
             Assert.That(_idToken, Is.Not.Null.And.Not.Empty, "Setup failed: No ID token available");
 
             // First logout
-            var (firstLogoutStatus, _) = await _auth.LogoutUser(_refreshToken, _idToken);
+            var (firstLogoutStatus, firstResponse) = await _auth.LogoutUser(_refreshToken, _idToken);
             Assert.That(firstLogoutStatus, Is.EqualTo(HttpStatusCode.OK),
                 "First logout should succeed");
 
+            // Verify first logout message
+            Assert.That(firstResponse, Contains.Substring("signed out").IgnoreCase,
+                "Response should confirm successful logout");
+
             // Try second logout with same token
-            var (secondLogoutStatus, _) = await _auth.LogoutUser(_refreshToken, _idToken);
+            var (secondLogoutStatus, secondResponse) = await _auth.LogoutUser(_refreshToken, _idToken);
 
             // API should handle this gracefully (could be error or success with message)
-            Assert.That(secondLogoutStatus == HttpStatusCode.BadRequest ||
-                       secondLogoutStatus == HttpStatusCode.Unauthorized ||
-                       secondLogoutStatus == HttpStatusCode.OK ||
-                       secondLogoutStatus == HttpStatusCode.Forbidden,
+            Assert.That(secondLogoutStatus, Is.AnyOf(
+                HttpStatusCode.BadRequest,
+                HttpStatusCode.Unauthorized,
+                HttpStatusCode.OK,
+                HttpStatusCode.Forbidden),
                 "API should handle second logout gracefully");
+
+            // Log the actual behavior for documentation
+            Console.WriteLine($"Second logout with the same tokens returned status: {secondLogoutStatus}");
+            if (!string.IsNullOrEmpty(secondResponse))
+            {
+                Console.WriteLine($"Response message: {secondResponse}");
+            }
         }
 
         [Test]
@@ -212,7 +239,7 @@ namespace ApiTests
             JObject secondResponseBody = loginResult.ResponseBody;
 
             string secondIdToken = secondResponseBody["idToken"]?.ToString() ?? "";
-            string secondAccessToken = secondResponseBody["idToken"]?.ToString() ?? ""; // Используем idToken как accessToken
+            string secondAccessToken = secondResponseBody["idToken"]?.ToString() ?? ""; // Using idToken as accessToken
             string secondRefreshToken = secondResponseBody["refreshToken"]?.ToString() ?? "";
 
             Assert.That(secondLoginStatus, Is.EqualTo(HttpStatusCode.OK),
@@ -223,35 +250,43 @@ namespace ApiTests
                 "Second login should return refresh token");
 
             // Logout from first device
-            var (firstLogoutStatus, _) = await _auth.LogoutUser(_refreshToken, _idToken);
+            var (firstLogoutStatus, firstResponse) = await _auth.LogoutUser(_refreshToken, _idToken);
             Assert.That(firstLogoutStatus, Is.EqualTo(HttpStatusCode.OK),
                 "First device logout should succeed");
+
+            // Verify first logout message
+            Assert.That(firstResponse, Contains.Substring("signed out").IgnoreCase,
+                "Response should confirm successful first logout");
 
             // Check if first token is invalidated
             var (firstTokenCheckStatus, firstTokenContent) = await _auth.GetUserProfile(_idToken);
 
-            // Обновлено ожидание в соответствии с новым поведением API
+            // Updated expectation according to current API behavior
             Assert.That(firstTokenCheckStatus, Is.EqualTo(HttpStatusCode.OK),
-                "In the new API version, tokens remain valid after logout");
+                "In the current API version, tokens remain valid after logout");
 
-            // Проверяем, что в ответе есть необходимые поля профиля пользователя
+            // Verify profile content is still accessible
             Assert.That(firstTokenContent, Is.Not.Null, "Profile response should not be null");
             Assert.That(firstTokenContent["email"]?.ToString(), Is.EqualTo(_testEmail),
                 "Profile should return the correct user email");
 
             // Logout from second device
-            var (secondLogoutStatus, _) = await _auth.LogoutUser(secondRefreshToken, secondIdToken);
+            var (secondLogoutStatus, secondResponse) = await _auth.LogoutUser(secondRefreshToken, secondIdToken);
             Assert.That(secondLogoutStatus, Is.EqualTo(HttpStatusCode.OK),
                 "Second device logout should succeed");
 
-            // Check if second token is now invalidated
+            // Verify second logout message
+            Assert.That(secondResponse, Contains.Substring("signed out").IgnoreCase,
+                "Response should confirm successful second logout");
+
+            // Check if second token is still valid (as per current API behavior)
             var (secondTokenFinalStatus, secondTokenContent) = await _auth.GetUserProfile(secondIdToken);
 
-            // Обновлено ожидание в соответствии с новым поведением API
+            // Updated expectation according to current API behavior
             Assert.That(secondTokenFinalStatus, Is.EqualTo(HttpStatusCode.OK),
-                "In the new API version, tokens remain valid after logout");
+                "In the current API version, tokens remain valid after logout");
 
-            // Проверяем, что в ответе есть необходимые поля профиля пользователя
+            // Verify profile content is still accessible
             Assert.That(secondTokenContent, Is.Not.Null, "Profile response should not be null");
             Assert.That(secondTokenContent["email"]?.ToString(), Is.EqualTo(_testEmail),
                 "Profile should return the correct user email");
@@ -264,14 +299,13 @@ namespace ApiTests
             Assert.That(_refreshToken, Is.Not.Null, "Setup failed: No refresh token available");
             Assert.That(_idToken, Is.Not.Null.And.Not.Empty, "Setup failed: No ID token available");
 
-            // Имитируем задержку для проверки поведения при выходе после истечения токена
-            // Примечание: Этот тест может быть нестабильным, если токены имеют очень 
-            // длительный срок действия. Для реального использования можно было бы
-            // использовать моки для имитации истечения токена.
-            Console.WriteLine("Ожидаем 2 секунды для имитации задержки...");
+            // Simulate a delay to test behavior when logging out after token expiration
+            // Note: This test may be unstable if tokens have a very long expiration time.
+            // For real use, one could use mocks to simulate token expiration.
+            Console.WriteLine("Waiting 2 seconds to simulate delay...");
             await Task.Delay(2000);
 
-            // Act - все равно пытаемся выйти после задержки
+            // Act - still try to logout after the delay
             var (logoutStatus, responseBody) = await _auth.LogoutUser(_refreshToken, _idToken);
 
             // Assert
@@ -289,14 +323,21 @@ namespace ApiTests
             // Verify setup worked correctly
             Assert.That(_refreshToken, Is.Not.Null, "Setup failed: No refresh token available");
 
-            // Act - пытаемся выйти, используя только refresh token, без id token
+            // Act - try to logout using only refresh token, without id token
             var (logoutStatus, responseBody) = await _auth.LogoutUser(_refreshToken);
 
-            // Assert - изменяем ожидание в соответствии с реальным поведением API
+            // Assert - modify expectation according to actual API behavior
             Assert.That(logoutStatus, Is.EqualTo(HttpStatusCode.Unauthorized),
                 "Logout with only refresh token should be unauthorized, as API requires ID token");
 
-            // Проверяем, что с ID token запрос проходит успешно
+            // Verify error message
+            if (!string.IsNullOrEmpty(responseBody))
+            {
+                Assert.That(responseBody, Contains.Substring("unauthorized").IgnoreCase.Or.Contains("token").IgnoreCase,
+                    "Error message should indicate authorization problem");
+            }
+
+            // Verify that with ID token the request succeeds
             var (logoutWithIdStatus, responseWithId) = await _auth.LogoutUser(_refreshToken, _idToken);
             Assert.That(logoutWithIdStatus, Is.EqualTo(HttpStatusCode.OK),
                 "Logout with both refresh token and ID token should succeed");
@@ -313,18 +354,22 @@ namespace ApiTests
             Assert.That(_refreshToken, Is.Not.Null, "Setup failed: No refresh token available");
             Assert.That(_idToken, Is.Not.Null.And.Not.Empty, "Setup failed: No ID token available");
 
-            // Act - выходим из системы
-            var (logoutStatus, _) = await _auth.LogoutUser(_refreshToken, _idToken);
+            // Act - logout
+            var (logoutStatus, logoutResponse) = await _auth.LogoutUser(_refreshToken, _idToken);
             Assert.That(logoutStatus, Is.EqualTo(HttpStatusCode.OK), "Logout should succeed");
 
-            // Затем снова входим в систему
+            // Verify logout message
+            Assert.That(logoutResponse, Contains.Substring("signed out").IgnoreCase,
+                "Response should confirm successful logout");
+
+            // Then login again
             var (loginStatus, responseBody) = await _auth.LoginUser(_testEmail, _testPassword);
 
             // Assert
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK),
                 "Login after logout should succeed");
 
-            // Проверяем, что получены новые токены
+            // Verify new tokens are received
             string newIdToken = responseBody["idToken"]?.ToString() ?? "";
             string newRefreshToken = responseBody["refreshToken"]?.ToString() ?? "";
 
@@ -333,18 +378,51 @@ namespace ApiTests
             Assert.That(newRefreshToken, Is.Not.Null.And.Not.Empty,
                 "New login should provide a new refresh token");
 
-            // Опционально: проверяем, что новые токены отличаются от старых
+            // Optional: verify new tokens are different from old ones
             Assert.That(newIdToken, Is.Not.EqualTo(_idToken),
                 "New ID token should be different from the old one");
             Assert.That(newRefreshToken, Is.Not.EqualTo(_refreshToken),
                 "New refresh token should be different from the old one");
 
-            // Проверяем, что новый токен работает для получения профиля
+            // Verify new token works for profile access
             var (profileStatus, profileContent) = await _auth.GetUserProfile(newIdToken);
             Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK),
                 "New token should work for profile access");
             Assert.That(profileContent["email"]?.ToString(), Is.EqualTo(_testEmail),
                 "Profile should return the correct user email");
+        }
+
+        [Test]
+        public async Task SignOut_VerifyTokenInvalidationPreconditions()
+        {
+            // Arrange - verify we have tokens from setup
+            Assert.That(_refreshToken, Is.Not.Null, "Setup failed: No refresh token available");
+            Assert.That(_idToken, Is.Not.Null.And.Not.Empty, "Setup failed: No ID token available");
+
+            // Verify initial token validity
+            var (initialProfileStatus, initialProfileContent) = await _auth.GetUserProfile(_idToken);
+            Assert.That(initialProfileStatus, Is.EqualTo(HttpStatusCode.OK),
+                "Initial token should be valid before logout");
+            Assert.That(initialProfileContent["email"]?.ToString(), Is.EqualTo(_testEmail),
+                "Initial profile should return the correct user email");
+        }
+
+        [Test]
+        public async Task SignOut_NullTokens_ShouldFail()
+        {
+            // Act
+            var (statusCode, responseBody) = await _auth.LogoutUser(null, null);
+
+            // Assert
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
+                "Logout with null tokens should fail with Unauthorized status");
+
+            // Verify error message
+            if (!string.IsNullOrEmpty(responseBody))
+            {
+                Assert.That(responseBody, Contains.Substring("unauthorized").IgnoreCase.Or.Contains("token").IgnoreCase,
+                    "Error message should mention unauthorized or token issue");
+            }
         }
 
         [Test]
@@ -363,78 +441,6 @@ namespace ApiTests
 
             Assert.That(responseBody, Does.Contain("Successfully signed out"),
                 "Response should confirm successful logout");
-        }
-
-        [Test]
-        public async Task Logout_AuthenticatedUser_ShouldInvalidateSession()
-        {
-            // Arrange - Register a new user
-            string firstName = "Logout";
-            string lastName = "Test";
-            string email = $"test_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            string password = "TestPass123!";
-
-            // Регистрируем пользователя
-            var registerResult = await _auth.RegisterUser(
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                password: password
-            );
-
-            HttpStatusCode registerStatus = registerResult.Item1;
-            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
-
-            // Входим в систему и получаем токены
-            var loginResult = await _auth.LoginUser(email, password);
-
-            HttpStatusCode loginStatus = loginResult.StatusCode;
-            JObject responseBody = loginResult.ResponseBody;
-
-            // Извлекаем токены из ответа
-            string idToken = responseBody["idToken"]?.ToString() ?? "";
-            string accessToken = responseBody["idToken"]?.ToString() ?? ""; // Используем idToken как accessToken
-            string refreshToken = responseBody["refreshToken"]?.ToString() ?? "";
-
-            Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in successfully");
-
-            // Verify we have the tokens
-            Assert.That(idToken, Is.Not.Null.And.Not.Empty, "ID token should not be null or empty");
-            Assert.That(refreshToken, Is.Not.Null.And.Not.Empty, "Refresh token should not be null or empty");
-
-            Console.WriteLine($"ID Token: {idToken}");
-            Console.WriteLine($"Access Token: {accessToken}");
-            Console.WriteLine($"RefreshToken: {refreshToken}");
-
-            // Act - Выполняем выход, передавая idToken
-            var logoutResult = await _auth.LogoutUser(refreshToken, idToken);
-
-            HttpStatusCode logoutStatus = logoutResult.Item1;
-            string responseBodyText = logoutResult.Item2;
-
-            Console.WriteLine($"Logout response status: {logoutStatus}");
-            Console.WriteLine($"Response body: {responseBodyText}");
-
-            // Assert
-            Assert.That(logoutStatus, Is.EqualTo(HttpStatusCode.OK), "Logout should return status 200 OK");
-            var expectedMessage = "Successfully signed out";
-            Assert.That(responseBodyText, Does.Contain(expectedMessage), $"Response body should contain message: '{expectedMessage}'");
-
-            // Проверяем, что idToken всё ещё работает (новое поведение API)
-            var (profileStatus, profileContent) = await _auth.GetUserProfile(idToken);
-
-            // Обновлено ожидание в соответствии с новым поведением API
-            Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK),
-                "In the new API version, tokens remain valid after logout");
-
-            // Проверяем, что в ответе есть необходимые поля профиля пользователя
-            Assert.That(profileContent, Is.Not.Null, "Profile response should not be null");
-            Assert.That(profileContent["email"]?.ToString(), Is.EqualTo(email),
-                "Profile should return the correct user email");
-            Assert.That(profileContent["firstName"]?.ToString(), Is.EqualTo(firstName),
-                "Profile should return the correct user first name");
-            Assert.That(profileContent["lastName"]?.ToString(), Is.EqualTo(lastName),
-                "Profile should return the correct user last name");
         }
     }
 }

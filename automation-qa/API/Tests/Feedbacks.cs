@@ -4,16 +4,17 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 using ApiTests.Pages;
+using ApiTests.Utilities;
 
 namespace ApiTests
 {
     [TestFixture]
-    [Category("Feedback")]
+    [Category("Feedbacks")]
     public class FeedbackTests : BaseTest
     {
         private Feedback _feedback;
         private Authentication _auth;
-        private readonly string _validReservationId = "43a479ef-4aa0-4472-b72e-7833f90a591";
+        private string _validReservationId;
         private string _idToken;
 
         [SetUp]
@@ -21,19 +22,20 @@ namespace ApiTests
         {
             _feedback = new Feedback();
             _auth = new Authentication();
+            _validReservationId = Config.ValidReservationId;
 
-            // Получаем токен аутентификации
-            var (statusCode, responseBody) = await _auth.LoginUser("test@example.com", "StrongP@ss123!");
+            // Get authentication token
+            var (statusCode, responseBody) = await _auth.LoginUser(Config.TestUserEmail, Config.TestUserPassword);
 
             if (statusCode == HttpStatusCode.OK && responseBody != null && responseBody.ContainsKey("idToken"))
             {
                 _idToken = responseBody["idToken"].ToString();
-                Console.WriteLine("Авторизация успешна, токен получен");
+                Console.WriteLine("Authentication successful, token received");
             }
             else
             {
-                Console.WriteLine($"Предупреждение: Не удалось выполнить вход: {statusCode}");
-                // Не фейлим тест здесь, чтобы проверить поведение без токена
+                Console.WriteLine($"Warning: Failed to log in: {statusCode}");
+                // Don't fail the test here to check behavior without a token
             }
         }
 
@@ -52,12 +54,22 @@ namespace ApiTests
                 cuisineComment,
                 cuisineRating,
                 serviceComment,
-                serviceRating);
+                serviceRating,
+                _idToken);
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Должен возвращать статус 200 OK");
-            Assert.That(responseBody, Is.Not.Null, "Тело ответа не должно быть null");
-            Console.WriteLine("Отзыв успешно создан");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
+            Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
+
+            // Verify success message
+            if (responseBody != null && responseBody.ContainsKey("message"))
+            {
+                Assert.That(responseBody["message"].ToString(),
+                    Contains.Substring("success").IgnoreCase.Or.Contains("added").IgnoreCase,
+                    "Response should contain success message");
+            }
+
+            Console.WriteLine("Feedback successfully created");
         }
 
         [Test]
@@ -76,12 +88,22 @@ namespace ApiTests
                 cuisineComment,
                 cuisineRating,
                 serviceComment,
-                serviceRating);
+                serviceRating,
+                _idToken);
 
             // Assert
             Assert.That((int)statusCode, Is.GreaterThanOrEqualTo(400),
-                "Должен возвращать код ошибки при недействительном ID бронирования");
-            Console.WriteLine($"Получен ожидаемый статус ошибки: {statusCode}");
+                "Should return error code with invalid reservation ID");
+
+            // Verify error message
+            if (responseBody != null && responseBody.ContainsKey("message"))
+            {
+                Assert.That(responseBody["message"].ToString(),
+                    Contains.Substring("reservation").IgnoreCase.Or.Contains("id").IgnoreCase,
+                    "Error message should indicate issue with reservation ID");
+            }
+
+            Console.WriteLine($"Received expected error status: {statusCode}");
         }
 
         [Test]
@@ -99,11 +121,21 @@ namespace ApiTests
                 cuisineComment,
                 cuisineRating,
                 serviceComment,
-                serviceRating);
+                serviceRating,
+                _idToken);
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Должен возвращать статус 200 OK");
-            Console.WriteLine("Отзыв успешно обновлен");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
+
+            // Verify success message
+            if (responseBody != null && responseBody.ContainsKey("message"))
+            {
+                Assert.That(responseBody["message"].ToString(),
+                    Contains.Substring("success").IgnoreCase.Or.Contains("updated").IgnoreCase,
+                    "Response should contain success message");
+            }
+
+            Console.WriteLine("Feedback successfully updated");
         }
 
         [Test]
@@ -111,7 +143,7 @@ namespace ApiTests
         {
             // Arrange
             string cuisineComment = "Good food";
-            string invalidRating = "10"; // Рейтинг должен быть от 1 до 5
+            string invalidRating = "10"; // Rating should be between 1 and 5
             string serviceComment = "Good service";
             string serviceRating = "3";
 
@@ -121,12 +153,22 @@ namespace ApiTests
                 cuisineComment,
                 invalidRating,
                 serviceComment,
-                serviceRating);
+                serviceRating,
+                _idToken);
 
             // Assert
             Assert.That((int)statusCode, Is.GreaterThanOrEqualTo(400),
-                "Должен возвращать код ошибки при недопустимом значении рейтинга");
-            Console.WriteLine($"Получен ожидаемый статус ошибки: {statusCode}");
+                "Should return error code with invalid rating value");
+
+            // Verify error message
+            if (responseBody != null && responseBody.ContainsKey("message"))
+            {
+                Assert.That(responseBody["message"].ToString(),
+                    Contains.Substring("rating").IgnoreCase,
+                    "Error message should indicate issue with rating value");
+            }
+
+            Console.WriteLine($"Received expected error status: {statusCode}");
         }
 
         [Test]
@@ -136,18 +178,31 @@ namespace ApiTests
             string emptyReservationId = "";
 
             // Act
-            var (statusCode, responseBody) = await _feedback.GetFeedbacksByReservationId(emptyReservationId);
+            var (statusCode, responseBody) = await _feedback.GetFeedbacksByReservationId(emptyReservationId, _idToken);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
-                "Должен возвращать статус 400 Bad Request при пустом ID бронирования");
-            Console.WriteLine("Получен ожидаемый статус Bad Request при пустом ID");
+                "Should return 400 Bad Request status with empty reservation ID");
+
+            // Verify error message
+            if (responseBody != null)
+            {
+                JObject errorObj = JObject.Parse(responseBody.ToString());
+                if (errorObj["message"] != null)
+                {
+                    Assert.That(errorObj["message"].ToString(),
+                        Contains.Substring("empty").IgnoreCase.Or.Contains("reservation").IgnoreCase,
+                        "Error message should indicate issue with empty ID");
+                }
+            }
+
+            Console.WriteLine("Received expected Bad Request status with empty ID");
         }
 
         [Test]
         public async Task CreateFeedback_WithMissingComments_ReturnsSuccess()
         {
-            // Arrange - только рейтинги, без комментариев
+            // Arrange - ratings only, no comments
             string cuisineComment = "";
             string cuisineRating = "4";
             string serviceComment = "";
@@ -159,18 +214,28 @@ namespace ApiTests
                 cuisineComment,
                 cuisineRating,
                 serviceComment,
-                serviceRating);
+                serviceRating,
+                _idToken);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK),
-                "Должен принимать отзыв без комментариев, только с рейтингами");
-            Console.WriteLine("Отзыв без комментариев успешно создан");
+                "Should accept feedback with ratings only, no comments");
+
+            // Verify success message
+            if (responseBody != null && responseBody.ContainsKey("message"))
+            {
+                Assert.That(responseBody["message"].ToString(),
+                    Contains.Substring("success").IgnoreCase.Or.Contains("added").IgnoreCase,
+                    "Response should contain success message");
+            }
+
+            Console.WriteLine("Feedback without comments successfully created");
         }
 
         [Test]
         public async Task CreateFeedback_WithLowRatings_ReturnsSuccess()
         {
-            // Arrange - минимальные рейтинги
+            // Arrange - minimum ratings
             string cuisineComment = "Poor food quality";
             string cuisineRating = "1";
             string serviceComment = "Very slow service";
@@ -182,20 +247,30 @@ namespace ApiTests
                 cuisineComment,
                 cuisineRating,
                 serviceComment,
-                serviceRating);
+                serviceRating,
+                _idToken);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK),
-                "Должен принимать отзыв с минимальными рейтингами");
-            Console.WriteLine("Отзыв с низкими рейтингами успешно создан");
+                "Should accept feedback with minimum ratings");
+
+            // Verify success message
+            if (responseBody != null && responseBody.ContainsKey("message"))
+            {
+                Assert.That(responseBody["message"].ToString(),
+                    Contains.Substring("success").IgnoreCase.Or.Contains("added").IgnoreCase,
+                    "Response should contain success message");
+            }
+
+            Console.WriteLine("Feedback with low ratings successfully created");
         }
 
         [Test]
         public async Task CreateFeedback_WithNonNumericRating_ReturnsError()
         {
-            // Arrange - нечисловой рейтинг
+            // Arrange - non-numeric rating
             string cuisineComment = "Good food";
-            string cuisineRating = "excellent";  // Нечисловое значение
+            string cuisineRating = "excellent";  // Non-numeric value
             string serviceComment = "Good service";
             string serviceRating = "3";
 
@@ -205,12 +280,22 @@ namespace ApiTests
                 cuisineComment,
                 cuisineRating,
                 serviceComment,
-                serviceRating);
+                serviceRating,
+                _idToken);
 
             // Assert
             Assert.That((int)statusCode, Is.GreaterThanOrEqualTo(400),
-                "Должен возвращать ошибку при нечисловом значении рейтинга");
-            Console.WriteLine($"Получен ожидаемый статус ошибки: {statusCode}");
+                "Should return error with non-numeric rating value");
+
+            // Verify error message
+            if (responseBody != null && responseBody.ContainsKey("message"))
+            {
+                Assert.That(responseBody["message"].ToString(),
+                    Contains.Substring("rating").IgnoreCase.Or.Contains("number").IgnoreCase,
+                    "Error message should indicate issue with rating format");
+            }
+
+            Console.WriteLine($"Received expected error status: {statusCode}");
         }
 
         [Test]
@@ -222,18 +307,28 @@ namespace ApiTests
             string serviceComment = "Good service";
             string serviceRating = "5";
 
-            // Act
+            // Act - explicitly pass null to avoid using token
             var (statusCode, responseBody) = await _feedback.CreateFeedback(
                 _validReservationId,
                 cuisineComment,
                 cuisineRating,
                 serviceComment,
-                serviceRating);
+                serviceRating,
+                null);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
-                "Должен возвращать статус 401 Unauthorized без аутентификации");
-            Console.WriteLine("Получен ожидаемый статус Unauthorized");
+                "Should return 401 Unauthorized status without authentication");
+
+            // Verify error message
+            if (responseBody != null && responseBody.ContainsKey("message"))
+            {
+                Assert.That(responseBody["message"].ToString(),
+                    Contains.Substring("unauthorized").IgnoreCase.Or.Contains("authentication").IgnoreCase,
+                    "Error message should indicate authentication issue");
+            }
+
+            Console.WriteLine("Received expected Unauthorized status");
         }
     }
 }

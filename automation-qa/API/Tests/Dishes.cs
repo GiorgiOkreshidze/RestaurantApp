@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 using ApiTests.Pages;
+using ApiTests.Utilities;
 
 namespace ApiTests
 {
@@ -12,30 +13,31 @@ namespace ApiTests
     public class DishesTests : BaseTest
     {
         private Dishes _dishes;
-        private string _validLocationId = "8c4fc44e-c1a5-42eb-9912-55aeb5111a99";
+        private string _validLocationId;
         private string idToken;
 
         [SetUp]
         public void Setup()
         {
             _dishes = new Dishes();
+            _validLocationId = Config.ValidLocationId;
         }
 
         [Test]
         public async Task GetPopularDishes_ReturnsSuccess()
         {
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Должен возвращать статус 200 OK");
-            Assert.That(responseBody, Is.Not.Null, "Тело ответа не должно быть null");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
+            Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
 
             if (responseBody.Count == 0)
             {
-                Console.WriteLine("Предупреждение: Популярные блюда не найдены в системе");
-                Assert.Ignore("Тест пропущен - популярные блюда недоступны");
+                Console.WriteLine("Warning: No popular dishes found in the system");
+                Assert.Ignore("Test skipped - popular dishes not available");
             }
             else
             {
-                Console.WriteLine($"Найдено {responseBody.Count} популярных блюд");
+                Console.WriteLine($"Found {responseBody.Count} popular dishes");
             }
         }
 
@@ -43,16 +45,16 @@ namespace ApiTests
         public async Task GetPopularDishes_HasCorrectStructure()
         {
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Должен возвращать статус 200 OK");
-            Assert.That(responseBody, Is.Not.Null, "Тело ответа не должно быть null");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
+            Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
 
             if (responseBody.Count > 0)
             {
                 var firstDish = responseBody[0];
-                Assert.That(firstDish["id"], Is.Not.Null, "Блюдо должно иметь ID");
-                Assert.That(firstDish["name"], Is.Not.Null, "Блюдо должно иметь название");
-                Assert.That(firstDish["price"], Is.Not.Null, "Блюдо должно иметь цену");
-                Assert.That(firstDish["imageUrl"], Is.Not.Null, "Блюдо должно иметь URL изображения");
+                Assert.That(firstDish["id"], Is.Not.Null, "Dish should have an ID");
+                Assert.That(firstDish["name"], Is.Not.Null, "Dish should have a name");
+                Assert.That(firstDish["price"], Is.Not.Null, "Dish should have a price");
+                Assert.That(firstDish["imageUrl"], Is.Not.Null, "Dish should have an image URL");
             }
         }
 
@@ -60,12 +62,12 @@ namespace ApiTests
         public async Task GetPopularDishes_ContainsOnlyPopularDishes()
         {
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Должен возвращать статус 200 OK");
-            Assert.That(responseBody, Is.Not.Null, "Тело ответа не должно быть null");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
+            Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
 
             if (responseBody.Count > 0)
             {
-                Console.WriteLine("Проверка isPopular пропущена, так как поле отсутствует в ответе API");
+                Console.WriteLine("isPopular field check skipped as it is missing in the API response");
             }
         }
 
@@ -76,8 +78,8 @@ namespace ApiTests
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Должен возвращать статус 200 OK");
-            Assert.That(responseBody, Is.InstanceOf<JArray>(), "Тело ответа должно быть массивом JSON");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
+            Assert.That(responseBody, Is.InstanceOf<JArray>(), "Response body should be a JSON array");
         }
 
         [Test]
@@ -87,8 +89,8 @@ namespace ApiTests
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Должен возвращать статус 200 OK");
-            Assert.That(responseBody.Count, Is.GreaterThan(0), "Должен возвращаться хотя бы один популярный элемент");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
+            Assert.That(responseBody.Count, Is.GreaterThan(0), "Should return at least one popular item");
         }
 
         [Test]
@@ -98,13 +100,13 @@ namespace ApiTests
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Должен возвращать статус 200 OK");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
             if (responseBody.Count > 0)
             {
                 foreach (var dish in responseBody)
                 {
                     string name = dish["name"].Value<string>();
-                    Assert.That(name, Is.Not.Empty, "Название блюда не должно быть пустым");
+                    Assert.That(name, Is.Not.Empty, "Dish name should not be empty");
                 }
             }
         }
@@ -116,13 +118,13 @@ namespace ApiTests
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Должен возвращать статус 200 OK");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
             if (responseBody.Count > 0)
             {
                 foreach (var dish in responseBody)
                 {
                     string imageUrl = dish["imageUrl"].Value<string>();
-                    Assert.That(imageUrl, Does.StartWith("https://"), "URL изображения должен начинаться с https://");
+                    Assert.That(imageUrl, Does.StartWith("https://"), "Image URL should start with https://");
                 }
             }
         }
@@ -135,9 +137,9 @@ namespace ApiTests
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK),
-                "Должен возвращать статус 200 OK");
+                "Should return 200 OK status");
             Assert.That(responseBody, Is.Not.Null,
-                "Тело ответа не должно быть null");
+                "Response body should not be null");
         }
 
         [Test]
@@ -148,17 +150,17 @@ namespace ApiTests
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK),
-                "Должен возвращать статус 200 OK");
+                "Should return 200 OK status");
             Assert.That(responseBody.Count, Is.GreaterThan(0),
-                "Должен возвращаться хотя бы один популярный элемент");
+                "Should return at least one popular item");
         }
 
         [Test]
         public async Task GetPopularDishes_HasPriceInformation()
         {
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Должен возвращать статус 200 OK");
-            Assert.That(responseBody, Is.Not.Null, "Тело ответа не должно быть null");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
+            Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
 
             if (responseBody.Count > 0)
             {
@@ -167,11 +169,11 @@ namespace ApiTests
                     try
                     {
                         decimal price = dish["price"].Value<decimal>();
-                        Assert.That(price, Is.GreaterThan(0), "Цена блюда должна быть положительной");
+                        Assert.That(price, Is.GreaterThan(0), "Dish price should be positive");
                     }
                     catch (Exception ex)
                     {
-                        Assert.Fail($"Не удалось преобразовать цену блюда {dish["name"]} в decimal: {ex.Message}");
+                        Assert.Fail($"Failed to convert price of dish {dish["name"]} to decimal: {ex.Message}");
                     }
                 }
             }
@@ -188,7 +190,23 @@ namespace ApiTests
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
-                "Должен возвращать статус 400 Bad Request при запросе с пустым ID локации");
+                "Should return 400 Bad Request status with empty location ID");
+
+            // Check error message if available
+            if (responseBody != null)
+            {
+                try
+                {
+                    JObject errorObj = JObject.Parse(responseBody.ToString());
+                    if (errorObj["message"] != null)
+                    {
+                        Assert.That(errorObj["message"].ToString(),
+                            Contains.Substring("location").IgnoreCase.Or.Contains("id").IgnoreCase,
+                            "Error message should indicate issue with location ID");
+                    }
+                }
+                catch { /* Skip if parsing fails */ }
+            }
         }
 
         [Test]
@@ -203,8 +221,9 @@ namespace ApiTests
             JArray responseBody = result.ResponseBody;
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-            Assert.That(responseBody, Is.Null);
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
+                "Should return 400 Bad Request status with empty location ID");
+            Assert.That(responseBody, Is.Null, "Response body should be null with invalid parameters");
         }
 
         [Test]
@@ -218,9 +237,9 @@ namespace ApiTests
 
             // Assert
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest),
-                "Должен возвращать статус 400 Bad Request при запросе с null вместо ID локации");
+                "Should return 400 Bad Request status with null location ID");
             Assert.That(result.ResponseBody, Is.Null,
-                "Ответ должен быть null при запросе с null вместо ID локации");
+                "Response body should be null with null location ID");
         }
 
         [Test]
@@ -231,7 +250,14 @@ namespace ApiTests
 
             // Assert
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
-                "Запрос без параметров должен возвращать статус 200 OK");
+                "Request without parameters should return 200 OK status");
+
+            // Check success message if available
+            if (result.ResponseBody != null && result.ResponseBody.Count > 0)
+            {
+                Assert.That(result.ResponseBody, Is.Not.Null,
+                    "Response should contain dish data");
+            }
         }
 
         [Test]
@@ -245,7 +271,7 @@ namespace ApiTests
 
             // Assert
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
-                "Запрос с параметром dishType должен возвращать статус 200 OK");
+                "Request with dishType parameter should return 200 OK status");
         }
 
         [Test]
@@ -259,7 +285,7 @@ namespace ApiTests
 
             // Assert
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
-                "Запрос с параметром sort должен возвращать статус 200 OK");
+                "Request with sort parameter should return 200 OK status");
         }
 
         [Test]
@@ -269,18 +295,20 @@ namespace ApiTests
             var result = await _dishes.GetAllDishes();
 
             // Assert
-            Assert.That(result.ResponseBody, Is.Not.Null, "Ответ не должен быть null");
-            Assert.That(result.ResponseBody.Count, Is.GreaterThan(0), "Ответ должен содержать хотя бы одно блюдо");
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
+                "Should return 200 OK status");
+            Assert.That(result.ResponseBody, Is.Not.Null, "Response should not be null");
+            Assert.That(result.ResponseBody.Count, Is.GreaterThan(0), "Response should contain at least one dish");
 
             if (result.ResponseBody != null && result.ResponseBody.Count > 0)
             {
                 JObject firstDish = (JObject)result.ResponseBody[0];
 
-                // Проверяем наличие обязательных полей в первом объекте
-                Assert.That(firstDish.ContainsKey("id"), "Блюдо должно содержать поле 'id'");
-                Assert.That(firstDish.ContainsKey("name"), "Блюдо должно содержать поле 'name'");
-                Assert.That(firstDish.ContainsKey("price"), "Блюдо должно содержать поле 'price'");
-                Assert.That(firstDish.ContainsKey("imageUrl"), "Блюдо должно содержать поле 'imageUrl'");
+                // Check required fields in first object
+                Assert.That(firstDish.ContainsKey("id"), "Dish should contain 'id' field");
+                Assert.That(firstDish.ContainsKey("name"), "Dish should contain 'name' field");
+                Assert.That(firstDish.ContainsKey("price"), "Dish should contain 'price' field");
+                Assert.That(firstDish.ContainsKey("imageUrl"), "Dish should contain 'imageUrl' field");
             }
         }
 
@@ -294,12 +322,14 @@ namespace ApiTests
             var result = await _dishes.GetAllDishes(dishType);
 
             // Assert
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(result.ResponseBody, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
+                "Should return 200 OK status");
+            Assert.That(result.ResponseBody, Is.Not.Null,
+                "Response body should not be null");
 
             if (result.ResponseBody != null && result.ResponseBody.Count > 0)
             {
-                // Проверяем, что все блюда в ответе соответствуют запрошенному типу
+                // Check that all dishes in response match requested type
                 bool allMatchDishType = true;
                 foreach (JObject dish in result.ResponseBody)
                 {
@@ -311,7 +341,7 @@ namespace ApiTests
                 }
 
                 Assert.That(allMatchDishType, Is.True,
-                    $"Все блюда в ответе должны иметь тип '{dishType}'");
+                    $"All dishes in response should have type '{dishType}'");
             }
         }
 
@@ -325,7 +355,8 @@ namespace ApiTests
             var result = await _dishes.GetDishById(validDishId);
 
             // Assert
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
+                "Should return 200 OK status with valid dish ID");
         }
 
         [Test]
@@ -338,7 +369,16 @@ namespace ApiTests
             var result = await _dishes.GetDishById(invalidDishId);
 
             // Assert
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound),
+                "Should return 404 Not Found status with invalid dish ID");
+
+            // Check error message if available
+            if (result.ResponseBody != null && result.ResponseBody.ContainsKey("message"))
+            {
+                Assert.That(result.ResponseBody["message"].ToString(),
+                    Contains.Substring("not found").IgnoreCase.Or.Contains("does not exist").IgnoreCase,
+                    "Error message should indicate dish not found");
+            }
         }
 
         [Test]
@@ -348,7 +388,8 @@ namespace ApiTests
             var result = await _dishes.GetDishById("");
 
             // Assert
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest),
+                "Should return 400 Bad Request status with empty dish ID");
         }
 
         [Test]
@@ -361,10 +402,16 @@ namespace ApiTests
             var result = await _dishes.GetDishById(validDishId);
 
             // Assert
-            Assert.That(result.ResponseBody, Is.Not.Null);
-            Assert.That(result.ResponseBody.ContainsKey("id"), Is.True);
-            Assert.That(result.ResponseBody.ContainsKey("name"), Is.True);
-            Assert.That(result.ResponseBody.ContainsKey("price"), Is.True);
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
+                "Should return 200 OK status with valid dish ID");
+            Assert.That(result.ResponseBody, Is.Not.Null,
+                "Response body should not be null");
+            Assert.That(result.ResponseBody.ContainsKey("id"), Is.True,
+                "Response should contain 'id' field");
+            Assert.That(result.ResponseBody.ContainsKey("name"), Is.True,
+                "Response should contain 'name' field");
+            Assert.That(result.ResponseBody.ContainsKey("price"), Is.True,
+                "Response should contain 'price' field");
         }
 
         [Test]
@@ -377,7 +424,10 @@ namespace ApiTests
             var result = await _dishes.GetDishById(validDishId);
 
             // Assert
-            Assert.That(result.ResponseBody["id"].ToString(), Is.EqualTo(validDishId));
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
+                "Should return 200 OK status with valid dish ID");
+            Assert.That(result.ResponseBody["id"].ToString(), Is.EqualTo(validDishId),
+                "ID in response should match requested ID");
         }
     }
 }
