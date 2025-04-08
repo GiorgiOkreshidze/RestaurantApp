@@ -74,7 +74,6 @@ export const AllDishes: React.FC<Props> = ({ dishes, loading }) => {
         dish={oneDish}
         isOpen={isOpen}
         onOpenChange={handleOpenChange}
-        
         loading={oneDishLoading}
       />
     </>

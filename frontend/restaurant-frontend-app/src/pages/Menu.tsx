@@ -23,7 +23,7 @@ export const Menu = () => {
       getAllDishes({
         category: filters.activeCategory,
         sortBy: filters.sortBy,
-      })
+      }),
     );
   }, [filters.activeCategory, filters.sortBy, dispatch]);
 
@@ -36,7 +36,7 @@ export const Menu = () => {
       { id: "PriceAsc", label: "Price Ascending" },
       { id: "PriceDesc", label: "Price Descending" },
     ],
-    []
+    [],
   );
 
   return (

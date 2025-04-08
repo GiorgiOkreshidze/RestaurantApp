@@ -44,7 +44,7 @@ export const getSpecialityDishes = createAsyncThunk<
 >("locations/getSpecialityDishes", async (id, { rejectWithValue }) => {
   try {
     const response = await axiosApi.get(
-      `${serverRoute.locations}/${id}/${serverRoute.specialityDishes}`
+      `${serverRoute.locations}/${id}/${serverRoute.specialityDishes}`,
     );
     return response.data;
   } catch (e) {
@@ -65,7 +65,7 @@ export const getFeedbacksOfLocation = createAsyncThunk<
     try {
       const response = await axiosApi.get(
         `${serverRoute.locations}/${params.id}/${serverRoute.feedbacks}`,
-        { params: { type: params.type, sort: params.sort, size: "100" } }
+        { params: { type: params.type, sort: params.sort, size: "100" } },
       );
       return response.data;
     } catch (e) {
@@ -74,7 +74,7 @@ export const getFeedbacksOfLocation = createAsyncThunk<
       }
       throw e;
     }
-  }
+  },
 );
 
 export const getSelectOptions = createAsyncThunk<

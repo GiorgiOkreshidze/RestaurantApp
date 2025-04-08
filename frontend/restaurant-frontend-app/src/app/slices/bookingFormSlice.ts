@@ -16,7 +16,9 @@ const initialState: BookingFormState = {
   date: TIME_SLOTS.filter((slot) => !slot.isPast).length
     ? new Date().toString()
     : startOfTomorrow().toString(),
-  time: TIME_SLOTS.find((slot) => !slot.isPast)?.rangeString ?? TIME_SLOTS[0].rangeString,
+  time:
+    TIME_SLOTS.find((slot) => !slot.isPast)?.rangeString ??
+    TIME_SLOTS[0].rangeString,
   guests: 2,
   timeSlots: TIME_SLOTS,
 };

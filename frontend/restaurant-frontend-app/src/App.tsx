@@ -47,12 +47,14 @@ function App() {
     }
   }, [dispatch, locations.length]);
 
-  useEffect(() => {(async () => {
-    if (!selectOptions.length) {
-      const selectOptions = await dispatch(getSelectOptions()).unwrap();
-      dispatch(setLocationAction(selectOptions[0].id));
-    }
-  })()}, [dispatch, selectOptions.length]);
+  useEffect(() => {
+    (async () => {
+      if (!selectOptions.length) {
+        const selectOptions = await dispatch(getSelectOptions()).unwrap();
+        dispatch(setLocationAction(selectOptions[0].id));
+      }
+    })();
+  }, [dispatch, selectOptions.length]);
 
   return (
     <>
