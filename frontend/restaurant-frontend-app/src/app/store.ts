@@ -13,7 +13,7 @@ import { dishesReducer } from "./slices/dishesSlice";
 import { locationsReducer } from "./slices/locationsSlice";
 import { reservationsReducer } from "./slices/reservationsSlice";
 import { tablesReducer } from "./slices/tablesSlice";
-import { bookingFormReducer } from "./slices/bookingFormSlice";
+import { bookingReducer } from "./slices/bookingSlice";
 import { waiterReservationsReducer } from "./slices/waiterReservationsSlice";
 
 const usersPersistConfig = {
@@ -28,7 +28,7 @@ const rootReducer = combineReducers({
   locations: locationsReducer,
   reservations: reservationsReducer,
   tables: tablesReducer,
-  bookingForm: bookingFormReducer,
+  booking: bookingReducer,
   waiterReservations: waiterReservationsReducer,
 });
 

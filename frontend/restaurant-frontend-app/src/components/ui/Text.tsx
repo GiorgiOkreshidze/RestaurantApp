@@ -1,7 +1,7 @@
 import { ComponentProps, ElementType } from "react";
 import { type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { textVariants } from "../variants/textVariants";
+import { textVariants } from "@/components/variants/textVariants.ts";
 
 const Text = ({
   className,

@@ -14,7 +14,7 @@ import { TimeSlot } from "./TimeSlot";
 import { TableUI } from "@/types/tables.types";
 import { RichTimeSlot } from "@/types";
 import { useSelector } from "react-redux";
-import { selectBookingFormState } from "@/app/slices/bookingFormSlice";
+import { selectBooking } from "@/app/slices/bookingSlice";
 
 export const AvailableTimeSlotsDialog = ({
   children,
@@ -27,7 +27,7 @@ export const AvailableTimeSlotsDialog = ({
   table: TableUI;
   availableSlots: RichTimeSlot[];
 }) => {
-  const bookingForm = useSelector(selectBookingFormState);
+  const bookingForm = useSelector(selectBooking);
   return (
     <Dialog>
       <DialogTrigger className={className} asChild>

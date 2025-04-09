@@ -5,7 +5,7 @@ import { Button } from "../ui";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
 import { ComponentProps } from "react";
-import { buttonVariants } from "../ui/Button";
+import { buttonVariants } from "@/components/variants/buttonVariants.ts";
 
 export const NavBar = () => {
   const user = useSelector(selectUser);

@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { MinusIcon, PeopleIcon, PlusIcon } from "../icons";
 import { Button, Text } from "../ui";
 import type { ComponentProps } from "react";
-import { buttonVariants } from "../ui/Button";
+import { buttonVariants } from "@/components/variants/buttonVariants.ts";
 
 export const GuestsNumber = ({
   guests,

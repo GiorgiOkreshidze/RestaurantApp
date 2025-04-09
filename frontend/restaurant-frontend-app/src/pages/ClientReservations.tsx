@@ -8,7 +8,7 @@ import {
 } from "@/app/slices/reservationsSlice";
 import { useSelector } from "react-redux";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/variants/buttonVariants.ts";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/app/hooks";
 import { getReservations } from "@/app/thunks/reservationsThunks";

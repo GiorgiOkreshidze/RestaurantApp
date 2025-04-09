@@ -2,16 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RichTimeSlot } from "@/types";
 import { TIME_SLOTS } from "@/utils/constants";
 import { startOfTomorrow } from "date-fns";
+import { getTimeSlots } from "../thunks/bookingThunk";
 
-interface BookingFormState {
+interface BookingState {
   locationId: string;
   date: string;
   time: string;
   guests: number;
   timeSlots: RichTimeSlot[];
+  timeSlotsLoading: boolean;
 }
 
-const initialState: BookingFormState = {
+const initialState: BookingState = {
   locationId: "",
   date: TIME_SLOTS.filter((slot) => !slot.isPast).length
     ? new Date().toString()
@@ -20,11 +22,12 @@ const initialState: BookingFormState = {
     TIME_SLOTS.find((slot) => !slot.isPast)?.rangeString ??
     TIME_SLOTS[0].rangeString,
   guests: 2,
-  timeSlots: TIME_SLOTS,
+  timeSlots: [],
+  timeSlotsLoading: false,
 };
 
-export const bookingFormSlice = createSlice({
-  name: "bookingForm",
+export const bookingSlice = createSlice({
+  name: "booking",
   initialState,
   reducers: {
     setLocationAction: (state, { payload: data }) => {
@@ -47,19 +50,31 @@ export const bookingFormSlice = createSlice({
       state.guests = state.guests > 1 ? state.guests - 1 : 1;
     },
   },
-  extraReducers: () => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getTimeSlots.pending, (state) => {
+        state.timeSlotsLoading = true;
+      })
+      .addCase(getTimeSlots.fulfilled, (state, { payload: data }) => {
+        state.timeSlotsLoading = false;
+        state.timeSlots = data;
+      })
+      .addCase(getTimeSlots.rejected, (state) => {
+        state.timeSlotsLoading = false;
+      });
+  },
   selectors: {
-    selectBookingFormState: (state) => state,
+    selectBooking: (state) => state,
   },
 });
 
-export const bookingFormReducer = bookingFormSlice.reducer;
+export const bookingReducer = bookingSlice.reducer;
 export const {
   setLocationAction,
   setDateAction,
   setTimeAction,
   increaseGuestsAction,
   decreaseGuestsAction,
-} = bookingFormSlice.actions;
+} = bookingSlice.actions;
 
-export const { selectBookingFormState } = bookingFormSlice.selectors;
+export const { selectBooking } = bookingSlice.selectors;

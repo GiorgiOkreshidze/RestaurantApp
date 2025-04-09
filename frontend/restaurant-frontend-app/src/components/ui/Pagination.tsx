@@ -3,7 +3,7 @@ import { MoreHorizontalIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from ".";
-import { textVariants } from "./Text";
+import { textVariants } from "@/components/variants/textVariants.ts";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
