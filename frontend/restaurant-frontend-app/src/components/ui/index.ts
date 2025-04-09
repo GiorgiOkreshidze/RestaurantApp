@@ -5,7 +5,6 @@ export { Text } from "./Text";
 export { DishCard } from "./DishCard";
 export { LocationsCard } from "./LocationsCard";
 export {
-  useFormField,
   Form,
   FormItem,
   FormLabel,

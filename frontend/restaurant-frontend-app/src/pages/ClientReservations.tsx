@@ -21,7 +21,7 @@ export const ClientReservations = () => {
   useEffect(() => {
     if (reservations.length) return;
     dispatch(getReservations({}));
-  }, []);
+  }, [dispatch, reservations.length]);
 
   return (
     <>

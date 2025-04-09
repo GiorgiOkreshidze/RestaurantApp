@@ -34,7 +34,7 @@ export const WaiterReservation = () => {
   useEffect(() => {
     dispatch(getReservations({}));
     dispatch(getAllUsers());
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

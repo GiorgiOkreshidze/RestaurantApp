@@ -38,7 +38,7 @@ export const Reviews: React.FC<Props> = ({ feedbacks, id }) => {
       { id: "date,desc", label: "Newest first" },
       { id: "date,asc", label: "Oldest first" },
     ],
-    []
+    [],
   );
 
   const renderContent = () => {

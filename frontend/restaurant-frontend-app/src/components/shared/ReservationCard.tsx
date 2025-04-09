@@ -16,7 +16,7 @@ import {
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
 import { USER_ROLE } from "@/utils/constants";
-import { ReservationDialog, ReservationFeedbackDialog } from ".";
+import { ReservationFeedbackDialog } from ".";
 import { ClientReservationDialog } from "./ClientReservationDialog";
 
 export const ReservationCard = (props: { reservation: Reservation }) => {

@@ -104,7 +104,7 @@ export const useRegForm = () => {
   useEffect(() => {
     if (!passwordWatch && !passwordTouched) return;
     form.trigger("confirmPassword");
-  }, [passwordWatch, form]);
+  }, [passwordWatch, form, passwordTouched]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {

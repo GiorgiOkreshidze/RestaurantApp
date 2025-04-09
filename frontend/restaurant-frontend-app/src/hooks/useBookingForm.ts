@@ -46,7 +46,7 @@ export const useBookingForm = () => {
     if (isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
       setTime("");
     }
-  }, [date]);
+  }, [date, setTime, time]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();

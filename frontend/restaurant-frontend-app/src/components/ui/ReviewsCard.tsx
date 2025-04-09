@@ -14,7 +14,7 @@ export const ReviewsCard: React.FC<Props> = ({ review }) => {
       <StarIcon className="w-5 h-5" key={i} />
     ) : (
       <EmptyStar className="w-5 h-5" key={i} />
-    )
+    ),
   );
 
   return (
