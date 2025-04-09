@@ -64,5 +64,10 @@
     "bracketSpacing": true,
     "arrowParens": "always",
     "useTabs": false
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
