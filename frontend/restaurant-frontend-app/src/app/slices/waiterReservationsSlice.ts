@@ -1,14 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { LocationTable, RichTimeSlot } from "@/types";
-import { LOCATION_TABLES, TIME_SLOTS } from "@/utils/constants";
+import { LOCATION_TABLES } from "@/utils/constants";
 import { startOfToday } from "date-fns";
+import { getTimeSlots } from "../thunks/bookingThunk";
 
 const initialState: WaiterReservationsState = {
   form: {
     date: startOfToday().toString(),
     time: "",
     table: "",
-    timeList: TIME_SLOTS,
+    timeList: [],
     tableList: LOCATION_TABLES,
   },
   newReservation: null,
@@ -28,7 +29,11 @@ export const waiterReservationsState = createSlice({
       state.form.table = data;
     },
   },
-  extraReducers: () => {},
+  extraReducers: (builder) => {
+    builder.addCase(getTimeSlots.fulfilled, (state, { payload: data }) => {
+      state.form.timeList = data;
+    });
+  },
   selectors: {
     selectWaiterReservationsForm: (state) => state.form,
   },

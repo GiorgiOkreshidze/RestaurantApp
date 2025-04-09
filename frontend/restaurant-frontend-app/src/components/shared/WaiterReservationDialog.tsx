@@ -20,10 +20,13 @@ import {
   UserPicker,
 } from ".";
 import { UserType } from "@/types/user.types";
-import { LOCATION_TABLES, TIME_SLOTS } from "@/utils/constants";
+import { LOCATION_TABLES } from "@/utils/constants";
 import { LocationIcon } from "../icons";
+import { useSelector } from "react-redux";
+import { selectBooking } from "@/app/slices/bookingSlice";
 
 export const WaiterReservationDialog = (props: Props) => {
+  const booking = useSelector(selectBooking);
   const [isCurrentDialogOpen, setIsCurrentDialogOpen] = useState(false);
   const onSuccessCallback = () => {
     setIsCurrentDialogOpen(!isCurrentDialogOpen);
@@ -83,7 +86,7 @@ export const WaiterReservationDialog = (props: Props) => {
               className="mt-[1rem] w-full"
             />
             <TimeSlotPicker
-              items={TIME_SLOTS}
+              items={booking.timeSlots}
               value={state.time}
               setValue={state.setTime}
               selectedDate={state.date}

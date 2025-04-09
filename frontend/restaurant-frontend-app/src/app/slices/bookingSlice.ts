@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RichTimeSlot } from "@/types";
-import { TIME_SLOTS } from "@/utils/constants";
 import { startOfTomorrow } from "date-fns";
 import { getTimeSlots } from "../thunks/bookingThunk";
 
@@ -15,12 +14,8 @@ interface BookingState {
 
 const initialState: BookingState = {
   locationId: "",
-  date: TIME_SLOTS.filter((slot) => !slot.isPast).length
-    ? new Date().toString()
-    : startOfTomorrow().toString(),
-  time:
-    TIME_SLOTS.find((slot) => !slot.isPast)?.rangeString ??
-    TIME_SLOTS[0].rangeString,
+  date: new Date().toString(),
+  time: "",
   guests: 2,
   timeSlots: [],
   timeSlotsLoading: false,
@@ -55,9 +50,15 @@ export const bookingSlice = createSlice({
       .addCase(getTimeSlots.pending, (state) => {
         state.timeSlotsLoading = true;
       })
-      .addCase(getTimeSlots.fulfilled, (state, { payload: data }) => {
+      .addCase(getTimeSlots.fulfilled, (state, { payload: timeSlots }) => {
         state.timeSlotsLoading = false;
-        state.timeSlots = data;
+        state.timeSlots = timeSlots;
+        state.date = timeSlots.filter((slot) => !slot.isPast).length
+          ? new Date().toString()
+          : startOfTomorrow().toString();
+        state.time =
+          timeSlots.find((slot) => !slot.isPast)?.rangeString ??
+          timeSlots[0].rangeString;
       })
       .addCase(getTimeSlots.rejected, (state) => {
         state.timeSlotsLoading = false;
