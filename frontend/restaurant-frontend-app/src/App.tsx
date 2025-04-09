@@ -14,7 +14,7 @@ import {
   selectSelectOptions,
 } from "./app/slices/locationsSlice";
 import { getPopularDishes } from "./app/thunks/dishesThunks";
-import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
+import { getLocations, getLocationTables, getSelectOptions } from "./app/thunks/locationsThunks";
 import { ProtectedRoute } from "./components/routeComponents/ProtectedRoute";
 import { PublicRoute } from "./components/routeComponents/PublicRoute";
 
@@ -61,6 +61,7 @@ function App() {
   useEffect(() => {
     if (!booking.timeSlots.length) {
       dispatch(getTimeSlots());
+      dispatch(getLocationTables());
     }
   }, [dispatch, booking.timeSlots]);
 

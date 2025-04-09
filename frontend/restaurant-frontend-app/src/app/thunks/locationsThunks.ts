@@ -1,4 +1,9 @@
-import type { Dish, FeedbacksResponse, GlobalErrorMessage } from "@/types";
+import type {
+  Dish,
+  FeedbacksResponse,
+  GlobalErrorMessage,
+  LocationTable,
+} from "@/types";
 import type { Location, SelectOption } from "@/types/location.types";
 import axiosApi from "@/utils/axiosApi";
 import { serverRoute } from "@/utils/constants";
@@ -84,6 +89,22 @@ export const getSelectOptions = createAsyncThunk<
 >("locations/select-options", async (_, { rejectWithValue }) => {
   try {
     const response = await axiosApi.get(serverRoute.selectOptions);
+    return response.data;
+  } catch (e) {
+    if (isAxiosError(e) && e.response) {
+      return rejectWithValue(e.response.data);
+    }
+    throw e;
+  }
+});
+
+export const getLocationTables = createAsyncThunk<
+  LocationTable[],
+  void,
+  { rejectValue: GlobalErrorMessage }
+>("location-tables", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.get(serverRoute.locationTables);
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response) {

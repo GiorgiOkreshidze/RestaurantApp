@@ -1,5 +1,6 @@
 import { useAppDispatch } from "@/app/hooks";
 import {
+  selectLocationTables,
   selectSelectOptions,
   selectSelectOptionsLoading,
 } from "@/app/slices/locationsSlice";
@@ -11,7 +12,6 @@ import {
 } from "@/app/slices/userSlice";
 import { upsertWaiterReservation } from "@/app/thunks/reservationsThunks";
 import { UserType } from "@/types/user.types";
-import { LOCATION_TABLES } from "@/utils/constants";
 import { dateObjToDateStringServer } from "@/utils/dateTime";
 import { FormEvent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -37,6 +37,7 @@ export const useWaiterReservationDialog = (props: Props) => {
   const selectedCustomer = allCustomers?.find((c) => c.id === customerId);
   const customerName =
     `${selectedCustomer?.firstName ?? ""} ${selectedCustomer?.lastName ?? ""}`.trim();
+  const locationTables = useSelector(selectLocationTables);
 
   useEffect(() => {
     setTable(props.initTable);
@@ -74,7 +75,7 @@ export const useWaiterReservationDialog = (props: Props) => {
           guestsNumber: String(guests),
           locationId: waiter?.locationId ?? "",
           tableNumber:
-            LOCATION_TABLES.find((t) => t.tableId === table)?.tableNumber ?? "",
+            locationTables.find((t) => t.tableId === table)?.tableNumber ?? "",
           tableId: table,
           timeFrom: time.split(" - ")[0],
           timeTo: time.split(" - ")[1],
