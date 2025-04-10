@@ -28,7 +28,7 @@ function App() {
   const dispatch = useAppDispatch();
   const popularDishes = useSelector(selectPopularDishes);
   const locations = useSelector(selectLocations);
-  const selectOptions = useSelector(selectSelectOptions);
+    const selectOptions = useSelector(selectSelectOptions);
   const user = useSelector(selectUser);
 
   useEffect(() => {
