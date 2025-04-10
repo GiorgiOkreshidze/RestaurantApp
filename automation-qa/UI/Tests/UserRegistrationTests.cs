@@ -76,7 +76,7 @@ namespace automation_qa.UI.Tests
             _registrationPage.ClickCreateAccount();
 
             Assert.That(_registrationPage.IsFirstNameErrorDisplayed(),
-                Is.True, "Сообщение об ошибке не отображается для недопустимого имени");
+                Is.True, "");
 
             string errorMessage = _registrationPage.GetFirstNameErrorText();
             Assert.That(errorMessage,
@@ -210,7 +210,7 @@ namespace automation_qa.UI.Tests
             string errorMessage = _registrationPage.GetFirstNameErrorText();
             Assert.That(errorMessage,
                 Is.EqualTo("First name must be up to 50 characters"),
-                $"Неожиданное сообщение об ошибке: {errorMessage}");
+                $": {errorMessage}");
         }
 
         [Test]

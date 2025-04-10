@@ -32,20 +32,20 @@ namespace automation_qa.UI.Tests
 
             _loginPage.Login(email, password);
 
-            Assert.Pass("Ввод данных и нажатие кнопки выполнены успешно");
+            Assert.Pass("");
         }
 
         [Test]
         public void TC_LG1_002_LoginFormFields()
         {
             bool emailFieldExists = Driver.FindElements(_loginPage.GetEmailFieldLocator()).Count > 0;
-            Assert.That(emailFieldExists, Is.True, "Поле Email отсутствует на форме входа");
+            Assert.That(emailFieldExists, Is.True, "");
 
             By passwordFieldLocator = By.XPath("/html/body/div/div/div/section/div/form/div/div[2]/div/input");
             bool passwordFieldExists = Driver.FindElements(passwordFieldLocator).Count > 0;
-            Assert.That(passwordFieldExists, Is.True, "Поле Password отсутствует на форме входа");
+            Assert.That(passwordFieldExists, Is.True, "");
 
-            Assert.Pass("Форма входа содержит необходимые поля: Email и Password");
+            Assert.Pass("");
         }
 
         [Test]
