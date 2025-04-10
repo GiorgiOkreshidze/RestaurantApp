@@ -8,7 +8,6 @@ namespace automation_qa.Drivers
     {
         private IWebDriver? _driver;
 
-        // Конструктор должен иметь то же имя, что и класс
         public BrowserDriverManager()
         {
             _driver = null;
@@ -31,7 +30,6 @@ namespace automation_qa.Drivers
             }
         }
 
-        // Остальные методы без изменений
         public IWebDriver GetDriver()
         {
             return _driver ?? throw new InvalidOperationException("Driver has not been initialized. Call InitializeDriver first.");
