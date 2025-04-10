@@ -169,7 +169,6 @@ namespace ApiTests.Pages
         public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> GetUserProfile(
             string idToken, string accessToken = null)
         {
-            // Изменение проверки, делаем accessToken опциональным
             if (string.IsNullOrEmpty(idToken))
             {
                 throw new ArgumentNullException(nameof(idToken), "ID token must be provided.");
@@ -177,10 +176,8 @@ namespace ApiTests.Pages
 
             var request = CreateGetRequest("/users/profile");
 
-            // Всегда добавляем идентификационный токен в заголовок
             request.AddHeader("Authorization", $"Bearer {idToken}");
 
-            // Добавляем accessToken только если он предоставлен
             if (!string.IsNullOrEmpty(accessToken))
             {
                 request.AddHeader("X-Amz-Security-Token", accessToken);

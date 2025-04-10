@@ -409,11 +409,11 @@ namespace ApiTests
         {
             string[] weakPasswords = new[]
             {
-        "weak",           // too short
-        "123456",         // only digits
-        "password",       // common password
-        "weakpassword",   // no complexity
-        "12345678",       // only digits
+                "weak",           // too short
+                "123456",         // only digits
+                "password",       // common password
+                "weakpassword",   // no complexity
+                "12345678",       // only digits
         new string('a', 257) // exceeds max length
     };
 
@@ -428,8 +428,6 @@ namespace ApiTests
 
                 Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
                     $"Registration should fail for weak password: {weakPassword}");
-
-                // Проверка сообщения об ошибке
                 Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
                 Assert.That(responseBody.ContainsKey("message"), Is.True, "Response should contain error message");
             }

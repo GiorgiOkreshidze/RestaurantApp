@@ -496,7 +496,6 @@ namespace ApiTests
                 (int)HttpStatusCode.Conflict),
                 "Registration should either succeed or return Conflict");
 
-            // Если Conflict, значит пользователь уже существует
             if (registerStatus == HttpStatusCode.Conflict)
             {
                 Console.WriteLine("User already exists, proceeding with login");
@@ -505,13 +504,11 @@ namespace ApiTests
             // Log in to get tokens
             var (loginStatus, loginResponse) = await _auth.LoginUser(waiterEmail, password);
 
-            // Расширенная проверка логина
             Assert.That((int)loginStatus, Is.AnyOf(
                 (int)HttpStatusCode.OK,
                 (int)HttpStatusCode.Forbidden),
                 "Login should either succeed or return Forbidden");
 
-            // Если логин успешен, проверяем профиль
             if (loginStatus == HttpStatusCode.OK)
             {
                 string idToken = loginResponse["idToken"]?.ToString();
@@ -538,13 +535,11 @@ namespace ApiTests
             // Act
             var (loginStatus, loginResponse) = await _auth.LoginUser(adminEmail, adminPassword);
 
-            // Расширенная проверка статуса
             Assert.That((int)loginStatus, Is.AnyOf(
                 (int)HttpStatusCode.OK,
                 (int)HttpStatusCode.Forbidden),
                 "Admin login should either succeed or return Forbidden");
 
-            // Если логин успешен, проверяем профиль
             if (loginStatus == HttpStatusCode.OK)
             {
                 string idToken = loginResponse["idToken"]?.ToString();

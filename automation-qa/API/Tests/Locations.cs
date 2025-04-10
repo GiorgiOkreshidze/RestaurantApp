@@ -453,7 +453,5 @@ namespace ApiTests
             Assert.ThrowsAsync<ArgumentException>(async () => await _locations.GetLocationById(locationId),
                 "Should throw ArgumentException for invalid format locationId");
         }
-
-        // Removing duplicate test with alternative name
     }
 }

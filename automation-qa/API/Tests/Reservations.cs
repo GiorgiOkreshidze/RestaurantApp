@@ -24,10 +24,10 @@ namespace ApiTests
         public void Setup()
         {
             _reservations = new Reservations();
-            _testLocationId = Config.ValidLocationId; // Use from TestConfig
+            _testLocationId = Config.ValidLocationId;
             _testDate = DateTime.Now.ToString("yyyy-MM-dd");
-            _testTableId = "04ba5b37-8fbd-4f5f-8354-0b75078a790a"; // Valid table ID
-            _testWaiterId = "16929204-5081-706c-f4dc-a1695648cd31"; // Valid waiter ID
+            _testTableId = "04ba5b37-8fbd-4f5f-8354-0b75078a790a";
+            _testWaiterId = "16929204-5081-706c-f4dc-a1695648cd31";
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace ApiTests
                 }
                 catch
                 {
-                    // If parsing fails, skip message validation
+
                 }
             }
         }
@@ -138,12 +138,6 @@ namespace ApiTests
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
             Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
-
-            // If API returns date in the response, add validation
-            // if (responseBody.Count > 0 && responseBody[0]["date"] != null)
-            // {
-            //     Assert.That(responseBody[0]["date"].ToString(), Is.EqualTo(_testDate), "Date should match the filter");
-            // }
         }
 
         [Test]
@@ -233,7 +227,7 @@ namespace ApiTests
         {
             // Test verifies that tables cannot be retrieved for past dates
             string pastDate = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
-            string pastTime = "12:00"; // Middle of the day time
+            string pastTime = "12:00";
 
             var (statusCode, responseBody) = await _reservations.GetAvailableTables(
                 locationId: _testLocationId,
@@ -383,7 +377,6 @@ namespace ApiTests
                 guestNumber: guestNumber,
                 waiterId: _testWaiterId,
                 clientType: clientType
-            // token not specified
             );
 
             HttpStatusCode statusCode = result.StatusCode;
@@ -516,7 +509,7 @@ namespace ApiTests
         public async Task CreateReservationByWaiter_WithInvalidTimeFormat_ShouldReturnBadRequest()
         {
             // Arrange
-            string invalidTimeFormat = "19-00"; // Invalid time format
+            string invalidTimeFormat = "19-00";
             string timeTo = "20:00";
             int guestNumber = 2;
             string clientType = "Customer";
@@ -552,7 +545,7 @@ namespace ApiTests
             // Arrange
             string timeFrom = "19:00";
             string timeTo = "20:00";
-            int tooManyGuests = 15; // Large number of guests
+            int tooManyGuests = 15;
             string clientType = "Customer";
 
             // Act
@@ -587,7 +580,6 @@ namespace ApiTests
         [Test]
         public async Task CreateReservationByWaiter_WithMissingRequiredFields_ShouldReturnBadRequest()
         {
-            // Arrange - skip required fields
 
             // Act
             var result = await _reservations.CreateReservationByWaiter(
@@ -597,8 +589,6 @@ namespace ApiTests
                 timeFrom: "19:00",
                 timeTo: "20:00",
                 guestNumber: 2
-            // No waiterId specified
-            // No clientType specified
             );
 
             HttpStatusCode statusCode = result.StatusCode;

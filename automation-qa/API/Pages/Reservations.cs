@@ -102,13 +102,11 @@ namespace ApiTests.Pages
         {
             var request = CreatePostRequest("/reservations/client");
 
-            // Добавляем заголовок авторизации, если предоставлен токен
             if (!string.IsNullOrEmpty(token))
             {
                 request.AddHeader("Authorization", $"Bearer {token}");
             }
 
-            // Создаем объект с данными бронирования
             var reservationData = new
             {
                 locationId,
@@ -123,17 +121,13 @@ namespace ApiTests.Pages
                 specialRequests
             };
 
-            // Добавляем тело запроса в формате JSON
             request.AddJsonBody(reservationData);
 
-            // Выполняем POST-запрос
             var response = await ExecutePostRequestAsync(request);
 
-            // Логируем результат
             Console.WriteLine($"CreateReservation response status: {response.StatusCode}");
             Console.WriteLine($"CreateReservation response content: {response.Content}");
 
-            // Парсим ответ
             JObject? responseBody = null;
             if (!string.IsNullOrEmpty(response.Content))
             {
@@ -166,16 +160,13 @@ namespace ApiTests.Pages
             string? clientType = null,
             string? token = null)
         {
-            // Создаем запрос к эндпоинту /reservations/waiter
             var request = CreatePostRequest("/reservations/waiter");
 
-            // Добавляем заголовок авторизации, если предоставлен токен
             if (!string.IsNullOrEmpty(token))
             {
                 request.AddHeader("Authorization", $"Bearer {token}");
             }
 
-            // Создаем объект с данными резервации
             var reservationData = new
             {
                 locationId,
@@ -193,17 +184,13 @@ namespace ApiTests.Pages
                 clientType
             };
 
-            // Добавляем тело запроса в формате JSON
             request.AddJsonBody(reservationData);
 
-            // Выполняем POST-запрос
             var response = await ExecutePostRequestAsync(request);
 
-            // Логируем результат
             Console.WriteLine($"CreateReservationByWaiter response status: {response.StatusCode}");
             Console.WriteLine($"CreateReservationByWaiter response content: {response.Content}");
 
-            // Парсим ответ
             JObject? responseBody = null;
             if (!string.IsNullOrEmpty(response.Content))
             {
@@ -224,25 +211,19 @@ namespace ApiTests.Pages
             string reservationId,
             string? token = null)
         {
-            // Для выполнения DELETE запроса нам потребуется добавить два новых метода в класс Reservations
 
-            // 1. Создание DELETE запроса
             var request = CreateDeleteRequest($"/reservations/{reservationId}");
 
-            // Добавляем заголовок авторизации, если предоставлен токен
             if (!string.IsNullOrEmpty(token))
             {
                 request.AddHeader("Authorization", $"Bearer {token}");
             }
 
-            // 2. Выполнение DELETE запроса
             var response = await ExecuteDeleteRequestAsync(request);
 
-            // Логируем результат
             Console.WriteLine($"CancelReservation response status: {response.StatusCode}");
             Console.WriteLine($"CancelReservation response content: {response.Content}");
 
-            // Парсим ответ
             JObject? responseBody = null;
             if (!string.IsNullOrEmpty(response.Content))
             {
