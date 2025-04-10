@@ -9,8 +9,6 @@ namespace automation_qa.UI.Pages
         private readonly IWebDriver _driver;
         private readonly WebDriverWait _wait;
 
-        // Локаторы элементов
-        // Локаторы элементов на основе предоставленных XPath
         private readonly By _emailField = By.XPath("/html/body/div/div/div/section/div/form/div/div[1]/input");
         private readonly By _passwordField = By.XPath("/html/body/div/div/div/section/div/form/div/div[2]/div/input");
         private readonly By _loginButton = By.XPath("/html/body/div/div/div/section/div/form/button");
@@ -101,7 +99,6 @@ namespace automation_qa.UI.Pages
             return _driver.Url.Contains("/login");
         }
 
-        // Добавьте этот метод в класс LoginPage
         public By GetEmailFieldLocator()
         {
             return _emailField;

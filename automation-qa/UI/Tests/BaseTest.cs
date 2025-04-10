@@ -29,11 +29,10 @@ namespace automation_qa.UI.Tests
             if (Driver != null)
             {
                 Driver.Quit();
-                Driver.Dispose(); // Явно вызываем Dispose
+                Driver.Dispose();
                 Driver = null;
             }
 
-            // Или можно просто использовать DriverManager
             DriverManager?.QuitDriver();
             DriverManager = null;
         }

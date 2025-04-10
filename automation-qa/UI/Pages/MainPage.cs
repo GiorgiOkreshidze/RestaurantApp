@@ -10,7 +10,6 @@ namespace automation_qa.UI.Pages
         private readonly IWebDriver _driver;
         private readonly WebDriverWait _wait;
 
-        // Локаторы для элементов на главной странице
         private readonly By _headerTitle = By.XPath("//p[@class='fontset-h1 text-green-200']//span[@class='text-primary' and text()='Green']/following-sibling::span[text()=' & Tasty']");
         private readonly By _viewMenuButton = By.XPath("//div[contains(@class, 'content-center') and contains(@class, 'min-h-')]/div/div/button");
         private readonly By _locationSection = By.XPath("//div[contains(@class, 'w-full') and contains(@class, 'mx-auto')]/article[2]/header/p");
@@ -27,13 +26,11 @@ namespace automation_qa.UI.Pages
             _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
         }
 
-        // Проверка, что заголовок главной страницы отображается
         public bool IsHeaderDisplayed()
         {
             return _wait.Until(ExpectedConditions.ElementIsVisible(_headerTitle)).Displayed;
         }
 
-        // Проверка, что кнопка "View Menu" отображается
         public bool IsViewMenuButtonDisplayed()
         {
             return _wait.Until(ExpectedConditions.ElementIsVisible(_viewMenuButton)).Displayed;
@@ -43,14 +40,11 @@ namespace automation_qa.UI.Pages
         {
             var element = _driver.FindElement(_locationSection);
 
-            // Прокручиваем к элементу, чтобы он стал видимым
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", element);
 
-            // Ожидаем, пока элемент станет видимым
             return _wait.Until(ExpectedConditions.ElementIsVisible(_locationSection)).Displayed;
         }
 
-        // Проверка, что ссылка "Book a Table" отображается
         public bool IsBookTableLinkDisplayed()
         {
             return _wait.Until(ExpectedConditions.ElementIsVisible(_bookTableLink)).Displayed;
@@ -93,8 +87,6 @@ namespace automation_qa.UI.Pages
         {
             try
             {
-                // Используем локатор для "Book a Table" вместо "Reservations"
-                // и используем _driver вместо driver
                 return _wait.Until(ExpectedConditions.ElementIsVisible(_bookTableLink)).Displayed;
             }
             catch (WebDriverTimeoutException)
@@ -114,13 +106,10 @@ namespace automation_qa.UI.Pages
         {
             var locationCard = _wait.Until(ExpectedConditions.ElementToBeClickable(_locationCard));
 
-            // Прокручиваем к элементу, чтобы он стал видимым
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", locationCard);
 
-            // Используем JavaScript для клика, чтобы обойти ограничения Selenium
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", locationCard);
 
-            // Возвращаем новую страницу, передав _driver в конструктор LocationOverviewPage
             return new LocationOverviewPage(_driver);
         }
     }

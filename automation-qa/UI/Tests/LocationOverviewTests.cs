@@ -21,62 +21,51 @@ namespace automation_qa.UI.Tests
         [Test]
         public void LocationOverview_ShouldDisplayRatingAndFeedback()
         {
-            // Проверяем, что рейтинг отображается
-            Assert.That(_locationPage.IsRatingDisplayed(), Is.True, "Рейтинг локации должен отображаться");
+            Assert.That(_locationPage.IsRatingDisplayed(), Is.True, "");
 
-            // Проверяем, что секция отзывов отображается
-            Assert.That(_locationPage.IsFeedbackSectionDisplayed(), Is.True, "Секция отзывов должна отображаться");
+            Assert.That(_locationPage.IsFeedbackSectionDisplayed(), Is.True, "");
         }
 
         [Test]
         public void LocationOverview_ShouldFilterFeedbackByService()
         {
-            // Фильтруем отзывы по сервису
             _locationPage.FilterFeedbackByService();
 
-            // Проверяем, что отзывы отображаются после фильтрации
             var feedbackItems = _locationPage.GetFeedbackItems();
-            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "После фильтрации по сервису должны отображаться отзывы");
+            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "П");
         }
 
         [Test]
         public void LocationOverview_ShouldFilterFeedbackByCuisine()
         {
-            // Фильтруем отзывы по кулинарному опыту
             _locationPage.FilterFeedbackByCuisine();
 
-            // Проверяем, что отзывы отображаются после фильтрации
             var feedbackItems = _locationPage.GetFeedbackItems();
-            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "После фильтрации по кулинарному опыту должны отображаться отзывы");
+            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "");
         }
 
         [Test]
         public void LocationOverview_ShouldSortFeedbackByDate()
         {
-            // Сортируем отзывы по дате
             _locationPage.SortFeedbackByDate();
 
-            // Проверяем, что отзывы отображаются после сортировки
             var feedbackItems = _locationPage.GetFeedbackItems();
-            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "После сортировки по дате должны отображаться отзывы");
+            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "");
         }
 
         [Test]
         public void LocationOverview_ShouldSortFeedbackByRating()
         {
-            // Сортируем отзывы по рейтингу
             _locationPage.SortFeedbackByRating();
 
-            // Проверяем, что отзывы отображаются после сортировки
             var feedbackItems = _locationPage.GetFeedbackItems();
-            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "После сортировки по рейтингу должны отображаться отзывы");
+            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "");
         }
 
         [Test]
         public void LocationOverview_ShouldDisplayFeedbackPagination()
         {
-            // Проверяем, что пагинация отображается
-            Assert.That(_locationPage.IsPaginationDisplayed(), Is.True, "Пагинация отзывов должна отображаться на странице");
+            Assert.That(_locationPage.IsPaginationDisplayed(), Is.True, "");
         }
     }
 }

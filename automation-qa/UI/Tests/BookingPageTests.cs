@@ -25,63 +25,47 @@ namespace automation_qa.UI.Tests
         [Test]
         public void BookingPage_ShouldDisplayHeader()
         {
-            // Проверяем, что заголовок страницы бронирования отображается
-            Assert.That(_bookingPage.IsBookingHeaderDisplayed(), Is.True, "Заголовок 'Book a Table' должен отображаться на странице бронирования");
+            Assert.That(_bookingPage.IsBookingHeaderDisplayed(), Is.True, "Book a Table");
         }
 
         [Test]
         public void BookingPage_ShouldClickLocationDropdownButton()
         {
-            // Используем существующий метод для открытия выпадающего списка локаций
             _bookingPage.OpenLocationDropdown();
 
-            // Добавляем небольшую задержку для обработки клика
             Thread.Sleep(2000);
 
-            // Завершаем тест успешно
-            Assert.Pass("Клик по кнопке раскрытия списка локаций выполнен успешно");
+            Assert.Pass("Button click");
         }
 
         [Test]
         public void BookingPage_ShouldSelectDate()
         {
-            // Открываем выпадающий список дат
             _bookingPage.OpenDateDropdown();
-
-            // Выбираем дату
             _bookingPage.SelectDate();
 
-            // Завершаем тест
-            Assert.Pass("Дата успешно выбрана");
+            Assert.Pass("Succesfully select");
         }
 
         [Test]
         public void BookingPage_ShouldSelectTime()
         {
-            // Открываем выпадающий список времени
             _bookingPage.OpenTimeDropdown();
-
-            // Выбираем время
             _bookingPage.SelectTime();
 
-            // Завершаем тест
-            Assert.Pass("Время успешно выбрано");
+            Assert.Pass("Succesfully select");
         }
 
         [Test]
         public void BookingPage_ShouldIncreaseGuestsCount()
         {
-            // Получаем начальное количество гостей
             string initialCount = _bookingPage.GetGuestsCount();
 
-            // Увеличиваем количество гостей
             _bookingPage.IncreaseGuests();
 
-            // Получаем новое количество гостей
             string newCount = _bookingPage.GetGuestsCount();
 
-            // Проверяем, что количество увеличилось
-            Assert.That(newCount, Is.Not.EqualTo(initialCount), "Количество гостей должно измениться после увеличения");
+            Assert.That(newCount, Is.Not.EqualTo(initialCount), "Quality guests changes");
         }
 
         [Test]
@@ -89,94 +73,67 @@ namespace automation_qa.UI.Tests
         {
             try
             {
-                // Просто нажимаем кнопку Find a Table без выбора параметров
                 _bookingPage.ClickFindTable();
 
-                // Добавляем задержку для загрузки результатов
                 Thread.Sleep(3000);
 
-                // Проверяем, что отображаются доступные столики
-                Assert.That(_bookingPage.AreAvailableTablesDisplayed(), Is.True, "Должны отображаться доступные столики");
+                Assert.That(_bookingPage.AreAvailableTablesDisplayed(), Is.True, "Valid table");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Тест упал с ошибкой: {ex.Message}");
-                Assert.Fail($"Тест не выполнен: {ex.Message}");
+                Console.WriteLine($"Faild: {ex.Message}");
+                Assert.Fail($"Faild: {ex.Message}");
             }
         }
 
         [Test]
         public void BookingPage_ShouldDisplayTableCards()
         {
-            // Просто нажимаем кнопку Find a Table без заполнения формы
             _bookingPage.ClickFindTable();
 
-            // Добавляем задержку для загрузки результатов
             Thread.Sleep(3000);
 
-            // Проверяем, что отображаются карточки столиков
-            Assert.That(_bookingPage.IsTableCardDisplayed(), Is.True, "Должны отображаться карточки столиков");
+            Assert.That(_bookingPage.IsTableCardDisplayed(), Is.True, "Valid table");
         }
 
         [Test]
         public void BookingPage_ShouldFilterTablesByLocation()
         {
-            // Открываем выпадающий список локаций
             _bookingPage.OpenLocationDropdown();
-
-            // Выбираем локацию
             _bookingPage.SelectLocation();
-
-            // Нажимаем на кнопку "Find a Table"
             _bookingPage.ClickFindTable();
 
-            // Добавляем задержку для загрузки результатов
             Thread.Sleep(2000);
 
-            // Проверяем, что отображаются доступные столики
-            Assert.That(_bookingPage.AreAvailableTablesDisplayed(), Is.True, "Должны отображаться доступные столики");
+            Assert.That(_bookingPage.AreAvailableTablesDisplayed(), Is.True, "Valid table");
 
-            // Проверяем, что отображаются карточки столиков
-            Assert.That(_bookingPage.IsTableCardDisplayed(), Is.True, "Должны отображаться карточки столиков");
+            Assert.That(_bookingPage.IsTableCardDisplayed(), Is.True, "Valid table");
         }
 
         [Test]
         public void BookingPage_ShouldFilterTablesByGuestsCount()
         {
-            // Увеличиваем количество гостей
             _bookingPage.IncreaseGuests();
             _bookingPage.IncreaseGuests();
-
-            // Нажимаем на кнопку "Find a Table"
             _bookingPage.ClickFindTable();
 
-            // Добавляем задержку для загрузки результатов
             Thread.Sleep(2000);
 
-            // Проверяем, что отображаются карточки столиков
-            Assert.That(_bookingPage.IsTableCardDisplayed(), Is.True, "Должны отображаться карточки столиков");
+            Assert.That(_bookingPage.IsTableCardDisplayed(), Is.True, "Valid table");
         }
 
         [Test]
         public void BookingPage_ShouldFilterTablesByTimeSlot()
         {
-            // Открываем выпадающий список времени
             _bookingPage.OpenTimeDropdown();
-
-            // Выбираем время
             _bookingPage.SelectTime();
-
-            // Нажимаем на кнопку "Find a Table"
             _bookingPage.ClickFindTable();
 
-            // Добавляем задержку для загрузки результатов
             Thread.Sleep(2000);
 
-            // Проверяем, что отображаются доступные столики
-            Assert.That(_bookingPage.AreAvailableTablesDisplayed(), Is.True, "Должны отображаться доступные столики");
+            Assert.That(_bookingPage.AreAvailableTablesDisplayed(), Is.True, "Valid table");
 
-            // Проверяем, что отображаются карточки столиков
-            Assert.That(_bookingPage.IsTableCardDisplayed(), Is.True, "Должны отображаться карточки столиков");
+            Assert.That(_bookingPage.IsTableCardDisplayed(), Is.True, "Valid table");
         }
 
         [Test]
@@ -184,16 +141,14 @@ namespace automation_qa.UI.Tests
         {
             try
             {
-                // Проверяем, что кнопка "Find a Table" существует и кликабельна
                 bool isButtonClickable = _bookingPage.IsFindTableButtonClickable();
 
-                // Проверяем результат
-                Assert.That(isButtonClickable, Is.True, "Кнопка 'Find a Table' должна быть кликабельна");
+                Assert.That(isButtonClickable, Is.True, "Button click");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Тест упал с ошибкой: {ex.Message}");
-                Assert.Fail($"Тест не выполнен: {ex.Message}");
+                Console.WriteLine($"Failed: {ex.Message}");
+                Assert.Fail($"Failed: {ex.Message}");
             }
         }
 
@@ -202,19 +157,16 @@ namespace automation_qa.UI.Tests
         {
             try
             {
-                // Используем метод класса BookingPage для клика по кнопке
                 _bookingPage.ClickFindTable();
 
-                // Ждем загрузку результатов
                 Thread.Sleep(3000);
 
-                // Проверяем наличие карточек столиков
-                Assert.That(_bookingPage.IsTableCardDisplayed(), Is.True, "Должны отображаться карточки столиков");
+                Assert.That(_bookingPage.IsTableCardDisplayed(), Is.True, "Valid table");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Тест упал с ошибкой: {ex.Message}");
-                Assert.Fail($"Тест не выполнен: {ex.Message}");
+                Console.WriteLine($"Failed: {ex.Message}");
+                Assert.Fail($"Failed: {ex.Message}");
             }
         }
     }

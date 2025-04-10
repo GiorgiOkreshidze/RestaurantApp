@@ -12,7 +12,6 @@ namespace automation_qa.UI.Pages
         private readonly IWebDriver _driver;
         private readonly WebDriverWait _wait;
 
-        // Локаторы для элементов на странице локации
         private readonly By _locationTitle = By.XPath("//h1[contains(text(), '14 Baratashvili Street')]");
         private readonly By _rating = By.XPath("//div[contains(@class, 'rating')]");
         private readonly By _feedbackSection = By.XPath("//h2[contains(text(), 'Customer Feedback')]");

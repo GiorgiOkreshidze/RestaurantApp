@@ -75,10 +75,8 @@ namespace ApiTests.Pages
                 {
                     responseBody = JObject.Parse(response.Content);
 
-                    // Проверяем наличие accessToken в ответе
                     if (responseBody.ContainsKey("idToken") && !responseBody.ContainsKey("accessToken"))
                     {
-                        // Если accessToken отсутствует, но есть idToken - используем idToken как accessToken
                         responseBody["accessToken"] = responseBody["idToken"];
                     }
                 }

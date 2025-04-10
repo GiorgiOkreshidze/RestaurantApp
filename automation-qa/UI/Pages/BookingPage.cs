@@ -10,7 +10,6 @@ namespace automation_qa.UI.Pages
         private readonly IWebDriver _driver;
         private readonly WebDriverWait _wait;
 
-        // Локаторы для элементов на странице бронирования
         private readonly By _bookingHeader = By.XPath("//div[contains(@class, 'content-center')]//h1[contains(text(), 'Book a Table')]");
         private readonly By _locationDropdownButton = By.CssSelector("button:nth-child(1)");
         private readonly By _locationDropdown = By.XPath("//button[contains(@class, 'inline-flex') and descendant::span[contains(text(), 'Location')]]");
@@ -39,34 +38,26 @@ namespace automation_qa.UI.Pages
             _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
         }
 
-        // Проверка, что заголовок страницы бронирования отображается
         public bool IsBookingHeaderDisplayed()
         {
             return _wait.Until(ExpectedConditions.ElementIsVisible(_bookingHeader)).Displayed;
         }
 
-        // Открытие выпадающего списка локаций
         public void OpenLocationDropdown()
         {
-            // Находим элемент
             var element = _wait.Until(ExpectedConditions.ElementToBeClickable(_locationDropdownButton));
 
-            // Выполняем JavaScript клик по найденному элементу
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
         }
 
         public void SelectLocation()
         {
-            // Поиск элемента
             var locationOption = _wait.Until(ExpectedConditions.ElementExists(_locationOption));
 
-            // Прокрутка к элементу
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", locationOption);
 
-            // Ожидание, чтобы элемент мог полностью отобразиться после прокрутки
             System.Threading.Thread.Sleep(500);
 
-            // JavaScript клик вместо прямого Selenium-клика
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", locationOption);
         }
 
@@ -88,7 +79,6 @@ namespace automation_qa.UI.Pages
             dateOption.Click();
         }
 
-        // Открытие выпадающего списка времени
         public void OpenTimeDropdown()
         {
             _wait.Until(ExpectedConditions.ElementToBeClickable(_timeDropdownOpen)).Click();
@@ -103,34 +93,28 @@ namespace automation_qa.UI.Pages
             }
         }
 
-        // Увеличение количества гостей
         public void IncreaseGuests()
         {
             _wait.Until(ExpectedConditions.ElementToBeClickable(_guestsIncreaseButton)).Click();
         }
 
-        // Уменьшение количества гостей
         public void DecreaseGuests()
         {
             _wait.Until(ExpectedConditions.ElementToBeClickable(_guestsDecreaseButton)).Click();
         }
 
-        // Получение текущего количества гостей
         public string GetGuestsCount()
         {
             return _wait.Until(ExpectedConditions.ElementIsVisible(_guestsCount)).Text;
         }
 
-        // Нажатие на кнопку "Find a Table"
         public void ClickFindTable()
         {
             var findTableButton = _wait.Until(ExpectedConditions.ElementToBeClickable(_findTableButton));
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", findTableButton);
-            // Используем JavaScript для клика вместо Selenium Click()
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", findTableButton);
         }
 
-        // Проверка, что отображаются доступные столики
         public bool AreAvailableTablesDisplayed()
         {
             try
@@ -143,13 +127,11 @@ namespace automation_qa.UI.Pages
             }
         }
 
-        // Получение количества доступных столиков
         public string GetAvailableTablesCount()
         {
             return _wait.Until(ExpectedConditions.ElementIsVisible(_availableTablesCounter)).Text;
         }
 
-        // Проверка, что карточка столика отображается
         public bool IsTableCardDisplayed()
         {
             try
@@ -162,7 +144,6 @@ namespace automation_qa.UI.Pages
             }
         }
 
-        // Проверка, что вместимость столика отображается
         public bool IsTableCapacityDisplayed()
         {
             try
@@ -175,7 +156,6 @@ namespace automation_qa.UI.Pages
             }
         }
 
-        // Проверка, что местоположение столика отображается
         public bool IsTableLocationDisplayed()
         {
             try
@@ -188,7 +168,6 @@ namespace automation_qa.UI.Pages
             }
         }
 
-        // Проверка, что временной слот для столика отображается
         public bool IsTableTimeSlotDisplayed()
         {
             try
@@ -201,12 +180,10 @@ namespace automation_qa.UI.Pages
             }
         }
 
-        // Проверка кликабельности кнопки "Find a Table"
         public bool IsFindTableButtonClickable()
         {
             try
             {
-                // Используем wait и ExpectedConditions внутри класса BookingPage
                 var findTableButton = _wait.Until(ExpectedConditions.ElementToBeClickable(_findTableButton));
                 return findTableButton != null;
             }
@@ -216,7 +193,6 @@ namespace automation_qa.UI.Pages
             }
         }
 
-        // Полный цикл поиска стола с выбором всех параметров
         public void CompleteTableSearch()
         {
             OpenLocationDropdown();
@@ -225,8 +201,8 @@ namespace automation_qa.UI.Pages
             SelectDate();
             OpenTimeDropdown();
             SelectTime();
-            IncreaseGuests(); // Увеличиваем количество гостей до 2
-            IncreaseGuests(); // Увеличиваем количество гостей до 3
+            IncreaseGuests();
+            IncreaseGuests(); 
             ClickFindTable();
         }
     }

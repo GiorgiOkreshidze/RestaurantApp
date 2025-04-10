@@ -10,7 +10,6 @@ namespace automation_qa.UI.Pages
         private readonly IWebDriver _driver;
         private readonly WebDriverWait _wait;
 
-        // Локаторы элементов
         private readonly By _firstNameField = By.CssSelector("input[name='firstName']");
         private readonly By _lastNameField = By.CssSelector("input[name='lastName']");
         private readonly By _emailField = By.CssSelector("input[name='email']");
@@ -89,7 +88,6 @@ namespace automation_qa.UI.Pages
             Console.WriteLine("Clicked Sign Up button");
         }
 
-        // Методы для получения значений из полей
         public string GetFirstNameValue()
         {
             return _wait.Until(driver => driver.FindElement(_firstNameField)).GetAttribute("value");
@@ -97,7 +95,6 @@ namespace automation_qa.UI.Pages
 
         public bool IsPasswordErrorDisplayed()
         {
-            // Проверяем, подсвечено ли требование к длине пароля красным
             return IsPasswordLengthRequirementInvalid();
         }
 
@@ -197,13 +194,11 @@ namespace automation_qa.UI.Pages
 
         public string GetPasswordFieldType()
         {
-            // Ищем элемент заново каждый раз
             return _wait.Until(driver => driver.FindElement(_passwordField)).GetAttribute("type");
         }
 
         public void TogglePasswordVisibility()
         {
-            // Используем явное ожидание
             _wait.Until(driver => driver.FindElement(_togglePasswordVisibilityButton)).Click();
         }
 
@@ -221,7 +216,6 @@ namespace automation_qa.UI.Pages
         {
             try
             {
-                // Ждем, пока элемент не получит класс text-glass-destructive
                 var requirementElement = _wait.Until(driver =>
                 {
                     var element = driver.FindElement(_passwordLengthRequirement);
@@ -229,7 +223,7 @@ namespace automation_qa.UI.Pages
                     Console.WriteLine($"Classes of password length requirement: {elementClass}");
                     return elementClass.Contains("text-glass-destructive") ? element : null;
                 });
-                return true; // Если элемент найден с классом text-glass-destructive, возвращаем true
+                return true;
             }
             catch (Exception ex)
             {
