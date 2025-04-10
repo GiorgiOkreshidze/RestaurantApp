@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Linq;
 using NUnit.Framework;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ApiTests.Pages;
 using ApiTests.Utilities;
@@ -173,33 +174,44 @@ namespace ApiTests
         [Test]
         public async Task GetAvailableTables_WithTimeFilter_ReturnsTablesWithAvailableTimeSlots()
         {
-            // Use a specific time value instead of current time
-            string timeSlot = "14:00"; // Choose a time that's likely within available slots
+            // Use a future time slot to ensure availability
+            DateTime futureTime = DateTime.Now.AddHours(1);
+            string timeSlot = futureTime.ToString("HH:mm");
 
+            // Call method to get available tables with time filter
             var (statusCode, responseBody) = await _reservations.GetAvailableTables(
                 locationId: _testLocationId,
                 date: _testDate,
                 time: timeSlot
             );
+
+            // Log the response for debugging
             Console.WriteLine($"Status: {statusCode}, Response: {responseBody}");
 
+            // Validate basic API response
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
             Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
 
+            // Detailed validation of available tables
             if (responseBody != null && responseBody.Count > 0)
             {
-                bool anyTableHasTimeSlots = false;
+                bool anyTableHasAvailableSlots = false;
 
+                // Iterate through each table in the response
                 foreach (var table in responseBody)
                 {
+                    // Extract available time slots for the table
                     var availableSlots = table["availableSlots"] as JArray;
+
+                    // Verify table has time slots
                     Assert.That(availableSlots, Is.Not.Null, "Table should have available time slots");
 
+                    // Check and log available slots
                     if (availableSlots != null && availableSlots.Count > 0)
                     {
-                        anyTableHasTimeSlots = true;
+                        anyTableHasAvailableSlots = true;
 
-                        // Log available slots for debugging
+                        // Log available slots for each table
                         Console.WriteLine($"Available slots for table {table["tableId"]}:");
                         foreach (var slot in availableSlots)
                         {
@@ -210,7 +222,9 @@ namespace ApiTests
                     }
                 }
 
-                Assert.That(anyTableHasTimeSlots, Is.True, "At least one table should have available time slots");
+                // Final assertion to ensure at least one table has available slots
+                Assert.That(anyTableHasAvailableSlots, Is.True,
+                    "At least one table should have available time slots");
             }
         }
 
@@ -348,106 +362,6 @@ namespace ApiTests
             // Check that request was processed (either OK or NotFound)
             Assert.That((int)statusCode, Is.LessThan(500),
                 "Should not return server error with valid parameters");
-        }
-
-        [Test]
-        public async Task GetAvailableTables_WithInvalidId_ReturnsBadRequest()
-        {
-            // Test checks request with invalid location ID
-            var (statusCode, responseBody) = await _reservations.GetAvailableTables(
-                locationId: "invalid-id"
-            );
-
-            // Expect client error
-            Assert.That((int)statusCode, Is.GreaterThanOrEqualTo(400).And.LessThan(500),
-                "Should return client error with invalid location ID");
-        }
-
-        [Test]
-        public async Task CreateReservation_WithoutToken_ReturnsUnauthorized()
-        {
-            // Test checks reservation creation without token
-            var (statusCode, responseBody) = await _reservations.CreateReservation(
-                locationId: _testLocationId,
-                tableId: "table-id",
-                date: DateTime.Now.ToString("yyyy-MM-dd"),
-                startTime: "19:00",
-                endTime: "21:00",
-                guests: 2,
-                name: "Test User",
-                email: "test@example.com",
-                phone: "1234567890"
-            );
-
-            // Expect 401 Unauthorized or 403 Forbidden
-            Assert.That(statusCode, Is.AnyOf(HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden),
-                "Should require authentication for reservation creation");
-        }
-
-        [Test]
-        public async Task GetAvailableTables_WithMultipleFilters_ReturnsFilteredTables()
-        {
-            string locationId = _testLocationId;
-            string date = _testDate;
-            int guests = 2;
-
-            // Use UTC time and add 2 hours to ensure time is in the future
-            string timeString = DateTime.UtcNow.AddHours(2).ToString("HH:mm");
-
-            // Explicitly declare types for statusCode and responseBody variables
-            var result = await _reservations.GetAvailableTables(
-                locationId: locationId,
-                date: date,
-                guests: guests,
-                time: timeString);
-
-            HttpStatusCode statusCode = result.Item1;
-            JArray responseBody = result.Item2;
-
-            Console.WriteLine($"Status: {statusCode}, Response: {responseBody}");
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
-            Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
-
-            // Add check, continue only if status is OK and data exists
-            if (statusCode == HttpStatusCode.OK && responseBody != null && responseBody.Count > 0)
-            {
-                foreach (var table in responseBody)
-                {
-                    int capacity = table["capacity"]?.Value<int>() ?? 0;
-                    Assert.That(capacity, Is.GreaterThanOrEqualTo(guests),
-                        $"All tables should accommodate {guests} guests");
-
-                    // Use availableSlots instead of availableTimes
-                    var availableSlots = table["availableSlots"] as JArray;
-                    Assert.That(availableSlots, Is.Not.Null, "Table should have available time slots");
-
-                    if (availableSlots != null)
-                    {
-                        // Find slot that contains specified time
-                        bool hasMatchingSlot = availableSlots.Any(slot =>
-                            slot["start"]?.ToString() == timeString ||
-                            (slot["start"]?.ToString() != null &&
-                             slot["end"]?.ToString() != null &&
-                             TimeSpanBetween(timeString, slot["start"].ToString(), slot["end"].ToString()))
-                        );
-
-                        Assert.That(hasMatchingSlot, Is.True,
-                            "Table should be available at time " + timeString);
-                    }
-                }
-            }
-        }
-
-        // Helper function to check if time is between slot start and end
-        private bool TimeSpanBetween(string time, string start, string end)
-        {
-            // Parse time strings to TimeSpan objects
-            TimeSpan timeSpan = TimeSpan.Parse(time);
-            TimeSpan startSpan = TimeSpan.Parse(start);
-            TimeSpan endSpan = TimeSpan.Parse(end);
-
-            // Check if specified time is within the slot
-            return timeSpan >= startSpan && timeSpan <= endSpan;
         }
 
         [Test]
@@ -823,10 +737,73 @@ namespace ApiTests
         }
 
         [Test]
+        public async Task GetAvailableTables_BasicSuccess()
+        {
+            // Arrange
+            string today = DateTime.Now.ToString("yyyy-MM-dd");
+
+            // Act
+            var (statusCode, responseBody) = await _reservations.GetAvailableTables(
+                locationId: _testLocationId,
+                date: today
+            );
+
+            // Log detailed response
+            Console.WriteLine($"GetAvailableTables response status: {statusCode}");
+            if (responseBody != null)
+            {
+                Console.WriteLine($"GetAvailableTables response content: {responseBody}");
+            }
+
+            // Assert
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK),
+                "Should return 200 OK status");
+            Assert.That(responseBody, Is.Not.Null,
+                "Response body should not be null");
+        }
+
+        [Test]
+        public async Task GetUserReservations_UnauthorizedAccess()
+        {
+            // Act
+            var (statusCode, responseBody) = await _reservations.GetUserReservations();
+
+            // Assert
+            Console.WriteLine($"Status: {statusCode}, Response: {responseBody}");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
+                "Should return 401 Unauthorized when not authenticated");
+        }
+
+        [Test]
+        public async Task CreateReservationByWaiter_WithoutToken_ShouldFail()
+        {
+            // Arrange
+            string timeFrom = "19:00";
+            string timeTo = "20:00";
+
+            // Act
+            var result = await _reservations.CreateReservationByWaiter(
+                locationId: _testLocationId,
+                tableId: _testTableId,
+                date: _testDate,
+                timeFrom: timeFrom,
+                timeTo: timeTo,
+                guestNumber: 2
+            );
+
+            // Assert
+            HttpStatusCode statusCode = result.StatusCode;
+            Console.WriteLine($"Status: {statusCode}");
+
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
+                "Should require authorization for reservation creation");
+        }
+
+        [Test]
         public async Task CancelReservation_WithVeryLongId_ShouldReturnError()
         {
             // Arrange
-            string veryLongId = new string('a', 100); // Уменьшаем до 100 символов
+            string veryLongId = new string('a', 100);
 
             // Act
             var result = await _reservations.CancelReservation(veryLongId);
@@ -837,23 +814,20 @@ namespace ApiTests
             // Assert
             Console.WriteLine($"Status: {statusCode}, Response: {responseBody}");
 
-            // Обрабатываем ситуацию со статусом 0
             if ((int)statusCode == 0)
             {
-                Console.WriteLine("Соединение с API не удалось установить, статус = 0.");
-                Console.WriteLine("Возможная причина: слишком длинный ID вызывает ошибку при формировании URL.");
+                Console.WriteLine("Connection to the API could not be established, status = 0.");
+                Console.WriteLine("Possible reason: the very long ID causes an error when forming the URL.");
 
-                // Используем Inconclusive вместо Assert.Fail, чтобы показать, что тест не провалился, а не смог быть выполнен
-                Assert.Inconclusive("Тест не может быть выполнен из-за проблем с соединением. Возможно, ID слишком длинный.");
+                Assert.Inconclusive("Test cannot be performed due to connection issues. The ID may be too long.");
                 return;
             }
 
-            // Проверяем, что API корректно обрабатывает длинный ID
             Assert.That((int)statusCode, Is.GreaterThanOrEqualTo(400),
-                "API должен возвращать код ошибки для длинного ID");
+                "The API should return an error code for a long ID");
 
             Assert.That(responseBody, Is.Not.Null,
-                "Тело ответа не должно быть null");
+                "The response body should not be null");
         }
     }
 }

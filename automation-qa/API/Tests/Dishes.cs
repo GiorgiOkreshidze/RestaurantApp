@@ -429,5 +429,76 @@ namespace ApiTests
             Assert.That(result.ResponseBody["id"].ToString(), Is.EqualTo(validDishId),
                 "ID in response should match requested ID");
         }
+
+        [Test]
+        public async Task GetPopularDishes_PricesAreReasonable()
+        {
+            // Act
+            var (statusCode, responseBody) = await _dishes.GetPopularDishes();
+
+            // Assert
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
+
+            if (responseBody.Count > 0)
+            {
+                foreach (var dish in responseBody)
+                {
+                    decimal price = dish["price"].Value<decimal>();
+                    Assert.That(price, Is.LessThan(1000), "Dish price should be reasonable (less than 1000)");
+                }
+            }
+        }
+
+        [Test]
+        public async Task GetAllDishes_WithInvalidSortParameter_ReturnsOkStatus()
+        {
+            // Arrange
+            string invalidSort = "InvalidSortParameter";
+
+            // Act
+            var result = await _dishes.GetAllDishes(sort: invalidSort);
+
+            // Assert
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
+                "Request with invalid sort parameter should still return 200 OK status with default sorting");
+        }
+
+        [Test]
+        public async Task GetAllDishes_DishNamesNotEmpty()
+        {
+            // Act
+            var result = await _dishes.GetAllDishes();
+
+            // Assert
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK), "Should return 200 OK status");
+
+            if (result.ResponseBody != null && result.ResponseBody.Count > 0)
+            {
+                foreach (var dish in result.ResponseBody)
+                {
+                    string name = dish["name"].Value<string>();
+                    Assert.That(name, Is.Not.Empty, "Dish name should not be empty");
+                }
+            }
+        }
+
+        [Test]
+        public async Task GetDishById_ValidId_HasDescriptionField()
+        {
+            // Arrange
+            string validDishId = "ed3f1f9b-7412-42ea-84aa-04c9b85ab67a";
+
+            // Act
+            var result = await _dishes.GetDishById(validDishId);
+
+            // Assert
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
+                "Should return 200 OK status with valid dish ID");
+            Assert.That(result.ResponseBody, Is.Not.Null, "Response body should not be null");
+
+            // Check if description field exists (it's common for dishes to have descriptions)
+            Assert.That(result.ResponseBody.ContainsKey("description") || result.ResponseBody.ContainsKey("desc"),
+                "Response should contain a description field");
+        }
     }
 }

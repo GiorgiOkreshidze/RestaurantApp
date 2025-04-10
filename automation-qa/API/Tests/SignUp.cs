@@ -405,6 +405,37 @@ namespace ApiTests
         }
 
         [Test]
+        public async Task SignUp_WeakPasswords_ShouldFail()
+        {
+            string[] weakPasswords = new[]
+            {
+        "weak",           // too short
+        "123456",         // only digits
+        "password",       // common password
+        "weakpassword",   // no complexity
+        "12345678",       // only digits
+        new string('a', 257) // exceeds max length
+    };
+
+            foreach (var weakPassword in weakPasswords)
+            {
+                var (statusCode, _, responseBody) = await _auth.RegisterUser(
+                    firstName: "Weak",
+                    lastName: "Password",
+                    email: $"weak_{Guid.NewGuid()}@example.com",
+                    password: weakPassword
+                );
+
+                Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
+                    $"Registration should fail for weak password: {weakPassword}");
+
+                // Проверка сообщения об ошибке
+                Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
+                Assert.That(responseBody.ContainsKey("message"), Is.True, "Response should contain error message");
+            }
+        }
+
+        [Test]
         public async Task SignUp_CheckResponseMessage_ShouldContainSuccessMessage()
         {
             // Arrange
