@@ -11,15 +11,15 @@ import { toast } from "react-toastify";
 import {
   decreaseGuestsAction,
   increaseGuestsAction,
-  selectBookingFormState,
+  selectBooking,
   setDateAction,
   setLocationAction,
   setTimeAction,
-} from "@/app/slices/bookingFormSlice";
+} from "@/app/slices/bookingSlice";
 
-export const useBookingForm = () => {
+export const useBooking = () => {
   const dispatch = useAppDispatch();
-  const formState = useSelector(selectBookingFormState);
+  const formState = useSelector(selectBooking);
   const formActions = {
     setLocation: (locationId: string) => {
       dispatch(setLocationAction(locationId));

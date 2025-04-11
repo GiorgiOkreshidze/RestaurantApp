@@ -21,7 +21,7 @@ import {
 } from "@/utils/dateTime";
 import { PlusIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/variants/buttonVariants.ts";
 import { Link } from "react-router";
 import { getAllUsers } from "@/app/thunks/userThunks";
 

@@ -13,9 +13,9 @@ import {
 } from "../ui";
 import { dateObjToDateStringUI } from "@/utils/dateTime";
 import { useClientReservationDialog } from "@/hooks/useClientReservationDialog";
-import { TIME_SLOTS } from "@/utils/constants";
 import { useSelector } from "react-redux";
 import { selectReservationCreatingLoading } from "@/app/slices/reservationsSlice";
+import { selectBooking } from "@/app/slices/bookingSlice";
 
 export const ClientReservationDialog = (
   props: ClientReservationDialogProps,
@@ -28,6 +28,7 @@ export const ClientReservationDialog = (
     setIsConfirmDialogOpen(!isConfirmDialogOpen);
   };
   const state = useClientReservationDialog({ ...props, onSuccessCallback });
+  const booking = useSelector(selectBooking);
 
   return (
     <>
@@ -68,7 +69,7 @@ export const ClientReservationDialog = (
             </Text>
             <div>
               <TimeSlotPicker
-                items={TIME_SLOTS}
+                items={booking.timeSlots}
                 value={state.selectedTime}
                 setValue={state.setSelectedTime}
                 className="w-full mt-[1rem]"

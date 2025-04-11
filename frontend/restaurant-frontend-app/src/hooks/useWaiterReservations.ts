@@ -1,4 +1,5 @@
 import { useAppDispatch } from "@/app/hooks";
+import { selectLocationTables } from "@/app/slices/locationsSlice";
 import {
   selectWaiterReservationsForm,
   setFormDateAction,
@@ -6,7 +7,6 @@ import {
   setFormTimeAction,
 } from "@/app/slices/waiterReservationsSlice";
 import { getReservations } from "@/app/thunks/reservationsThunks";
-import { LOCATION_TABLES } from "@/utils/constants";
 import { dateObjToDateStringServer } from "@/utils/dateTime";
 import { FormEvent } from "react";
 import { useSelector } from "react-redux";
@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 export const useWaiterReservations = () => {
   const dispatch = useAppDispatch();
   const formState = useSelector(selectWaiterReservationsForm);
+  const locationTables = useSelector(selectLocationTables);
 
   const formActions = {
     setFormDate: (tableId: string) => dispatch(setFormDateAction(tableId)),
@@ -31,7 +32,7 @@ export const useWaiterReservations = () => {
             ? dateObjToDateStringServer(formState.date)
             : undefined,
           timeFrom: formState.time.split(" - ")[0] || undefined,
-          tableNumber: LOCATION_TABLES.find(
+          tableNumber: locationTables.find(
             (table) => table.tableId === formState.table,
           )?.tableNumber,
         }),

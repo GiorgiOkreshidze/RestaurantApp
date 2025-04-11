@@ -14,13 +14,14 @@ import {
   selectSelectOptions,
 } from "./app/slices/locationsSlice";
 import { getPopularDishes } from "./app/thunks/dishesThunks";
-import { getLocations, getSelectOptions } from "./app/thunks/locationsThunks";
+import { getLocations, getLocationTables, getSelectOptions } from "./app/thunks/locationsThunks";
 import { ProtectedRoute } from "./components/routeComponents/ProtectedRoute";
 import { PublicRoute } from "./components/routeComponents/PublicRoute";
 
 import { USER_ROLE } from "./utils/constants";
 import { selectUser } from "./app/slices/userSlice";
-import { setLocationAction } from "./app/slices/bookingFormSlice";
+import { selectBooking, setLocationAction } from "./app/slices/bookingSlice";
+import { getTimeSlots } from "./app/thunks/bookingThunk";
 
 function App() {
   const location = useLocation();
@@ -30,6 +31,7 @@ function App() {
   const locations = useSelector(selectLocations);
     const selectOptions = useSelector(selectSelectOptions);
   const user = useSelector(selectUser);
+  const booking = useSelector(selectBooking);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -55,6 +57,13 @@ function App() {
       }
     })();
   }, [dispatch, selectOptions.length]);
+
+  useEffect(() => {
+    if (!booking.timeSlots.length) {
+      dispatch(getTimeSlots());
+      dispatch(getLocationTables());
+    }
+  }, [dispatch, booking.timeSlots]);
 
   return (
     <>

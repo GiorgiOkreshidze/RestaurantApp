@@ -28,6 +28,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "lucide-react": "^0.479.0",
+    "msw": "^2.7.3",
     "react": "^19.0.0",
     "react-day-picker": "8.10.1",
     "react-dom": "^19.0.0",
@@ -63,5 +64,10 @@
     "bracketSpacing": true,
     "arrowParens": "always",
     "useTabs": false
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

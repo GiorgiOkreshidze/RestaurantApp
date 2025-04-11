@@ -1,6 +1,6 @@
 import { UserType } from "@/types/user.types";
 import { Label, RadioGroup, RadioGroupItem, Text } from "../ui";
-import { buttonVariants } from "../ui/Button";
+import { buttonVariants } from "@/components/variants/buttonVariants.ts";
 import { cn } from "@/lib/utils";
 import { Dispatch, SetStateAction } from "react";
 
