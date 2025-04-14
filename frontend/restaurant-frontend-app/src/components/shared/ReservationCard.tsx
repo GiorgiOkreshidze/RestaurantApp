@@ -11,22 +11,33 @@ import { isPast, parse } from "date-fns";
 import {
   dateObjToDateStringUI,
   dateStringServerToDateObject,
-  timeString24hToTimeString12h,
+  time24hTo12h,
 } from "@/utils/dateTime";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
-import { USER_ROLE } from "@/utils/constants";
-import { ReservationDialog, ReservationFeedbackDialog } from ".";
+import { ReservationFeedbackDialog } from ".";
 import { ClientReservationDialog } from "./ClientReservationDialog";
+import { Preorder } from "@/types/preorder.types";
+import { setActivePreorder } from "@/app/slices/preordersSlice";
+import { useNavigate } from "react-router";
 
 export const ReservationCard = (props: { reservation: Reservation }) => {
+  const { reservation } = props;
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useSelector(selectUser);
-  const { reservation } = props;
+
+  const handlePreorderClick = (preorderId: Preorder["id"]) => {
+    dispatch(setActivePreorder(preorderId));
+    navigate("/menu");
+  };
 
   return (
-    <Card {...props} className="flex flex-col gap-[3rem]">
-      <div className="flex items-start justify-between gap-[0.5rem]">
+    <article className="styleSet-card flex flex-col gap-[3rem] @container">
+      <div className="flex flex-col gap-[1rem] items-start justify-between @xs:flex-row-reverse">
+        <Badge status={reservation.status} className="text-nowrap">
+          {reservation.status}
+        </Badge>
         <div className="flex flex-col gap-[0.5rem]">
           <div className="flex items-center gap-[0.5rem]">
             <LocationIcon className="size-[16px] text-primary" />
@@ -43,15 +54,11 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
           <div className="flex items-center gap-[0.5rem]">
             <ClockIcon className="size-[16px] stroke-primary" />
             <Text variant="bodyBold">
-              {timeString24hToTimeString12h(
-                reservation.timeSlot.split(" - ")[0],
-              )}
+              {time24hTo12h(reservation.timeSlot.split(" - ")[0])}
             </Text>
             <Text variant="bodyBold"> - </Text>
             <Text variant="bodyBold">
-              {timeString24hToTimeString12h(
-                reservation.timeSlot.split(" - ")[1],
-              )}
+              {time24hTo12h(reservation.timeSlot.split(" - ")[1])}
             </Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
@@ -59,15 +66,11 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
             <Text variant="bodyBold">{reservation.guestsNumber} Guests</Text>
           </div>
         </div>
-        <Badge status={reservation.status} className="text-nowrap">
-          {reservation.status}
-        </Badge>
       </div>
-      <footer className="flex items-center gap-[1rem] justify-end">
+      <footer className="flex flex-col gap-[1rem] @xs:flex-row">
         <Button
-          variant="tertiary"
+          variant="underlined"
           size="sm"
-          className="relative before:absolute before:content[''] before:bottom-0 before:left-0 before:w-full before:h-[1px] before:bg-black disabled:before:bg-disabled"
           disabled={
             reservation.status === "Cancelled" ||
             isPast(
@@ -86,8 +89,7 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
         >
           Cancel
         </Button>
-        {reservation.status === "In Progress" &&
-        user?.role === USER_ROLE.CUSTOMER ? (
+        {reservation.status === "In Progress" && user?.role === "Customer" ? (
           <ReservationFeedbackDialog reservationId={reservation.id}>
             <Button variant="secondary" size="l">
               Leave Feadback
@@ -119,12 +121,23 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
                   ),
                 )
               }
+              className="min-w-[100px]"
             >
-              {user?.role === USER_ROLE.CUSTOMER ? "Edit" : "Postpone"}
+              {user?.role === "Customer" ? "Edit" : "Postpone"}
             </Button>
           </ClientReservationDialog>
         )}
+
+        {reservation.status === "Reserved" && user?.role === "Customer" && (
+          <Button
+            variant="primary"
+            size="l"
+            onClick={() => handlePreorderClick(reservation.preOrder)}
+          >
+            Pre-order
+          </Button>
+        )}
       </footer>
-    </Card>
+    </article>
   );
 };

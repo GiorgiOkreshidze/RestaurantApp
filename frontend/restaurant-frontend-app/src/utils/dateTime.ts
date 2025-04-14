@@ -18,7 +18,14 @@ export const timeString24hToDateObj = (time: string) => {
   return parse(time, "HH:mm", new Date()).toString();
 };
 
-export const timeString24hToTimeString12h = (time: string) => {
+// ===
+
+export const dateServerToDateUI = (date: string) => {
+  const parsed = parse(date, "yyyy-MM-dd", new Date()).toString();
+  return dateObjToDateStringUI(parsed);
+};
+
+export const time24hTo12h = (time: string) => {
   const dateObj = timeString24hToDateObj(time);
   return format(dateObj, "h:mm aaaa");
 };

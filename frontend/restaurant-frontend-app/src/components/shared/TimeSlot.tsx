@@ -3,7 +3,7 @@ import { ClockIcon } from "../icons";
 import { Button, Text } from "../ui";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router";
-import { buttonVariants } from "../ui/Button";
+import { buttonVariants } from "@/components/variants/buttonVariants.ts";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
 

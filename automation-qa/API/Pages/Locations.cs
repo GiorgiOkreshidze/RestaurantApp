@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 namespace ApiTests.Pages
 {
-      /// <summary>
-     /// The Locations class provides methods for interacting with the locations-related endpoints of the API.
-     /// It includes methods to retrieve locations, location options, speciality dishes by location, and customer feedback.
-     /// Each method sends an asynchronous GET request, logs the response, parses the response body, and returns the status code along with the parsed data.
-     /// </summary>
+    /// <summary>
+    /// The Locations class provides methods for interacting with the locations-related endpoints of the API.
+    /// It includes methods to retrieve locations, location options, speciality dishes by location, and customer feedback.
+    /// Each method sends an asynchronous GET request, logs the response, parses the response body, and returns the status code along with the parsed data.
+    /// </summary>
     public class Locations : BasePage
     {
         public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetLocations()
@@ -32,6 +32,43 @@ namespace ApiTests.Pages
                     Console.WriteLine($"Error parsing response: {ex.Message}");
                 }
             }
+            return (response.StatusCode, responseBody);
+        }
+
+        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> GetLocationById(string locationId)
+        {
+            // Check if locationId is in a valid format
+            if (string.IsNullOrEmpty(locationId) || !Guid.TryParse(locationId, out _))
+            {
+                throw new ArgumentException("Location ID is not in a valid format.", nameof(locationId));
+            }
+
+            // Create request for endpoint /locations/{id}
+            var request = CreateGetRequest($"/locations/{locationId}");
+
+            // Execute GET request
+            var response = await ExecuteGetRequestAsync(request);
+
+            // Initialize response body variable
+            JObject? responseBody = null;
+
+            // Log the response status and content
+            Console.WriteLine($"GetLocationById response status: {response.StatusCode}");
+            Console.WriteLine($"GetLocationById response content: {response.Content}");
+
+            // Try to parse the response if the content is not empty
+            if (!string.IsNullOrEmpty(response.Content))
+            {
+                try
+                {
+                    responseBody = JObject.Parse(response.Content);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error parsing response: {ex.Message}");
+                }
+            }
+
             return (response.StatusCode, responseBody);
         }
 
@@ -118,7 +155,6 @@ namespace ApiTests.Pages
                     Console.WriteLine($"Error parsing response: {ex.Message}");
                 }
             }
-
             return (response.StatusCode, responseBody);
         }
     }

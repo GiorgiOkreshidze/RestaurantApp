@@ -5,10 +5,13 @@ import { Button } from "../ui";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
 import { ComponentProps } from "react";
-import { buttonVariants } from "../ui/Button";
+import { buttonVariants } from "@/components/variants/buttonVariants.ts";
+import { useAppDispatch } from "@/app/hooks";
+import { setIsCartDialogOpen } from "@/app/slices/cartSlice";
 
 export const NavBar = () => {
   const user = useSelector(selectUser);
+  const dispatch = useAppDispatch();
 
   return (
     <Container>
@@ -36,11 +39,13 @@ export const NavBar = () => {
         <div className="flex items-center justify-center self-center lg:justify-self-end">
           {user ? (
             <>
-              <Link to="#cart">
-                <Button variant="tertiary" size="sm">
-                  <CartIcon className="size-[24px]" />
-                </Button>
-              </Link>
+              <Button
+                variant="tertiary"
+                size="sm"
+                onClick={() => dispatch(setIsCartDialogOpen(true))}
+              >
+                <CartIcon className="size-[24px]" />
+              </Button>
               <UserMenu />
             </>
           ) : (

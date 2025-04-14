@@ -11,15 +11,15 @@ import { toast } from "react-toastify";
 import {
   decreaseGuestsAction,
   increaseGuestsAction,
-  selectBookingFormState,
+  selectBooking,
   setDateAction,
   setLocationAction,
   setTimeAction,
-} from "@/app/slices/bookingFormSlice";
+} from "@/app/slices/bookingSlice";
 
-export const useBookingForm = () => {
+export const useBooking = () => {
   const dispatch = useAppDispatch();
-  const formState = useSelector(selectBookingFormState);
+  const formState = useSelector(selectBooking);
   const formActions = {
     setLocation: (locationId: string) => {
       dispatch(setLocationAction(locationId));
@@ -46,7 +46,7 @@ export const useBookingForm = () => {
     if (isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
       setTime("");
     }
-  }, [date]);
+  }, [date, setTime, time]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();

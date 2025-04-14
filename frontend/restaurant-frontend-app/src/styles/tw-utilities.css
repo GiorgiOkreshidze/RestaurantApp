@@ -67,14 +67,12 @@
   font-weight: 500;
 }
 
-
 /* ==================================== */
 /* FONT-SIZE */
 /* ==================================== */
 @utility dynamic-title-size {
   font-size: clamp(1rem, 5vw, 5rem);
 }
-
 
 /* ==================================== */
 /* INPUT */
@@ -85,7 +83,7 @@
 
   color: var(--color-input-foreground);
   @apply fontset-body;
-  
+
   background-color: var(--color-input-background);
   border: 1px solid var(--color-neutral-200, #dadada);
   border-radius: var(--radius-input);
@@ -127,3 +125,14 @@
   }
 }
 
+
+/* ==================================== */
+/* CARD */
+/* ==================================== */
+@utility styleSet-card {
+  padding: 1.5rem;
+  
+  background-color: var(--color-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}

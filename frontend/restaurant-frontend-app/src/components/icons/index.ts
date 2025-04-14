@@ -17,3 +17,4 @@ export { MinusIcon } from "./MinusIcon";
 export { SearchMagnifierIcon } from "./SearchMagnifierIcon";
 export { CircleIcon } from "./CircleIcon";
 export { Star } from "./Star";
+export { BinIcon } from "./BinIcon";

@@ -6,15 +6,24 @@ import { BrowserRouter } from "react-router";
 import { Provider } from "react-redux";
 import { store } from "./app/store.ts";
 import { addInterceptors } from "./utils/axiosApi.ts";
+import { worker } from "./mock/browser.ts";
 
-addInterceptors(store);
+const setupMocks = async () => {
+  await worker.start({
+    onUnhandledRequest: "bypass",
+  });
+};
 
-createRoot(document.getElementById("root")!).render(
-  // <StrictMode>
-  <BrowserRouter>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </BrowserRouter>,
-  // </StrictMode>,
-);
+setupMocks().then(() => {
+  addInterceptors(store);
+
+  createRoot(document.getElementById("root")!).render(
+    // <StrictMode>
+    <BrowserRouter>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </BrowserRouter>,
+    // </StrictMode>,
+  );
+});

@@ -8,20 +8,11 @@ import {
 } from "@/app/slices/reservationsSlice";
 import { useSelector } from "react-redux";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/Button";
-import { useEffect } from "react";
-import { useAppDispatch } from "@/app/hooks";
-import { getReservations } from "@/app/thunks/reservationsThunks";
+import { buttonVariants } from "@/components/variants/buttonVariants.ts";
 
 export const ClientReservations = () => {
-  const dispatch = useAppDispatch();
   const reservations = useSelector(selectReservations);
   const reservationsLoading = useSelector(selectReservationsLoading);
-
-  useEffect(() => {
-    if (reservations.length) return;
-    dispatch(getReservations({}));
-  }, []);
 
   return (
     <>
@@ -33,7 +24,7 @@ export const ClientReservations = () => {
         {reservationsLoading ? (
           <Spinner />
         ) : reservations?.length > 0 ? (
-          <div className="grow-1 content-start grid gap-[2rem] lg:grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
+          <div className="grow-1 content-start grid gap-[2rem] md:grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
             {reservations.map((reservation) => (
               <ReservationCard key={reservation.id} reservation={reservation} />
             ))}

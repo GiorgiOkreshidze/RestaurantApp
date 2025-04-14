@@ -1,8 +1,9 @@
-import type { Dish, Review } from "@/types";
+import type { Dish, LocationTable, Review } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 import {
   getFeedbacksOfLocation,
   getLocations,
+  getLocationTables,
   getOneLocation,
   getSelectOptions,
   getSpecialityDishes,
@@ -19,6 +20,8 @@ interface locationsState {
   selectOptions: SelectOption[];
   selectOptionsLoading: boolean;
   feedbacksLoading: boolean;
+  locationTables: LocationTable[];
+  locationTablesLoading: boolean;
 }
 
 const initialState: locationsState = {
@@ -31,6 +34,8 @@ const initialState: locationsState = {
   selectOptions: [],
   selectOptionsLoading: false,
   feedbacksLoading: false,
+  locationTables: [],
+  locationTablesLoading: false,
 };
 
 export const locationsSlice = createSlice({
@@ -96,6 +101,17 @@ export const locationsSlice = createSlice({
       .addCase(getSelectOptions.rejected, (state) => {
         state.selectOptionsLoading = false;
       });
+    builder
+      .addCase(getLocationTables.pending, (state) => {
+        state.locationTablesLoading = true;
+      })
+      .addCase(getLocationTables.fulfilled, (state, { payload: data }) => {
+        state.locationTablesLoading = false;
+        state.locationTables = data;
+      })
+      .addCase(getLocationTables.rejected, (state) => {
+        state.locationTablesLoading = false;
+      });
   },
   selectors: {
     selectLocations: (state) => state.locations,
@@ -107,6 +123,7 @@ export const locationsSlice = createSlice({
     selectSelectOptions: (state) => state.selectOptions,
     selectSelectOptionsLoading: (state) => state.selectOptionsLoading,
     selectFeedbacksLoading: (state) => state.feedbacksLoading,
+    selectLocationTables: (state) => state.locationTables,
   },
 });
 
@@ -121,4 +138,5 @@ export const {
   selectSelectOptions,
   selectSelectOptionsLoading,
   selectFeedbacksLoading,
+  selectLocationTables,
 } = locationsSlice.selectors;

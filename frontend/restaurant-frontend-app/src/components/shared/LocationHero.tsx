@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { selectOneLocation } from "@/app/slices/locationsSlice";
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "@/app/hooks";
-import { setLocationAction } from "@/app/slices/bookingFormSlice";
+import { setLocationAction } from "@/app/slices/bookingSlice";
 
 export const LocationHero = () => {
   const oneLocation = useSelector(selectOneLocation);

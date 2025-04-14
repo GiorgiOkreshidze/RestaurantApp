@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 interface reservationsState {
   reservations: Reservation[];
   reservationsLoading: boolean;
-  reservation: Reservation | null;
   reservationCreatingLoading: boolean;
   reservationDeletingLoading: boolean;
   giveReservationFeedbackLoading: boolean;
@@ -21,7 +20,6 @@ interface reservationsState {
 const initialState: reservationsState = {
   reservations: [],
   reservationsLoading: false,
-  reservation: null,
   reservationCreatingLoading: false,
   reservationDeletingLoading: false,
   giveReservationFeedbackLoading: false,
@@ -36,10 +34,17 @@ export const reservationsSlice = createSlice({
       .addCase(getReservations.pending, (state) => {
         state.reservationsLoading = true;
       })
-      .addCase(getReservations.fulfilled, (state, { payload: data }) => {
-        state.reservationsLoading = false;
-        state.reservations = data;
-      })
+      .addCase(
+        getReservations.fulfilled,
+        (state, { payload }: { payload: Reservation[] }) => {
+          state.reservationsLoading = false;
+          state.reservations = payload.map((reservation) => ({
+            ...reservation,
+            preOrder: reservation.id,
+            timeTo: reservation.timeSlot.split(" - ")[1]
+          }));
+        },
+      )
       .addCase(getReservations.rejected, (state) => {
         state.reservationsLoading = false;
       });
@@ -48,13 +53,9 @@ export const reservationsSlice = createSlice({
       .addCase(upsertClientReservation.pending, (state) => {
         state.reservationCreatingLoading = true;
       })
-      .addCase(
-        upsertClientReservation.fulfilled,
-        (state, { payload: data }) => {
-          state.reservationCreatingLoading = false;
-          state.reservation = data;
-        },
-      )
+      .addCase(upsertClientReservation.fulfilled, (state) => {
+        state.reservationCreatingLoading = false;
+      })
       .addCase(
         upsertClientReservation.rejected,
         (state, { payload: errorResponse }) => {
@@ -78,13 +79,9 @@ export const reservationsSlice = createSlice({
       .addCase(upsertWaiterReservation.pending, (state) => {
         state.reservationCreatingLoading = true;
       })
-      .addCase(
-        upsertWaiterReservation.fulfilled,
-        (state, { payload: data }) => {
-          state.reservationCreatingLoading = false;
-          state.reservation = data;
-        },
-      )
+      .addCase(upsertWaiterReservation.fulfilled, (state) => {
+        state.reservationCreatingLoading = false;
+      })
       .addCase(
         upsertWaiterReservation.rejected,
         (state, { payload: errorResponse }) => {

@@ -3,17 +3,17 @@ import { Text } from "../ui";
 import { LocationIcon } from "../icons";
 import {
   dateObjToDateStringUI,
-  timeString24hToTimeString12h,
+  time24hTo12h,
 } from "@/utils/dateTime";
 import { ClientReservationDialog } from "./ClientReservationDialog";
 import { TimeSlot } from "./TimeSlot";
 import { isPast, isToday } from "date-fns";
 import { AvailableTimeSlotsDialog } from "./AvailableTimeSlotsDialog";
-import { selectBookingFormState } from "@/app/slices/bookingFormSlice";
+import { selectBooking } from "@/app/slices/bookingSlice";
 import { useSelector } from "react-redux";
 
 export const TableCard = ({ table }: { table: TableUI }) => {
-  const bookingForm = useSelector(selectBookingFormState);
+  const bookingForm = useSelector(selectBooking);
   const availableSlots = table.availableSlots.filter((timeSlot) => {
     return isToday(table.date) && isPast(timeSlot.startDate) ? false : true;
   });
@@ -58,8 +58,8 @@ export const TableCard = ({ table }: { table: TableUI }) => {
                 maxGuests={Number.parseInt(table.capacity)}
               >
                 <TimeSlot>
-                  {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
-                  {timeString24hToTimeString12h(timeSlot.endString)}
+                  {time24hTo12h(timeSlot.startString)} -{" "}
+                  {time24hTo12h(timeSlot.endString)}
                 </TimeSlot>
               </ClientReservationDialog>
             ))}
