@@ -23,5 +23,13 @@ namespace Function.Models
         public double PreviousHours { get; set; }
         
         public double DeltaHours { get; set; }
+
+        public double CurrentAverageServiceFeedback { get; set; }
+
+        public double MinimumServiceFeedback { get; set; }
+
+        public double PreviousAverageServiceFeedback { get; set; }
+
+        public double DeltaAverageServiceFeedback { get; set; }
     }
 }

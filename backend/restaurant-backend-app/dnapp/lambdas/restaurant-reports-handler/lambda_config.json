@@ -21,7 +21,14 @@
     "USER_TABLE_NAME": "${users_table}",
     "REPORTS_TABLE_NAME": "${reports_table}",
     "EMPLOYEE_TABLE_NAME": "${employee_info_table}",
-    "USER_TABLE_EMAIL_INDEX": "${user_table_email_index}"
+    "USER_TABLE_EMAIL_INDEX": "${user_table_email_index}",
+
+    "DDB_LOCATION_FEEDBACKS_TABLE": "${locationFeedback_table}",
+    "DDB_LOCATION_FEEDBACKS_TYPE_RATING_INDEX": "${ix_locationFeedback_type_rating}",
+    "DDB_LOCATION_FEEDBACKS_DATE_INDEX": "${ix_locationFeedback_date}",
+    "DDB_LOCATION_FEEDBACKS_RESERVATION_TYPE_INDEX": "${ix_locationFeedback_reservation_type}",
+    "DDB_LOCATION_FEEDBACKS_RATING_INDEX": "${ix_locationFeedback_rating}",
+    "DDB_LOCATION_FEEDBACKS_TYPE_DATE_INDEX": "${ix_locationFeedback_type_date}"
   },
   "publish_version": true,
   "alias": "${lambdas_alias_name}",

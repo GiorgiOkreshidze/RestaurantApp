@@ -21,5 +21,11 @@ namespace Function.Models
         
         [JsonPropertyName("hoursWorked")]
         public required int HoursWorked { get; set; }
+
+        [JsonPropertyName("averageServiceFeedback")]
+        public required double AverageServiceFeedback { get; set; }
+
+        [JsonPropertyName("minimumServiceFeedback")]
+        public required int MinimumServiceFeedback { get; set; }
     }
 }

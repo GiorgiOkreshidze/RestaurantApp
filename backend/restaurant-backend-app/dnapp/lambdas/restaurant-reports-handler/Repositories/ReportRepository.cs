@@ -11,6 +11,7 @@ namespace Function.Repositories
     {
         public readonly IAmazonDynamoDB _dynamoDbClient;
         public readonly string? _tableName = System.Environment.GetEnvironmentVariable("REPORTS_TABLE_NAME");
+
         public ReportRepository(IAmazonDynamoDB dynamoDbClient)
         {
             _dynamoDbClient = dynamoDbClient;
@@ -27,7 +28,9 @@ namespace Function.Repositories
                 { "date", new AttributeValue { S = report.Date } },
                 { "waiter", new AttributeValue { S = report.Waiter } },
                 { "waiterEmail", new AttributeValue { S = report.WaiterEmail } },
-                { "hoursWorked", new AttributeValue { N = report.HoursWorked.ToString() } }
+                { "hoursWorked", new AttributeValue { N = report.HoursWorked.ToString() } },
+                { "averageServiceFeedback", new AttributeValue { N = report.AverageServiceFeedback.ToString()} },
+                { "minimumServiceFeedback", new AttributeValue { N = report.MinimumServiceFeedback.ToString() } }
             };
 
             await _dynamoDbClient.PutItemAsync(new PutItemRequest

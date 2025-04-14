@@ -39,5 +39,23 @@ namespace Function.Repositories
 
             return $"{firstName} {lastName}";
         }
+
+        public async Task<string> GetUserEmail(string id)
+        {
+            var request = new QueryRequest
+            {
+                TableName = _tableName,
+                KeyConditionExpression = "id = :id",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { ":id", new AttributeValue { S = id } },
+                },
+                Limit = 1
+            };
+
+            var response = await _dynamoDbClient.QueryAsync(request);
+
+            return response.Items[0].TryGetValue("email", out var email) ? email.S : "";
+        }
     }
 }

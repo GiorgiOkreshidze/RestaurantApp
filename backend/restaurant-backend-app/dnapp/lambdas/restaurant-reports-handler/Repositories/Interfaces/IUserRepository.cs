@@ -8,6 +8,8 @@ namespace Function.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        public Task<string> GetUserFullName(string email); 
+        public Task<string> GetUserFullName(string email);
+
+        public Task<string> GetUserEmail(string id);
     }
 }
