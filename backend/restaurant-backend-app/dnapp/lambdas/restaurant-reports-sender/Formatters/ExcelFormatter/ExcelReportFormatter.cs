@@ -24,6 +24,10 @@ namespace Function.Formatters.ExcelFormatter
             worksheet.Cells[1, 6].Value = "Current Hours";
             worksheet.Cells[1, 7].Value = "Previous Hours";
             worksheet.Cells[1, 8].Value = "Delta Hours";
+            worksheet.Cells[1, 9].Value = "Current Average Service Feedback Waiter";
+            worksheet.Cells[1, 10].Value = "Previous Average Service Feedback Waiter";
+            worksheet.Cells[1, 11].Value = "Delta Average Service Feedback Waiter";
+            worksheet.Cells[1, 12].Value = "Minimum Service Feedback Location";
 
             // Add data
             int row = 2;
@@ -38,6 +42,11 @@ namespace Function.Formatters.ExcelFormatter
                 worksheet.Cells[row, 7].Value = entry.PreviousHours;
                 worksheet.Cells[row, 8].Value = entry.DeltaHours;
                 worksheet.Cells[row, 8].Style.Numberformat.Format = "+0.0%;-0.0%"; // Explicit + and - with %
+                worksheet.Cells[row, 9].Value = entry.CurrentAverageServiceFeedback;
+                worksheet.Cells[row, 10].Value = entry.PreviousAverageServiceFeedback;
+                worksheet.Cells[row, 11].Value = entry.DeltaAverageServiceFeedback;
+                worksheet.Cells[row, 11].Style.Numberformat.Format = "+0.0%;-0.0%"; // Explicit + and - with %
+                worksheet.Cells[row, 12].Value = entry.MinimumServiceFeedback;
                 row++;
             }
 

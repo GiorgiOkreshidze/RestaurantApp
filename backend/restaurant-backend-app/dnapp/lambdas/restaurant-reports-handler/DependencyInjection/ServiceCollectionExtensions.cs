@@ -17,6 +17,7 @@ namespace Function.DependencyInjection
             services.AddSingleton<IEmployeeInfoRepository, EmployeeInfoRepository>();
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IReportRepository, ReportRepository>();
+            services.AddSingleton<IFeedbacksRepository, FeedbacksRepository>();
 
             // Services
             services.AddSingleton<IReportService, ReportService>();

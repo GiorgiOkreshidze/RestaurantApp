@@ -61,6 +61,8 @@ namespace Function.Services
         private List<SummaryEntry> ProcessReports(List<Report> currentWeek, List<Report> previousWeek, DateTime startDate, DateTime endDate)
         {
             var waiterSummaries = new Dictionary<string, SummaryEntry>();
+            var currentFeedbackCount = new Dictionary<string, int>();
+            var previousFeedbackCount = new Dictionary<string, int>();
 
             // Aggregate current week
             foreach (var report in currentWeek)
@@ -77,10 +79,22 @@ namespace Function.Services
                         WaiterEmail = report.WaiterEmail,
                         CurrentHours = 0,
                         PreviousHours = 0,
-                        DeltaHours = 0
+                        DeltaHours = 0,
+                        CurrentAverageServiceFeedback = 0,
+                        MinimumServiceFeedback = int.MaxValue,
+                        PreviousAverageServiceFeedback = 0,
+                        DeltaAverageServiceFeedback = 0
                     };
+
+                    currentFeedbackCount[key] = 0;
+                    previousFeedbackCount[key] = 0;
                 }
+
                 waiterSummaries[key].CurrentHours += report.HoursWorked;
+                waiterSummaries[key].CurrentAverageServiceFeedback += report.AverageServiceFeedback;
+                currentFeedbackCount[key]++;
+
+                waiterSummaries[key].MinimumServiceFeedback = Math.Min(waiterSummaries[key].MinimumServiceFeedback, report.MinimumServiceFeedback);
             }
 
             // Aggregate previous week
@@ -98,21 +112,60 @@ namespace Function.Services
                         WaiterEmail = report.WaiterEmail,
                         CurrentHours = 0,
                         PreviousHours = 0,
-                        DeltaHours = 0
+                        DeltaHours = 0,
+                        CurrentAverageServiceFeedback = 0,
+                        MinimumServiceFeedback = int.MaxValue,
+                        PreviousAverageServiceFeedback = 0,
+                        DeltaAverageServiceFeedback = 0
                     };
+
+                    currentFeedbackCount[key] = 0;
+                    previousFeedbackCount[key] = 0;
                 }
+
                 waiterSummaries[key].PreviousHours += report.HoursWorked;
+                waiterSummaries[key].PreviousAverageServiceFeedback += report.AverageServiceFeedback;
+                previousFeedbackCount[key]++;
             }
 
-            foreach (var entry in waiterSummaries.Values)
+            foreach (var key in waiterSummaries.Keys)
             {
+                var entry = waiterSummaries[key];
+
+                // Compute delta hours as percentage difference (using 1 for +100% when no previous hours)
                 if (entry.PreviousHours == 0)
                 {
-                    entry.DeltaHours = entry.CurrentHours > 0 ? 1 : 0; // +100% or 0%
+                    entry.DeltaHours = entry.CurrentHours > 0 ? 1 : 0;
                 }
                 else
                 {
                     entry.DeltaHours = ((entry.CurrentHours - entry.PreviousHours) / entry.PreviousHours);
+                }
+
+                // Calculate average service feedback for current week
+                if (currentFeedbackCount[key] > 0)
+                {
+                    entry.CurrentAverageServiceFeedback /= currentFeedbackCount[key];
+                }
+                // Calculate average service feedback for previous week
+                if (previousFeedbackCount[key] > 0)
+                {
+                    entry.PreviousAverageServiceFeedback /= previousFeedbackCount[key];
+                }
+
+                if (entry.PreviousAverageServiceFeedback == 0)
+                {
+                    entry.DeltaAverageServiceFeedback = entry.CurrentAverageServiceFeedback > 0 ? 1 : 0;
+                }
+                else
+                {
+                    entry.DeltaAverageServiceFeedback = (entry.CurrentAverageServiceFeedback - entry.PreviousAverageServiceFeedback) / entry.PreviousAverageServiceFeedback;
+                }
+
+                // If no feedback was recorded in the current week, set minimum to 0 instead of int.MaxValue
+                if (entry.MinimumServiceFeedback == int.MaxValue)
+                {
+                    entry.MinimumServiceFeedback = 0;
                 }
             }
 

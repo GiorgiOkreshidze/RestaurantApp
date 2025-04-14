@@ -20,5 +20,9 @@ namespace Function.Models
         public required string WaiterEmail { get; set; }
 
         public required int HoursWorked { get; set; }
+
+        public required double AverageServiceFeedback { get; set; }
+
+        public required int MinimumServiceFeedback { get; set; }
     }
 }
