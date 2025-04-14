@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import type { RichTimeSlot } from "@/types";
 import {
   timeString24hToDateObj,
-  timeString24hToTimeString12h,
+  time24hTo12h,
 } from "@/utils/dateTime";
 
 export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
@@ -64,8 +64,8 @@ export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
               disablePastTimes && isToday(selectedDate) && timeSlot.isPast
             }
           >
-            {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
-            {timeString24hToTimeString12h(timeSlot.endString)}
+            {time24hTo12h(timeSlot.startString)} -{" "}
+            {time24hTo12h(timeSlot.endString)}
           </SelectItem>
         ))}
       </SelectContent>

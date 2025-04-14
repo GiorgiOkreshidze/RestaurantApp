@@ -1,7 +1,12 @@
 import { useAppDispatch } from "@/app/hooks";
 import { selectDishes, selectDishesLoading } from "@/app/slices/dishesSlice";
 import { getAllDishes } from "@/app/thunks/dishesThunks";
-import { AllDishes, PageBody, PageHero } from "@/components/shared";
+import {
+  AllDishes,
+  PageBody,
+  PageHero,
+  PreorderInfoBar,
+} from "@/components/shared";
 import { CategoryFilters } from "@/components/shared/CategoryFilters";
 import { SortingOptions } from "@/components/shared/SortingOptions";
 import { Text } from "@/components/ui";
@@ -41,6 +46,7 @@ export const Menu = () => {
 
   return (
     <div>
+      <PreorderInfoBar />
       <PageHero variant="dark" className="flex flex-col justify-center">
         <Text variant="h2" className="text-primary">
           Green & Tasty Restaurants

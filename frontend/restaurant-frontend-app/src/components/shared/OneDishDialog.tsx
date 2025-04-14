@@ -1,21 +1,30 @@
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { Dialog, DialogContent, Text } from "../ui";
-import { ExtendedDish } from "@/types";
+import { Button, Dialog, DialogContent, Text } from "../ui";
+import { Dish, ExtendedDish } from "@/types";
 import { Loader } from "./Loader";
+import { Preorder } from "@/types/preorder.types";
 
 interface Props {
   dish: ExtendedDish | null;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   loading: boolean;
+  activePreorder?: Preorder | undefined;
+  onPreorderClick?: (isPreordered: boolean, dishId: Dish["id"]) => void;
 }
 
 export const OneDishDialog: React.FC<Props> = ({
   isOpen,
   dish,
-  onOpenChange,
   loading,
+  onOpenChange,
+  activePreorder,
+  onPreorderClick,
 }) => {
+  const isPreordered = activePreorder?.dishes.find(
+    (arrayDish) => arrayDish.id === dish?.id,
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTitle></DialogTitle>
@@ -61,6 +70,21 @@ export const OneDishDialog: React.FC<Props> = ({
               <Text variant="h3">{dish?.price}</Text>
               <Text variant="h3">{dish?.weight}</Text>
             </div>
+
+            {activePreorder && (
+              <Button
+                variant={isPreordered ? "secondary" : "primary"}
+                size="l"
+                className="w-full mt-[1.5rem]"
+                onClick={(e) => {
+                  if (!onPreorderClick || !dish) return;
+                  e.stopPropagation();
+                  onPreorderClick(Boolean(isPreordered), dish.id);
+                }}
+              >
+                {isPreordered ? "In Cart" : "Pre-order"}
+              </Button>
+            )}
           </>
         )}
       </DialogContent>

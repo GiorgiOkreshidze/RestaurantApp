@@ -10,31 +10,21 @@ import {
   selectReservations,
   selectReservationsLoading,
 } from "@/app/slices/reservationsSlice";
-import { useEffect } from "react";
-import { useAppDispatch } from "@/app/hooks";
-import { getReservations } from "@/app/thunks/reservationsThunks";
 import { Button, Spinner, Text } from "@/components/ui";
 import { useWaiterReservations } from "@/hooks/useWaiterReservations";
 import {
   dateObjToDateStringUI,
-  timeString24hToTimeString12h,
+  time24hTo12h,
 } from "@/utils/dateTime";
 import { PlusIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/variants/buttonVariants.ts";
 import { Link } from "react-router";
-import { getAllUsers } from "@/app/thunks/userThunks";
 
 export const WaiterReservation = () => {
   const store = useWaiterReservations();
-  const dispatch = useAppDispatch();
   const reservations = useSelector(selectReservations);
   const reservationsLoading = useSelector(selectReservationsLoading);
-
-  useEffect(() => {
-    dispatch(getReservations({}));
-    dispatch(getAllUsers());
-  }, [dispatch]);
 
   return (
     <>
@@ -48,7 +38,7 @@ export const WaiterReservation = () => {
             {store?.time
               ? `, ${store.time
                   .split(" - ")
-                  .map((time) => timeString24hToTimeString12h(time))
+                  .map((time) => time24hTo12h(time))
                   .join(" - ")}`
               : null}
           </Text>
@@ -67,7 +57,7 @@ export const WaiterReservation = () => {
           {reservationsLoading ? (
             <Spinner />
           ) : reservations?.length > 0 ? (
-            <div className="grid gap-[2rem] lg:grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
+            <div className="grid gap-[2rem] md:grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
               {reservations.map((reservation) => (
                 <ReservationCard
                   key={reservation.id}

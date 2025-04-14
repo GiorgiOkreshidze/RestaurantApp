@@ -40,3 +40,8 @@ export { CustomerPicker } from "./CustomerPicker";
 export { ReservationFeedbackDialog } from "./ReservationFeedbackDialog";
 export { StarRating } from "./StarRating";
 export { Textarea } from "./Textarea";
+export { InfoBar } from "./InfoBar";
+export { PreorderInfoBar } from "./PreorderInfoBar";
+export { CartDialog } from "./CartDialog";
+export { CartPreorder } from "./CartPreorder";
+export { CartPreorderDish } from "./CartPreorderDish";

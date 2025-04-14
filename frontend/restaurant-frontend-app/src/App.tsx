@@ -2,7 +2,7 @@ import { Route, Routes, useLocation } from "react-router";
 import { Home, Auth, Location, Menu, WaiterReservation } from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { NavBar } from "./components/shared";
+import { CartDialog, NavBar } from "./components/shared";
 import { useEffect } from "react";
 import { ClientReservations } from "./pages/ClientReservations";
 import { Booking } from "./pages/Booking";
@@ -18,10 +18,12 @@ import { getLocations, getLocationTables, getSelectOptions } from "./app/thunks/
 import { ProtectedRoute } from "./components/routeComponents/ProtectedRoute";
 import { PublicRoute } from "./components/routeComponents/PublicRoute";
 
-import { USER_ROLE } from "./utils/constants";
 import { selectUser } from "./app/slices/userSlice";
 import { selectBooking, setLocationAction } from "./app/slices/bookingSlice";
 import { getTimeSlots } from "./app/thunks/bookingThunk";
+import { selectReservations } from "./app/slices/reservationsSlice";
+import { getReservations } from "./app/thunks/reservationsThunks";
+import { getAllUsers } from "./app/thunks/userThunks";
 
 function App() {
   const location = useLocation();
@@ -32,6 +34,7 @@ function App() {
     const selectOptions = useSelector(selectSelectOptions);
   const user = useSelector(selectUser);
   const booking = useSelector(selectBooking);
+  const reservations = useSelector(selectReservations);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -65,9 +68,18 @@ function App() {
     }
   }, [dispatch, booking.timeSlots]);
 
+  useEffect(() => {
+      if (reservations.length) return;
+      dispatch(getReservations({}));
+      if (user?.role === "Waiter") {
+        dispatch(getAllUsers());
+      }
+    }, [dispatch, reservations.length, user?.role]);
+
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} theme="light" />
+      <CartDialog/>
       {!hideNavBar && (
         <header>
           <NavBar />
@@ -77,7 +89,7 @@ function App() {
         <Route
           path="/"
           element={
-            user?.role === USER_ROLE.WAITER ? <WaiterReservation /> : <Home />
+            user?.role === "Waiter" ? <WaiterReservation /> : <Home />
           }
         />
 

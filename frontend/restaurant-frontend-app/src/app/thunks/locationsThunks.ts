@@ -5,7 +5,7 @@ import type {
   LocationTable,
 } from "@/types";
 import type { Location, SelectOption } from "@/types/location.types";
-import axiosApi from "@/utils/axiosApi";
+import axiosApi, { axiosLOCAL } from "@/utils/axiosApi";
 import { serverRoute } from "@/utils/constants";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
@@ -104,7 +104,7 @@ export const getLocationTables = createAsyncThunk<
   { rejectValue: GlobalErrorMessage }
 >("location-tables", async (_, { rejectWithValue }) => {
   try {
-    const response = await axiosApi.get(serverRoute.locationTables);
+    const response = await axiosLOCAL.get(serverRoute.locationTables);
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response) {

@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "../ui";
 import { ReactElement } from "react";
-import { timeString24hToTimeString12h } from "@/utils/dateTime";
+import { time24hTo12h } from "@/utils/dateTime";
 import { format } from "date-fns";
 import { ClientReservationDialog } from "./ClientReservationDialog";
 import { TimeSlot } from "./TimeSlot";
@@ -59,8 +59,8 @@ export const AvailableTimeSlotsDialog = ({
               tableId={table.tableId}
             >
               <TimeSlot>
-                {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
-                {timeString24hToTimeString12h(timeSlot.endString)}
+                {time24hTo12h(timeSlot.startString)} -{" "}
+                {time24hTo12h(timeSlot.endString)}
               </TimeSlot>
             </ClientReservationDialog>
           ))}
