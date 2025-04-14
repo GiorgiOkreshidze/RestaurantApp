@@ -40,7 +40,7 @@ export const CustomPagination: React.FC<PaginationProps> = ({
           currentPage,
           currentPage + 1,
           "...",
-          totalPages
+          totalPages,
         );
       }
     }

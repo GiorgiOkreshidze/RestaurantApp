@@ -5,6 +5,8 @@ export interface UserFields {
   password: string;
 }
 
+export type UserRole = "Waiter" | "Customer";
+
 export interface User {
   tokens: {
     accessToken: string;
@@ -17,7 +19,7 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  role: UserRole;
   imageUrl: string;
 }
 

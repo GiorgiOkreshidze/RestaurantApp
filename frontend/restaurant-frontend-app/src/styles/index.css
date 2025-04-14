@@ -143,10 +143,6 @@ body {
   min-block-size: 100vh;
 }
 
-.test {
-  /* grid-template-columns: repeat(auto-fit, minmax(0, auto)); */
-}
-
 @theme {
   /* ==================================== */
   /* PREFERABLE VARIABLES */

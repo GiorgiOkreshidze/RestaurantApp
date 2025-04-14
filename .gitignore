@@ -5,6 +5,9 @@
 .DS_Store
 Thumbs.db
 
+# Test configuration files
+testConfig.json
+
 # General IDE directories and files
 .vscode/
 .idea/

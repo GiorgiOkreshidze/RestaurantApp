@@ -1,6 +1,6 @@
 import { UserType } from "@/types/user.types";
 import { Label, RadioGroup, RadioGroupItem, Text } from "../ui";
-import { buttonVariants } from "../ui/Button";
+import { buttonVariants } from "@/components/variants/buttonVariants.ts";
 import { cn } from "@/lib/utils";
 import { Dispatch, SetStateAction } from "react";
 
@@ -38,11 +38,11 @@ interface Props {
 
 const userOptions = [
   {
-    id: UserType.VISITOR,
+    id: UserType.Visitor,
     title: "Visitor",
   },
   {
-    id: UserType.CUSTOMER,
+    id: UserType.Customer,
     title: "Existing Customer",
   },
 ];

@@ -3,7 +3,7 @@ import { MoreHorizontalIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from ".";
-import { textVariants } from "./Text";
+import { textVariants } from "@/components/variants/textVariants.ts";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -54,7 +54,7 @@ function PaginationLink({
         isActive
           ? "font-medium border-b-2 border-green-200"
           : "border-b-2 border-transparent",
-        className
+        className,
       )}
       {...props}
     />
@@ -74,7 +74,7 @@ function PaginationPrevious({
       className={cn(
         "cursor-pointer gap-1 px-2.5 sm:pl-2.5",
         disabled ? "opacity-50 pointer-events-none" : "",
-        className
+        className,
       )}
       href={disabled ? "#" : props.href}
       onClick={disabled ? undefined : onClick}
@@ -98,7 +98,7 @@ function PaginationNext({
       className={cn(
         "cursor-pointer gap-1 px-2.5 sm:pl-2.5",
         disabled ? "opacity-50 pointer-events-none" : "",
-        className
+        className,
       )}
       href={disabled ? "#" : props.href}
       onClick={disabled ? undefined : onClick}

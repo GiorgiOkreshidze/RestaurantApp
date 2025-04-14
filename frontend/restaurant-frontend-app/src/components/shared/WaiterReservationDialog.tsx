@@ -20,10 +20,13 @@ import {
   UserPicker,
 } from ".";
 import { UserType } from "@/types/user.types";
-import { LOCATION_TABLES, TIME_SLOTS } from "@/utils/constants";
 import { LocationIcon } from "../icons";
+import { useSelector } from "react-redux";
+import { selectBooking } from "@/app/slices/bookingSlice";
+import { selectLocationTables } from "@/app/slices/locationsSlice";
 
 export const WaiterReservationDialog = (props: Props) => {
+  const booking = useSelector(selectBooking);
   const [isCurrentDialogOpen, setIsCurrentDialogOpen] = useState(false);
   const onSuccessCallback = () => {
     setIsCurrentDialogOpen(!isCurrentDialogOpen);
@@ -33,6 +36,7 @@ export const WaiterReservationDialog = (props: Props) => {
     initDate: props.date,
     onSuccessCallback,
   });
+  const locationTables = useSelector(selectLocationTables);
 
   return (
     <Dialog open={isCurrentDialogOpen} onOpenChange={setIsCurrentDialogOpen}>
@@ -58,7 +62,7 @@ export const WaiterReservationDialog = (props: Props) => {
             userType={state.userType}
             setUserType={state.setUserType}
           />
-          {state.userType === UserType.CUSTOMER && (
+          {state.userType === UserType.Customer && (
             <CustomerPicker
               customerId={state.customerId}
               setCustomerId={state.setCustomerId}
@@ -83,7 +87,7 @@ export const WaiterReservationDialog = (props: Props) => {
               className="mt-[1rem] w-full"
             />
             <TimeSlotPicker
-              items={TIME_SLOTS}
+              items={booking.timeSlots}
               value={state.time}
               setValue={state.setTime}
               selectedDate={state.date}
@@ -94,7 +98,7 @@ export const WaiterReservationDialog = (props: Props) => {
 
           <TablePicker
             table={state.table}
-            tableList={LOCATION_TABLES.filter(
+            tableList={locationTables.filter(
               (table) => table.locationId === state.waiter?.locationId,
             )}
             setTable={state.setTable}

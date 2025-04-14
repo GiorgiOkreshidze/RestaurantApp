@@ -1,4 +1,4 @@
-import { useBookingForm } from "@/hooks/useBookingForm";
+import { useBooking } from "@/hooks/useBooking";
 import { DatePicker, GuestsNumber, LocationPicker, TimeSlotPicker } from ".";
 import { useSelector } from "react-redux";
 import {
@@ -11,7 +11,7 @@ import { selectTablesLoading } from "@/app/slices/tablesSlice";
 import { Spinner } from "../ui";
 
 export const BookingForm = (props: Props) => {
-  const form = useBookingForm();
+  const form = useBooking();
   const selectOptions = useSelector(selectSelectOptions);
   const selectOptionsLoading = useSelector(selectSelectOptionsLoading);
   const tablesLoading = useSelector(selectTablesLoading);
