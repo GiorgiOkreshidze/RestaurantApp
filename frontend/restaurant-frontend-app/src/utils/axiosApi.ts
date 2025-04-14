@@ -5,11 +5,15 @@ import axios, {
 } from "axios";
 import { RootState } from "../app/store";
 import { Store } from "@reduxjs/toolkit";
-import { apiURL } from "./constants";
+import { apiURL, apiURLLocal } from "./constants";
 import { logout, setUser } from "@/app/slices/userSlice";
 
 const axiosApi: AxiosInstance = axios.create({
   baseURL: apiURL,
+});
+
+export const axiosLOCAL: AxiosInstance = axios.create({
+  baseURL: apiURLLocal,
 });
 
 let isRefreshing = false;

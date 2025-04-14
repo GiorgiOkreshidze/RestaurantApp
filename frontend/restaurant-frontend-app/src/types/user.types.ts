@@ -1,4 +1,4 @@
 export enum UserType {
-  VISITOR = "VISITOR",
-  CUSTOMER = "CUSTOMER",
+  Visitor = "Visitor",
+  Customer = "Customer",
 }

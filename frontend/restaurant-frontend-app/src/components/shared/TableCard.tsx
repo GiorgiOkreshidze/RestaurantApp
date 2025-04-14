@@ -3,7 +3,7 @@ import { Text } from "../ui";
 import { LocationIcon } from "../icons";
 import {
   dateObjToDateStringUI,
-  timeString24hToTimeString12h,
+  time24hTo12h,
 } from "@/utils/dateTime";
 import { ClientReservationDialog } from "./ClientReservationDialog";
 import { TimeSlot } from "./TimeSlot";
@@ -58,8 +58,8 @@ export const TableCard = ({ table }: { table: TableUI }) => {
                 maxGuests={Number.parseInt(table.capacity)}
               >
                 <TimeSlot>
-                  {timeString24hToTimeString12h(timeSlot.startString)} -{" "}
-                  {timeString24hToTimeString12h(timeSlot.endString)}
+                  {time24hTo12h(timeSlot.startString)} -{" "}
+                  {time24hTo12h(timeSlot.endString)}
                 </TimeSlot>
               </ClientReservationDialog>
             ))}

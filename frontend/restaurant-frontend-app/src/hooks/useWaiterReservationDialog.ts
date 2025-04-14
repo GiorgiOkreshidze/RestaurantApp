@@ -25,7 +25,7 @@ export const useWaiterReservationDialog = (props: Props) => {
     selectReservationCreatingLoading,
   );
   const waiter = useSelector(selectUser);
-  const [userType, setUserType] = useState(UserType.VISITOR);
+  const [userType, setUserType] = useState(UserType.Visitor);
   const allCustomers = useSelector(selectAllUsers);
   const allCustomersLoading = useSelector(selectAllUsersLoading);
   const [customerId, setCustomerId] = useState("");
@@ -57,7 +57,7 @@ export const useWaiterReservationDialog = (props: Props) => {
     if (!waiter?.locationId) {
       toast.error("The Waiter should have id of Location'");
     }
-    if (userType === UserType.CUSTOMER && !customerId) {
+    if (userType === UserType.Customer && !customerId) {
       toast.error("Select 'Customer'");
     }
     if (!time) {

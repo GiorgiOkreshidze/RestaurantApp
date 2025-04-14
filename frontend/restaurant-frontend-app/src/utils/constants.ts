@@ -1,4 +1,5 @@
 export const apiURL = import.meta.env["VITE_API_URL"];
+export const apiURLLocal = "/api";
 
 export const serverRoute = {
   signUp: "signup",
@@ -21,9 +22,4 @@ export const serverRoute = {
   giveReservationFeedback: "feedbacks",
   timeSlots: "timeslots",
   locationTables: "location-tables",
-};
-
-export const USER_ROLE = {
-  CUSTOMER: "Customer",
-  WAITER: "Waiter",
 };

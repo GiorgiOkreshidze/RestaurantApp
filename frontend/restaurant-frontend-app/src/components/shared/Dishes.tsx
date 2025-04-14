@@ -7,6 +7,7 @@ import { selectOneDish, selectOneDishLoading } from "@/app/slices/dishesSlice";
 import { useAppDispatch } from "@/app/hooks";
 import { OneDishDialog } from "./OneDishDialog";
 import { getOneDish } from "@/app/thunks/dishesThunks";
+import { selectActivePreorder } from "@/app/slices/preordersSlice";
 
 interface Props {
   isLoading?: boolean;
@@ -19,6 +20,7 @@ export const Dishes: React.FC<Props> = ({ dishes, title }) => {
   const oneDish = useSelector(selectOneDish);
   const oneDishLoading = useSelector(selectOneDishLoading);
   const dispatch = useAppDispatch();
+  const activePreorder = useSelector(selectActivePreorder);
 
   const fetchOneDish = async (id: string) => {
     setIsOpen(true);
@@ -38,6 +40,7 @@ export const Dishes: React.FC<Props> = ({ dishes, title }) => {
         {dishes.slice(0, 4).map((item) => (
           <DishCard
             key={item.id}
+            id={item.id}
             name={item.name}
             price={item.price}
             weight={item.weight}

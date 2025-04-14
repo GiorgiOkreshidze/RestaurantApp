@@ -15,11 +15,19 @@ import { reservationsReducer } from "./slices/reservationsSlice";
 import { tablesReducer } from "./slices/tablesSlice";
 import { bookingReducer } from "./slices/bookingSlice";
 import { waiterReservationsReducer } from "./slices/waiterReservationsSlice";
+import { preordersReducer } from "./slices/preordersSlice";
+import { cartReducer } from "./slices/cartSlice";
 
 const usersPersistConfig = {
   key: "restaurant:users",
   storage: storage,
   whitelist: ["user"],
+};
+
+const preordersPersistConfig = {
+  key: "restaurant:preorders",
+  storage: storage,
+  whitelist: ["preorders", "activePreorderId"],
 };
 
 const rootReducer = combineReducers({
@@ -30,6 +38,8 @@ const rootReducer = combineReducers({
   tables: tablesReducer,
   booking: bookingReducer,
   waiterReservations: waiterReservationsReducer,
+  preorders: persistReducer(preordersPersistConfig, preordersReducer),
+  cart: cartReducer
 });
 
 export const store = configureStore({

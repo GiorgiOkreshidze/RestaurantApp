@@ -38,11 +38,11 @@ interface Props {
 
 const userOptions = [
   {
-    id: UserType.VISITOR,
+    id: UserType.Visitor,
     title: "Visitor",
   },
   {
-    id: UserType.CUSTOMER,
+    id: UserType.Customer,
     title: "Existing Customer",
   },
 ];

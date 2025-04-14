@@ -1,5 +1,5 @@
 import { GlobalErrorMessage, RichTimeSlot } from "@/types";
-import axiosApi from "@/utils/axiosApi";
+import { axiosLOCAL } from "@/utils/axiosApi";
 import { serverRoute } from "@/utils/constants";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
@@ -10,7 +10,7 @@ export const getTimeSlots = createAsyncThunk<
   { rejectValue: GlobalErrorMessage }
 >("timeslots", async (_, { rejectWithValue }) => {
   try {
-    const response = await axiosApi.get(serverRoute.timeSlots);
+    const response = await axiosLOCAL.get(serverRoute.timeSlots);
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response) {

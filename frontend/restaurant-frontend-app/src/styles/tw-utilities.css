@@ -124,3 +124,15 @@
     border-color: var(--color-destructive);
   }
 }
+
+
+/* ==================================== */
+/* CARD */
+/* ==================================== */
+@utility styleSet-card {
+  padding: 1.5rem;
+  
+  background-color: var(--color-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
