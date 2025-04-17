@@ -10,7 +10,6 @@ export type UserRole = "Waiter" | "Customer";
 export interface User {
   tokens: {
     accessToken: string;
-    idToken: string;
     refreshToken: string;
   };
 
@@ -41,7 +40,6 @@ export interface RegisterResponse {
 
 export interface LoginResponse {
   accessToken: string;
-  idToken: string;
   refreshToken: string;
 }
 
@@ -60,7 +58,7 @@ export interface ValidationErrors {
 }
 
 export interface GlobalErrorMessage {
-  message: string;
+  title: string;
 }
 
 export interface signOutMutation {

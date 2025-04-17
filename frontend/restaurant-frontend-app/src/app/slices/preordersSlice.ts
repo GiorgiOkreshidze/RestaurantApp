@@ -34,6 +34,17 @@ export const preordersSlice = createSlice({
         });
       }
     },
+    deletePreorder: (
+      state,
+      { payload: preorderId }: { payload: Preorder["id"] },
+    ) => {
+      state.preorders = state.preorders.filter(
+        (preorder) => preorder.id !== preorderId,
+      );
+      if (state.activePreorderId === preorderId) {
+        state.activePreorderId = null;
+      }
+    },
     setPreorderStatus: (
       state,
       {
@@ -120,6 +131,7 @@ export const preordersSlice = createSlice({
 export const preordersReducer = preordersSlice.reducer;
 export const {
   setActivePreorder,
+  deletePreorder,
   addDishToActivePreorder,
   increaseDishInPreorder,
   decreaseDishInPreorder,

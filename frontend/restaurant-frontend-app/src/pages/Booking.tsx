@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 export const Booking = () => {
   const tables = useSelector(selectTables);
   const tablesLoading = useSelector(selectTablesLoading);
-
+  
   return (
     <>
       <PageHero variant="dark" className="flex flex-col justify-center">

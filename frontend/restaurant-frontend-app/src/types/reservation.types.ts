@@ -24,7 +24,7 @@ export interface Reservation {
   userEmail: string;
   userInfo: string;
   createdAt: string;
-  editableTill: string;
+  tableCapacity: string;
 }
 
 export interface UpsertReservationRequestParams {

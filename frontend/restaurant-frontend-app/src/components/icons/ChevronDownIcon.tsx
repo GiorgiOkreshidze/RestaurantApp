@@ -3,6 +3,7 @@ import { ComponentProps } from "react";
 export const ChevronDownIcon = (props: ComponentProps<"svg">) => {
   return (
     <svg
+      data-testid="ChevronDownIcon"
       width={24}
       height={24}
       viewBox="0 0 24 24"

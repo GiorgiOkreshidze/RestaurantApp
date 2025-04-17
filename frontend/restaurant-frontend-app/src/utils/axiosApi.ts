@@ -5,7 +5,7 @@ import axios, {
 } from "axios";
 import { RootState } from "../app/store";
 import { Store } from "@reduxjs/toolkit";
-import { apiURL, apiURLLocal } from "./constants";
+import { apiURL, apiURLLocal, serverRoute } from "./constants";
 import { logout, setUser } from "@/app/slices/userSlice";
 
 const axiosApi: AxiosInstance = axios.create({
@@ -19,13 +19,12 @@ export const axiosLOCAL: AxiosInstance = axios.create({
 let isRefreshing = false;
 let refreshSubscribers: ((tokens: {
   accessToken: string;
-  idToken: string;
 }) => void)[] = [];
 
 export const refreshTokenRequest = async (store: Store<RootState>) => {
   try {
     const refreshToken = store.getState().users.user?.tokens.refreshToken;
-    const response = await axios.post(`${apiURL}/auth/refresh`, {
+    const response = await axios.post(`${apiURL}/${serverRoute.refresh}`, {
       refreshToken,
     });
 
@@ -33,7 +32,7 @@ export const refreshTokenRequest = async (store: Store<RootState>) => {
 
     return {
       accessToken: response.data.tokens.accessToken,
-      idToken: response.data.tokens.idToken,
+  
     };
   } catch (error) {
     store.dispatch(logout());
@@ -50,8 +49,7 @@ const addInterceptors = (store: Store<RootState>) => {
   axiosApi.interceptors.request.use((config) => {
     const user = store.getState().users.user;
     if (user?.tokens) {
-      config.headers["Authorization"] = `Bearer ${user.tokens.idToken}`;
-      config.headers["X-Amz-Security-Token"] = user.tokens.accessToken;
+      config.headers["Authorization"] = `Bearer ${user.tokens.accessToken}`;
     }
     return config;
   });
@@ -85,9 +83,7 @@ const addInterceptors = (store: Store<RootState>) => {
           return new Promise((resolve) => {
             refreshSubscribers.push((tokens) => {
               originalRequest.headers["Authorization"] =
-                `Bearer ${tokens.idToken}`;
-              originalRequest.headers["X-Amz-Security-Token"] =
-                tokens.accessToken;
+                `Bearer ${tokens.accessToken}`;
               resolve(axiosApi(originalRequest));
             });
           });
@@ -102,7 +98,7 @@ const addInterceptors = (store: Store<RootState>) => {
           isRefreshing = false;
 
           originalRequest.headers["Authorization"] =
-            `Bearer ${newTokens.idToken}`;
+            `Bearer ${newTokens.accessToken}`;
           originalRequest.headers["X-Amz-Security-Token"] =
             newTokens.accessToken;
 

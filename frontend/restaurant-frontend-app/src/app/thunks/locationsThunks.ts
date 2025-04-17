@@ -32,7 +32,7 @@ export const getOneLocation = createAsyncThunk<
   { rejectValue: GlobalErrorMessage }
 >("locations/getOneLocation", async (id, { rejectWithValue }) => {
   try {
-    const response = await axiosApi.get(`${serverRoute.location}/${id}`);
+    const response = await axiosApi.get(`${serverRoute.locations}/${id}`);
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response) {

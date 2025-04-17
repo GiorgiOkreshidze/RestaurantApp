@@ -39,6 +39,7 @@ export const login = createAsyncThunk<
       serverRoute.signIn,
       loginMutation
     );
+    console.log( response )
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response) {
@@ -54,7 +55,7 @@ export const getUserData = createAsyncThunk<
   { rejectValue: GlobalErrorMessage }
 >("users/profile", async (_, { rejectWithValue }) => {
   try {
-    const response = await axiosApi.get<UserDataResponse>(serverRoute.userData);
+    const response = await axiosApi.get<UserDataResponse>(serverRoute.userProfile);
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response) {

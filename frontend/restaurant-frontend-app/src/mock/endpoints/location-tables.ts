@@ -3,7 +3,6 @@ import { http, HttpResponse } from "msw";
 
 export const locationTables = [
   http.get(`${apiURLLocal}/location-tables`, () => {
-    console.log( "hello world" )
     return HttpResponse.json(data);
   }),
 ];

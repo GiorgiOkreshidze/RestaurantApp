@@ -3,6 +3,7 @@ import { ComponentProps } from "react";
 export const Star = (props: ComponentProps<"svg">) => {
   return (
     <svg
+      data-testid="Star"
       width={30}
       height={30}
       viewBox="0 0 30 30"

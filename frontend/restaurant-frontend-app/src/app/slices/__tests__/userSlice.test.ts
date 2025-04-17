@@ -185,7 +185,7 @@ describe("userSlice", () => {
           firstName: "",
           lastName: "",
           email: "",
-          role: "",
+          role: "Customer",
           imageUrl: "",
         });
       });
@@ -233,6 +233,7 @@ describe("userSlice", () => {
           lastName: "Smith",
           email: "jane@example.com",
           role: "ADMIN",
+          imageUrl: ""
         };
 
         const fulfilledAction = {

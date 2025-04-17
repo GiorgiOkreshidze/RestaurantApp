@@ -1,14 +1,14 @@
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cn } from "@/lib/utils";
 import { ReservationStatus } from "@/types/reservation.types";
+import { ComponentProps } from "react";
 
 export const Badge = ({
   className,
   status,
   asChild = false,
   ...props
-}: React.ComponentProps<"span"> & {
+}:ComponentProps<"span"> & {
   asChild?: boolean;
   status: ReservationStatus;
 }) => {
@@ -17,6 +17,7 @@ export const Badge = ({
   return (
     <Comp
       data-slot="badge"
+      data-testid="badge"
       className={cn(
         "fontset-caption inline-flex items-center justify-center rounded px-[0.75rem]",
         status === "Reserved" && "bg-orange-100",

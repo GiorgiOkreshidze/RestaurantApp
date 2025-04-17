@@ -3,7 +3,7 @@ import { type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { textVariants } from "@/components/variants/textVariants.ts";
 
-const Text = ({
+export const Text = ({
   className,
   variant,
   tag: Component = "p",
@@ -20,5 +20,3 @@ const Text = ({
     />
   );
 };
-
-export { Text };

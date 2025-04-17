@@ -2,6 +2,7 @@ import { ComponentProps } from "react";
 
 export const UserCircledIcon = (props: ComponentProps<"svg">) => (
   <svg
+    data-testid="UserCircledIcon"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     fill="none"

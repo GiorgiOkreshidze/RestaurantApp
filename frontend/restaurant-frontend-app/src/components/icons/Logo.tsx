@@ -7,7 +7,7 @@ export function Logo({
   variant?: "color" | "white";
 }) {
   return (
-    <svg viewBox="0 0 417 417" {...props}>
+    <svg data-testid="Logo" viewBox="0 0 417 417" {...props}>
       <path
         style={{
           fill:

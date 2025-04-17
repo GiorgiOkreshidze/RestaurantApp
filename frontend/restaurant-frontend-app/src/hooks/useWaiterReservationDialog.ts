@@ -10,7 +10,10 @@ import {
   selectAllUsers,
   selectAllUsersLoading,
 } from "@/app/slices/userSlice";
-import { upsertWaiterReservation } from "@/app/thunks/reservationsThunks";
+import {
+  getReservations,
+  upsertWaiterReservation,
+} from "@/app/thunks/reservationsThunks";
 import { UserType } from "@/types/user.types";
 import { formatDateToServer } from "@/utils/dateTime";
 import { FormEvent, useEffect, useState } from "react";
@@ -19,6 +22,8 @@ import { toast } from "react-toastify";
 
 export const useWaiterReservationDialog = (props: Props) => {
   const dispatch = useAppDispatch();
+  const locationTables = useSelector(selectLocationTables);
+  const [table, setTable] = useState(props.initTable);
   const selectOptions = useSelector(selectSelectOptions);
   const selectOptionsLoading = useSelector(selectSelectOptionsLoading);
   const reservationCreatingLoading = useSelector(
@@ -29,15 +34,16 @@ export const useWaiterReservationDialog = (props: Props) => {
   const allCustomers = useSelector(selectAllUsers);
   const allCustomersLoading = useSelector(selectAllUsersLoading);
   const [customerId, setCustomerId] = useState("");
-  const maxGuests = 10;
+  const maxGuests = Number.parseInt(
+    locationTables.find((t) => t.tableId === table)?.capacity ?? "10",
+  );
   const [guests, setGuests] = useState(2);
   const [time, setTime] = useState("");
   const [date, setDate] = useState(props.initDate);
-  const [table, setTable] = useState(props.initTable);
+
   const selectedCustomer = allCustomers?.find((c) => c.id === customerId);
   const customerName =
     `${selectedCustomer?.firstName ?? ""} ${selectedCustomer?.lastName ?? ""}`.trim();
-  const locationTables = useSelector(selectLocationTables);
 
   useEffect(() => {
     setTable(props.initTable);
@@ -85,6 +91,7 @@ export const useWaiterReservationDialog = (props: Props) => {
       ).unwrap();
       props.onSuccessCallback();
       toast.success("New Reservation has been created successfully.");
+      await dispatch(getReservations({}));
     } catch (error) {
       if (error instanceof Error) {
         console.error("Reservation creating failed:", error);

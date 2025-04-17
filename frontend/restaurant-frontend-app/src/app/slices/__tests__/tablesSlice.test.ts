@@ -12,6 +12,14 @@ import {
   parseDateFromServer,
 } from "@/utils/dateTime";
 
+vi.mock("date-fns", async () => {
+  const actual = await vi.importActual("date-fns");
+  return {
+    ...actual,
+    isPast: vi.fn().mockReturnValue(true) // Всегда возвращаем true в тестах
+  };
+});
+
 // Тип для стора
 interface RootState {
   tables: {

@@ -75,7 +75,7 @@ describe("reservationsSlice", () => {
             userEmail: "123",
             userInfo: "123",
             createdAt: "123",
-            editableTill: "123",
+            tableCapacity: "123",
           },
           {
             id: "1",
@@ -94,21 +94,21 @@ describe("reservationsSlice", () => {
             userEmail: "123",
             userInfo: "123",
             createdAt: "123",
-            editableTill: "123",
+            tableCapacity: "123",
           },
         ];
 
         const fulfilledAction = getReservations.fulfilled(
           mockReservations,
           "",
-          { date: "2023" }
+          { date: "2023" },
         );
 
         store.dispatch(fulfilledAction);
 
         expect(store.getState().reservations.reservationsLoading).toBe(false);
         expect(store.getState().reservations.reservations).toEqual(
-          mockReservations
+          mockReservations,
         );
       });
 
@@ -124,7 +124,7 @@ describe("reservationsSlice", () => {
         const pendingAction = { type: upsertClientReservation.pending.type };
         store.dispatch(pendingAction);
         expect(store.getState().reservations.reservationCreatingLoading).toBe(
-          true
+          true,
         );
       });
 
@@ -142,7 +142,7 @@ describe("reservationsSlice", () => {
         store.dispatch(fulfilledAction);
 
         expect(store.getState().reservations.reservationCreatingLoading).toBe(
-          false
+          false,
         );
       });
 
@@ -150,13 +150,13 @@ describe("reservationsSlice", () => {
         const errorMessage = "Failed to create reservation";
         const rejectedAction = {
           type: upsertClientReservation.rejected.type,
-          payload: { message: errorMessage },
+          payload: { title: errorMessage },
         };
 
         store.dispatch(rejectedAction);
 
         expect(store.getState().reservations.reservationCreatingLoading).toBe(
-          false
+          false,
         );
         expect(toast.error).toHaveBeenCalledWith(errorMessage);
       });
@@ -167,7 +167,7 @@ describe("reservationsSlice", () => {
         const pendingAction = { type: deleteClientReservation.pending.type };
         store.dispatch(pendingAction);
         expect(store.getState().reservations.reservationDeletingLoading).toBe(
-          true
+          true,
         );
       });
 
@@ -177,7 +177,7 @@ describe("reservationsSlice", () => {
         };
         store.dispatch(fulfilledAction);
         expect(store.getState().reservations.reservationDeletingLoading).toBe(
-          false
+          false,
         );
       });
 
@@ -185,7 +185,7 @@ describe("reservationsSlice", () => {
         const rejectedAction = { type: deleteClientReservation.rejected.type };
         store.dispatch(rejectedAction);
         expect(store.getState().reservations.reservationDeletingLoading).toBe(
-          false
+          false,
         );
       });
     });
@@ -195,7 +195,7 @@ describe("reservationsSlice", () => {
         const pendingAction = { type: upsertWaiterReservation.pending.type };
         store.dispatch(pendingAction);
         expect(store.getState().reservations.reservationCreatingLoading).toBe(
-          true
+          true,
         );
       });
 
@@ -213,7 +213,7 @@ describe("reservationsSlice", () => {
         store.dispatch(fulfilledAction);
 
         expect(store.getState().reservations.reservationCreatingLoading).toBe(
-          false
+          false,
         );
       });
 
@@ -221,13 +221,13 @@ describe("reservationsSlice", () => {
         const errorMessage = "Failed to create waiter reservation";
         const rejectedAction = {
           type: upsertWaiterReservation.rejected.type,
-          payload: { message: errorMessage },
+          payload: { title: errorMessage },
         };
 
         store.dispatch(rejectedAction);
 
         expect(store.getState().reservations.reservationCreatingLoading).toBe(
-          false
+          false,
         );
         expect(toast.error).toHaveBeenCalledWith(errorMessage);
       });
@@ -238,7 +238,7 @@ describe("reservationsSlice", () => {
         const pendingAction = { type: giveReservationFeedback.pending.type };
         store.dispatch(pendingAction);
         expect(
-          store.getState().reservations.giveReservationFeedbackLoading
+          store.getState().reservations.giveReservationFeedbackLoading,
         ).toBe(true);
       });
 
@@ -248,7 +248,7 @@ describe("reservationsSlice", () => {
         };
         store.dispatch(fulfilledAction);
         expect(
-          store.getState().reservations.giveReservationFeedbackLoading
+          store.getState().reservations.giveReservationFeedbackLoading,
         ).toBe(false);
       });
 
@@ -256,13 +256,13 @@ describe("reservationsSlice", () => {
         const errorMessage = "Failed to give feedback";
         const rejectedAction = {
           type: giveReservationFeedback.rejected.type,
-          payload: { message: errorMessage },
+          payload: { title: errorMessage },
         };
 
         store.dispatch(rejectedAction);
 
         expect(
-          store.getState().reservations.giveReservationFeedbackLoading
+          store.getState().reservations.giveReservationFeedbackLoading,
         ).toBe(false);
         expect(toast.error).toHaveBeenCalledWith(errorMessage);
       });
@@ -299,7 +299,7 @@ describe("reservationsSlice", () => {
           userEmail: "123",
           userInfo: "123",
           createdAt: "123",
-          editableTill: "123",
+          tableCapacity: "123",
         },
         {
           id: "1",
@@ -318,7 +318,7 @@ describe("reservationsSlice", () => {
           userEmail: "123",
           userInfo: "123",
           createdAt: "123",
-          editableTill: "123",
+          tableCapacity: "123",
         },
       ];
 

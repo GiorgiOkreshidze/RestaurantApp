@@ -14,7 +14,11 @@ import {
   selectSelectOptions,
 } from "./app/slices/locationsSlice";
 import { getPopularDishes } from "./app/thunks/dishesThunks";
-import { getLocations, getLocationTables, getSelectOptions } from "./app/thunks/locationsThunks";
+import {
+  getLocations,
+  getLocationTables,
+  getSelectOptions,
+} from "./app/thunks/locationsThunks";
 import { ProtectedRoute } from "./components/routeComponents/ProtectedRoute";
 import { PublicRoute } from "./components/routeComponents/PublicRoute";
 
@@ -31,7 +35,7 @@ function App() {
   const dispatch = useAppDispatch();
   const popularDishes = useSelector(selectPopularDishes);
   const locations = useSelector(selectLocations);
-    const selectOptions = useSelector(selectSelectOptions);
+  const selectOptions = useSelector(selectSelectOptions);
   const user = useSelector(selectUser);
   const booking = useSelector(selectBooking);
   const reservations = useSelector(selectReservations);
@@ -69,17 +73,18 @@ function App() {
   }, [dispatch, booking.timeSlots]);
 
   useEffect(() => {
-      if (reservations.length) return;
-      dispatch(getReservations({}));
-      if (user?.role === "Waiter") {
-        dispatch(getAllUsers());
-      }
-    }, [dispatch, reservations.length, user?.role]);
+    if (!user?.role) return;
+    if (reservations.length) return;
+    dispatch(getReservations({}));
+    if (user?.role === "Waiter") {
+      dispatch(getAllUsers());
+    }
+  }, [dispatch, reservations.length, user]);
 
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} theme="light" />
-      <CartDialog/>
+      <CartDialog />
       {!hideNavBar && (
         <header>
           <NavBar />
@@ -88,9 +93,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={
-            user?.role === "Waiter" ? <WaiterReservation /> : <Home />
-          }
+          element={user?.role === "Waiter" ? <WaiterReservation /> : <Home />}
         />
 
         <Route

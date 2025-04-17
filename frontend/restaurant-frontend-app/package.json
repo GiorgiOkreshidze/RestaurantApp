@@ -25,7 +25,6 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@reduxjs/toolkit": "^2.6.1",
     "@tailwindcss/vite": "^4.0.12",
-    "@turf/distance": "^7.2.0",
     "axios": "^1.8.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

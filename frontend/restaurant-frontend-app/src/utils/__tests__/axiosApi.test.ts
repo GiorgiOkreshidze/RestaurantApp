@@ -15,7 +15,7 @@ vi.mock("axios", () => ({
     })),
     post: vi.fn().mockResolvedValue({
       data: {
-        tokens: { accessToken: "new-access-token", idToken: "new-id-token" },
+        tokens: { accessToken: "new-access-token" },
       },
     }),
   },
@@ -54,14 +54,12 @@ describe("axiosApi.ts", () => {
           expect.objectContaining({
             tokens: expect.objectContaining({
               accessToken: "new-access-token",
-              idToken: "new-id-token",
             }),
           }),
         ),
       );
       expect(result).toEqual({
         accessToken: "new-access-token",
-        idToken: "new-id-token",
       });
     });
 

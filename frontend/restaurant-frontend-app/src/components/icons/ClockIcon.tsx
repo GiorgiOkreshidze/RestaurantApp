@@ -3,6 +3,7 @@ import { ComponentProps } from "react";
 
 export const ClockIcon = ({ className, ...props }: ComponentProps<"svg">) => (
   <svg
+    data-testid="ClockIcon"
     width={16}
     height={16}
     viewBox="0 0 16 16"

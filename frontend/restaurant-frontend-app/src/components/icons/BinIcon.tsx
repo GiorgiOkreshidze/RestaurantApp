@@ -2,6 +2,7 @@ import { ComponentProps } from "react";
 
 export const BinIcon = (props:ComponentProps<"svg">) => (
   <svg
+    data-testid="BinIcon"
     xmlns="http://www.w3.org/2000/svg"
     width={25}
     height={24}
