@@ -22,7 +22,7 @@ export const ReviewsCard: React.FC<Props> = ({ review }) => {
       <div className="flex items-center mb-6 ">
         <div id="avatar" className="mr-3 w-[60px]">
           <img
-            src={rockImg}
+            src={review.userAvatarUrl || rockImg}
             alt={review.userName}
             className="w-full rounded-full "
           />

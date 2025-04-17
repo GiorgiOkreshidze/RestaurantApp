@@ -12,6 +12,7 @@ export const Spinner = ({
       viewBox="0 0 200 200"
       width="50"
       height="50"
+      role="status"
       {...props}
     >
       <title>Spinner</title>
