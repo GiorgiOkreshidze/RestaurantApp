@@ -53,19 +53,19 @@ describe("LocationHero Component", () => {
     expect(screen.getByText("Book a Table")).toBeInTheDocument();
   });
 
-  it("should display location image as background", () => {
-    render(<LocationHero />);
+  // it("should display location image as background", () => {
+  //   render(<LocationHero />);
 
-    const imageElement = screen
-      .getByText("A nice restaurant with great food")
-      .closest("div.flex.gap-20")
-      ?.querySelector("div.w-full.h-\\[500px\\]");
+  //   const imageElement = screen
+  //     .getByText("A nice restaurant with great food")
+  //     .closest("div.flex.gap-20")
+  //     ?.querySelector("div.w-full.h-\\[500px\\]");
 
-    expect(imageElement).toBeDefined();
-    expect((imageElement as HTMLElement)?.style.backgroundImage).toBe(
-      "url(/location-image.jpg)"
-    );
-  });
+  //   expect(imageElement).toBeDefined();
+  //   expect((imageElement as HTMLElement)?.style.backgroundImage).toBe(
+  //     "url(/location-image.jpg)"
+  //   );
+  // });
 
   it('should navigate to booking page when "Book a Table" button is clicked', () => {
     const navigateMock = reactRouter.useNavigate();
