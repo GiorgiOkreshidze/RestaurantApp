@@ -6,9 +6,9 @@ This documentation covers the frontend portion of the "Green & Tasty" Restaurant
 
 ## Tech Stack
 
-- **Framework**: React 18
+- **Framework**: React 19
 - **Build Tool**: Vite
-- **Routing**: React Router v6
+- **Routing**: React Router v7
 - **State Management**: Redux (with Redux Toolkit)
 - **API Communication**: Axios
 - **Styling**: Tailwind CSS
@@ -36,26 +36,26 @@ This documentation covers the frontend portion of the "Green & Tasty" Restaurant
 ### Installation
 
 1. Clone the repository:
-   ```bash
-   git clone https://git.epam.com/epm-edai/project-runs/run-7/team-2/serverless/restaurant-app.git
-   cd restaurant-app\automation-qa
-   ```
+```bash
+git clone https://git.epam.com/epm-edai/project-runs/run-7/team-2/serverless/restaurant-app.git
+cd restaurant-app/frontend/restaurant-frontend-app
+```
 
 2. Install dependencies:
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
 3. Set up environment variables:
-   ```bash
-   cp .env.example .env.local
-   ```
-   Edit `.env` file with your configuration.
+```bash
+cp env.local.example .env.local
+```
+Edit `.env` file with your configuration.
 
 4. Start the development server:
-   ```bash
-   npm run dev
-   ```
+```bash
+npm run dev
+```
 
 The application will be available at `http://localhost:5173` by default.
 
@@ -70,8 +70,8 @@ src/
 ├── pages/             # Page components
 ├── app/               # Redux store and requests
 ├── styles/            # Global styles and Tailwind utilities
-├── App.jsx            # Main App component
-└── main.jsx           # Application entry point
+├── App.tsx            # Main App component
+└── main.tsx           # Application entry point
 ```
 
 ## Components
@@ -241,7 +241,87 @@ The booking process involves several steps:
 - **Times Availability**: The time picker component allow choosing only future time slots
 - **Guests number**: Has a limit of 10 users
 
-## Testing (todo)
+## Testing
+
+React Testing Library and Vitest are used for testing.
+
+### CLI command for testing
+
+```bash
+# To run all tests
+npm run test
+
+# To run tests with coverage report
+npm run test:coverage
+```
+
+### Test Structure
+
+Tests are organized in separated folders:
+
+```
+src/
+├── components/
+│   ├── ui/
+│   │   ├── __tests__
+│   │   │   ├── Button.test.tsx
+│   │   │
+│   │   └── Button.tsx
+│   └── ...
+└── ...
+```
+
+
+### Example test for the Button component
+
+```tsx
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { Button } from "../Button";
+
+vi.mock("@/lib/utils", () => ({
+  cn: (...inputs: (string | undefined)[]) => inputs.filter(Boolean).join(" "),
+}));
+
+describe("Button", () => {
+  it("renders correctly with children", () => {
+    render(<Button>Click me</Button>);
+    expect(
+      screen.getByRole("button", { name: /click me/i })
+    ).toBeInTheDocument();
+  });
+
+  it("renders with icon", () => {
+    const mockIcon = <span data-testid="test-icon">Icon</span>;
+    render(<Button icon={mockIcon}>With Icon</Button>);
+    expect(screen.getByTestId("test-icon")).toBeInTheDocument();
+  });
+
+  it("renders as custom element when asChild is true", () => {
+    render(
+      <Button asChild>
+        <a href="#test">Link Button</a>
+      </Button>
+    );
+    expect(screen.getByRole("link")).toBeInTheDocument();
+  });
+
+  it("calls onClick handler when clicked", async () => {
+    const handleClick = vi.fn();
+    render(<Button onClick={handleClick}>Click me</Button>);
+
+    await userEvent.click(screen.getByRole("button"));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("can be disabled", () => {
+    render(<Button disabled>Disabled</Button>);
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
+});
+
+```
 
 ## Deployment
 
