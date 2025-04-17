@@ -12,7 +12,7 @@ import {
 } from "@/app/slices/userSlice";
 import { upsertWaiterReservation } from "@/app/thunks/reservationsThunks";
 import { UserType } from "@/types/user.types";
-import { dateObjToDateStringServer } from "@/utils/dateTime";
+import { formatDateToServer } from "@/utils/dateTime";
 import { FormEvent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -71,7 +71,7 @@ export const useWaiterReservationDialog = (props: Props) => {
       await dispatch(
         upsertWaiterReservation({
           clientType: userType,
-          date: dateObjToDateStringServer(date),
+          date: formatDateToServer(date),
           guestsNumber: String(guests),
           locationId: waiter?.locationId ?? "",
           tableNumber:

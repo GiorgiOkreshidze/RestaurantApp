@@ -41,13 +41,12 @@ export const Location = () => {
 
   return (
     <>
-      {/* Breadcrumbs, пока что захардкоженный */}
       <Container>
         <div className="mb-8 flex items-center">
           <NavLink to={"/"}>
             <Text variant="caption"> Main Page &gt;</Text>
           </NavLink>
-          <NavLink to={`locations/${id}`}>
+          <NavLink to={`/locations/${id}`}>
             <Text variant="bodyBold" className="ml-2">
               {oneLocation?.address}
             </Text>

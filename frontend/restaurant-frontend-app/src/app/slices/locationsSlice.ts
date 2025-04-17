@@ -24,7 +24,7 @@ interface locationsState {
   locationTablesLoading: boolean;
 }
 
-const initialState: locationsState = {
+export const initialState: locationsState = {
   locations: [],
   oneLocation: null,
   specialityDishes: [],

@@ -5,7 +5,7 @@ import {
   upsertClientReservation,
 } from "@/app/thunks/reservationsThunks";
 import { ClientReservationDialogProps } from "@/components/shared/ClientReservationDialog";
-import { dateObjToDateStringServer } from "@/utils/dateTime";
+import { formatDateToServer } from "@/utils/dateTime";
 import { type FormEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -39,7 +39,7 @@ export const useClientReservationDialog = (props: Props) => {
         upsertClientReservation({
           id: reservationId ?? undefined,
           locationId: props.locationId,
-          date: dateObjToDateStringServer(props.date),
+          date: formatDateToServer(props.date),
           timeFrom: selectedTime.split(" - ")[0],
           timeTo: selectedTime.split(" - ")[1],
           tableNumber: props.tableNumber,

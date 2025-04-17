@@ -11,7 +11,7 @@ import {
   Spinner,
   Text,
 } from "../ui";
-import { dateObjToDateStringUI } from "@/utils/dateTime";
+import { formatDateToUI } from "@/utils/dateTime";
 import { useClientReservationDialog } from "@/hooks/useClientReservationDialog";
 import { useSelector } from "react-redux";
 import { selectReservationCreatingLoading } from "@/app/slices/reservationsSlice";
@@ -46,7 +46,7 @@ export const ClientReservationDialog = (
               <b>
                 {state.locationAddress}, Table {state.tableNumber}
               </b>{" "}
-              for <b>{dateObjToDateStringUI(state.date)}</b>
+              for <b>{formatDateToUI(state.date)}</b>
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={state.onSubmit}>

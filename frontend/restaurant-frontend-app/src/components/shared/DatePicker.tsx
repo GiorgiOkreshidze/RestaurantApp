@@ -3,7 +3,7 @@ import { Calendar } from "@/components/ui/";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/";
 import { CalendarIcon, ChevronDownIcon } from "../icons";
 import { useState, type PropsWithChildren } from "react";
-import { dateObjToDateStringUI } from "@/utils/dateTime";
+import { formatDateToUI } from "@/utils/dateTime";
 import { cn } from "@/lib/utils";
 
 export function DatePicker({
@@ -28,7 +28,7 @@ export function DatePicker({
         >
           <CalendarIcon className="size-[1.5rem]" />
           <span className="whitespace-nowrap">
-            {value ? dateObjToDateStringUI(value) : "Pick a date"}
+            {value ? formatDateToUI(value) : "Pick a date"}
           </span>
           <ChevronDownIcon />
         </Button>

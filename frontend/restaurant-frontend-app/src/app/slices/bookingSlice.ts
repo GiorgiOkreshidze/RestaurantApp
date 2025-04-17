@@ -12,7 +12,7 @@ interface BookingState {
   timeSlotsLoading: boolean;
 }
 
-const initialState: BookingState = {
+export const initialState: BookingState = {
   locationId: "",
   date: new Date().toString(),
   time: "",

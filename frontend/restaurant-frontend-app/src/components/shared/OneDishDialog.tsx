@@ -1,5 +1,5 @@
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { Button, Dialog, DialogContent, Text } from "../ui";
+import { Button, Dialog, DialogContent, DialogDescription, Text } from "../ui";
 import { Dish, ExtendedDish } from "@/types";
 import { Loader } from "./Loader";
 import { Preorder } from "@/types/preorder.types";
@@ -26,9 +26,16 @@ export const OneDishDialog: React.FC<Props> = ({
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={onOpenChange}
+      
+    >
       <DialogTitle></DialogTitle>
-      <DialogContent className="gap-0">
+      <DialogDescription className="sr-only">
+        Detailed information about the selected dish
+      </DialogDescription>
+      <DialogContent className="gap-0" data-testid="one-dish-dialog" >
         {loading ? (
           <Loader />
         ) : (

@@ -22,7 +22,7 @@ let refreshSubscribers: ((tokens: {
   idToken: string;
 }) => void)[] = [];
 
-const refreshTokenRequest = async (store: Store<RootState>) => {
+export const refreshTokenRequest = async (store: Store<RootState>) => {
   try {
     const refreshToken = store.getState().users.user?.tokens.refreshToken;
     const response = await axios.post(`${apiURL}/auth/refresh`, {

@@ -37,9 +37,6 @@ export interface LoginMutation {
 
 export interface RegisterResponse {
   message: string;
-  accessToken: string;
-  idToken: string;
-  refreshToken: string;
 }
 
 export interface LoginResponse {

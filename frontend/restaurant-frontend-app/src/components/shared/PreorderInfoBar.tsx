@@ -1,8 +1,8 @@
 import { InfoBar } from "./InfoBar";
 import {
-  dateObjToDateStringUI,
-  dateStringServerToDateObject,
-  time24hTo12h,
+  formatDateToUI,
+  parseDateFromServer,
+  formatTimeToUI,
 } from "@/utils/dateTime";
 import { Button } from "../ui";
 import { useAppDispatch } from "@/app/hooks";
@@ -34,11 +34,11 @@ export const PreorderInfoBar = () => {
         <b>
           {activeReservation.locationAddress}, Table{" "}
           {activeReservation.tableNumber},{" "}
-          {dateObjToDateStringUI(
-            dateStringServerToDateObject(activeReservation.date),
+          {formatDateToUI(
+            parseDateFromServer(activeReservation.date),
           )}
-          , {time24hTo12h(activeReservation.timeFrom)} -{" "}
-          {time24hTo12h(
+          , {formatTimeToUI(activeReservation.timeFrom)} -{" "}
+          {formatTimeToUI(
             activeReservation.timeSlot.split(" - ")[1],
           )}
         </b>

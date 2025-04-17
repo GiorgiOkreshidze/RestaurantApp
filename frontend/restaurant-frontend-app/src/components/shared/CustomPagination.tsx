@@ -63,7 +63,7 @@ export const CustomPagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <Pagination className="mt-6">
+    <Pagination className="mt-6" data-testid="pagination">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious

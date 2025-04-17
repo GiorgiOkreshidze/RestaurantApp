@@ -17,7 +17,7 @@ interface reservationsState {
   giveReservationFeedbackLoading: boolean;
 }
 
-const initialState: reservationsState = {
+export const initialState: reservationsState = {
   reservations: [],
   reservationsLoading: false,
   reservationCreatingLoading: false,

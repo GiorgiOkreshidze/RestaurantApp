@@ -20,7 +20,7 @@ export const LocationHero = () => {
 
   return (
     <Container>
-      <div className="flex gap-20 justify-between ">
+      <div className="flex flex-col gap-10 md:flex-row md:gap-20 justify-between">
         <div className="min-w-[340px] flex flex-col">
           <BrandTitle
             variant="navBarLogo"
@@ -51,7 +51,7 @@ export const LocationHero = () => {
           </Button>
         </div>
         <div
-          className="w-full h-[500px] rounded-3xl bg-cover bg-center"
+          className="w-full h-100 md:h-[500px] rounded-3xl bg-cover bg-center"
           style={{ backgroundImage: `url(${oneLocation?.imageUrl})` }}
         ></div>
       </div>

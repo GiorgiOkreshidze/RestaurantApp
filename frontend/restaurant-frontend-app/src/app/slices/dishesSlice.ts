@@ -14,7 +14,7 @@ interface dishesState {
   oneDishLoading: boolean;
 }
 
-const initialState: dishesState = {
+export const initialState: dishesState = {
   dishes: [],
   oneDish: null,
   popularDishes: [],

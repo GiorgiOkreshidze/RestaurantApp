@@ -32,7 +32,8 @@ export const DishCard: React.FC<Props> = ({
 
   return (
     <div
-      className={`p-6 rounded-3xl shadow-[0_0_10px_4px_rgba(194,194,194,0.5)] flex flex-col items-center transition-all duration-300 cursor-pointer relative 
+      data-testid="dish-card"
+      className={` p-6 rounded-3xl shadow-[0_0_10px_4px_rgba(194,194,194,0.5)] flex flex-col items-center transition-all duration-300 cursor-pointer relative 
       ${
         isDisabled
           ? "opacity-50 cursor-not-allowed pointer-events-none hover:scale-100"
@@ -48,7 +49,7 @@ export const DishCard: React.FC<Props> = ({
         </div>
       )}
 
-      <img /* src={imageUrl} */ src="/dish.png" alt={name} className="w-[196px] h-[196px]" />
+      <img src={imageUrl} alt={name} className="w-[196px] h-[196px]" />
       <Text variant="bodyBold" className="w-full mt-4">
         {name}
       </Text>

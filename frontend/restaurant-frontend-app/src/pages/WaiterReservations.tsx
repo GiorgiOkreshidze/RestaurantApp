@@ -13,8 +13,8 @@ import {
 import { Button, Spinner, Text } from "@/components/ui";
 import { useWaiterReservations } from "@/hooks/useWaiterReservations";
 import {
-  dateObjToDateStringUI,
-  time24hTo12h,
+  formatDateToUI,
+  formatTimeToUI,
 } from "@/utils/dateTime";
 import { PlusIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -34,11 +34,11 @@ export const WaiterReservation = () => {
         <div className="flex flex-col gap-[1rem] my-[2rem] justify-between items-center md:flex-row">
           <Text variant="h3">
             You have {reservations.length} reservations{" "}
-            {store.date ? dateObjToDateStringUI(store.date) : ""}{" "}
+            {store.date ? formatDateToUI(store.date) : ""}{" "}
             {store?.time
               ? `, ${store.time
                   .split(" - ")
-                  .map((time) => time24hTo12h(time))
+                  .map((time) => formatTimeToUI(time))
                   .join(" - ")}`
               : null}
           </Text>
