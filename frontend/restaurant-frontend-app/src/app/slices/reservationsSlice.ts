@@ -60,7 +60,7 @@ export const reservationsSlice = createSlice({
         upsertClientReservation.rejected,
         (state, { payload: errorResponse }) => {
           state.reservationCreatingLoading = false;
-          toast.error(errorResponse?.message);
+          toast.error(errorResponse?.title);
         },
       );
 
@@ -86,7 +86,7 @@ export const reservationsSlice = createSlice({
         upsertWaiterReservation.rejected,
         (state, { payload: errorResponse }) => {
           state.reservationCreatingLoading = false;
-          toast.error(errorResponse?.message);
+          toast.error(errorResponse?.title);
         },
       );
 
@@ -101,7 +101,7 @@ export const reservationsSlice = createSlice({
         giveReservationFeedback.rejected,
         (state, { payload: errorResponse }) => {
           state.giveReservationFeedbackLoading = false;
-          toast.error(errorResponse?.message);
+          toast.error(errorResponse?.title);
         },
       );
   },

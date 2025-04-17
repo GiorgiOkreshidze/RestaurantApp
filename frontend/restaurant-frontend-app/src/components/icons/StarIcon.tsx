@@ -5,6 +5,7 @@ interface Props {
 export const StarIcon: React.FC<Props> = ({ className }) => {
   return (
     <svg
+      data-testid="StarIcon"
       className={className}
       width="20"
       height="20"

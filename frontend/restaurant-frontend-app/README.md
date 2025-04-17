@@ -141,7 +141,7 @@ const addInterceptors = (store: Store<RootState>) => {
   axiosApi.interceptors.request.use((config) => {
     const user = store.getState().users.user;
     if (user?.tokens) {
-      config.headers["Authorization"] = `Bearer ${user.tokens.idToken}`;
+      config.headers["Authorization"] = `Bearer ${user.tokens.accessToken}`;
     }
     return config;
   });

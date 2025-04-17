@@ -2,6 +2,7 @@ export const CircleIcon = (props: Props) => {
   const { color = "var(--color-primary, #00AD0C)" } = props;
   return (
     <svg
+      data-testid="CircleIcon"
       xmlns="http://www.w3.org/2000/svg"
       width={16}
       height={16}

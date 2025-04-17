@@ -1,7 +1,8 @@
 import { ComponentProps } from "react";
 
-export const MinusIcon = ({ className, ...props }: ComponentProps<"svg">) => (
+export const MinusIcon = ({ ...props }: ComponentProps<"svg">) => (
   <svg
+    data-testid="MinusIcon"
     width={24}
     height={24}
     viewBox="0 0 24 24"

@@ -51,7 +51,7 @@ export const userSlice = createSlice({
       })
       .addCase(register.rejected, (state, { payload: errorResponse }) => {
         state.registerLoading = false;
-        toast.error(errorResponse?.message);
+        toast.error(errorResponse?.title);
       });
 
     builder
@@ -70,7 +70,7 @@ export const userSlice = createSlice({
             firstName: "",
             lastName: "",
             email: "",
-            role: "",
+            role: "Customer",
             imageUrl: "",
           };
         }
@@ -78,7 +78,7 @@ export const userSlice = createSlice({
       })
       .addCase(login.rejected, (state, { payload: errorResponse }) => {
         state.loginLoading = false;
-        toast.error(errorResponse?.message);
+        toast.error(errorResponse?.title);
       });
 
     builder
@@ -86,6 +86,7 @@ export const userSlice = createSlice({
         state.userDataLoading = true;
       })
       .addCase(getUserData.fulfilled, (state, { payload: data }) => {
+        console.log( data )
         state.userDataLoading = false;
         if (state.user) {
           state.user.id = data.id;
@@ -93,12 +94,13 @@ export const userSlice = createSlice({
           state.user.firstName = data.firstName;
           state.user.lastName = data.lastName;
           state.user.email = data.email;
+          state.user.imageUrl = data.imageUrl;
           state.user.role = data.role;
         }
       })
       .addCase(getUserData.rejected, (state, { payload: errorResponse }) => {
         state.userDataLoading = false;
-        toast.error(errorResponse?.message);
+        toast.error(errorResponse?.title);
       });
 
     builder
@@ -111,7 +113,7 @@ export const userSlice = createSlice({
       })
       .addCase(signout.rejected, (state, { payload: errorResponse }) => {
         state.signoutLoading = false;
-        toast.error(errorResponse?.message);
+        toast.error(errorResponse?.title);
       });
 
     builder
@@ -124,7 +126,7 @@ export const userSlice = createSlice({
       })
       .addCase(getAllUsers.rejected, (state, { payload: errorResponse }) => {
         state.allUsersLoading = false;
-        toast.error(errorResponse?.message);
+        toast.error(errorResponse?.title);
       });
   },
   selectors: {

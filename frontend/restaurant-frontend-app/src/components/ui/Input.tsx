@@ -11,6 +11,7 @@ export const Input = ({
 }) => {
   return (
     <input
+      data-testid="input"
       type={type}
       className={cn(
         "w-full styleSet-input",

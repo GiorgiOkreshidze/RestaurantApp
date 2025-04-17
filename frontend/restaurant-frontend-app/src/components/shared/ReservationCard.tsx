@@ -1,4 +1,3 @@
-import { Card } from "./Card";
 import { Badge, Button, Text } from "../ui";
 import { CalendarIcon, ClockIcon, LocationIcon, PeopleIcon } from "../icons";
 import { Reservation } from "@/types/reservation.types";
@@ -7,8 +6,10 @@ import {
   deleteClientReservation,
   getReservations,
 } from "@/app/thunks/reservationsThunks";
-import { isPast, parse } from "date-fns";
 import {
+  formatDateToUI,
+  parseDateFromServer,
+  formatTimeToUI,
   formatDateToUI,
   parseDateFromServer,
   formatTimeToUI,
@@ -47,22 +48,16 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <CalendarIcon className="size-[16px] stroke-primary" />
-            <Text variant="bodyBold">
-              {formatDateToUI(reservation.date)}
-            </Text>
+            <Text variant="bodyBold">{formatDateToUI(reservation.date)}</Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <ClockIcon className="size-[16px] stroke-primary" />
             <Text variant="bodyBold">
-              {formatTimeToUI(
-                reservation.timeSlot.split(" - ")[0],
-              )}
+              {formatTimeToUI(reservation.timeSlot.split(" - ")[0])}
             </Text>
             <Text variant="bodyBold"> - </Text>
             <Text variant="bodyBold">
-              {formatTimeToUI(
-                reservation.timeSlot.split(" - ")[1],
-              )}
+              {formatTimeToUI(reservation.timeSlot.split(" - ")[1])}
             </Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
@@ -75,12 +70,7 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
         <Button
           variant="underlined"
           size="sm"
-          disabled={
-            reservation.status === "Cancelled" ||
-            isPast(
-              parse(reservation.editableTill, "yyyy-MM-dd HH:mm", new Date()),
-            )
-          }
+          disabled={reservation.status === "Cancelled"}
           onClick={async () => {
             try {
               await dispatch(deleteClientReservation(reservation.id)).unwrap();
@@ -110,21 +100,12 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
             date={parseDateFromServer(reservation.date)}
             initTime={reservation.timeSlot}
             initGuests={Number.parseInt(reservation.guestsNumber)}
-            maxGuests={Number.parseInt(reservation.guestsNumber)}
+            maxGuests={Number.parseInt(reservation.tableCapacity)}
           >
             <Button
               variant="secondary"
               size="l"
-              disabled={
-                reservation.status === "Cancelled" ||
-                isPast(
-                  parse(
-                    reservation.editableTill,
-                    "yyyy-MM-dd HH:mm",
-                    new Date(),
-                  ),
-                )
-              }
+              disabled={reservation.status === "Cancelled"}
               className="min-w-[100px]"
             >
               {user?.role === "Customer" ? "Edit" : "Postpone"}

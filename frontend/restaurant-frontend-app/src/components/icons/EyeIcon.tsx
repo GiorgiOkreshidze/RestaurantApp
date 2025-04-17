@@ -6,6 +6,7 @@ interface Props {
 export const EyeIcon: React.FC<Props> = ({ className, onClick }) => {
   return (
     <svg
+      data-testid="EyeIcon"
       width="24"
       height="19"
       viewBox="0 0 22 19"

@@ -33,7 +33,7 @@ export const ReservationFeedbackDialog = (props: Props) => {
     <Dialog open={isCurrentDialogOpen} onOpenChange={setIsCurrentDialogOpen}>
       <DialogTrigger asChild>{props.children}</DialogTrigger>
       <DialogContent className="bg-neutral-100">
-        <form onSubmit={state.onSubmit}>
+        <form onSubmit={state.onSubmit} className="flex flex-col gap-[2.5rem]">
           <DialogHeader>
             <DialogTitle className="!fontset-h2">Give Feedback</DialogTitle>
             <DialogDescription className="!fontset-body text-foreground">

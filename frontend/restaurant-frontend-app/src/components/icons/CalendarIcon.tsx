@@ -7,6 +7,7 @@ export const CalendarIcon = ({
 }: ComponentProps<"svg">) => {
   return (
     <svg
+      data-testid="CalendarIcon"
       width={16}
       height={16}
       viewBox="0 0 16 16"

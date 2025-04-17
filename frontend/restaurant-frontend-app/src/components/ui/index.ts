@@ -1,5 +1,5 @@
 export { Button } from "./Button";
-export { Label } from "./label";
+export { Label } from "./Label.tsx";
 export { Input } from "./Input";
 export { Text } from "./Text";
 export { DishCard } from "./DishCard";

@@ -5,6 +5,7 @@ interface Props {
 export const OpenEyeIcon: React.FC<Props> = ({ className }) => {
   return (
     <svg
+      data-testid="OpenEyeIcon"
       width="24"
       height="24"
       viewBox="0 0 24 24"

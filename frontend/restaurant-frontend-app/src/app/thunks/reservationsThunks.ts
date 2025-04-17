@@ -54,7 +54,7 @@ export const deleteClientReservation = createAsyncThunk<
   { rejectValue: GlobalErrorMessage }
 >("reservations/{id}", async (id, { rejectWithValue }) => {
   try {
-    await axiosApi.delete(`${serverRoute.deleteClientReservation}/${id}`);
+    await axiosApi.delete(`${serverRoute.reservations}/${id}`);
   } catch (e) {
     if (isAxiosError(e) && e.response) {
       return rejectWithValue(e.response.data);
@@ -80,7 +80,7 @@ export const upsertWaiterReservation = createAsyncThunk<
       if (isAxiosError(e)) {
         return e.response
           ? rejectWithValue(e.response.data)
-          : rejectWithValue({ message: e.message });
+          : rejectWithValue({ title: e.message });
       }
       throw e;
     }
@@ -93,15 +93,12 @@ export const giveReservationFeedback = createAsyncThunk<
   { rejectValue: GlobalErrorMessage }
 >("feedbacks", async (params, { rejectWithValue }) => {
   try {
-    await axiosApi.post<Reservation>(
-      serverRoute.giveReservationFeedback,
-      params,
-    );
+    await axiosApi.post<Reservation>(serverRoute.feedbacks, params);
   } catch (e) {
     if (isAxiosError(e)) {
       return e.response
         ? rejectWithValue(e.response.data)
-        : rejectWithValue({ message: e.message });
+        : rejectWithValue({ title: e.message });
     }
     throw e;
   }

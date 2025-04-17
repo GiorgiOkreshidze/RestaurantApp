@@ -74,7 +74,7 @@ export const OneDishDialog: React.FC<Props> = ({
             </Text>
 
             <div className="flex items-center justify-between">
-              <Text variant="h3">{dish?.price}</Text>
+              <Text variant="h3">{dish?.price} $</Text>
               <Text variant="h3">{dish?.weight}</Text>
             </div>
 

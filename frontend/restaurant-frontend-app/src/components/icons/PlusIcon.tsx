@@ -2,6 +2,7 @@ import { ComponentProps } from "react";
 
 export const PlusIcon = (props: ComponentProps<"svg">) => (
   <svg
+    data-testid="PlusIcon"
     width={24}
     height={24}
     viewBox="0 0 16 16"
