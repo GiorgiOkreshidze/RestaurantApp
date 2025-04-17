@@ -9,7 +9,7 @@ import {
 } from "../thunks/userThunks";
 import { toast } from "react-toastify";
 
-interface UserState {
+export interface UserState {
   user: User | null;
   registerLoading: boolean;
   loginLoading: boolean;
@@ -19,7 +19,7 @@ interface UserState {
   allUsersLoading: boolean;
 }
 
-const initialState: UserState = {
+export const initialState: UserState = {
   user: null,
   registerLoading: false,
   loginLoading: false,

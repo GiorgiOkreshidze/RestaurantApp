@@ -11,7 +11,7 @@ export const SortingOptions = ({
   value: string;
   onChange: (value: string) => void;
 }) => (
-  <div className="flex items-center gap-6">
+  <div className="flex items-center gap-6" data-testid="sorting-options">
     <Text variant="bodyBold">Sort by:</Text>
     <div className="w-56">
       <SelectMini

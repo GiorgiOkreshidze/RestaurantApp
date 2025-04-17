@@ -16,13 +16,13 @@ export const NavBar = () => {
   return (
     <Container>
       <section className="grid justify-center py-[0.75rem] gap-[1rem] lg:grid-cols-[auto_1fr_auto]">
-        <div className="flex items-center">
+        <div className="flex items-center justify-center">
           <Link to="/" className="inline-flex items-center gap-[0.75rem]">
             <Logo className="size-[48px]" />
             <BrandTitle variant="navBarLogo" />
           </Link>
         </div>
-        <div className="flex flex-col justify-center items-center gap-[1rem] lg:flex-row lg:gap-[2rem]">
+        <div className="flex flex-row justify-center items-center gap-[1rem] lg:flex-row lg:gap-[2rem] flex-wrap">
           {user?.role === "Waiter" ? (
             <>
               <NavBarLink to="/">Reservations</NavBarLink>

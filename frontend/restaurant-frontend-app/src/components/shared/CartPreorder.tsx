@@ -2,7 +2,7 @@ import { Preorder } from "@/types/preorder.types";
 import { Button, Text } from "../ui";
 import { useSelector } from "react-redux";
 import { selectReservations } from "@/app/slices/reservationsSlice";
-import { dateServerToDateUI, time24hTo12h } from "@/utils/dateTime";
+import { formatDateToUI, formatTimeToUI } from "@/utils/dateTime";
 import { selectDishes } from "@/app/slices/dishesSlice";
 import { CartPreorderDish } from ".";
 import { PlusIcon } from "../icons";
@@ -63,9 +63,9 @@ export const CartPreorder = ({ preorder, className }: Props) => {
     <li className={className}>
       <Text variant="bodyBold">
         Pre-order #{preorder.number} ({reservation.locationAddress},{" "}
-        {reservation.tableNumber}, {dateServerToDateUI(reservation.date)},{" "}
-        {time24hTo12h(reservation.timeFrom)} -{" "}
-        {time24hTo12h(reservation.timeTo)})
+        {reservation.tableNumber}, {formatDateToUI(reservation.date)},{" "}
+        {formatTimeToUI(reservation.timeFrom)} -{" "}
+        {formatTimeToUI(reservation.timeTo)})
       </Text>
       {preorder.status === "new" && (
         <ul className="flex flex-col gap-[0.5rem] mt-[1rem]">

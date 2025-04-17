@@ -14,11 +14,11 @@ export const ReviewsCard: React.FC<Props> = ({ review }) => {
       <StarIcon className="w-5 h-5" key={i} />
     ) : (
       <EmptyStar className="w-5 h-5" key={i} />
-    ),
+    )
   );
 
   return (
-    <div className="w-[316px] h-[324px] rounded-3xl shadow-[0_0_10px_4px_rgba(194,194,194,0.5)] p-6">
+    <div className="w-full h-[324px] rounded-3xl shadow-[0_0_10px_4px_rgba(194,194,194,0.5)] p-6">
       <div className="flex items-center mb-6 ">
         <div id="avatar" className="mr-3 w-[60px]">
           <img

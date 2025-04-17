@@ -4,7 +4,7 @@ import { startOfToday } from "date-fns";
 import { getTimeSlots } from "../thunks/bookingThunk";
 import { getLocationTables } from "../thunks/locationsThunks";
 
-const initialState: WaiterReservationsState = {
+export const initialState: WaiterReservationsState = {
   form: {
     date: startOfToday().toString(),
     time: "",

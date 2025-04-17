@@ -15,7 +15,6 @@ const heroVariants = cva("", {
     variant: "transparent",
   },
 });
-
 export const PageHero = ({
   className,
   children,
@@ -25,13 +24,22 @@ export const PageHero = ({
   return (
     <div
       className={cn(
-        "content-center min-h-[404px] bg-cover bg-no-repeat bg-center",
-        heroVariants({ variant, className }),
+        "relative min-h-[404px] overflow-hidden ",
+        heroVariants({ variant, className })
       )}
-      style={{ backgroundImage: `url(${HeroImg})` }}
       {...props}
     >
-      <Container>{children}</Container>
+      <div
+        className={cn(
+          "absolute inset-0 bg-cover bg-no-repeat bg-center z-0 scale-103",
+          "sm:blur-none blur-[4px] transition-all duration-500"
+        )}
+        style={{ backgroundImage: `url(${HeroImg})` }}
+      />
+
+      <div className="relative z-10 content-center h-full">
+        <Container>{children}</Container>
+      </div>
     </div>
   );
 };

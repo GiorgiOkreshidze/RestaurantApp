@@ -28,7 +28,7 @@ export const Menu = () => {
       getAllDishes({
         category: filters.activeCategory,
         sortBy: filters.sortBy,
-      }),
+      })
     );
   }, [filters.activeCategory, filters.sortBy, dispatch]);
 
@@ -41,7 +41,7 @@ export const Menu = () => {
       { id: "PriceAsc", label: "Price Ascending" },
       { id: "PriceDesc", label: "Price Descending" },
     ],
-    [],
+    []
   );
 
   return (
@@ -57,7 +57,7 @@ export const Menu = () => {
       </PageHero>
 
       <PageBody>
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-10">
           <CategoryFilters
             categories={categories}
             handleCategoryToggle={handleCategoryToggle}

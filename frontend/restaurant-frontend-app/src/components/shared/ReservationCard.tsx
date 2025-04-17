@@ -9,9 +9,9 @@ import {
 } from "@/app/thunks/reservationsThunks";
 import { isPast, parse } from "date-fns";
 import {
-  dateObjToDateStringUI,
-  dateStringServerToDateObject,
-  time24hTo12h,
+  formatDateToUI,
+  parseDateFromServer,
+  formatTimeToUI,
 } from "@/utils/dateTime";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/slices/userSlice";
@@ -48,17 +48,21 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
           <div className="flex items-center gap-[0.5rem]">
             <CalendarIcon className="size-[16px] stroke-primary" />
             <Text variant="bodyBold">
-              {dateObjToDateStringUI(reservation.date)}
+              {formatDateToUI(reservation.date)}
             </Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
             <ClockIcon className="size-[16px] stroke-primary" />
             <Text variant="bodyBold">
-              {time24hTo12h(reservation.timeSlot.split(" - ")[0])}
+              {formatTimeToUI(
+                reservation.timeSlot.split(" - ")[0],
+              )}
             </Text>
             <Text variant="bodyBold"> - </Text>
             <Text variant="bodyBold">
-              {time24hTo12h(reservation.timeSlot.split(" - ")[1])}
+              {formatTimeToUI(
+                reservation.timeSlot.split(" - ")[1],
+              )}
             </Text>
           </div>
           <div className="flex items-center gap-[0.5rem]">
@@ -103,7 +107,7 @@ export const ReservationCard = (props: { reservation: Reservation }) => {
             locationAddress={reservation.locationAddress}
             tableId={reservation.tableId}
             tableNumber={reservation.tableNumber}
-            date={dateStringServerToDateObject(reservation.date)}
+            date={parseDateFromServer(reservation.date)}
             initTime={reservation.timeSlot}
             initGuests={Number.parseInt(reservation.guestsNumber)}
             maxGuests={Number.parseInt(reservation.guestsNumber)}

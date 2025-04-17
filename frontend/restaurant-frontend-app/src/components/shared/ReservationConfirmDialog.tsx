@@ -1,6 +1,6 @@
 import {
-  dateObjToDateStringUI,
-  time24hTo12h,
+  formatDateToUI,
+  formatTimeToUI,
 } from "@/utils/dateTime";
 import {
   Button,
@@ -53,14 +53,14 @@ export const ReservationConfirmDialog = ({
           <DialogDescription className="!fontset-body text-foreground flex flex-col gap-[0.75rem]">
             <Text tag="span" className="!fontset-body text-foreground">
               Your table reservation at <b>Green & Tasty</b> for{" "}
-              <b>{guests} people</b> on <b>{dateObjToDateStringUI(date)}</b>,
+              <b>{guests} people</b> on <b>{formatDateToUI(date)}</b>,
               from{" "}
               <b>
-                {time && time24hTo12h(time.split(" - ")[0])}
+                {time && formatTimeToUI(time.split(" - ")[0])}
               </b>{" "}
               to{" "}
               <b>
-                {time && time24hTo12h(time.split(" - ")[1])}
+                {time && formatTimeToUI(time.split(" - ")[1])}
               </b>{" "}
               at <b>Table {tableNumber}</b> has been successfully made.
             </Text>

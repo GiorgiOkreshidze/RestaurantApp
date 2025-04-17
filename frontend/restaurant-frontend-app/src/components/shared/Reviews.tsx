@@ -38,7 +38,7 @@ export const Reviews: React.FC<Props> = ({ feedbacks, id }) => {
       { id: "date,desc", label: "Newest first" },
       { id: "date,asc", label: "Oldest first" },
     ],
-    [],
+    []
   );
 
   const renderContent = () => {
@@ -64,7 +64,7 @@ export const Reviews: React.FC<Props> = ({ feedbacks, id }) => {
     }
 
     return (
-      <div className="flex gap-8">
+      <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(316px,1fr))]">
         {feedbacks.map((review) => (
           <ReviewsCard key={review.id} review={review} />
         ))}
@@ -79,7 +79,7 @@ export const Reviews: React.FC<Props> = ({ feedbacks, id }) => {
           Customer Reviews
         </Text>
 
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4 sm:gap-0">
           <div className="flex gap-4 items-center">
             <button
               className="cursor-pointer"

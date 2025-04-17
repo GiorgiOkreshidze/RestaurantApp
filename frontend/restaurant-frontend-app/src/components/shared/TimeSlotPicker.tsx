@@ -12,8 +12,8 @@ import { isPast, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { RichTimeSlot } from "@/types";
 import {
-  timeString24hToDateObj,
-  time24hTo12h,
+  parseTimeFromServer,
+  formatTimeToUI,
 } from "@/utils/dateTime";
 
 export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
@@ -34,7 +34,7 @@ export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
   useEffect(() => {
     if (
       disablePastTimes && isToday(selectedDate) && value
-        ? isPast(timeString24hToDateObj(value?.split(" - ")[0]))
+        ? isPast(parseTimeFromServer(value?.split(" - ")[0]))
         : false
     ) {
       setValue("");
@@ -64,8 +64,8 @@ export const TimeSlotPicker = (props: TimeSlotPickerProps) => {
               disablePastTimes && isToday(selectedDate) && timeSlot.isPast
             }
           >
-            {time24hTo12h(timeSlot.startString)} -{" "}
-            {time24hTo12h(timeSlot.endString)}
+            {formatTimeToUI(timeSlot.startString)} -{" "}
+            {formatTimeToUI(timeSlot.endString)}
           </SelectItem>
         ))}
       </SelectContent>

@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { TableUI } from "../../types/tables.types";
 import { getTables } from "../thunks/tablesThunk";
 import {
-  dateStringServerToDateObject,
-  timeString24hToDateObj,
+  parseDateFromServer,
+  parseTimeFromServer,
 } from "@/utils/dateTime";
 import { isPast } from "date-fns";
 
@@ -31,16 +31,16 @@ export const tablesSlice = createSlice({
         state.tables = payload.data
           .map((table) => ({
             ...table,
-            date: dateStringServerToDateObject(payload.date),
+            date: parseDateFromServer(payload.date),
             availableSlots: table.availableSlots
               .map((timeSlot) => ({
                 id: `${timeSlot.start} - ${timeSlot.end}`,
                 startString: timeSlot.start,
                 endString: timeSlot.end,
                 rangeString: `${timeSlot.start} - ${timeSlot.end}`,
-                startDate: timeString24hToDateObj(timeSlot.start),
-                endDate: timeString24hToDateObj(timeSlot.end),
-                isPast: isPast(timeString24hToDateObj(timeSlot.start)),
+                startDate: parseTimeFromServer(timeSlot.start),
+                endDate: parseTimeFromServer(timeSlot.end),
+                isPast: isPast(parseTimeFromServer(timeSlot.start)),
               }))
               .sort((a, b) => (a.startDate > b.startDate ? 1 : -1)),
           }))

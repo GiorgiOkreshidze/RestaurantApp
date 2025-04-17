@@ -19,8 +19,7 @@ export const CartPreorderDish = ({ dish, className, preorder }: Props) => {
         <div>
           <img
             className="block size-full object-cover"
-            // src={dish.imageUrl}
-            src="/dish.png"
+            src={dish.imageUrl}
             width="96px"
             height="96px"
           />

@@ -2,8 +2,8 @@ import type { TableUI } from "@/types/tables.types";
 import { Text } from "../ui";
 import { LocationIcon } from "../icons";
 import {
-  dateObjToDateStringUI,
-  time24hTo12h,
+  formatDateToUI,
+  formatTimeToUI,
 } from "@/utils/dateTime";
 import { ClientReservationDialog } from "./ClientReservationDialog";
 import { TimeSlot } from "./TimeSlot";
@@ -40,7 +40,7 @@ export const TableCard = ({ table }: { table: TableUI }) => {
             </Text>
             <Text variant="bodyBold">
               {availableSlots.length} slots available for{" "}
-              {dateObjToDateStringUI(table.date)}:
+              {formatDateToUI(table.date)}:
             </Text>
           </div>
           <div className="grid gap-[0.5rem] @min-[400px]:grid-cols-2">
@@ -58,8 +58,8 @@ export const TableCard = ({ table }: { table: TableUI }) => {
                 maxGuests={Number.parseInt(table.capacity)}
               >
                 <TimeSlot>
-                  {time24hTo12h(timeSlot.startString)} -{" "}
-                  {time24hTo12h(timeSlot.endString)}
+                  {formatTimeToUI(timeSlot.startString)} -{" "}
+                  {formatTimeToUI(timeSlot.endString)}
                 </TimeSlot>
               </ClientReservationDialog>
             ))}

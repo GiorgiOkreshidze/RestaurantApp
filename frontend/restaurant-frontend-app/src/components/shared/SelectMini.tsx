@@ -19,12 +19,10 @@ export const SelectMini: React.FC<Props> = ({
   placeholder,
   setValue,
 }) => {
-  // Исправляем обработчик изменения, чтобы корректно устанавливать значение
   const handleChange = (newValue: string) => {
     setValue(newValue === "null" ? "" : newValue);
   };
 
-  // Получаем текущий отображаемый текст (метку) для выбранного значения
   const getDisplayText = () => {
     if (!value) return placeholder;
     const selectedItem = items.find((item) => item.id === value);
@@ -33,7 +31,11 @@ export const SelectMini: React.FC<Props> = ({
 
   return (
     <SelectRoot value={value || "null"} onValueChange={handleChange}>
-      <SelectTrigger className={cn("max-h-[32px] w-full", className)} asChild>
+      <SelectTrigger
+        data-testid="sort-select-trigger"
+        className={cn("max-h-[32px] w-full", className)}
+        asChild
+      >
         <Button
           variant="trigger"
           className="h-[32px] py-1 px-2 w-full flex justify-between border-1 border-green-200 rounded-[8px]"

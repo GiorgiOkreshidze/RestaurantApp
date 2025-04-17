@@ -1,6 +1,6 @@
 import {
-  dateObjToDateStringServer,
-  timeString24hToDateObj,
+  formatDateToServer,
+  parseTimeFromServer,
 } from "@/utils/dateTime";
 import { useEffect, type FormEvent } from "react";
 import { useAppDispatch } from "../app/hooks";
@@ -43,7 +43,7 @@ export const useBooking = () => {
 
   useEffect(() => {
     if (!time || !isToday(date)) return;
-    if (isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
+    if (isPast(parseTimeFromServer(time.split(" - ")[0]))) {
       setTime("");
     }
   }, [date, setTime, time]);
@@ -54,7 +54,7 @@ export const useBooking = () => {
       toast.warning("Location and Date are required");
       return;
     }
-    if (isPast(date) && isPast(timeString24hToDateObj(time.split(" - ")[0]))) {
+    if (isPast(date) && isPast(parseTimeFromServer(time.split(" - ")[0]))) {
       toast.warning("Date and Time can't be in past");
       return;
     }
@@ -62,7 +62,7 @@ export const useBooking = () => {
       await dispatch(
         getTables({
           locationId,
-          date: dateObjToDateStringServer(date),
+          date: formatDateToServer(date),
           guests: String(guests),
           time: time.split(" - ")[0],
         }),
