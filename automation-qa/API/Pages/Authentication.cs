@@ -3,13 +3,153 @@ using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RestSharp;
+using ApiTests.Utilities;
+using automation_qa.Framework;
 
 namespace ApiTests.Pages
 {
     public class Authentication : BasePage
     {
+        private readonly CurlHelper _curlHelper;
+        private readonly string _baseUrl;
+
+        public Authentication(string baseUrl = null)
+        {
+            _baseUrl = baseUrl ?? BaseConfiguration.ApiBaseUrl;
+            _curlHelper = new CurlHelper("curl");
+        }
+
         /// <summary>
+        /// Registers a new user in the system using curl instead of RestSharp
+        /// </summary>
+        public (HttpStatusCode statusCode, string email, JObject responseBody) RegisterUserWithCurl(
+            string firstName, string lastName, string email = null, string password = "StrongP@ss123!")
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                email = $"test_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
+            }
+
+            string url = $"{_baseUrl}/auth/signup";
+
+            var userData = new
+            {
+                firstName,
+                lastName,
+                email,
+                password
+            };
+
+            string jsonBody = JsonConvert.SerializeObject(userData);
+
+            var (statusCode, responseBody) = _curlHelper.ExecutePostRequestForObject(url, jsonBody);
+
+            return (statusCode, email, responseBody);
+        }
+
+        /// <summary>
+        /// Uses curl to login a user with the provided credentials
+        /// </summary>
+        public (HttpStatusCode StatusCode, JObject ResponseBody) LoginUserWithCurl(
+            string email, string password)
+        {
+            string url = $"{_baseUrl}/auth/signin";
+
+            // Создаем JSON для запроса
+            var loginData = new
+            {
+                email,
+                password
+            };
+
+            string jsonBody = JsonConvert.SerializeObject(loginData);
+
+            var (statusCode, responseBody) = _curlHelper.ExecutePostRequestForObject(url, jsonBody);
+
+            if (responseBody != null && responseBody.ContainsKey("idToken") && !responseBody.ContainsKey("accessToken"))
+            {
+                responseBody["accessToken"] = responseBody["idToken"];
+            }
+
+            return (statusCode, responseBody);
+        }
+
+        /// <summary>
+        /// Uses curl to log out a user from the system
+        /// </summary>
+        public (HttpStatusCode StatusCode, string ResponseBody) LogoutUserWithCurl(
+            string refreshToken, string idToken = null)
+        {
+            string url = $"{_baseUrl}/auth/signout";
+
+            var logoutData = new
+            {
+                refreshToken
+            };
+
+            string jsonBody = JsonConvert.SerializeObject(logoutData);
+
+            if (!string.IsNullOrEmpty(idToken))
+            {
+                return _curlHelper.ExecutePostRequestWithAuthForString(url, jsonBody, idToken);
+            }
+            else
+            {
+                var (statusCodeStr, responseBodyStr) = _curlHelper.ExecutePostRequest(url, jsonBody);
+
+                HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
+                if (int.TryParse(statusCodeStr, out int statusCodeInt))
+                {
+                    if (Enum.IsDefined(typeof(HttpStatusCode), statusCodeInt))
+                    {
+                        statusCode = (HttpStatusCode)statusCodeInt;
+                    }
+                }
+
+                return (statusCode, responseBodyStr);
+            }
+        }
+
+        /// <summary>
+        /// Uses curl to update the authentication token using the refresh token
+        /// </summary>
+        public (HttpStatusCode statusCode, JObject responseBody, string rawResponse) RefreshAuthTokenWithCurl(
+            string refreshToken)
+        {
+            string url = $"{_baseUrl}/auth/refresh";
+
+            var refreshData = new
+            {
+                refreshToken
+            };
+
+            string jsonBody = JsonConvert.SerializeObject(refreshData);
+
+            var (statusCode, responseBody) = _curlHelper.ExecutePostRequestForObject(url, jsonBody);
+
+            var (_, rawResponse) = _curlHelper.ExecutePostRequest(url, jsonBody);
+
+            return (statusCode, responseBody, rawResponse);
+        }
+
+        /// <summary>
+        /// Uses curl to retrieve the user profile using authentication tokens
+        /// </summary>
+        public (HttpStatusCode StatusCode, JObject ResponseBody) GetUserProfileWithCurl(
+            string idToken, string accessToken = null)
+        {
+            if (string.IsNullOrEmpty(idToken))
+            {
+                throw new ArgumentNullException(nameof(idToken), "ID token must be provided.");
+            }
+
+            string url = $"{_baseUrl}/users/profile";
+
+            var (statusCode, responseBody) = _curlHelper.ExecuteGetRequestWithAuthForObject(url, idToken, accessToken);
+
+            return (statusCode, responseBody);
+        }
+
         /// Registers a new user in the system
         /// </summary>
         /// <param name="firstName">User's first name</param>
@@ -20,35 +160,10 @@ namespace ApiTests.Pages
         public async Task<(HttpStatusCode statusCode, string email, JObject responseBody)> RegisterUser(
             string firstName, string lastName, string email = null, string password = "StrongP@ss123!")
         {
-            if (string.IsNullOrEmpty(email))
-            {
-                email = $"test_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            }
+            var (statusCode, generatedEmail, responseBody) = RegisterUserWithCurl(
+                firstName, lastName, email, password);
 
-            var request = CreatePostRequest("/signup");
-            var userData = new
-            {
-                firstName,
-                lastName,
-                email,
-                password
-            };
-            request.AddJsonBody(userData);
-            var response = await ExecutePostRequestAsync(request);
-
-            JObject responseBody = null;
-            try
-            {
-                if (!string.IsNullOrEmpty(response.Content))
-                {
-                    responseBody = JObject.Parse(response.Content);
-                }
-            }
-            catch (JsonReaderException)
-            {
-                responseBody = new JObject();
-            }
-            return (response.StatusCode, email, responseBody);
+            return (statusCode, generatedEmail, responseBody);
         }
 
         /// <summary>
@@ -60,36 +175,9 @@ namespace ApiTests.Pages
         public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> LoginUser(
             string email, string password)
         {
-            var request = CreatePostRequest("/signin");
-            var loginData = new
-            {
-                email,
-                password
-            };
-            request.AddJsonBody(loginData);
-            var response = await ExecutePostRequestAsync(request);
-            JObject responseBody = null;
-            try
-            {
-                if (!string.IsNullOrEmpty(response.Content))
-                {
-                    responseBody = JObject.Parse(response.Content);
+            var (statusCode, responseBody) = LoginUserWithCurl(email, password);
 
-                    if (responseBody.ContainsKey("idToken") && !responseBody.ContainsKey("accessToken"))
-                    {
-                        responseBody["accessToken"] = responseBody["idToken"];
-                    }
-                }
-                else
-                {
-                    responseBody = new JObject();
-                }
-            }
-            catch (JsonReaderException)
-            {
-                responseBody = new JObject();
-            }
-            return (response.StatusCode, responseBody);
+            return (statusCode, responseBody);
         }
 
         /// <summary>
@@ -99,23 +187,7 @@ namespace ApiTests.Pages
         /// <returns>HTTP status code</returns>
         public async Task<(HttpStatusCode StatusCode, string ResponseBody)> LogoutUser(string refreshToken, string idToken = null)
         {
-            var request = CreatePostRequest("/signout");
-
-            var body = new
-            {
-                refreshToken = refreshToken
-            };
-
-            request.AddJsonBody(body);
-
-            if (!string.IsNullOrEmpty(idToken))
-            {
-                request.AddHeader("Authorization", $"Bearer {idToken}");
-            }
-
-            var response = await ExecutePostRequestAsync(request);
-
-            return (response.StatusCode, response.Content ?? string.Empty);
+            return LogoutUserWithCurl(refreshToken, idToken);
         }
 
         /// <summary>
@@ -123,39 +195,10 @@ namespace ApiTests.Pages
         /// </summary>
         /// <param name="refreshToken">Refresh token</param>
         /// <returns>A tuple containing the HTTP status code, new tokens as a JObject, and the raw response content</returns>
-
         public async Task<(HttpStatusCode statusCode, JObject responseBody, string rawResponse)> RefreshAuthToken(
             string refreshToken)
         {
-            var request = CreatePostRequest("/auth/refresh");
-
-            var refreshData = new
-            {
-                refreshToken
-            };
-
-            request.AddJsonBody(refreshData);
-
-            var response = await ExecutePostRequestAsync(request);
-            JObject responseBody = null;
-
-            try
-            {
-                if (!string.IsNullOrEmpty(response.Content))
-                {
-                    responseBody = JObject.Parse(response.Content);
-                }
-                else
-                {
-                    responseBody = new JObject();
-                }
-            }
-            catch (JsonReaderException)
-            {
-                responseBody = new JObject();
-            }
-
-            return (response.StatusCode, responseBody, response.Content);
+            return RefreshAuthTokenWithCurl(refreshToken);
         }
 
         /// <summary>
@@ -167,45 +210,73 @@ namespace ApiTests.Pages
         public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> GetUserProfile(
             string idToken, string accessToken = null)
         {
+            return GetUserProfileWithCurl(idToken, accessToken);
+        }
+
+        /// <summary>
+        /// Uses curl to update user information by ID
+        /// </summary>
+        public (HttpStatusCode StatusCode, JObject ResponseBody) UpdateUserWithCurl(
+            string userId,
+            string firstName,
+            string lastName,
+            string email,
+            string idToken)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new ArgumentNullException(nameof(userId), "User ID must be provided.");
+            }
+
             if (string.IsNullOrEmpty(idToken))
             {
                 throw new ArgumentNullException(nameof(idToken), "ID token must be provided.");
             }
 
-            var request = CreateGetRequest("/users/profile");
+            string url = $"{_baseUrl}/users/{userId}";
 
-            request.AddHeader("Authorization", $"Bearer {idToken}");
-
-            if (!string.IsNullOrEmpty(accessToken))
+            var userData = new
             {
-                request.AddHeader("X-Amz-Security-Token", accessToken);
+                firstName,
+                lastName,
+                email
+            };
+
+            string jsonBody = JsonConvert.SerializeObject(userData);
+
+            var (statusCode, responseBody) = _curlHelper.ExecutePutRequestWithAuthForObject(url, jsonBody, idToken);
+
+            Console.WriteLine($"UpdateUser response status: {statusCode}");
+
+            if (responseBody != null)
+            {
+                string responseContent = responseBody.ToString();
+                string preview = responseContent.Length > 100 ? responseContent.Substring(0, 100) + "..." : responseContent;
+                Console.WriteLine($"UpdateUser response content: {preview}");
             }
 
-            request.AddHeader("Date", DateTime.UtcNow.ToString("r"));
+            return (statusCode, responseBody);
+        }
 
-            Console.WriteLine($"Getting profile with Bearer idToken header: {idToken.Substring(0, Math.Min(20, idToken.Length))}...");
-            var response = await ExecuteGetRequestAsync(request);
-
-            JObject responseBody = null;
-            if (!string.IsNullOrEmpty(response.Content))
-            {
-                try
-                {
-                    responseBody = JObject.Parse(response.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
-            }
-
-            Console.WriteLine($"Profile response status: {response.StatusCode}");
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                Console.WriteLine($"Profile response content: {response.Content}");
-            }
-
-            return (response.StatusCode, responseBody);
+        /// <summary>
+        /// Updates user information by ID
+        /// </summary>
+        /// <param name="userId">ID of the user to update</param>
+        /// <param name="firstName">User's new first name</param>
+        /// <param name="lastName">User's new last name</param>
+        /// <param name="email">User's new email address</param>
+        /// <param name="idToken">Authentication token</param>
+        /// <returns>Tuple containing HTTP status code and response body as JObject</returns>
+        public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> UpdateUser(
+            string userId,
+            string firstName,
+            string lastName,
+            string email,
+            string idToken)
+        {
+            var (statusCode, responseBody) = UpdateUserWithCurl(
+                userId, firstName, lastName, email, idToken);
+            return (statusCode, responseBody);
         }
     }
 }

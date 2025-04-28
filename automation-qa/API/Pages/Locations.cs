@@ -1,41 +1,47 @@
 ﻿using Newtonsoft.Json.Linq;
-using RestSharp;
 using System.Net;
-using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using ApiTests.Utilities;
+using automation_qa.Framework;
 
 namespace ApiTests.Pages
 {
     /// <summary>
-    /// The Locations class provides methods for interacting with the locations-related endpoints of the API.
+    /// The LocationsWithCurl class provides methods for interacting with the locations-related endpoints of the API using curl.
     /// It includes methods to retrieve locations, location options, speciality dishes by location, and customer feedback.
-    /// Each method sends an asynchronous GET request, logs the response, parses the response body, and returns the status code along with the parsed data.
+    /// Each method sends a synchronous GET request using curl, logs the response, parses the response body, and returns the status code along with the parsed data.
     /// </summary>
-    public class Locations : BasePage
+    public class LocationsWithCurl : BasePage
     {
-        public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetLocations()
+        private CurlHelper _curlHelper;
+        private string _baseUrl;
+
+        public LocationsWithCurl()
         {
-            var request = CreateGetRequest("/locations");
-            var response = await ExecuteGetRequestAsync(request);
-            JArray? responseBody = null;
-            Console.WriteLine($"Response status: {response.StatusCode}");
-            Console.WriteLine($"Response content: {response.Content}");
-            if (!string.IsNullOrEmpty(response.Content))
-            {
-                try
-                {
-                    responseBody = JArray.Parse(response.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
-            }
-            return (response.StatusCode, responseBody);
+            _curlHelper = new CurlHelper();
+            _baseUrl = BaseConfiguration.ApiBaseUrl;
         }
 
-        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> GetLocationById(string locationId)
+        public (HttpStatusCode StatusCode, JArray ResponseBody) GetLocationsWithCurl()
+        {
+            string url = $"{_baseUrl}/locations";
+
+            var (statusCode, responseBodyArray) = _curlHelper.ExecuteGetRequestForArray(url);
+
+            Console.WriteLine($"GetLocations response status: {statusCode}");
+
+            if (responseBodyArray != null)
+            {
+                string responseContent = responseBodyArray.ToString();
+                string preview = responseContent.Length > 100 ? responseContent.Substring(0, 100) + "..." : responseContent;
+                Console.WriteLine($"GetLocations response content: {preview}");
+            }
+
+            return (statusCode, responseBodyArray);
+        }
+
+        public (HttpStatusCode StatusCode, JObject ResponseBody) GetLocationByIdWithCurl(string locationId)
         {
             // Check if locationId is in a valid format
             if (string.IsNullOrEmpty(locationId) || !Guid.TryParse(locationId, out _))
@@ -43,119 +49,121 @@ namespace ApiTests.Pages
                 throw new ArgumentException("Location ID is not in a valid format.", nameof(locationId));
             }
 
-            // Create request for endpoint /locations/{id}
-            var request = CreateGetRequest($"/locations/{locationId}");
+            string url = $"{_baseUrl}/locations/{locationId}";
 
-            // Execute GET request
-            var response = await ExecuteGetRequestAsync(request);
+            var (statusCode, responseBodyObject) = _curlHelper.ExecuteGetRequestForObject(url);
 
-            // Initialize response body variable
-            JObject? responseBody = null;
+            Console.WriteLine($"GetLocationById response status: {statusCode}");
 
-            // Log the response status and content
-            Console.WriteLine($"GetLocationById response status: {response.StatusCode}");
-            Console.WriteLine($"GetLocationById response content: {response.Content}");
-
-            // Try to parse the response if the content is not empty
-            if (!string.IsNullOrEmpty(response.Content))
+            if (responseBodyObject != null)
             {
-                try
-                {
-                    responseBody = JObject.Parse(response.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
+                string responseContent = responseBodyObject.ToString();
+                string preview = responseContent.Length > 100 ? responseContent.Substring(0, 100) + "..." : responseContent;
+                Console.WriteLine($"GetLocationById response content: {preview}");
             }
 
-            return (response.StatusCode, responseBody);
+            return (statusCode, responseBodyObject);
         }
 
-        public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetLocationSelectOptions()
+        public (HttpStatusCode StatusCode, JArray ResponseBody) GetLocationSelectOptionsWithCurl()
         {
-            var request = CreateGetRequest("/locations/select-options");
-            var response = await ExecuteGetRequestAsync(request);
-            JArray? responseBody = null;
-            Console.WriteLine($"Response status: {response.StatusCode}");
-            Console.WriteLine($"Response content: {response.Content}");
-            if (!string.IsNullOrEmpty(response.Content))
+            string url = $"{_baseUrl}/locations/select-options";
+
+            var (statusCode, responseBodyArray) = _curlHelper.ExecuteGetRequestForArray(url);
+
+            Console.WriteLine($"GetLocationSelectOptions response status: {statusCode}");
+
+            if (responseBodyArray != null)
             {
-                try
-                {
-                    responseBody = JArray.Parse(response.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
+                string responseContent = responseBodyArray.ToString();
+                string preview = responseContent.Length > 100 ? responseContent.Substring(0, 100) + "..." : responseContent;
+                Console.WriteLine($"GetLocationSelectOptions response content: {preview}");
             }
-            return (response.StatusCode, responseBody);
+
+            return (statusCode, responseBodyArray);
         }
 
-        public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetSpecialityDishes(string locationId)
+        public (HttpStatusCode StatusCode, JArray ResponseBody) GetSpecialityDishesWithCurl(string locationId)
         {
-            var request = CreateGetRequest($"/locations/{locationId}/speciality-dishes");
-            var response = await ExecuteGetRequestAsync(request);
-            JArray? responseBody = null;
-            Console.WriteLine($"Response status: {response.StatusCode}");
-            Console.WriteLine($"Response content: {response.Content}");
-            if (!string.IsNullOrEmpty(response.Content))
+            string url = $"{_baseUrl}/locations/{locationId}/speciality-dishes";
+
+            var (statusCode, responseBodyArray) = _curlHelper.ExecuteGetRequestForArray(url);
+
+            Console.WriteLine($"GetSpecialityDishes response status: {statusCode}");
+
+            if (responseBodyArray != null)
             {
-                try
-                {
-                    responseBody = JArray.Parse(response.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
+                string responseContent = responseBodyArray.ToString();
+                string preview = responseContent.Length > 100 ? responseContent.Substring(0, 100) + "..." : responseContent;
+                Console.WriteLine($"GetSpecialityDishes response content: {preview}");
             }
-            return (response.StatusCode, responseBody);
+
+            return (statusCode, responseBodyArray);
         }
 
-        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> GetLocationFeedbacks(
+        public (HttpStatusCode StatusCode, JObject ResponseBody) GetLocationFeedbacksWithCurl(
             string locationId,
-            string? type = null,
-            string? sortBy = "date",
-            string? sortDir = "DESC",
+            string type = null,
+            string sortBy = "date",
+            string sortDir = "DESC",
             int page = 1,
             int size = 10)
         {
-            var request = CreateGetRequest($"/locations/{locationId}/feedbacks");
+            string url = $"{_baseUrl}/locations/{locationId}/feedbacks";
+            string queryParams = "";
+
+            List<string> parameters = new List<string>();
 
             if (!string.IsNullOrEmpty(type))
             {
-                request.AddQueryParameter("type", type);
+                parameters.Add($"type={type}");
             }
 
             if (!string.IsNullOrEmpty(sortBy))
             {
                 string sort = $"{sortBy},{sortDir}";
-                request.AddQueryParameter("sort", sort);
+                parameters.Add($"sort={sort}");
             }
 
-            request.AddQueryParameter("page", page.ToString());
-            request.AddQueryParameter("size", size.ToString());
+            parameters.Add($"page={page}");
+            parameters.Add($"size={size}");
 
-            var response = await ExecuteGetRequestAsync(request);
-            JObject? responseBody = null;
+            queryParams = string.Join("&", parameters);
 
-            Console.WriteLine($"GetLocationFeedbacks response status: {response.StatusCode}");
-            Console.WriteLine($"GetLocationFeedbacks response content: {response.Content}");
+            var (statusCodeStr, responseBody) = _curlHelper.ExecuteGetRequestWithParams(url, queryParams);
 
-            if (!string.IsNullOrEmpty(response.Content))
+            HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
+            if (int.TryParse(statusCodeStr, out int statusCodeInt))
+            {
+                if (Enum.IsDefined(typeof(HttpStatusCode), statusCodeInt))
+                {
+                    statusCode = (HttpStatusCode)statusCodeInt;
+                }
+            }
+
+            JObject responseBodyObject = null;
+            if (!string.IsNullOrEmpty(responseBody))
             {
                 try
                 {
-                    responseBody = JObject.Parse(response.Content);
+                    responseBodyObject = JObject.Parse(responseBody);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
+                    Console.WriteLine($"Error parsing response as object: {ex.Message}");
                 }
             }
-            return (response.StatusCode, responseBody);
+
+            Console.WriteLine($"GetLocationFeedbacks response status: {statusCode}");
+
+            if (responseBodyObject != null)
+            {
+                string responseContent = responseBodyObject.ToString();
+                string preview = responseContent.Length > 100 ? responseContent.Substring(0, 100) + "..." : responseContent;
+                Console.WriteLine($"GetLocationFeedbacks response content: {preview}");
+            }
+
+            return (statusCode, responseBodyObject);
         }
     }
 }

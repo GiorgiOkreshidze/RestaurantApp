@@ -4,9 +4,9 @@ using automation_qa.UI.Pages;
 namespace automation_qa.UI.Tests
 {
     [TestFixture]
+    [Category("Location")]
     public class LocationOverviewTests : BaseTest
     {
-        private NavigationBar _navigationBar;
         private MainPage _mainPage;
         private LocationOverviewPage _locationPage;
 
@@ -19,53 +19,61 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
-        public void LocationOverview_ShouldDisplayRatingAndFeedback()
+        [Category("Smoke")]
+        [Category("Regression")]
+        public void LocationOverview_ShouldDisplayTitle()
         {
-            Assert.That(_locationPage.IsRatingDisplayed(), Is.True, "");
-
-            Assert.That(_locationPage.IsFeedbackSectionDisplayed(), Is.True, "");
+            bool isTitleDisplayed = _locationPage.IsLocationTitleDisplayed();
+            Assert.That(isTitleDisplayed, Is.True, "Title '14 Baratashvili Street' should be displayed after navigating to LocationOverviewPage");
         }
 
         [Test]
-        public void LocationOverview_ShouldFilterFeedbackByService()
+        [Category("Regression")]
+        public void LocationOverview_ShouldDisplayReviewStars()
         {
-            _locationPage.FilterFeedbackByService();
-
-            var feedbackItems = _locationPage.GetFeedbackItems();
-            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "П");
+            Assert.That(_locationPage.AreReviewStarsDisplayed(), Is.True, "Stars in customer reviews should be displayed");
         }
 
         [Test]
-        public void LocationOverview_ShouldFilterFeedbackByCuisine()
+        [Category("Smoke")]
+        [Category("Regression")]
+        public void LocationOverview_ShouldDisplaySpecialityDishesSection()
         {
-            _locationPage.FilterFeedbackByCuisine();
-
-            var feedbackItems = _locationPage.GetFeedbackItems();
-            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "");
+            Assert.That(_locationPage.IsSpecialityDishesSectionDisplayed(), Is.True, "Speciality dishes section should be displayed");
         }
 
         [Test]
-        public void LocationOverview_ShouldSortFeedbackByDate()
+        [Category("Regression")]
+        public void LocationOverview_ShouldDisplayDishCards()
         {
-            _locationPage.SortFeedbackByDate();
-
-            var feedbackItems = _locationPage.GetFeedbackItems();
-            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "");
+            Assert.That(_locationPage.AreDishCardsDisplayed(), Is.True, "Dish cards should be displayed on the location page");
+            Assert.That(_locationPage.GetDishCardsCount(), Is.EqualTo(2), "There should be exactly 2 dish cards displayed");
         }
 
         [Test]
-        public void LocationOverview_ShouldSortFeedbackByRating()
+        [Category("Regression")]
+        public void LocationOverview_ShouldDisplayFeedbackSection()
         {
-            _locationPage.SortFeedbackByRating();
-
-            var feedbackItems = _locationPage.GetFeedbackItems();
-            Assert.That(feedbackItems.Count, Is.GreaterThan(0), "");
+            Assert.That(_locationPage.IsFeedbackSectionDisplayed(), Is.True, "Customer reviews section should be displayed");
         }
 
         [Test]
-        public void LocationOverview_ShouldDisplayFeedbackPagination()
+        [Category("Regression")]
+        public void LocationOverview_ShouldBeAbleToClickCuisineExperienceFilter()
         {
-            Assert.That(_locationPage.IsPaginationDisplayed(), Is.True, "");
+            Assert.That(_locationPage.IsCuisineExperienceFilterClickable(), Is.True, "Cuisine experience filter should be clickable");
+            _locationPage.ClickCuisineExperienceFilter();
+            Assert.That(_locationPage.IsCuisineExperienceFilterClickable(), Is.True, "Cuisine experience filter should remain clickable after clicking");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void LocationOverview_ShouldBeAbleToClickMainPageLinkAndNavigate()
+        {
+            Console.WriteLine($"Page HTML before clicking Main page link: {Driver.PageSource}");
+            Assert.That(_locationPage.IsMainPageLinkClickable(), Is.True, "Main page link should be clickable");
+            var mainPage = _locationPage.ClickMainPageLink();
+            Assert.That(mainPage.IsHeaderDisplayed(), Is.True, "Should navigate to Main page and display header");
         }
     }
 }

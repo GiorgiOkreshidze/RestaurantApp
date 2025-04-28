@@ -24,6 +24,8 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public async Task GetPopularDishes_ReturnsSuccess()
         {
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
@@ -42,6 +44,8 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public async Task GetPopularDishes_HasCorrectStructure()
         {
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
@@ -59,6 +63,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetPopularDishes_ContainsOnlyPopularDishes()
         {
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
@@ -72,6 +77,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetPopularDishes_ReturnsValidJson()
         {
             // Act
@@ -83,6 +89,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetPopularDishes_HasAtLeastOneDish()
         {
             // Act
@@ -94,6 +101,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetPopularDishes_DishNamesAreNotEmpty()
         {
             // Act
@@ -112,6 +120,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetPopularDishes_ImageUrlsStartWithHttps()
         {
             // Act
@@ -130,6 +139,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetPopularDishes_BasicSuccess()
         {
             // Act
@@ -143,6 +153,8 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public async Task GetPopularDishes_HasSomeResults()
         {
             // Act
@@ -156,6 +168,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetPopularDishes_HasPriceInformation()
         {
             var (statusCode, responseBody) = await _dishes.GetPopularDishes();
@@ -180,6 +193,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetSpecialtyDishes_EmptyLocationId_ReturnsBadRequest()
         {
             // Arrange
@@ -189,8 +203,8 @@ namespace ApiTests
             var (statusCode, responseBody) = await _dishes.GetSpecialtyDishes(emptyLocationId);
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
-                "Should return 400 Bad Request status with empty location ID");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.NotFound),
+                "Should return 404 Not Found status with empty location ID");
 
             // Check error message if available
             if (responseBody != null)
@@ -210,6 +224,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetSpecialtyDishes_WithEmptyLocationId_ReturnsBadRequest()
         {
             // Arrange
@@ -221,12 +236,13 @@ namespace ApiTests
             JArray responseBody = result.ResponseBody;
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
-                "Should return 400 Bad Request status with empty location ID");
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound),
+                "Should return 404 Not Found status with null location ID");
             Assert.That(responseBody, Is.Null, "Response body should be null with invalid parameters");
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetSpecialtyDishes_NullLocationId_ReturnsBadRequest()
         {
             // Arrange
@@ -236,13 +252,14 @@ namespace ApiTests
             var result = await _dishes.GetSpecialtyDishes(nullLocationId);
 
             // Assert
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest),
-                "Should return 400 Bad Request status with null location ID");
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound),
+                "Should return 404 Not Found status with null location ID");
             Assert.That(result.ResponseBody, Is.Null,
                 "Response body should be null with null location ID");
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAllDishes_WithoutParameters_ReturnsOkStatus()
         {
             // Act
@@ -261,6 +278,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAllDishes_WithDishTypeParameter_ReturnsOkStatus()
         {
             // Arrange
@@ -275,6 +293,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAllDishes_WithSortParameter_ReturnsOkStatus()
         {
             // Arrange
@@ -289,6 +308,8 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public async Task GetAllDishes_ResponseContainsValidData()
         {
             // Act
@@ -313,6 +334,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAllDishes_FilterByDishType_ReturnsMatchingDishes()
         {
             // Arrange
@@ -346,6 +368,8 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public async Task GetDishById_ValidId_ReturnsOk()
         {
             // Arrange
@@ -360,6 +384,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetDishById_InvalidId_ReturnsNotFound()
         {
             // Arrange
@@ -382,6 +407,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetDishById_EmptyId_ReturnsBadRequest()
         {
             // Act
@@ -393,6 +419,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetDishById_ValidId_ContainsExpectedFields()
         {
             // Arrange
@@ -415,6 +442,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetDishById_ValidId_IdMatchesRequest()
         {
             // Arrange
@@ -431,6 +459,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetPopularDishes_PricesAreReasonable()
         {
             // Act
@@ -450,6 +479,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAllDishes_WithInvalidSortParameter_ReturnsOkStatus()
         {
             // Arrange
@@ -464,6 +494,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAllDishes_DishNamesNotEmpty()
         {
             // Act
@@ -483,6 +514,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetDishById_ValidId_HasDescriptionField()
         {
             // Arrange

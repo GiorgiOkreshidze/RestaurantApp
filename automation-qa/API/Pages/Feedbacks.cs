@@ -1,28 +1,24 @@
 ﻿using Newtonsoft.Json.Linq;
-using RestSharp;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using ApiTests.Utilities;
+using automation_qa.Framework;
 
 namespace ApiTests.Pages
 {
-    /// <summary>
-    /// This class provides functionality to interact with the API to create and manage feedback.
-    /// It sends requests to the "/feedbacks" endpoint and processes the responses.
-    /// </summary>
-    public class Feedback : BasePage
+    public class Feedbacks : BasePage
     {
-        /// <summary>
-        /// Creates a new feedback for a reservation
-        /// </summary>
-        /// <param name="reservationId">ID of the reservation</param>
-        /// <param name="cuisineComment">Comment about the cuisine</param>
-        /// <param name="cuisineRating">Rating for the cuisine (1-5)</param>
-        /// <param name="serviceComment">Comment about the service</param>
-        /// <param name="serviceRating">Rating for the service (1-5)</param>
-        /// <param name="idToken">Authentication token for authorization</param>
-        /// <returns>Tuple containing the HTTP status code and response body as JObject</returns>
-        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> CreateFeedback(
+        private readonly CurlHelper _curlHelper;
+        private readonly string _baseUrl;
+
+        public Feedbacks(string baseUrl = null)
+        {
+            _baseUrl = baseUrl ?? BaseConfiguration.ApiBaseUrl;
+            _curlHelper = new CurlHelper("curl");
+        }
+
+        public (HttpStatusCode StatusCode, JObject ResponseBody) CreateFeedbackWithCurl(
             string reservationId,
             string cuisineComment,
             string cuisineRating,
@@ -30,16 +26,8 @@ namespace ApiTests.Pages
             string serviceRating,
             string idToken = null)
         {
-            // Create a POST request
-            var request = CreatePostRequest("/feedbacks");
+            string url = $"{_baseUrl}/feedbacks";
 
-            // Add authorization header if token is provided
-            if (!string.IsNullOrEmpty(idToken))
-            {
-                request.AddHeader("Authorization", $"Bearer {idToken}");
-            }
-
-            // Create request body
             var feedbackData = new
             {
                 reservationId,
@@ -49,44 +37,36 @@ namespace ApiTests.Pages
                 serviceRating
             };
 
-            // Add request body as JSON
-            request.AddJsonBody(feedbackData);
+            string jsonBody = Newtonsoft.Json.JsonConvert.SerializeObject(feedbackData);
 
-            // Execute the request
-            var response = await ExecutePostRequestAsync(request);
+            Console.WriteLine($"Creating feedback with curl for reservation: {reservationId}");
 
-            // Log the result
-            Console.WriteLine($"CreateFeedback response status: {response.StatusCode}");
-            Console.WriteLine($"CreateFeedback response content: {response.Content}");
-
-            // Parse response into JObject if it's not empty
-            JObject? responseBody = null;
-            if (!string.IsNullOrEmpty(response.Content))
+            if (!string.IsNullOrEmpty(idToken))
             {
-                try
-                {
-                    responseBody = JObject.Parse(response.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
-            }
+                var (statusCode, responseBody) = _curlHelper.ExecutePostRequestWithAuthForString(url, jsonBody, idToken);
 
-            return (response.StatusCode, responseBody);
+                JObject responseBodyObject = null;
+                if (!string.IsNullOrEmpty(responseBody))
+                {
+                    try
+                    {
+                        responseBodyObject = JObject.Parse(responseBody);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error parsing response as object: {ex.Message}");
+                    }
+                }
+
+                return (statusCode, responseBodyObject);
+            }
+            else
+            {
+                return _curlHelper.ExecutePostRequestForObject(url, jsonBody);
+            }
         }
 
-        /// <summary>
-        /// Updates an existing feedback
-        /// </summary>
-        /// <param name="reservationId">ID of the reservation</param>
-        /// <param name="cuisineComment">Updated comment about the cuisine</param>
-        /// <param name="cuisineRating">Updated rating for the cuisine (1-5)</param>
-        /// <param name="serviceComment">Updated comment about the service</param>
-        /// <param name="serviceRating">Updated rating for the service (1-5)</param>
-        /// <param name="idToken">Authentication token for authorization</param>
-        /// <returns>Tuple containing the HTTP status code and response body as JObject</returns>
-        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> UpdateFeedback(
+        public (HttpStatusCode StatusCode, JObject ResponseBody) UpdateFeedbackWithCurl(
             string reservationId,
             string cuisineComment,
             string cuisineRating,
@@ -94,9 +74,7 @@ namespace ApiTests.Pages
             string serviceRating,
             string idToken = null)
         {
-            // Use the same endpoint and method as for creation
-            // The API, based on the screenshot, uses the same endpoint for creation and update
-            return await CreateFeedback(
+            return CreateFeedbackWithCurl(
                 reservationId,
                 cuisineComment,
                 cuisineRating,
@@ -105,54 +83,90 @@ namespace ApiTests.Pages
                 idToken);
         }
 
-        /// <summary>
-        /// Gets all feedbacks for a reservation
-        /// </summary>
-        /// <param name="reservationId">ID of the reservation</param>
-        /// <param name="idToken">Authentication token for authorization</param>
-        /// <returns>Tuple containing the HTTP status code and response body as JArray</returns>
-        public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetFeedbacksByReservationId(
+        public (HttpStatusCode StatusCode, JArray ResponseBody) GetFeedbacksByReservationIdWithCurl(
             string reservationId,
             string idToken = null)
         {
-            // Check the input parameter
             if (string.IsNullOrEmpty(reservationId))
             {
                 Console.WriteLine("Error: reservationId cannot be null or empty");
                 return (HttpStatusCode.BadRequest, null);
             }
 
-            // Create a GET request
-            var request = CreateGetRequest($"/feedbacks?reservationId={reservationId}");
+            string url = $"{_baseUrl}/feedbacks?reservationId={reservationId}";
+            Console.WriteLine($"Getting feedbacks with curl for reservation: {reservationId}");
 
-            // Add authorization header if token is provided
             if (!string.IsNullOrEmpty(idToken))
             {
-                request.AddHeader("Authorization", $"Bearer {idToken}");
+                var (statusCode, responseBodyObj) = _curlHelper.ExecuteGetRequestWithAuthForObject(url, idToken);
+
+                JArray responseBodyArray = null;
+                if (responseBodyObj != null)
+                {
+                    try
+                    {
+                        if (responseBodyObj["data"] != null && responseBodyObj["data"].Type == JTokenType.Array)
+                        {
+                            responseBodyArray = (JArray)responseBodyObj["data"];
+                        }
+                        else
+                        {
+                            responseBodyArray = new JArray { responseBodyObj };
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error converting response to array: {ex.Message}");
+                    }
+                }
+
+                return (statusCode, responseBodyArray);
             }
-
-            // Execute the request
-            var response = await ExecuteGetRequestAsync(request);
-
-            // Log the result
-            Console.WriteLine($"GetFeedbacksByReservationId response status: {response.StatusCode}");
-            Console.WriteLine($"GetFeedbacksByReservationId response content: {response.Content}");
-
-            // Parse response into JArray if it's not empty
-            JArray? responseBody = null;
-            if (!string.IsNullOrEmpty(response.Content))
+            else
             {
-                try
-                {
-                    responseBody = JArray.Parse(response.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
+                return _curlHelper.ExecuteGetRequestForArray(url);
             }
+        }
 
-            return (response.StatusCode, responseBody);
+        public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> CreateFeedback(
+            string reservationId,
+            string cuisineComment,
+            string cuisineRating,
+            string serviceComment,
+            string serviceRating,
+            string idToken = null)
+        {
+            return CreateFeedbackWithCurl(
+                reservationId,
+                cuisineComment,
+                cuisineRating,
+                serviceComment,
+                serviceRating,
+                idToken);
+        }
+
+        public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> UpdateFeedback(
+            string reservationId,
+            string cuisineComment,
+            string cuisineRating,
+            string serviceComment,
+            string serviceRating,
+            string idToken = null)
+        {
+            return UpdateFeedbackWithCurl(
+                reservationId,
+                cuisineComment,
+                cuisineRating,
+                serviceComment,
+                serviceRating,
+                idToken);
+        }
+
+        public async Task<(HttpStatusCode StatusCode, JArray ResponseBody)> GetFeedbacksByReservationId(
+            string reservationId,
+            string idToken = null)
+        {
+            return GetFeedbacksByReservationIdWithCurl(reservationId, idToken);
         }
     }
 }

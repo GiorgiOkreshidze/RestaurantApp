@@ -17,7 +17,7 @@ namespace automation_qa.UI.Pages
         private readonly By _confirmPasswordField = By.CssSelector("input[name='confirmPassword']");
         private readonly By _createAccountButton = By.XPath("//button[@type='submit' and contains(text(), 'Sign Up')]");
         private readonly By _firstNameError = By.XPath("//form//div[1]//p[contains(@class, 'text-destructive')]");
-        private readonly By _lastNameError = By.XPath("/html/body/div/div/div/section/div/form/div[1]/div/div[2]/p[contains(@class, 'text-destructive')]");
+        private readonly By _lastNameError = By.CssSelector("input[name='lastName'] ~ p[class*='text-destructive']");
         private readonly By _emailError = By.XPath("/html/body/div/div/div/section/div/form/div[2]/div[1]/p[contains(@class, 'text-destructive')]");
         private readonly By _passwordLengthRequirement = By.XPath("//input[@name='password']/following-sibling::p[contains(text(), 'Password must be 8-16 characters long')]");
         private readonly By _passwordUppercaseError = By.XPath("/html/body/div/div/div/section/div/form/div[2]/div[2]/p[1]");
@@ -218,6 +218,7 @@ namespace automation_qa.UI.Pages
             {
                 var requirementElement = _wait.Until(driver =>
                 {
+                    var shortWait = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
                     var element = driver.FindElement(_passwordLengthRequirement);
                     string elementClass = element.GetAttribute("class") ?? "";
                     Console.WriteLine($"Classes of password length requirement: {elementClass}");
