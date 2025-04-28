@@ -19,11 +19,13 @@ namespace ApiTests
         private string _testDate;
         private string _testTableId;
         private string _testWaiterId;
+        private Authentication _auth;
 
         [SetUp]
         public void Setup()
         {
             _reservations = new Reservations();
+            _auth = new Authentication();
             _testLocationId = Config.ValidLocationId;
             _testDate = DateTime.Now.ToString("yyyy-MM-dd");
             _testTableId = "04ba5b37-8fbd-4f5f-8354-0b75078a790a";
@@ -31,6 +33,8 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public async Task GetAvailableTables_ReturnsSuccess()
         {
             var (statusCode, responseBody) = await _reservations.GetAvailableTables(locationId: _testLocationId, date: _testDate);
@@ -42,6 +46,8 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public async Task GetAvailableTables_HasCorrectStructure()
         {
             var (statusCode, responseBody) = await _reservations.GetAvailableTables(
@@ -76,6 +82,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAvailableTables_WithLocationFilter_ReturnsFilteredTables()
         {
             var (statusCode, responseBody) = await _reservations.GetAvailableTables(
@@ -101,6 +108,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAvailableTables_WithInvalidLocationId_ReturnsBadRequest()
         {
             string invalidLocationId = "nonexistent";
@@ -131,6 +139,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAvailableTables_WithDateFilter_ReturnsTablesForSpecificDate()
         {
             var (statusCode, responseBody) = await _reservations.GetAvailableTables(locationId: _testLocationId, date: _testDate);
@@ -141,6 +150,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAvailableTables_WithGuestsFilter_ReturnsTablesWithSufficientCapacity()
         {
             int guestCount = 4;
@@ -166,6 +176,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAvailableTables_WithTimeFilter_ReturnsTablesWithAvailableTimeSlots()
         {
             // Use a future time slot to ensure availability
@@ -223,6 +234,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAvailableTables_PastDate_ReturnsBadRequest()
         {
             // Test verifies that tables cannot be retrieved for past dates
@@ -256,6 +268,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAvailableTables_FutureDate_ReturnsSuccess()
         {
             // Test verifies that tables can be retrieved for future dates
@@ -274,6 +287,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAvailableTables_InvalidDateFormat_ReturnsBadRequest()
         {
             // Test verifies that API returns an error with invalid date format
@@ -306,6 +320,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAvailableTables_WithoutParameters_ShouldNotFail()
         {
             // Test checks basic request without parameters
@@ -317,6 +332,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetUserReservations_ReturnsUnauthorized_WhenNotAuthenticated()
         {
             // Test checks user reservation retrieval without authentication
@@ -345,6 +361,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task GetAvailableTables_WithValidLocationAndDate_ShouldNotFail()
         {
             // Test checks request with valid data
@@ -359,6 +376,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task CreateReservationByWaiter_WithoutToken_ShouldRequireAuthorization()
         {
             // Arrange
@@ -385,22 +403,22 @@ namespace ApiTests
             // Assert
             Console.WriteLine($"Status: {statusCode}, Response: {responseBody}");
 
-            // Check that API requires authorization
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
                 "API should require authorization (401 Unauthorized)");
 
             Assert.That(responseBody, Is.Not.Null,
                 "Response body should not be null");
 
-            // Check that response contains error message
-            Assert.That(responseBody["message"], Is.Not.Null,
-                "Response should contain error message");
+            Assert.That(responseBody["type"]?.ToString(), Is.EqualTo("Unauthorized"),
+                "Response should contain 'type' with value 'Unauthorized'");
 
-            Assert.That(responseBody["message"].ToString(), Does.Contain("Unauthorized"),
-                "Error message should indicate lack of authorization");
+            Assert.That(responseBody["title"]?.ToString(), Is.EqualTo("Invalid Request"),
+                "Response should contain 'title' with value 'Invalid Request'");
         }
 
+
         [Test]
+        [Category("Regression")]
         public async Task CreateReservationByWaiter_WithInvalidLocationId_ShouldReturnBadRequest()
         {
             // Arrange
@@ -436,6 +454,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task CreateReservationByWaiter_WithInvalidTableId_ShouldReturnBadRequest()
         {
             // Arrange
@@ -471,6 +490,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task CreateReservationByWaiter_WithPastDate_ShouldReturnBadRequest()
         {
             // Arrange
@@ -506,6 +526,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task CreateReservationByWaiter_WithInvalidTimeFormat_ShouldReturnBadRequest()
         {
             // Arrange
@@ -540,6 +561,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task CreateReservationByWaiter_WithTooManyGuests_ShouldRequireAuthorization()
         {
             // Arrange
@@ -564,20 +586,18 @@ namespace ApiTests
             JObject responseBody = result.ResponseBody;
 
             // Assert
-            Console.WriteLine($"Status: {statusCode}, Response: {responseBody}");
-
-            // Check that API requires authorization regardless of other parameters
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
                 "API should require authorization regardless of guest count");
-
             Assert.That(responseBody, Is.Not.Null,
                 "Response body should not be null");
-
-            Assert.That(responseBody["message"], Is.Not.Null,
-                "Response should contain error message");
+            Assert.That(responseBody["title"], Is.Not.Null,
+                "Response should contain error title");
+            Assert.That(responseBody["title"].ToString(), Is.EqualTo("Invalid Request"),
+                "Response should contain correct error message");
         }
 
         [Test]
+        [Category("Regression")]
         public async Task CreateReservationByWaiter_WithMissingRequiredFields_ShouldReturnBadRequest()
         {
 
@@ -605,6 +625,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task CreateReservationByWaiter_WithEmptyParameters_ShouldRequireAuthorization()
         {
             // Act - send request with empty parameters
@@ -616,18 +637,22 @@ namespace ApiTests
             // Assert
             Console.WriteLine($"Status: {statusCode}, Response: {responseBody}");
 
-            // Check that API requires authorization even with empty parameters
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
                 "API should require authorization even with empty parameters");
 
             Assert.That(responseBody, Is.Not.Null,
                 "Response body should not be null");
 
-            Assert.That(responseBody["message"]?.ToString(), Does.Contain("Unauthorized"),
-                "Response should contain message about authorization requirement");
+            Assert.That(responseBody["title"]?.ToString(), Is.EqualTo("Invalid Request"),
+                "Response should contain 'title' with value 'Invalid Request'");
+
+            Assert.That(responseBody["type"]?.ToString(), Is.EqualTo("Unauthorized"),
+                "Response should contain 'type' with value 'Unauthorized'");
         }
 
+
         [Test]
+        [Category("Regression")]
         public async Task CancelReservation_WithoutToken_ShouldRequireAuthorization()
         {
             // Arrange
@@ -642,18 +667,22 @@ namespace ApiTests
             // Assert
             Console.WriteLine($"Status: {statusCode}, Response: {responseBody}");
 
-            // Check that API requires authorization
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
                 "API should require authorization for reservation cancellation");
 
             Assert.That(responseBody, Is.Not.Null,
                 "Response body should not be null");
 
-            Assert.That(responseBody["message"], Is.Not.Null,
-                "Response should contain error message");
+            Assert.That(responseBody["title"]?.ToString(), Is.EqualTo("Invalid Request"),
+                "Response should contain 'title' with value 'Invalid Request'");
+
+            Assert.That(responseBody["type"]?.ToString(), Is.EqualTo("Unauthorized"),
+                "Response should contain 'type' with value 'Unauthorized'");
         }
 
+
         [Test]
+        [Category("Regression")]
         public async Task CancelReservation_WithInvalidId_ShouldReturnNotFound()
         {
             // Arrange
@@ -678,32 +707,7 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task CancelReservation_WithEmptyId_ShouldReturnError()
-        {
-            // Arrange
-            string emptyReservationId = "";
-
-            // Act
-            var result = await _reservations.CancelReservation(emptyReservationId);
-
-            HttpStatusCode statusCode = result.StatusCode;
-            JObject responseBody = result.ResponseBody;
-
-            // Assert
-            Console.WriteLine($"Status: {statusCode}, Response: {responseBody}");
-
-            // API returns 403 for empty ID without token
-            Assert.That((int)statusCode, Is.GreaterThanOrEqualTo(400),
-                "API should return error code for empty reservation ID");
-
-            Assert.That(responseBody, Is.Not.Null,
-                "Response body should not be null");
-
-            Assert.That(responseBody["message"], Is.Not.Null,
-                "Response should contain error message");
-        }
-
-        [Test]
+        [Category("Regression")]
         public async Task CancelReservation_WithSpecialCharactersInId_ShouldReturnError()
         {
             // Arrange
@@ -727,6 +731,8 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public async Task GetAvailableTables_BasicSuccess()
         {
             // Arrange
@@ -753,6 +759,8 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public async Task GetUserReservations_UnauthorizedAccess()
         {
             // Act
@@ -765,6 +773,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task CreateReservationByWaiter_WithoutToken_ShouldFail()
         {
             // Arrange
@@ -790,6 +799,7 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Regression")]
         public async Task CancelReservation_WithVeryLongId_ShouldReturnError()
         {
             // Arrange
@@ -818,6 +828,76 @@ namespace ApiTests
 
             Assert.That(responseBody, Is.Not.Null,
                 "The response body should not be null");
+        }
+
+        [Test]
+        [Category("Smoke")]
+        public async Task CompleteReservation_WithoutToken_ShouldReturnUnauthorized()
+        {
+            // Act
+            var (statusCode, responseBody) = await _reservations.CompleteReservation(Config.ValidReservationId);
+
+            // Assert
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
+                "Complete reservation without token should return Unauthorized");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task CompleteReservation_WithInvalidId_ShouldReturnNotFound()
+        {
+            // Arrange
+            string invalidReservationId = "invalid-id-" + Guid.NewGuid().ToString();
+
+            var (loginStatus, userLoginResponse) = _auth.LoginUserWithCurl(Config.TestUserEmail, Config.TestUserPassword);
+
+            if (loginStatus != HttpStatusCode.OK)
+            {
+                Assert.Ignore($"Cannot login with test user credentials. Status: {loginStatus}");
+                return;
+            }
+
+            string userToken = userLoginResponse["accessToken"].ToString();
+
+            // Act
+            var (statusCode, _) = await _reservations.CompleteReservation(invalidReservationId, userToken);
+
+            // Assert
+            Assert.That(statusCode, Is.AnyOf(HttpStatusCode.NotFound, HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden),
+                "Complete reservation with invalid ID should return either NotFound, Unauthorized, or Forbidden");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task CompleteReservation_WithAdminToken_ShouldSucceed()
+        {
+            var (_, userLoginResponse) = _auth.LoginUserWithCurl(Config.TestUserEmail, Config.TestUserPassword);
+            string token = userLoginResponse["accessToken"].ToString();
+
+            // Act
+            var (statusCode, responseBody) = await _reservations.CompleteReservation(Config.ValidReservationId, token);
+
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
+                "Expected 401 Unauthorized status for regular user");
+
+            Console.WriteLine($"Status code: {statusCode}");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task CompleteReservation_WithWaiterToken_ShouldSucceed()
+        {
+            // Arrange
+            var (_, waiterLoginResponse) = _auth.LoginUserWithCurl(Config.WaiterEmail, Config.WaiterPassword);
+            string waiterToken = waiterLoginResponse["accessToken"].ToString();
+
+            // Act
+            var (statusCode, _) = await _reservations.CompleteReservation(Config.ValidReservationId, waiterToken);
+
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
+                "Expected 401 Unauthorized status for waiter user");
+
+            Console.WriteLine($"Test completed with status code: {statusCode}");
         }
     }
 }

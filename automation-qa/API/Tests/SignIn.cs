@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using RestSharp;
 using Newtonsoft.Json.Linq;
 using ApiTests.Pages;
 using ApiTests.Utilities;
@@ -19,7 +17,7 @@ namespace ApiTests
         private static bool _userRegistered = false;
 
         [OneTimeSetUp]
-        public async Task RegisterTestUserOnce()
+        public void RegisterTestUserOnce()
         {
             _auth = new Authentication();
 
@@ -28,7 +26,7 @@ namespace ApiTests
             _testPassword = Config.TestUserPassword;
 
             // Register user once for all tests
-            await RegisterTestUser();
+            RegisterTestUser();
         }
 
         [SetUp]
@@ -37,12 +35,12 @@ namespace ApiTests
             _auth = new Authentication();
         }
 
-        private async Task<bool> RegisterTestUser()
+        private bool RegisterTestUser()
         {
             if (_userRegistered)
                 return true;
 
-            var (statusCode, _, _) = await _auth.RegisterUser(
+            var (statusCode, _, _) = _auth.RegisterUserWithCurl(
                 firstName: "Test",
                 lastName: "User",
                 email: _testEmail,
@@ -54,52 +52,74 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task SignIn_ValidCredentials_ShouldReturnTokens()
+        [Category("Smoke")]
+        [Category("Regression")]
+        public void SignIn_ValidCredentials_ShouldReturnTokens()
         {
             // Act - attempt to log in with valid credentials
-            var (statusCode, responseBody) = await _auth.LoginUser(_testEmail, _testPassword);
+            var (statusCode, responseBody) = _auth.LoginUserWithCurl(_testEmail, _testPassword);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Login should be successful");
             Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
 
-            // Check that tokens and other user data are returned
-            Assert.That(responseBody.ContainsKey("idToken") || responseBody.ContainsKey("token"), Is.True,
-                "Response should contain token");
-            Assert.That(responseBody.ContainsKey("refreshToken"), Is.True,
-                "Response should contain refresh token");
+            // Check that the access token and refresh token are returned
+            Assert.That(responseBody.ContainsKey("accessToken"), Is.True, "Response should contain access token");
+            Assert.That(responseBody.ContainsKey("refreshToken"), Is.True, "Response should contain refresh token");
         }
 
+
         [Test]
-        public async Task SignIn_InvalidEmail_ShouldFail()
+        [Category("Regression")]
+        public void SignIn_InvalidEmail_ShouldFail()
         {
             // Act - attempt to log in with incorrect email
             var invalidEmail = $"wrong_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            var (statusCode, responseBody) = await _auth.LoginUser(invalidEmail, _testPassword);
+            var (statusCode, responseBody) = _auth.LoginUserWithCurl(invalidEmail, _testPassword);
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Forbidden),
-                "Login with invalid email should fail with Forbidden");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
+                "Login with invalid email should fail with Unauthorized");
 
-            // Check for error message
+            // Check for error message or title in response
             Assert.That(responseBody, Is.Not.Null, "Error response should contain a message");
-            Assert.That(responseBody.ContainsKey("message"), Is.True,
-                "Error response should include an error message field");
 
-            if (responseBody.ContainsKey("message"))
+            // Check if the 'title' field exists in the response
+            Assert.That(responseBody.ContainsKey("title"), Is.True,
+                "Error response should include a 'title' field");
+
+            // Validate that the title field contains the correct message
+            if (responseBody.ContainsKey("title"))
             {
-                Assert.That(responseBody["message"].ToString(),
-                    Contains.Substring("incorrect").IgnoreCase.Or.Contains("invalid").IgnoreCase,
-                    "Error message should indicate invalid credentials");
+                Assert.That(responseBody["title"].ToString(),
+                    Contains.Substring("Invalid email").IgnoreCase.Or.Contains("Invalid credentials").IgnoreCase,
+                    "Error message should indicate invalid email or credentials");
+            }
+
+            // Check if 'errors' exists, but don't fail if it's an empty object
+            if (responseBody.ContainsKey("errors"))
+            {
+                // If 'errors' is an empty object, the test can pass
+                var errors = responseBody["errors"] as Newtonsoft.Json.Linq.JObject;
+                if (errors != null && errors.Count == 0)
+                {
+                    Console.WriteLine("Errors field is empty, which is acceptable.");
+                }
+                else
+                {
+                    Assert.That(errors, Is.Not.Null, "Errors field should contain details about the issue");
+                }
             }
         }
 
+
         [Test]
-        public async Task SignIn_InvalidPassword_ShouldFail()
+        [Category("Regression")]
+        public void SignIn_InvalidPassword_ShouldFail()
         {
             // Act - attempt to log in with incorrect password
             var wrongPassword = _testPassword + "Wrong";
-            var (statusCode, responseBody) = await _auth.LoginUser(_testEmail, wrongPassword);
+            var (statusCode, responseBody) = _auth.LoginUserWithCurl(_testEmail, wrongPassword);
 
             // Assert
             Assert.That(statusCode, Is.AnyOf(HttpStatusCode.Unauthorized, HttpStatusCode.BadRequest),
@@ -107,67 +127,63 @@ namespace ApiTests
 
             // Check for error message
             Assert.That(responseBody, Is.Not.Null, "Error response should contain a message");
-            Assert.That(responseBody.ContainsKey("message"), Is.True,
-                "Error response should include an error message field");
+            Assert.That(responseBody.ContainsKey("title"), Is.True, "Response should contain error title field");
 
-            if (responseBody.ContainsKey("message"))
+            if (responseBody.ContainsKey("title"))
             {
-                Assert.That(responseBody["message"].ToString(),
-                    Contains.Substring("password").IgnoreCase.Or.Contains("credentials").IgnoreCase,
-                    "Error message should indicate password issue");
+                Assert.That(responseBody["title"].ToString(),
+                    Contains.Substring("Invalid email or password").IgnoreCase,
+                    "Error title should indicate invalid credentials");
             }
         }
 
+
         [Test]
-        public async Task SignIn_EmptyCredentials_ShouldFail()
+        [Category("Regression")]
+        public void SignIn_EmptyCredentials_ShouldFail()
         {
             // Act - attempt to log in with empty email
-            var (emptyEmailStatus, emptyEmailResponse) = await _auth.LoginUser("", _testPassword);
+            var (emptyEmailStatus, emptyEmailResponse) = _auth.LoginUserWithCurl("", _testPassword);
 
             // Assert
             Assert.That(emptyEmailStatus, Is.AnyOf(HttpStatusCode.BadRequest, HttpStatusCode.Unauthorized),
                 "Login with empty email should fail");
 
-            // Check for error message
-            Assert.That(emptyEmailResponse, Is.Not.Null, "Error response should contain a message");
-            Assert.That(emptyEmailResponse.ContainsKey("message"), Is.True,
-                "Error response should include an error message field");
-
-            // We validate that there is an error message, but don't check its specific content
-            // as the API returns a generic error message
+            Assert.That(emptyEmailResponse, Is.Not.Null, "Error response should not be null");
+            Assert.That(emptyEmailResponse.ContainsKey("errors"), Is.True,
+                "Error response should include an 'errors' field");
 
             // Act - attempt to log in with empty password
-            var (emptyPasswordStatus, emptyPasswordResponse) = await _auth.LoginUser(_testEmail, "");
+            var (emptyPasswordStatus, emptyPasswordResponse) = _auth.LoginUserWithCurl(_testEmail, "");
 
             // Assert
             Assert.That(emptyPasswordStatus, Is.AnyOf(HttpStatusCode.BadRequest, HttpStatusCode.Unauthorized, HttpStatusCode.InternalServerError),
                 "Login with empty password should fail");
 
-            // Check for error message
-            Assert.That(emptyPasswordResponse, Is.Not.Null, "Error response should contain a message");
-            Assert.That(emptyPasswordResponse.ContainsKey("message"), Is.True,
-                "Error response should include an error message field");
+            Assert.That(emptyPasswordResponse, Is.Not.Null, "Error response should not be null");
+            Assert.That(emptyPasswordResponse.ContainsKey("errors"), Is.True,
+                "Error response should include an 'errors' field");
 
-            // Only check that there is a message, without validating its specific content
-            Assert.That(emptyPasswordResponse["message"].ToString(), Is.Not.Empty,
-                "Error message should not be empty");
+            // Дополнительно можно проверить, что в поле `errors` есть сообщения
+            var errors = emptyPasswordResponse["errors"];
+            Assert.That(errors.ToString(), Is.Not.Empty, "Error field should not be empty");
         }
 
         [Test]
-        public async Task SignIn_SuccessfulLogin_TokenShouldBeValid()
+        [Category("Smoke")]
+        [Category("Regression")]
+        public void SignIn_SuccessfulLogin_TokenShouldBeValid()
         {
             // Act - log in
-            var (loginStatus, responseBody) = await _auth.LoginUser(_testEmail, _testPassword);
+            var (loginStatus, responseBody) = _auth.LoginUserWithCurl(_testEmail, _testPassword);
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "Login should be successful");
 
-            // Extract idToken from the response
-            string idToken = responseBody["idToken"]?.ToString();
-            string accessToken = responseBody["idToken"]?.ToString(); // Using idToken as accessToken
-
-            Assert.That(idToken, Is.Not.Null.And.Not.Empty, "ID token should not be null or empty");
+            // Extract accessToken from the response
+            string accessToken = responseBody["accessToken"]?.ToString();
+            Assert.That(accessToken, Is.Not.Null.And.Not.Empty, "Access token should not be null or empty");
 
             // Use the obtained token to get the user profile
-            var (profileStatus, userData) = await _auth.GetUserProfile(idToken, accessToken);
+            var (profileStatus, userData) = _auth.GetUserProfileWithCurl(accessToken, accessToken);
 
             // The token should be valid immediately
             Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK),
@@ -187,21 +203,24 @@ namespace ApiTests
             }
         }
 
+
         [Test]
-        public async Task SignIn_LogoutAndLogin_ShouldWorkCorrectly()
+        [Category("Regression")]
+        public void SignIn_LogoutAndLogin_ShouldWorkCorrectly()
         {
             // Act - log in
             Console.WriteLine("Logging in the user...");
             try
             {
-                var (loginStatus, responseBody) = await _auth.LoginUser(_testEmail, _testPassword);
+                var (loginStatus, responseBody) = _auth.LoginUserWithCurl(_testEmail, _testPassword);
                 Console.WriteLine($"Login status: {loginStatus}");
                 Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "Login should be successful");
 
                 // Extract tokens from the response
-                string idToken = responseBody["idToken"]?.ToString();
-                string accessToken = responseBody["idToken"]?.ToString(); // Using idToken as accessToken
+                string accessToken = responseBody["accessToken"]?.ToString();
                 string refreshToken = responseBody["refreshToken"]?.ToString();
+                string idToken = accessToken; // если система использует один токен и для авторизации, и для аутентификации
+
 
                 Console.WriteLine($"Login successful. ID Token: {idToken?.Substring(0, 10)}..., Refresh Token: {refreshToken?.Substring(0, 10)}...");
 
@@ -210,13 +229,13 @@ namespace ApiTests
 
                 // Act - log out using Bearer token
                 Console.WriteLine("Logging out...");
-                var (logoutStatus, _) = await _auth.LogoutUser(refreshToken, idToken);
+                var (logoutStatus, _) = _auth.LogoutUserWithCurl(refreshToken, idToken);
                 Console.WriteLine($"Logout status: {logoutStatus}");
                 Assert.That(logoutStatus, Is.EqualTo(HttpStatusCode.OK), "Logout should be successful");
 
                 // Check if the old token is still valid
                 Console.WriteLine($"Checking token validity after logout...");
-                var (profileStatus, profileResponseBody) = await _auth.GetUserProfile(idToken, accessToken);
+                var (profileStatus, profileResponseBody) = _auth.GetUserProfileWithCurl(idToken, accessToken);
                 Console.WriteLine($"Profile status after logout: {profileStatus}");
 
                 // Token behavior might vary depending on implementation
@@ -225,7 +244,7 @@ namespace ApiTests
 
                 // Log in again with the same credentials
                 Console.WriteLine("Logging in again after logout...");
-                var (secondLoginStatus, secondResponseBody) = await _auth.LoginUser(_testEmail, _testPassword);
+                var (secondLoginStatus, secondResponseBody) = _auth.LoginUserWithCurl(_testEmail, _testPassword);
                 Assert.That(secondLoginStatus, Is.EqualTo(HttpStatusCode.OK),
                     "Login after logout should succeed");
             }
@@ -237,10 +256,11 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task SignIn_TokenExpiration_ShouldBeIncludedInResponse()
+        [Category("Regression")]
+        public void SignIn_TokenExpiration_ShouldBeIncludedInResponse()
         {
             // Act - log in
-            var (loginStatus, responseBody) = await _auth.LoginUser(_testEmail, _testPassword);
+            var (loginStatus, responseBody) = _auth.LoginUserWithCurl(_testEmail, _testPassword);
 
             // Assert
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "Login should be successful");
@@ -253,11 +273,12 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task SignIn_CanLoginAfterRegistration_WithoutDelay()
+        [Category("Regression")]
+        public void SignIn_CanLoginAfterRegistration_WithoutDelay()
         {
             // Arrange & Act - register new user
             string newEmail = $"immediate_login_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
-            var (registerStatus, _, _) = await _auth.RegisterUser(
+            var (registerStatus, _, _) = _auth.RegisterUserWithCurl(
                 firstName: "Test",
                 lastName: "User",
                 email: newEmail,
@@ -269,24 +290,30 @@ namespace ApiTests
                 "User registration should be successful");
 
             // Act - attempt immediate login after registration
-            var (loginStatus, responseBody) = await _auth.LoginUser(newEmail, _testPassword);
+            var (loginStatus, responseBody) = _auth.LoginUserWithCurl(newEmail, _testPassword);
 
             // Assert login success
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK),
                 "Login immediately after registration should succeed");
-            Assert.That(responseBody.ContainsKey("idToken"), Is.True,
-                "Login response should contain idToken");
+
+            Assert.That(responseBody, Is.Not.Null, "Login response should not be null");
+            Assert.That(
+                responseBody.ContainsKey("accessToken") || responseBody.ContainsKey("idToken"),
+                "Login response should contain authentication token (accessToken or idToken)"
+            );
         }
 
+
         [Test]
-        public async Task SignIn_SuccessfulLoginAndProfile_UserDataMatches()
+        [Category("Regression")]
+        public void SignIn_SuccessfulLoginAndProfile_UserDataMatches()
         {
             // Arrange - register test user with specific data
             string testFirstName = "Jane";
             string testLastName = "Doe";
             string testEmail = $"jane_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
 
-            var (registerStatus, _, _) = await _auth.RegisterUser(
+            var (registerStatus, _, _) = _auth.RegisterUserWithCurl(
                 firstName: testFirstName,
                 lastName: testLastName,
                 email: testEmail,
@@ -296,11 +323,11 @@ namespace ApiTests
             Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "Registration should succeed");
 
             // Act - login and get profile
-            var (loginStatus, loginResponse) = await _auth.LoginUser(testEmail, _testPassword);
+            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl(testEmail, _testPassword);
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "Login should succeed");
 
-            string idToken = loginResponse["idToken"]?.ToString();
-            var (profileStatus, profileData) = await _auth.GetUserProfile(idToken);
+            string accessToken = loginResponse["accessToken"]?.ToString(); // Use accessToken instead of idToken
+            var (profileStatus, profileData) = _auth.GetUserProfileWithCurl(accessToken); // Pass accessToken here
 
             // Assert - profile data matches registration data
             Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK), "Profile retrieval should succeed");
@@ -309,8 +336,10 @@ namespace ApiTests
             Assert.That(profileData["lastName"]?.ToString(), Is.EqualTo(testLastName), "Last name should match");
         }
 
+
         [Test]
-        public async Task SignIn_InvalidEmailFormat_ShouldBeValidated()
+        [Category("Regression")]
+        public void SignIn_InvalidEmailFormat_ShouldBeValidated()
         {
             // Arrange
             var invalidEmails = new[]
@@ -326,7 +355,7 @@ namespace ApiTests
             // Act & Assert
             foreach (var invalidEmail in invalidEmails)
             {
-                var (statusCode, responseBody) = await _auth.LoginUser(invalidEmail, "ValidPassword123!");
+                var (statusCode, responseBody) = _auth.LoginUserWithCurl(invalidEmail, "ValidPassword123!");
 
                 Assert.That(statusCode, Is.AnyOf(HttpStatusCode.BadRequest, HttpStatusCode.Unauthorized),
                     $"Login with invalid email format '{invalidEmail}' should fail");
@@ -344,85 +373,172 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task SignIn_IncorrectPasswordFormat_ShouldFail()
+        [Category("Regression")]
+        public void SignIn_IncorrectPasswordFormat_ShouldFail()
         {
             // Arrange - password too short
             string shortPassword = "123";
 
             // Act
-            var (statusCode, responseBody) = await _auth.LoginUser(_testEmail, shortPassword);
+            var (statusCode, responseBody) = _auth.LoginUserWithCurl(_testEmail, shortPassword);
 
             // Assert
             Assert.That(statusCode, Is.AnyOf(HttpStatusCode.BadRequest, HttpStatusCode.Unauthorized),
                 "Login with too short password should fail");
             Assert.That(responseBody, Is.Not.Null, "Error response should not be null");
-            Assert.That(responseBody.ContainsKey("message"), Is.True,
-                "Response should contain error message");
+
+            // Check for the 'title' field in the response which contains the error message
+            Assert.That(responseBody.ContainsKey("title"), Is.True,
+                "Response should contain error message title");
+
+            // Optionally, check the actual error message value
+            Assert.That(responseBody["title"]?.ToString(), Is.EqualTo("Invalid email or password."),
+                "Error message should be 'Invalid email or password.'");
         }
 
+
         [Test]
-        public async Task SignIn_IncorrectEmailFormat_ShouldFail()
+        [Category("Regression")]
+        public void SignIn_IncorrectEmailFormat_ShouldFail()
         {
             // Arrange - invalid email format
             string invalidEmail = "notanemail";
 
             // Act
-            var (statusCode, responseBody) = await _auth.LoginUser(invalidEmail, _testPassword);
+            var (statusCode, responseBody) = _auth.LoginUserWithCurl(invalidEmail, _testPassword);
 
             // Assert
             Assert.That(statusCode, Is.AnyOf(HttpStatusCode.BadRequest, HttpStatusCode.Unauthorized),
                 "Login with invalid email format should fail");
             Assert.That(responseBody, Is.Not.Null, "Error response should not be null");
-            Assert.That(responseBody.ContainsKey("message"), Is.True,
-                "Response should contain error message");
+
+            Assert.That(responseBody.ContainsKey("errors"), Is.True,
+                "Response should contain 'errors' field");
+
+            Assert.That(responseBody["errors"].ToString().ToLower(), Does.Contain("email"),
+                "Errors should contain message about invalid email");
         }
 
+
         [Test]
-        public async Task SignIn_TokenFormatIsValid()
+        [Category("Regression")]
+        public void SignIn_TokenFormatIsValid()
         {
             // Arrange - register a test user
             string email = $"token_test_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
             string password = Config.TestUserPassword;
 
-            var (registerStatus, _, _) = await _auth.RegisterUser("Token", "Test", email, password);
+            var (registerStatus, _, _) = _auth.RegisterUserWithCurl("Token", "Test", email, password);
             Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "Registration should succeed");
 
             // Act - login and validate token format
-            var (loginStatus, responseBody) = await _auth.LoginUser(email, password);
+            var (loginStatus, responseBody) = _auth.LoginUserWithCurl(email, password);
 
             // Assert
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "Login should succeed");
-            Assert.That(responseBody.ContainsKey("idToken"), Is.True, "Response should contain ID token");
-            Assert.That(responseBody.ContainsKey("refreshToken"), Is.True, "Response should contain refresh token");
+            Assert.That(responseBody.ContainsKey("accessToken"), Is.True, "Response should contain access token");
 
             // Check token formats - typically JWT tokens have 3 parts separated by dots
-            string idToken = responseBody["idToken"].ToString();
-            Assert.That(idToken.Split('.').Length, Is.EqualTo(3), "ID token should be in JWT format");
+            string accessToken = responseBody["accessToken"].ToString();
+            Assert.That(accessToken.Split('.').Length, Is.EqualTo(3), "Access token should be in JWT format");
         }
 
+
         [Test]
-        public async Task SignIn_LoginAfterLogout_ShouldSucceed()
+        [Category("Regression")]
+        public void SignIn_LoginAfterLogout_ShouldSucceed()
         {
             // Arrange - log in first
-            var (loginStatus, loginResponse) = await _auth.LoginUser(_testEmail, _testPassword);
+            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl(_testEmail, _testPassword);
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "Initial login should succeed");
 
+            // Ensure the response contains both accessToken and refreshToken
+            Assert.That(loginResponse.ContainsKey("accessToken"), Is.True, "Login response should contain accessToken");
+            Assert.That(loginResponse.ContainsKey("refreshToken"), Is.True, "Login response should contain refreshToken");
+
             // Get tokens
-            string idToken = loginResponse["idToken"].ToString();
-            string refreshToken = loginResponse["refreshToken"].ToString();
+            string accessToken = loginResponse["accessToken"]?.ToString();
+            string refreshToken = loginResponse["refreshToken"]?.ToString();
+
+            // Ensure the tokens are not null or empty
+            Assert.That(accessToken, Is.Not.Null.And.Not.Empty, "accessToken should not be null or empty");
+            Assert.That(refreshToken, Is.Not.Null.And.Not.Empty, "refreshToken should not be null or empty");
 
             // Act - log out
-            var (logoutStatus, _) = await _auth.LogoutUser(refreshToken, idToken);
+            var (logoutStatus, _) = _auth.LogoutUserWithCurl(refreshToken, accessToken);
             Assert.That(logoutStatus, Is.EqualTo(HttpStatusCode.OK), "Logout should succeed");
 
             // Act again - try to log in after logout
-            var (secondLoginStatus, secondLoginResponse) = await _auth.LoginUser(_testEmail, _testPassword);
+            var (secondLoginStatus, secondLoginResponse) = _auth.LoginUserWithCurl(_testEmail, _testPassword);
 
             // Assert
             Assert.That(secondLoginStatus, Is.EqualTo(HttpStatusCode.OK),
                 "Login after logout should succeed");
-            Assert.That(secondLoginResponse.ContainsKey("idToken"), Is.True,
-                "Second login should return new ID token");
+            Assert.That(secondLoginResponse.ContainsKey("accessToken"), Is.True,
+                "Second login should return a new access token");
+        }
+
+        [Test]
+        [Category("Smoke")]
+        public void SignIn_CorrectCredentials_ShouldReturnOK()
+        {
+            // Act - log in with correct credentials
+            var (statusCode, _) = _auth.LoginUserWithCurl("test@example.com", Config.TestUserPassword);
+
+            // Assert
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Login with correct credentials should succeed");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void SignIn_WrongEmail_ShouldReturnUnauthorized()
+        {
+            // Act - log in with wrong email
+            var (statusCode, _) = _auth.LoginUserWithCurl("wrong@example.com", Config.TestUserPassword);
+
+            // Assert
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
+                "Login with wrong email should return Unauthorized");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void SignIn_EmptyEmail_ShouldReturnBadRequest()
+        {
+            // Act - log in with empty email
+            var (statusCode, _) = _auth.LoginUserWithCurl("", Config.TestUserPassword);
+
+            // Assert
+            Assert.That(statusCode, Is.AnyOf(HttpStatusCode.BadRequest, HttpStatusCode.Unauthorized),
+                "Login with empty email should fail");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void SignIn_TokenContainsUserInfo()
+        {
+            // Act - log in
+            var (_, response) = _auth.LoginUserWithCurl("test@example.com", Config.TestUserPassword);
+
+            // Get token and check profile
+            string accessToken = response["accessToken"].ToString();
+            var (_, profile) = _auth.GetUserProfileWithCurl(accessToken);
+
+            // Assert - token contains user info
+            Assert.That(profile["email"].ToString(), Is.EqualTo("test@example.com"),
+                "Profile from token should contain correct email");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void SignIn_ResponseContainsAccessToken()
+        {
+            // Act - log in
+            var (_, response) = _auth.LoginUserWithCurl("test@example.com", Config.TestUserPassword);
+
+            // Assert - check response contains access token
+            Assert.That(response.ContainsKey("accessToken"), Is.True,
+                "Login response should contain access token");
         }
     }
 }

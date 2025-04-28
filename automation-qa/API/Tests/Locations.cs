@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Net;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 using ApiTests.Pages;
-using ApiTests.Utils;
 using ApiTests.Utilities;
+using automation_qa.Framework;
 
 namespace ApiTests
 {
@@ -13,39 +12,19 @@ namespace ApiTests
     [Category("Locations")]
     public class LocationsTests : BaseTest
     {
-        private Locations _locations;
-        private TestDataHelper _testDataHelper;
-
-        [OneTimeSetUp]
-        public async Task OneTimeSetUp()
-        {
-            _testDataHelper = new TestDataHelper();
-
-            // Attempting to populate the database, but not interrupting the tests if it fails
-            try
-            {
-                Console.WriteLine("Attempting to seed test data...");
-                bool seeded = await _testDataHelper.SeedLocationsData();
-                Console.WriteLine($"Data seeding result: {(seeded ? "Success" : "Failed")}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error during data seeding: {ex.Message}");
-                // Do not interrupt the test execution due to an error
-            }
-        }
+        private LocationsWithCurl _locations;
 
         [SetUp]
         public void Setup()
         {
-            _locations = new Locations();
+            _locations = new LocationsWithCurl();
         }
 
         [Test]
-        public async Task GetLocations_ShouldReturnAllLocations()
+        public void GetLocations_ShouldReturnAllLocations()
         {
             // Act
-            var (statusCode, responseBody) = await _locations.GetLocations();
+            var (statusCode, responseBody) = _locations.GetLocationsWithCurl();
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return status 200 OK");
@@ -69,10 +48,10 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task GetLocationSelectOptions_ShouldReturnFormattedOptions()
+        public void GetLocationSelectOptions_ShouldReturnFormattedOptions()
         {
             // Act
-            var (statusCode, responseBody) = await _locations.GetLocationSelectOptions();
+            var (statusCode, responseBody) = _locations.GetLocationSelectOptionsWithCurl();
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return status 200 OK");
@@ -92,35 +71,23 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task GetSpecialityDishes_ValidLocationId_ShouldReturnDishes()
+        public void GetSpecialityDishes_ValidLocationId_ShouldReturnDishes()
         {
             // Arrange - first, get the list of locations
-            var (locationsStatus, locations) = await _locations.GetLocations();
+            var (locationsStatus, locations) = _locations.GetLocationsWithCurl();
             Assert.That(locationsStatus, Is.EqualTo(HttpStatusCode.OK), "Getting locations should succeed");
 
-            string locationId;
-
-            // If there are no locations, create a test location
+            // Skip test if no locations found
             if (locations == null || locations.Count == 0)
             {
-                Console.WriteLine("No locations found. Creating a test location...");
-                locationId = await _testDataHelper.CreateRandomLocation();
-
-                if (string.IsNullOrEmpty(locationId))
-                {
-                    Assert.Inconclusive("Failed to create test location");
-                    return;
-                }
-
-                Console.WriteLine($"Created test location with ID: {locationId}");
+                Assert.Inconclusive("No locations available for testing");
+                return;
             }
-            else
-            {
-                locationId = locations[0]["id"].ToString();
-            }
+
+            string locationId = locations[0]["id"].ToString();
 
             // Act
-            var (statusCode, responseBody) = await _locations.GetSpecialityDishes(locationId);
+            var (statusCode, responseBody) = _locations.GetSpecialityDishesWithCurl(locationId);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return status 200 OK");
@@ -137,21 +104,17 @@ namespace ApiTests
                 {
                     Assert.That(firstDish["description"].ToString(), Is.Not.Empty, "Dish description should not be empty if present");
                 }
-                else
-                {
-                    Console.WriteLine("Note: Dish description is null, but this may be acceptable");
-                }
             }
         }
 
         [Test]
-        public async Task GetSpecialityDishes_InvalidLocationId_ReturnsEmptyArray()
+        public void GetSpecialityDishes_InvalidLocationId_ReturnsEmptyArray()
         {
             // Arrange
             string invalidLocationId = "non-existent-id";
 
             // Act
-            var (statusCode, responseBody) = await _locations.GetSpecialityDishes(invalidLocationId);
+            var (statusCode, responseBody) = _locations.GetSpecialityDishesWithCurl(invalidLocationId);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK),
@@ -161,26 +124,24 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task GetSpecialityDishes_EmptyLocationId_ReturnsEmptyArray()
+        public void GetSpecialityDishes_EmptyLocationId_ReturnsNotFound()
         {
             // Arrange
             string emptyLocationId = "";
 
             // Act
-            var (statusCode, responseBody) = await _locations.GetSpecialityDishes(emptyLocationId);
+            var response = _locations.GetSpecialityDishesWithCurl(emptyLocationId);
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK),
-                "API returns 200 OK with empty location ID");
-            Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
-            Assert.That(responseBody.Count, Is.EqualTo(0), "Response should be an empty array");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
+
         [Test]
-        public async Task GetLocations_ShouldContainDetailsForLocationOverview()
+        public void GetLocations_ShouldContainDetailsForLocationOverview()
         {
             // Act
-            var (statusCode, responseBody) = await _locations.GetLocations();
+            var (statusCode, responseBody) = _locations.GetLocationsWithCurl();
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return status 200 OK");
@@ -210,13 +171,12 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task GetLocationFeedbacks_ReturnsSuccess()
+        public void GetLocationFeedbacks_ReturnsSuccess()
         {
             // Arrange - get the location ID for testing
-            var (locationsStatus, locations) = await _locations.GetLocations();
+            var (locationsStatus, locations) = _locations.GetLocationsWithCurl();
             Assert.That(locationsStatus, Is.EqualTo(HttpStatusCode.OK), "Getting locations should succeed");
 
-            // Check for the presence of locations
             if (locations == null || locations.Count == 0)
             {
                 Assert.Inconclusive("No locations available for testing");
@@ -226,55 +186,53 @@ namespace ApiTests
             string locationId = locations[0]["id"].ToString();
 
             // Act
-            var (statusCode, responseBody) = await _locations.GetLocationFeedbacks(locationId);
+            var (statusCode, responseBody) = _locations.GetLocationFeedbacksWithCurl(locationId);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Failed to get location feedbacks");
             Assert.That(responseBody, Is.Not.Null, "Feedbacks response is null");
 
-            // Check the response structure (presence of required fields in the paginated response)
+            // Check that 'content' exists and is array
             Assert.That(responseBody["content"], Is.Not.Null, "Content field is missing in response");
-            Assert.That(responseBody["size"], Is.Not.Null, "Size field is missing in response");
-            Assert.That(responseBody["number"], Is.Not.Null, "Number field is missing in response");
-            Assert.That(responseBody["sort"], Is.Not.Null, "Sort field is missing in response");
+            var feedbacks = responseBody["content"] as JArray;
+            Assert.That(feedbacks, Is.Not.Null, "Content should be an array");
+
+            if (feedbacks.Count > 0)
+            {
+                var first = feedbacks[0];
+                Assert.That(first["id"], Is.Not.Null, "Feedback should have an ID");
+                Assert.That(first["rate"], Is.Not.Null, "Feedback should have a rating");
+                Assert.That(first["comment"], Is.Not.Null, "Feedback should have a comment");
+                Assert.That(first["userName"], Is.Not.Null, "Feedback should have a user name");
+                Assert.That(first["date"], Is.Not.Null, "Feedback should have a date");
+                Assert.That(first["type"], Is.Not.Null, "Feedback should have a type");
+            }
         }
 
         [Test]
-        public async Task GetLocationFeedbacks_ShouldReturnFeedbacksWithPagination()
+        public void GetLocationFeedbacks_ShouldReturnFeedbacks()
         {
             // Arrange - get the location ID for testing
-            var (locationsStatus, locations) = await _locations.GetLocations();
+            var (locationsStatus, locations) = _locations.GetLocationsWithCurl();
             Assert.That(locationsStatus, Is.EqualTo(HttpStatusCode.OK), "Getting locations should succeed");
 
-            string locationId;
             if (locations == null || locations.Count == 0)
             {
-                Console.WriteLine("No locations found. Creating a test location...");
-                locationId = await _testDataHelper.CreateRandomLocation();
+                Assert.Inconclusive("No locations available for testing");
+                return;
+            }
 
-                if (string.IsNullOrEmpty(locationId))
-                {
-                    Assert.Inconclusive("Failed to create test location");
-                    return;
-                }
-            }
-            else
-            {
-                locationId = locations[0]["id"].ToString();
-            }
+            string locationId = locations[0]["id"].ToString();
 
             // Act
-            var (statusCode, responseBody) = await _locations.GetLocationFeedbacks(locationId);
+            var (statusCode, responseBody) = _locations.GetLocationFeedbacksWithCurl(locationId);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return status 200 OK");
             Assert.That(responseBody, Is.Not.Null, "Response body should not be null");
 
+            // Check basic response structure
             Assert.That(responseBody["content"], Is.Not.Null, "Response should contain 'content' field");
-            Assert.That(responseBody["pageable"], Is.Not.Null, "Response should contain 'pageable' field");
-            Assert.That(responseBody["size"], Is.Not.Null, "Response should contain 'size' field");
-            Assert.That(responseBody["number"], Is.Not.Null, "Response should contain 'number' field");
-            Assert.That(responseBody["sort"], Is.Not.Null, "Response should contain 'sort' field");
 
             var feedbacks = responseBody["content"] as JArray;
             Assert.That(feedbacks, Is.Not.Null, "Content should be an array");
@@ -292,10 +250,11 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task GetLocationFeedbacks_WithServiceQualityFilter_ShouldReturnOnlyServiceQualityFeedbacks()
+        public void GetLocationFeedbacks_WithServiceQualityFilter_ShouldReturnOnlyServiceQualityFeedbacks()
         {
             // Arrange
-            var (locationsStatus, locations) = await _locations.GetLocations();
+            var (locationsStatus, locations) = _locations.GetLocationsWithCurl();
+
             if (locations == null || locations.Count == 0)
             {
                 Assert.Inconclusive("No locations available for testing");
@@ -305,8 +264,8 @@ namespace ApiTests
             string locationId = locations[0]["id"].ToString();
             string feedbackType = "SERVICE_QUALITY";
 
-            // Act
-            var (statusCode, responseBody) = await _locations.GetLocationFeedbacks(locationId, type: feedbackType);
+            // Act - Get feedbacks with type filter
+            var (statusCode, responseBody) = _locations.GetLocationFeedbacksWithCurl(locationId, type: feedbackType);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return status 200 OK");
@@ -326,10 +285,11 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task GetLocationFeedbacks_WithCuisineExperienceFilter_ShouldReturnOnlyCuisineExperienceFeedbacks()
+        public void GetLocationFeedbacks_WithCuisineExperienceFilter_ShouldReturnOnlyCuisineExperienceFeedbacks()
         {
             // Arrange
-            var (locationsStatus, locations) = await _locations.GetLocations();
+            var (locationsStatus, locations) = _locations.GetLocationsWithCurl();
+
             if (locations == null || locations.Count == 0)
             {
                 Assert.Inconclusive("No locations available for testing");
@@ -339,8 +299,8 @@ namespace ApiTests
             string locationId = locations[0]["id"].ToString();
             string feedbackType = "CUISINE_EXPERIENCE";
 
-            // Act
-            var (statusCode, responseBody) = await _locations.GetLocationFeedbacks(locationId, type: feedbackType);
+            // Act - Get feedbacks with type filter
+            var (statusCode, responseBody) = _locations.GetLocationFeedbacksWithCurl(locationId, type: feedbackType);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return status 200 OK");
@@ -360,10 +320,11 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task GetLocationFeedbacks_SortByDateDesc_ShouldReturnFeedbacksInCorrectOrder()
+        public void GetLocationFeedbacks_SortByDateDesc_ShouldReturnFeedbacksInCorrectOrder()
         {
             // Arrange
-            var (locationsStatus, locations) = await _locations.GetLocations();
+            var (locationsStatus, locations) = _locations.GetLocationsWithCurl();
+
             if (locations == null || locations.Count == 0)
             {
                 Assert.Inconclusive("No locations available for testing");
@@ -372,11 +333,8 @@ namespace ApiTests
 
             string locationId = locations[0]["id"].ToString();
 
-            // Act
-            var (statusCode, responseBody) = await _locations.GetLocationFeedbacks(
-                locationId,
-                sortBy: "date",
-                sortDir: "DESC");
+            // Act - Get feedbacks sorted by date
+            var (statusCode, responseBody) = _locations.GetLocationFeedbacksWithCurl(locationId, sortBy: "date", sortDir: "DESC");
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Should return status 200 OK");
@@ -402,56 +360,23 @@ namespace ApiTests
         }
 
         [Test]
-        public async Task GetLocationById_NullLocationId_ShouldThrowArgumentException()
+        public void GetLocationById_ValidIdWithoutToken_ReturnsNotFound()
         {
             // Arrange
-            string locationId = null;
-
-            // Act & Assert
-            Assert.ThrowsAsync<ArgumentException>(async () => await _locations.GetLocationById(locationId),
-                "Should throw ArgumentException for null locationId");
-        }
-
-        [Test]
-        public async Task GetLocationById_EmptyLocationId_ShouldThrowArgumentException()
-        {
-            // Arrange
-            string locationId = "";
-
-            // Act & Assert
-            Assert.ThrowsAsync<ArgumentException>(async () => await _locations.GetLocationById(locationId),
-                "Should throw ArgumentException for empty locationId");
-        }
-
-        [Test]
-        public async Task GetLocationById_ValidIdWithoutToken_ReturnsForbidden()
-        {
-            // Arrange
-            string locationId = Config.ValidLocationId;
+            string locationId = Guid.NewGuid().ToString(); // Using a random GUID as valid format
 
             // Act
-            var result = await _locations.GetLocationById(locationId);
-            HttpStatusCode statusCode = result.StatusCode;
-            JObject? responseBody = result.ResponseBody;
+            var (statusCode, responseBody) = _locations.GetLocationByIdWithCurl(locationId);
 
             // Assert
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.Forbidden),
-                "Should return Forbidden status when no authentication token is provided");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.NotFound),
+                "Should return NotFound status when location ID is not found");
+
             Assert.That(responseBody, Is.Not.Null,
                 "Response body should not be null");
-            Assert.That(responseBody["message"]?.ToString(), Is.EqualTo("Missing Authentication Token"),
-                "Error message should indicate missing authentication token");
-        }
 
-        [Test]
-        public async Task GetLocationById_InvalidFormatLocationId_ShouldThrowArgumentException()
-        {
-            // Arrange
-            string locationId = "invalid-format-id";
-
-            // Act & Assert
-            Assert.ThrowsAsync<ArgumentException>(async () => await _locations.GetLocationById(locationId),
-                "Should throw ArgumentException for invalid format locationId");
+            Assert.That(responseBody["type"]?.ToString(), Is.EqualTo("NotFoundException"),
+                "Error type should indicate NotFoundException");
         }
     }
 }

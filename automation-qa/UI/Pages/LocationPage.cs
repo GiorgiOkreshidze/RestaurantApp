@@ -1,9 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace automation_qa.UI.Pages
 {
@@ -12,69 +9,136 @@ namespace automation_qa.UI.Pages
         private readonly IWebDriver _driver;
         private readonly WebDriverWait _wait;
 
-        private readonly By _locationTitle = By.XPath("//h1[contains(text(), '14 Baratashvili Street')]");
-        private readonly By _rating = By.XPath("//div[contains(@class, 'rating')]");
-        private readonly By _feedbackSection = By.XPath("//h2[contains(text(), 'Customer Feedback')]");
-        private readonly By _serviceFilter = By.XPath("//select/option[contains(text(), 'Service')]");
-        private readonly By _cuisineFilter = By.XPath("//select/option[contains(text(), 'Cuisine Experience')]");
-        private readonly By _sortByDate = By.XPath("//select/option[contains(text(), 'Date')]");
-        private readonly By _sortByRating = By.XPath("//select/option[contains(text(), 'Rating')]");
-        private readonly By _feedbackItems = By.XPath("//div[contains(@class, 'feedback-item')]");
-        private readonly By _pagination = By.XPath("//div[contains(@class, 'pagination')]");
+        private readonly By _locationTitle = By.XPath("/html/body/div/div[1]/div/a[2]/p");
+        private readonly By _reviewStars = By.XPath("/html/body/div/div[4]/div/div[2]/div[1]/div[1]/div[3]");
+        private readonly By _specialityDishesSection = By.XPath("/html/body/div/div[3]/article/header/p");
+        private readonly By _dishCards = By.XPath("//article[1]/div/div");
+        private readonly By _feedbackSection = By.XPath("/html/body/div/div[4]/div/p");
+        private readonly By _cuisineExperienceFilter = By.XPath("/html/body/div/div[4]/div/div[1]/div[1]/button[2]");
+        private readonly By _mainPageLink = By.XPath("/html/body/div/div[1]/div/a[1]");
 
         public LocationOverviewPage(IWebDriver driver)
         {
             _driver = driver;
-            _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
         }
 
         public bool IsLocationTitleDisplayed()
         {
-            return _wait.Until(ExpectedConditions.ElementIsVisible(_locationTitle)).Displayed;
+            try
+            {
+                var title = _wait.Until(ExpectedConditions.ElementIsVisible(_locationTitle));
+                return title.Displayed;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
         }
 
-        public bool IsRatingDisplayed()
+        public bool AreReviewStarsDisplayed()
         {
-            return _wait.Until(ExpectedConditions.ElementIsVisible(_rating)).Displayed;
+            try
+            {
+                var stars = _wait.Until(ExpectedConditions.ElementIsVisible(_reviewStars));
+                return stars.Displayed;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        public bool IsSpecialityDishesSectionDisplayed()
+        {
+            return _wait.Until(ExpectedConditions.ElementIsVisible(_specialityDishesSection)).Displayed;
+        }
+
+        public bool AreDishCardsDisplayed()
+        {
+            try
+            {
+                var cards = _driver.FindElements(_dishCards);
+                if (cards.Count > 0)
+                {
+                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", cards[0]);
+                }
+                return cards.Count > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int GetDishCardsCount()
+        {
+            try
+            {
+                return _driver.FindElements(_dishCards).Count;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public bool IsFeedbackSectionDisplayed()
         {
-            return _wait.Until(ExpectedConditions.ElementIsVisible(_feedbackSection)).Displayed;
+            try
+            {
+                var section = _wait.Until(ExpectedConditions.ElementIsVisible(_feedbackSection));
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", section);
+                return section.Displayed;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public void FilterFeedbackByService()
+        public void ClickCuisineExperienceFilter()
         {
-            var filter = _wait.Until(ExpectedConditions.ElementToBeClickable(_serviceFilter));
+            var filter = _wait.Until(ExpectedConditions.ElementToBeClickable(_cuisineExperienceFilter));
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", filter);
             filter.Click();
         }
 
-        public void FilterFeedbackByCuisine()
+        public bool IsCuisineExperienceFilterClickable()
         {
-            var filter = _wait.Until(ExpectedConditions.ElementToBeClickable(_cuisineFilter));
-            filter.Click();
+            try
+            {
+                var filter = _wait.Until(ExpectedConditions.ElementToBeClickable(_cuisineExperienceFilter));
+                return filter != null && filter.Displayed && filter.Enabled;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
         }
 
-        public void SortFeedbackByDate()
+        public MainPage ClickMainPageLink()
         {
-            var sortOption = _wait.Until(ExpectedConditions.ElementToBeClickable(_sortByDate));
-            sortOption.Click();
+            var mainPageLink = _wait.Until(ExpectedConditions.ElementToBeClickable(_mainPageLink));
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", mainPageLink);
+            mainPageLink.Click();
+            return new MainPage(_driver);
         }
 
-        public void SortFeedbackByRating()
+        public bool IsMainPageLinkClickable()
         {
-            var sortOption = _wait.Until(ExpectedConditions.ElementToBeClickable(_sortByRating));
-            sortOption.Click();
-        }
-
-        public List<IWebElement> GetFeedbackItems()
-        {
-            return _wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(_feedbackItems)).ToList();
-        }
-
-        public bool IsPaginationDisplayed()
-        {
-            return _wait.Until(ExpectedConditions.ElementIsVisible(_pagination)).Displayed;
+            try
+            {
+                var mainPageLink = _wait.Until(ExpectedConditions.ElementToBeClickable(_mainPageLink));
+                var linkText = mainPageLink.FindElement(By.XPath("./p"));
+                Console.WriteLine($"Main page link text: {linkText.Text}");
+                return mainPageLink != null && mainPageLink.Displayed && mainPageLink.Enabled && linkText.Text.Contains("Main page", StringComparison.OrdinalIgnoreCase);
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                Console.WriteLine($"Failed to find Main page link: {ex.Message}");
+                return false;
+            }
         }
     }
 }

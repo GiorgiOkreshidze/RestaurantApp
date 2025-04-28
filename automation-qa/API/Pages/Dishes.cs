@@ -1,159 +1,154 @@
-﻿using Newtonsoft.Json.Linq;
-using RestSharp;
+﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ApiTests.Utilities;
+using automation_qa.Framework;
 
 namespace ApiTests.Pages
 {
-    /// <summary>
-    /// This class provides functionality to interact with the API to retrieve popular dishes.
-    /// It sends a GET request to the "/dishes/popular" endpoint and processes the response.
-    /// </summary>
     public class Dishes : BasePage
     {
-        public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetPopularDishes()
+        private readonly CurlHelper _curlHelper;
+        private readonly string _baseUrl;
+
+        public Dishes(string baseUrl = null)
         {
-            var request = CreateGetRequest("/dishes/popular");
-            var response = await ExecuteGetRequestAsync(request);
-            JArray? responseBody = null;
-
-            Console.WriteLine($"GetPopularDishes response status: {response.StatusCode}");
-            Console.WriteLine($"GetPopularDishes response content: {response.Content}");
-
-            if (!string.IsNullOrEmpty(response.Content))
-            {
-                try
-                {
-                    responseBody = JArray.Parse(response.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
-            }
-
-            return (response.StatusCode, responseBody);
+            _baseUrl = baseUrl ?? BaseConfiguration.ApiBaseUrl;
+            _curlHelper = new CurlHelper("curl");
         }
 
         /// <summary>
-        /// Retrieves the specialty dishes for a specific restaurant location
+        /// Gets popular dishes using curl
         /// </summary>
-        /// <param name="locationId">ID of the restaurant location</param>
-        /// <returns>Tuple containing the HTTP status code and response body as JArray</returns>
-        public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetSpecialtyDishes(string locationId)
+        public (HttpStatusCode statusCode, JArray responseBody) GetPopularDishesWithCurl()
         {
-            if (string.IsNullOrEmpty(locationId))
-            {
-                Console.WriteLine("Error: locationId cannot be null or empty");
-                return (HttpStatusCode.BadRequest, null);
-            }
-
-            var request = CreateGetRequest($"/locations/{locationId}/specialty-dishes");
-
-            var response = await ExecuteGetRequestAsync(request);
-
-            Console.WriteLine($"GetSpecialtyDishes response status: {response.StatusCode}");
-            Console.WriteLine($"GetSpecialtyDishes response content: {response.Content}");
-
-            JArray? responseBody = null;
-            if (!string.IsNullOrEmpty(response.Content))
-            {
-                try
-                {
-                    responseBody = JArray.Parse(response.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
-            }
-
-            return (response.StatusCode, responseBody);
+            string url = $"{_baseUrl}/dishes/popular";
+            return _curlHelper.ExecuteGetRequestForArray(url);
         }
 
         /// <summary>
-        /// Получает список всех блюд с возможностью фильтрации по типу и сортировки
+        /// Gets specialty dishes by location ID using curl
         /// </summary>
-        /// <param name="dishType">Тип блюда для фильтрации (например, "Appetizers", "Desserts")</param>
-        /// <param name="sort">Параметр сортировки (например, "PopularityAsc")</param>
-        /// <returns>Tuple containing the HTTP status code and response body as JArray</returns>
-        public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetAllDishes(string dishType = null, string sort = null)
+        public (HttpStatusCode StatusCode, JArray ResponseBody) GetSpecialtyDishesWithCurl(string locationId)
         {
-            string endpoint = "/dishes";
+            string url = $"{_baseUrl}/dishes/specialty";
+            if (!string.IsNullOrEmpty(locationId))
+            {
+                url += $"?locationId={locationId}";
+            }
+            return _curlHelper.ExecuteGetRequestForArray(url);
+        }
 
-            var queryParams = new List<string>();
+        /// <summary>
+        /// Gets all dishes with optional filtering parameters using curl
+        /// </summary>
+        public (HttpStatusCode StatusCode, JArray ResponseBody) GetAllDishesWithCurl(
+            string dishType = null, string sort = null)
+        {
+            string url = $"{_baseUrl}/dishes";
+            string queryParams = "";
 
             if (!string.IsNullOrEmpty(dishType))
             {
-                queryParams.Add($"dishType={dishType}");
+                queryParams += $"dishType={dishType}";
             }
 
             if (!string.IsNullOrEmpty(sort))
             {
-                queryParams.Add($"sort={sort}");
-            }
-
-            if (queryParams.Count > 0)
-            {
-                endpoint += "?" + string.Join("&", queryParams);
-            }
-
-            var request = CreateGetRequest(endpoint);
-            var response = await ExecuteGetRequestAsync(request);
-
-            Console.WriteLine($"GetAllDishes response status: {response.StatusCode}");
-            Console.WriteLine($"GetAllDishes response content: {response.Content}");
-
-            JArray? responseBody = null;
-            if (!string.IsNullOrEmpty(response.Content))
-            {
-                try
+                if (!string.IsNullOrEmpty(queryParams))
                 {
-                    responseBody = JArray.Parse(response.Content);
+                    queryParams += "&";
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
+                queryParams += $"sort={sort}";
             }
 
-            return (response.StatusCode, responseBody);
+            if (!string.IsNullOrEmpty(queryParams))
+            {
+                var (statusCodeStr, responseBody) = _curlHelper.ExecuteGetRequestWithParams(url, queryParams);
+                HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
+                if (int.TryParse(statusCodeStr, out int statusCodeInt))
+                {
+                    if (Enum.IsDefined(typeof(HttpStatusCode), statusCodeInt))
+                    {
+                        statusCode = (HttpStatusCode)statusCodeInt;
+                    }
+                }
+
+                JArray responseBodyArray = null;
+                if (!string.IsNullOrEmpty(responseBody))
+                {
+                    try
+                    {
+                        responseBodyArray = JArray.Parse(responseBody);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error parsing response as array: {ex.Message}");
+                    }
+                }
+
+                return (statusCode, responseBodyArray);
+            }
+            else
+            {
+                return _curlHelper.ExecuteGetRequestForArray(url);
+            }
         }
 
         /// <summary>
-        /// Получает информацию о конкретном блюде по его ID
+        /// Gets a dish by its ID using curl
         /// </summary>
-        /// <param name="dishId">Идентификатор блюда</param>
-        /// <returns>Tuple containing the HTTP status code and response body as JObject</returns>
-        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> GetDishById(string dishId)
+        public (HttpStatusCode StatusCode, JObject ResponseBody) GetDishByIdWithCurl(string dishId)
         {
             if (string.IsNullOrEmpty(dishId))
             {
-                Console.WriteLine("Error: dishId cannot be null or empty");
                 return (HttpStatusCode.BadRequest, null);
             }
 
-            var request = CreateGetRequest($"/dishes/{dishId}");
-            var response = await ExecuteGetRequestAsync(request);
+            string url = $"{_baseUrl}/dishes/{dishId}";
+            return _curlHelper.ExecuteGetRequestForObject(url);
+        }
 
-            Console.WriteLine($"GetDishById response status: {response.StatusCode}");
-            Console.WriteLine($"GetDishById response content: {response.Content}");
+        // Async Task wrapper methods to maintain compatibility with tests
 
-            JObject? responseBody = null;
-            if (!string.IsNullOrEmpty(response.Content))
-            {
-                try
-                {
-                    responseBody = JObject.Parse(response.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error parsing response: {ex.Message}");
-                }
-            }
+        /// <summary>
+        /// Gets popular dishes
+        /// </summary>
+        public async Task<(HttpStatusCode statusCode, JArray responseBody)> GetPopularDishes()
+        {
+            // Use curl version instead of RestSharp
+            var (statusCode, responseBody) = GetPopularDishesWithCurl();
+            return (statusCode, responseBody);
+        }
 
-            return (response.StatusCode, responseBody);
+        /// <summary>
+        /// Gets specialty dishes by location ID
+        /// </summary>
+        public async Task<(HttpStatusCode StatusCode, JArray ResponseBody)> GetSpecialtyDishes(string locationId)
+        {
+            // Use curl version instead of RestSharp
+            return GetSpecialtyDishesWithCurl(locationId);
+        }
+
+        /// <summary>
+        /// Gets all dishes with optional filtering parameters
+        /// </summary>
+        public async Task<(HttpStatusCode StatusCode, JArray ResponseBody)> GetAllDishes(
+            string dishType = null, string sort = null)
+        {
+            // Use curl version instead of RestSharp
+            return GetAllDishesWithCurl(dishType, sort);
+        }
+
+        /// <summary>
+        /// Gets a dish by its ID
+        /// </summary>
+        public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> GetDishById(string dishId)
+        {
+            // Use curl version instead of RestSharp
+            return GetDishByIdWithCurl(dishId);
         }
     }
 }

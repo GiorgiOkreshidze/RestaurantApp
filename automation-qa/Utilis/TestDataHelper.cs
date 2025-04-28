@@ -3,18 +3,46 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Net;
-using ApiTests.Pages;
 using RestSharp;
 using automation_qa.Framework;
 
 namespace ApiTests.Utils
 {
-    public class TestDataHelper : BasePage
+    public class TestDataHelper
     {
+        private readonly RestClient _client;
+        private readonly string _baseUrl;
+
+        public TestDataHelper()
+        {
+            _baseUrl = BaseConfiguration.ApiBaseUrl;
+            _client = new RestClient(_baseUrl);
+        }
+
+        private RestRequest CreateGetRequest(string endpoint)
+        {
+            return new RestRequest(endpoint, Method.Get);
+        }
+
+        private RestRequest CreatePostRequest(string endpoint)
+        {
+            return new RestRequest(endpoint, Method.Post);
+        }
+
+        private async Task<RestResponse> ExecuteGetRequestAsync(RestRequest request)
+        {
+            return await _client.ExecuteAsync(request);
+        }
+
+        private async Task<RestResponse> ExecutePostRequestAsync(RestRequest request)
+        {
+            return await _client.ExecuteAsync(request);
+        }
+
         /// <summary>
         /// Creates a random location and returns its ID
         /// </summary>
-        public async Task<string> CreateRandomLocation()
+        public string CreateRandomLocation()
         {
             try
             {
@@ -34,7 +62,7 @@ namespace ApiTests.Utils
 
                 var request = CreatePostRequest("/locations");
                 request.AddJsonBody(locationData);
-                var response = await ExecutePostRequestAsync(request);
+                var response = ExecutePostRequestAsync(request).Result;
                 Console.WriteLine($"Create location response status: {response.StatusCode}");
 
                 if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created)
@@ -58,13 +86,17 @@ namespace ApiTests.Utils
         /// <summary>
         /// Fills the database with test locations if no data is present
         /// </summary>
-        public async Task<bool> SeedLocationsData()
+        public bool SeedLocationsData()
         {
             try
             {
                 Console.WriteLine("Starting data seeding process...");
                 Console.WriteLine("Checking for existing locations...");
-                var (getStatus, existingLocations) = await GetExistingLocations();
+
+                var result = GetExistingLocations().Result;
+                HttpStatusCode getStatus = result.Item1;
+                JArray existingLocations = result.Item2;
+
                 Console.WriteLine($"Get locations status: {getStatus}");
 
                 if (getStatus == HttpStatusCode.OK && existingLocations?.Count > 0)
@@ -75,12 +107,7 @@ namespace ApiTests.Utils
                 else if (getStatus == 0)
                 {
                     Console.WriteLine("ERROR: Could not connect to the server. Please make sure the API server is running.");
-                    Console.WriteLine($"Base URL: {BaseConfiguration.ApiBaseUrl}");
-
-                    var locationsPage = new Locations();
-                    var (testStatus, _) = await locationsPage.GetLocations();
-                    Console.WriteLine($"Test connection status from Locations class: {testStatus}");
-
+                    Console.WriteLine($"Base URL: {_baseUrl}");
                     return false;
                 }
 
@@ -96,7 +123,10 @@ namespace ApiTests.Utils
                     var location = locationsToAdd[i];
                     Console.WriteLine($"Adding location {i + 1}/{locationsToAdd.Count}");
 
-                    var (status, response) = await AddLocation(location);
+                    var addResult = AddLocation(location).Result;
+                    HttpStatusCode status = addResult.Item1;
+                    JObject response = addResult.Item2;
+
                     Console.WriteLine($"Add location status: {status}, Response: {response?.ToString() ?? "null"}");
 
                     if (status != HttpStatusCode.Created && status != HttpStatusCode.OK)
@@ -113,7 +143,10 @@ namespace ApiTests.Utils
                 }
 
                 Console.WriteLine("Verifying added locations...");
-                var (verifyStatus, addedLocations) = await GetExistingLocations();
+                var verifyResult = GetExistingLocations().Result;
+                HttpStatusCode verifyStatus = verifyResult.Item1;
+                JArray addedLocations = verifyResult.Item2;
+
                 Console.WriteLine($"Verification status: {verifyStatus}, Found locations: {addedLocations?.Count ?? 0}");
 
                 if (verifyStatus != HttpStatusCode.OK || addedLocations?.Count < locationsToAdd.Count)
@@ -139,7 +172,7 @@ namespace ApiTests.Utils
         /// <summary>
         /// Retrieves existing locations from the database
         /// </summary>
-        private async Task<(HttpStatusCode StatusCode, JArray? Locations)> GetExistingLocations()
+        private async Task<(HttpStatusCode StatusCode, JArray Locations)> GetExistingLocations()
         {
             try
             {
@@ -151,7 +184,7 @@ namespace ApiTests.Utils
                 Console.WriteLine($"Response content: {response.Content}");
                 Console.WriteLine($"Error message: {response.ErrorMessage}");
 
-                JArray? locations = null;
+                JArray locations = null;
 
                 if (!string.IsNullOrEmpty(response.Content))
                 {
@@ -182,7 +215,7 @@ namespace ApiTests.Utils
         /// <summary>
         /// Adds a new location to the database
         /// </summary>
-        private async Task<(HttpStatusCode StatusCode, JObject? Response)> AddLocation(object locationData)
+        private async Task<(HttpStatusCode StatusCode, JObject Response)> AddLocation(object locationData)
         {
             try
             {
@@ -196,7 +229,7 @@ namespace ApiTests.Utils
                 Console.WriteLine($"Add location response content: {response.Content}");
                 Console.WriteLine($"Add location error message: {response.ErrorMessage}");
 
-                JObject? responseData = null;
+                JObject responseData = null;
 
                 if (!string.IsNullOrEmpty(response.Content))
                 {

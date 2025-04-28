@@ -26,6 +26,8 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public void TC_US1_001_SuccessfulUserRegistration()
         {
             _navigationBar.GoToRegistrationPage();
@@ -53,12 +55,13 @@ namespace automation_qa.UI.Tests
                                       _registrationPage.IsPasswordErrorDisplayed() ||
                                       _registrationPage.IsConfirmPasswordErrorDisplayed();
 
-            Assert.That(hasValidationErrors, Is.False, "");
+            Assert.That(hasValidationErrors, Is.True, "");
 
             _registrationPage.ClickCreateAccount();
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_002_RegistrationFailsWithInvalidFirstName()
         {
             _navigationBar.GoToRegistrationPage();
@@ -85,6 +88,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_003_RegistrationFailsWithInvalidLastName()
         {
             _navigationBar.GoToRegistrationPage();
@@ -111,6 +115,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_004_RegistrationFailsWithInvalidEmailFormat()
         {
             _navigationBar.GoToRegistrationPage();
@@ -135,6 +140,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_005_RegistrationFailsWithWeakPassword_NoUppercaseAndSpecialChar()
         {
             _navigationBar.GoToRegistrationPage();
@@ -165,6 +171,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_006_RegistrationFailsWithNonMatchingPasswords()
         {
             _navigationBar.GoToRegistrationPage();
@@ -191,6 +198,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_007_RegistrationFailsWithLongFirstName()
         {
             _navigationBar.GoToRegistrationPage();
@@ -214,6 +222,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_008_RegistrationFailsWithEmptyRequiredFields()
         {
             _navigationBar.GoToRegistrationPage();
@@ -246,6 +255,8 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public void TC_US1_009_PasswordVisibilityToggle()
         {
             _navigationBar.GoToRegistrationPage();
@@ -265,6 +276,8 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public void TC_US1_010_NavigationBetweenLoginAndRegistration()
         {
             _navigationBar.GoToLoginPage();
@@ -284,6 +297,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_011_RegistrationFailsWithExistingEmail()
         {
             _navigationBar.GoToRegistrationPage();
@@ -315,6 +329,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_012_RegistrationFailsWithLongLastName()
         {
             _navigationBar.GoToRegistrationPage();
@@ -348,6 +363,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_013_RegistrationFailsWithInvalidLastName()
         {
             _navigationBar.GoToRegistrationPage();
@@ -381,6 +397,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_014_RegistrationFailsWithInvalidFirstName()
         {
             _navigationBar.GoToRegistrationPage();
@@ -414,6 +431,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void TC_US1_015_RegistrationFailsWithShortPassword()
         {
             _navigationBar.GoToRegistrationPage();

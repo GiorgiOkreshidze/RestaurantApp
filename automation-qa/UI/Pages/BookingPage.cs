@@ -17,7 +17,7 @@ namespace automation_qa.UI.Pages
         private readonly By _locationOption = By.XPath("//span[@data-slot='select-value' and contains(text(), '14 Baratashvili Street')]");
         private readonly By _dateDropdown = By.XPath("//button[contains(@class, 'inline-flex') and descendant::span[contains(text(), 'Date')]]");
         private readonly By _dateDropdownOpen = By.CssSelector("#root > div.content-center.min-h-\\[404px\\].bg-cover.bg-no-repeat.bg-center.py-\\[98px\\].bg-\\[var\\(--color-neutral-900\\)\\]\\/80.bg-blend-overlay.flex.flex-col.justify-center > div > form > button:nth-child(3) > svg:nth-child(3)");
-        private readonly By _dateOption = By.XPath("//table[@role='grid']//button[text()='6']");
+        private readonly By _dateOption = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[3]/td[6]/button");
         private readonly By _timeDropdown = By.XPath("//button[contains(@class, 'inline-flex') and descendant::span[contains(text(), 'Time')]]");
         private readonly By _timeDropdownOpen = By.CssSelector("#root > div.content-center.min-h-\\[404px\\].bg-cover.bg-no-repeat.bg-center.py-\\[98px\\].bg-\\[var\\(--color-neutral-900\\)\\]\\/80.bg-blend-overlay.flex.flex-col.justify-center > div > form > button:nth-child(3) > svg:nth-child(3)");
         private readonly By _timeOption = By.XPath("//div[@role='listbox']//span[1]");
@@ -31,6 +31,31 @@ namespace automation_qa.UI.Pages
         private readonly By _tableCapacity = By.XPath("//p[contains(text(), 'Table seating capacity:')]");
         private readonly By _tableLocation = By.XPath("//span[contains(text(), 'Abashidze Street')]");
         private readonly By _tableTimeSlot = By.XPath("//button[contains(@class, 'inline-flex') and contains(@class, 'rounded')]//span[contains(text(), '1:30 p.m. - 3:00 p.m.')]");
+
+        private readonly By _table1Card = By.XPath("//*[@id='root']/div[2]/ul/li[1]/article");
+        private readonly By _table2Card = By.XPath("//*[@id='root']/div[2]/ul/li[2]/article");
+        private readonly By _table3Card = By.XPath("//*[@id='root']/div[2]/ul/li[3]/article");
+        private readonly By _table4Card = By.XPath("//*[@id='root']/div[2]/ul/li[4]/article");
+
+        private readonly By _tableTimeSlotButton = By.XPath("//button[contains(text(), '3:15 p.m. - 4:45 p.m.')]");
+
+        private readonly By _reservationModal = By.XPath("//div[contains(@role, 'dialog')]");
+        private readonly By _makeReservationButton = By.XPath("//button[contains(text(), 'Make a Reservation')]");
+
+        private readonly By _reservationConfirmedHeader = By.XPath("//h2[contains(text(), 'Reservation Confirmed')]");
+        private readonly By _reservationSuccessMessage = By.XPath("//div[contains(text(), 'has been successfully made')]");
+        private readonly By _editReservationButton = By.XPath("//button[contains(text(), 'Edit Reservation')]");
+        private readonly By _cancelReservationButton = By.XPath("//button[contains(text(), 'Cancel Reservation')]");
+        private readonly By _successToast = By.XPath("//div[contains(@class, 'Toastify__toast-container--top-right')]//div[contains(@class, 'Toastify__toast--success')]");
+        private readonly By _reservationCanceledToast = By.XPath("//div[contains(@class, 'Toastify__toast-container')]//div[contains(text(), 'Reservation canceled successfully')]");
+        private readonly By _toastNotification = By.XPath("//div[contains(@class, 'Toastify__toast-container')]//div[contains(@class, 'Toastify__toast-body')]");
+        private readonly By _date14Option = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[3]/td[6]/button");
+
+
+        private readonly By _increaseGuestsInModalButton = By.XPath("/html/body/div[3]/form/div[1]/div/button[2]");
+        private readonly By _confirmEditButton = By.XPath("/html/body/div[3]/form/button");
+        private readonly By _requiredFieldsWarning = By.XPath("//div[contains(@class, 'Toastify__toast--warning')]");
+        private readonly By _date13Option = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[3]/td[6]/button");
 
         public BookingPage(IWebDriver driver)
         {
@@ -190,6 +215,221 @@ namespace automation_qa.UI.Pages
             catch (Exception)
             {
                 return false;
+            }
+        }
+
+        public void SetGuestsCount(int count)
+        {
+            string currentCountText = GetGuestsCount();
+            int currentCount = int.Parse(currentCountText);
+
+            if (currentCount < count)
+            {
+                for (int i = currentCount; i < count; i++)
+                {
+                    IncreaseGuests();
+                    Thread.Sleep(200);
+                }
+            }
+            else if (currentCount > count)
+            {
+                for (int i = currentCount; i > count; i--)
+                {
+                    DecreaseGuests();
+                    Thread.Sleep(200);
+                }
+            }
+        }
+
+        public void SelectTable(int index)
+        {
+            By bookButtonSelector = By.XPath($"/html/body/div/div[2]/ul/li[{index}]/article/div[2]/div[2]/button");
+
+            try
+            {
+                IWebElement bookButton = _wait.Until(ExpectedConditions.ElementToBeClickable(bookButtonSelector));
+
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", bookButton);
+
+                Thread.Sleep(500);
+
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", bookButton);
+            }
+            catch (WebDriverTimeoutException)
+            {
+                Console.WriteLine($"Не удалось найти кнопку бронирования для стола {index}");
+
+                By anyButtonSelector = By.XPath($"//li[{index}]//button");
+                IWebElement anyButton = _driver.FindElement(anyButtonSelector);
+
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", anyButton);
+            }
+        }
+
+        public void ConfirmReservation()
+        {
+            IWebElement makeReservationButton = _wait.Until(ExpectedConditions.ElementToBeClickable(_makeReservationButton));
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", makeReservationButton);
+        }
+
+        public bool IsReservationConfirmed()
+        {
+            try
+            {
+                By confirmationHeaderSelector = By.XPath("//h2[contains(text(), 'Reservation Confirmed!')]");
+
+                IWebElement confirmationHeader = _wait.Until(ExpectedConditions.ElementIsVisible(confirmationHeaderSelector));
+
+                return confirmationHeader.Text.Contains("Reservation Confirmed!");
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        public string GetConfirmationText()
+        {
+            try
+            {
+                By confirmationModalSelector = By.XPath("/html/body/div[3]/div");
+
+                IWebElement confirmationModal = _wait.Until(ExpectedConditions.ElementIsVisible(confirmationModalSelector));
+
+                return confirmationModal.Text;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return string.Empty;
+            }
+        }
+
+        public bool CanEditReservation()
+        {
+            try
+            {
+                return _wait.Until(ExpectedConditions.ElementToBeClickable(_editReservationButton)).Displayed;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        public bool CanCancelReservation()
+        {
+            try
+            {
+                return _wait.Until(ExpectedConditions.ElementToBeClickable(_cancelReservationButton)).Displayed;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        public void CompleteFullBookingProcess()
+        {
+            ClickFindTable();
+            Thread.Sleep(2000);
+
+            SelectTable(1);
+            Thread.Sleep(1000);
+
+            ConfirmReservation();
+        }
+
+        public void CancelReservation()
+        {
+            By cancelButtonSelector = By.XPath("/html/body/div[3]/footer/button[1]");
+
+            IWebElement cancelButton = _wait.Until(ExpectedConditions.ElementToBeClickable(cancelButtonSelector));
+
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", cancelButton);
+        }
+
+        public bool IsReservationCancelationConfirmed()
+        {
+            try
+            {
+                IWebElement successToast = _wait.Until(ExpectedConditions.ElementIsVisible(_successToast));
+
+                Console.WriteLine($"Найдено Toast-уведомление: '{successToast.Text}'");
+
+                return successToast.Displayed;
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                Console.WriteLine($"Не удалось найти Toast-уведомление: {ex.Message}");
+                return false;
+            }
+        }
+
+        public void SelectDate13()
+        {
+            OpenDateDropdown();
+
+            IWebElement date13Button = _wait.Until(ExpectedConditions.ElementToBeClickable(_date13Option));
+
+            // Кликаем на 13-е число
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", date13Button);
+        }
+
+        public void SelectDate14()
+        {
+            OpenDateDropdown();
+
+            IWebElement date14Button = _wait.Until(ExpectedConditions.ElementToBeClickable(_date14Option));
+
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", date14Button);
+        }
+
+        public void EditReservation()
+        {
+            By editButtonSelector = By.XPath("//button[contains(text(), 'Edit Reservation')]");
+
+            IWebElement editButton = _wait.Until(ExpectedConditions.ElementToBeClickable(editButtonSelector));
+
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", editButton);
+        }
+
+        public void IncreaseGuestsInModal()
+        {
+            IWebElement increaseButton = _wait.Until(ExpectedConditions.ElementToBeClickable(_increaseGuestsInModalButton));
+
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", increaseButton);
+        }
+
+        public void ConfirmEdit()
+        {
+            IWebElement confirmButton = _wait.Until(ExpectedConditions.ElementToBeClickable(_confirmEditButton));
+
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", confirmButton);
+        }
+
+        public bool IsRequiredFieldsWarningDisplayed()
+        {
+            try
+            {
+                IWebElement warningElement = _wait.Until(ExpectedConditions.ElementIsVisible(_requiredFieldsWarning));
+                return warningElement.Displayed;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        public string GetRequiredFieldsWarningText()
+        {
+            try
+            {
+                IWebElement warningElement = _wait.Until(ExpectedConditions.ElementIsVisible(_requiredFieldsWarning));
+                return warningElement.Text;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return string.Empty;
             }
         }
 

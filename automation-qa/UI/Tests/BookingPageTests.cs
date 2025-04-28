@@ -23,12 +23,14 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Smoke")]
         public void BookingPage_ShouldDisplayHeader()
         {
             Assert.That(_bookingPage.IsBookingHeaderDisplayed(), Is.True, "Book a Table");
         }
 
         [Test]
+        [Category("Smoke")]
         public void BookingPage_ShouldClickLocationDropdownButton()
         {
             _bookingPage.OpenLocationDropdown();
@@ -39,6 +41,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Smoke")]
         public void BookingPage_ShouldSelectDate()
         {
             _bookingPage.OpenDateDropdown();
@@ -48,6 +51,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Smoke")]
         public void BookingPage_ShouldSelectTime()
         {
             _bookingPage.OpenTimeDropdown();
@@ -57,6 +61,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void BookingPage_ShouldIncreaseGuestsCount()
         {
             string initialCount = _bookingPage.GetGuestsCount();
@@ -69,6 +74,8 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
         public void BookingPage_ShouldFindAvailableTables()
         {
             try
@@ -87,6 +94,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void BookingPage_ShouldDisplayTableCards()
         {
             _bookingPage.ClickFindTable();
@@ -97,6 +105,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void BookingPage_ShouldFilterTablesByLocation()
         {
             _bookingPage.OpenLocationDropdown();
@@ -111,6 +120,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void BookingPage_ShouldFilterTablesByGuestsCount()
         {
             _bookingPage.IncreaseGuests();
@@ -123,6 +133,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void BookingPage_ShouldFilterTablesByTimeSlot()
         {
             _bookingPage.OpenTimeDropdown();
@@ -137,6 +148,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void FindTableButton_ShouldBeClickable()
         {
             try
@@ -153,6 +165,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
+        [Category("Regression")]
         public void BookingPage_ShouldCompleteFullSearchCycle()
         {
             try
@@ -168,6 +181,221 @@ namespace automation_qa.UI.Tests
                 Console.WriteLine($"Failed: {ex.Message}");
                 Assert.Fail($"Failed: {ex.Message}");
             }
+        }
+
+        [Test]
+        [Category("Smoke")]
+        [Category("Regression")]
+        public void BookingPage_ShouldCreateReservationSuccessfully()
+        {
+            var loginPage = new LoginPage(Driver);
+            var navigationBar = new NavigationBar(Driver);
+
+            Driver.Navigate().GoToUrl(BaseConfiguration.UiBaseUrl);
+            navigationBar.GoToLoginPage();
+
+            string email = ApiTests.Utilities.TestConfig.Instance.TestUserEmail;
+            string password = ApiTests.Utilities.TestConfig.Instance.TestUserPassword;
+            loginPage.Login(email, password);
+
+            Thread.Sleep(3000);
+
+            _mainPage = new MainPage(Driver);
+            _bookingPage = _mainPage.ClickBookTableLink();
+            Thread.Sleep(2000);
+
+            _bookingPage.SetGuestsCount(2);
+            _bookingPage.ClickFindTable();
+
+            Thread.Sleep(3000);
+
+            Assert.That(_bookingPage.AreAvailableTablesDisplayed(), Is.True, "Available tables should be displayed");
+
+            _bookingPage.SelectTable(2);
+
+            Thread.Sleep(1000);
+
+            _bookingPage.ConfirmReservation();
+
+            Thread.Sleep(2000);
+
+            Assert.That(_bookingPage.IsReservationConfirmed(), Is.True, "Reservation should be confirmed");
+
+            string confirmationText = _bookingPage.GetConfirmationText();
+            Assert.That(confirmationText, Does.Contain("Reservation Confirmed!"), "Confirmation heading should be displayed");
+            Assert.That(confirmationText, Does.Contain("has been successfully made"), "Success message should be displayed");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void BookingPage_ShouldCancelReservationSuccessfully()
+        {
+            var loginPage = new LoginPage(Driver);
+            var navigationBar = new NavigationBar(Driver);
+
+            Driver.Navigate().GoToUrl(BaseConfiguration.UiBaseUrl);
+            navigationBar.GoToLoginPage();
+
+            string email = ApiTests.Utilities.TestConfig.Instance.TestUserEmail;
+            string password = ApiTests.Utilities.TestConfig.Instance.TestUserPassword;
+            loginPage.Login(email, password);
+
+            Thread.Sleep(3000);
+
+            _mainPage = new MainPage(Driver);
+            _bookingPage = _mainPage.ClickBookTableLink();
+            Thread.Sleep(2000);
+
+            _bookingPage.SelectDate14();
+            Thread.Sleep(1000);
+
+            _bookingPage.SetGuestsCount(2);
+            _bookingPage.ClickFindTable();
+
+            Thread.Sleep(3000);
+
+            Assert.That(_bookingPage.AreAvailableTablesDisplayed(), Is.True, "Available tables should be displayed");
+
+            _bookingPage.SelectTable(2);
+
+            Thread.Sleep(1000);
+
+            _bookingPage.ConfirmReservation();
+
+            Thread.Sleep(3000);
+
+            _bookingPage.CancelReservation();
+
+            Thread.Sleep(2000);
+
+            Assert.That(_bookingPage.IsReservationCancelationConfirmed(), Is.True, "Cancellation confirmation should be displayed");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void BookingPage_ShouldEditReservationSuccessfully()
+        {
+            var loginPage = new LoginPage(Driver);
+            var navigationBar = new NavigationBar(Driver);
+
+            Driver.Navigate().GoToUrl(BaseConfiguration.UiBaseUrl);
+            navigationBar.GoToLoginPage();
+
+            string email = ApiTests.Utilities.TestConfig.Instance.TestUserEmail;
+            string password = ApiTests.Utilities.TestConfig.Instance.TestUserPassword;
+            loginPage.Login(email, password);
+
+            Thread.Sleep(3000);
+
+            _mainPage = new MainPage(Driver);
+            _bookingPage = _mainPage.ClickBookTableLink();
+            Thread.Sleep(2000);
+
+            _bookingPage.SelectDate14();
+            Thread.Sleep(1000);
+
+            _bookingPage.SetGuestsCount(2);
+            _bookingPage.ClickFindTable();
+
+            Thread.Sleep(3000);
+
+            Assert.That(_bookingPage.AreAvailableTablesDisplayed(), Is.True, "Available tables should be displayed");
+
+            _bookingPage.SelectTable(2);
+
+            Thread.Sleep(1000);
+
+            _bookingPage.ConfirmReservation();
+
+            Thread.Sleep(3000);
+
+            Assert.That(_bookingPage.IsReservationConfirmed(), Is.True, "Reservation should be confirmed");
+
+            _bookingPage.EditReservation();
+
+            Thread.Sleep(1000);
+
+            _bookingPage.IncreaseGuestsInModal();
+
+            _bookingPage.ConfirmEdit();
+
+            Thread.Sleep(3000);
+
+            Assert.That(_bookingPage.IsReservationConfirmed(), Is.True, "Reservation should be confirmed after editing");
+
+            string confirmationText = _bookingPage.GetConfirmationText();
+            Assert.That(confirmationText, Does.Contain("3 people"), "Number of guests should be updated to 3");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void BookingPage_ShouldHandleSelectingSameDate()
+        {
+            var loginPage = new LoginPage(Driver);
+            var navigationBar = new NavigationBar(Driver);
+
+            Driver.Navigate().GoToUrl(BaseConfiguration.UiBaseUrl);
+            navigationBar.GoToLoginPage();
+
+            string email = ApiTests.Utilities.TestConfig.Instance.TestUserEmail;
+            string password = ApiTests.Utilities.TestConfig.Instance.TestUserPassword;
+            loginPage.Login(email, password);
+
+            Thread.Sleep(2000);
+
+            _mainPage = new MainPage(Driver);
+            _bookingPage = _mainPage.ClickBookTableLink();
+            Thread.Sleep(3000);
+
+            _bookingPage.SelectDate14();
+
+            _bookingPage.ClickFindTable();
+
+            Thread.Sleep(2000);
+
+            bool warningDisplayed = _bookingPage.IsRequiredFieldsWarningDisplayed();
+
+            bool tablesDisplayed = _bookingPage.AreAvailableTablesDisplayed();
+
+            Assert.That(warningDisplayed || tablesDisplayed, Is.True,
+                "Either warning should be displayed or tables should be shown");
+
+            Console.WriteLine($"gh: {warningDisplayed}");
+            Console.WriteLine($"fg: {tablesDisplayed}");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void BookingPage_ShouldShowWarningWhenSelectingDate13()
+        {
+            var loginPage = new LoginPage(Driver);
+            var navigationBar = new NavigationBar(Driver);
+
+            Driver.Navigate().GoToUrl(BaseConfiguration.UiBaseUrl);
+            navigationBar.GoToLoginPage();
+
+            string email = ApiTests.Utilities.TestConfig.Instance.TestUserEmail;
+            string password = ApiTests.Utilities.TestConfig.Instance.TestUserPassword;
+            loginPage.Login(email, password);
+
+            Thread.Sleep(3000);
+
+            _mainPage = new MainPage(Driver);
+            _bookingPage = _mainPage.ClickBookTableLink();
+            Thread.Sleep(2000);
+
+            _bookingPage.SelectDate13();
+            _bookingPage.SelectDate13();
+
+            _bookingPage.ClickFindTable();
+
+            Thread.Sleep(3000);
+
+            Assert.That(_bookingPage.IsRequiredFieldsWarningDisplayed(), Is.True,
+                "Warning should be displayed when selecting date 13");
+
+            string warningText = _bookingPage.GetRequiredFieldsWarningText();
+            Console.WriteLine($"Текст предупреждения: {warningText}");
         }
     }
 }
