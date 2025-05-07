@@ -16,13 +16,13 @@ namespace automation_qa.UI.Pages
         private readonly By _locationDropdownOpen = By.XPath("//button[contains(@class, 'inline-flex')]//svg[contains(@class, 'stroke-foreground')]");
         private readonly By _locationOption = By.XPath("//span[@data-slot='select-value' and contains(text(), '14 Baratashvili Street')]");
         private readonly By _dateDropdown = By.XPath("//button[contains(@class, 'inline-flex') and descendant::span[contains(text(), 'Date')]]");
-        private readonly By _dateDropdownOpen = By.CssSelector("#root > div.content-center.min-h-\\[404px\\].bg-cover.bg-no-repeat.bg-center.py-\\[98px\\].bg-\\[var\\(--color-neutral-900\\)\\]\\/80.bg-blend-overlay.flex.flex-col.justify-center > div > form > button:nth-child(3) > svg:nth-child(3)");
+        private readonly By _dateDropdownOpen = By.CssSelector("form button:nth-of-type(2) svg");
         private readonly By _dateOption = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[3]/td[6]/button");
         private readonly By _timeDropdown = By.XPath("//button[contains(@class, 'inline-flex') and descendant::span[contains(text(), 'Time')]]");
         private readonly By _timeDropdownOpen = By.CssSelector("#root > div.content-center.min-h-\\[404px\\].bg-cover.bg-no-repeat.bg-center.py-\\[98px\\].bg-\\[var\\(--color-neutral-900\\)\\]\\/80.bg-blend-overlay.flex.flex-col.justify-center > div > form > button:nth-child(3) > svg:nth-child(3)");
         private readonly By _timeOption = By.XPath("//div[@role='listbox']//span[1]");
         private readonly By _guestsCounter = By.XPath("//div[contains(@class, 'flex') and contains(@class, 'items-center')]");
-        private readonly By _guestsIncreaseButton = By.CssSelector("#root > div.content-center.min-h-\\[404px\\].bg-cover.bg-no-repeat.bg-center.py-\\[98px\\].bg-\\[var\\(--color-neutral-900\\)\\]\\/80.bg-blend-overlay.flex.flex-col.justify-center > div > form > div > div > button:nth-child(3)");
+        private readonly By _guestsIncreaseButton = By.XPath("/html/body/div/div[1]/div[2]/div/form/div/div/button[2]");
         private readonly By _guestsDecreaseButton = By.XPath("//div[contains(@class, 'flex')]//button[1]//svg");
         private readonly By _guestsCount = By.XPath("//div[contains(@class, 'flex')]//span[contains(@class, 'text-center')]");
         private readonly By _findTableButton = By.XPath("//button[contains(@class, 'inline-flex') and contains(text(), 'Find a Table')]");
@@ -49,13 +49,13 @@ namespace automation_qa.UI.Pages
         private readonly By _successToast = By.XPath("//div[contains(@class, 'Toastify__toast-container--top-right')]//div[contains(@class, 'Toastify__toast--success')]");
         private readonly By _reservationCanceledToast = By.XPath("//div[contains(@class, 'Toastify__toast-container')]//div[contains(text(), 'Reservation canceled successfully')]");
         private readonly By _toastNotification = By.XPath("//div[contains(@class, 'Toastify__toast-container')]//div[contains(@class, 'Toastify__toast-body')]");
-        private readonly By _date14Option = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[3]/td[6]/button");
+        private readonly By _date14Option = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[1]/td[6]/button");
 
 
         private readonly By _increaseGuestsInModalButton = By.XPath("/html/body/div[3]/form/div[1]/div/button[2]");
         private readonly By _confirmEditButton = By.XPath("/html/body/div[3]/form/button");
         private readonly By _requiredFieldsWarning = By.XPath("//div[contains(@class, 'Toastify__toast--warning')]");
-        private readonly By _date13Option = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[3]/td[6]/button");
+        private readonly By _date13Option = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[1]/td[6]/button");
 
         public BookingPage(IWebDriver driver)
         {

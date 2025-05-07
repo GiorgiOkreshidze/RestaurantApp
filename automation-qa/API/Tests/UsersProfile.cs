@@ -676,6 +676,136 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Smoke")]
+        public void UpdateProfile_ShouldUpdateFirstAndLastName()
+        {
+            // Arrange – create a new user
+            string firstName = "John";
+            string lastName = "Doe";
+            string email = $"update_test_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
+            string password = Config.TestUserPassword;
+
+            // Register the user
+            var (registerStatus, _, _) = _auth.RegisterUserWithCurl(firstName, lastName, email, password);
+            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            // Log in
+            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl(email, password);
+            Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
+            string accessToken = loginResponse["accessToken"]?.ToString();
+
+            // Act – update user's first and last name
+            var (updateStatus, updateResponse) = _auth.UpdateProfile("Jane", "Smith", null, accessToken).Result;
+
+            // Assert – check successful update
+            Assert.That(updateStatus, Is.EqualTo(HttpStatusCode.OK), "Profile update should succeed");
+
+            // Verify the changes persisted – get the user profile
+            var (profileStatus, userData) = _auth.GetUserProfileWithCurl(accessToken);
+            Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK), "Getting user profile should succeed");
+            Assert.That(userData["firstName"]?.ToString(), Is.EqualTo("Jane"), "First name should be updated");
+            Assert.That(userData["lastName"]?.ToString(), Is.EqualTo("Smith"), "Last name should be updated");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void UpdateProfile_WithInvalidToken_ShouldReturnUnauthorized()
+        {
+            // Arrange
+            string invalidToken = "invalid_token_123";
+
+            // Act – attempt to update profile with invalid token
+            var (updateStatus, _) = _auth.UpdateProfile("Test", "User", null, invalidToken).Result;
+
+            // Assert
+            Assert.That(updateStatus, Is.EqualTo(HttpStatusCode.Unauthorized), "Update with invalid token should return Unauthorized");
+        }
+
+        [Test]
+        [Category("Smoke")]
+        public void UpdatePassword_ShouldSucceed()
+        {
+            // Arrange – create a test user
+            string email = $"pwd_test_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
+            string oldPassword = Config.TestUserPassword;
+            string newPassword = "Password123!";
+
+            // Register the user
+            var (registerStatus, _, _) = _auth.RegisterUserWithCurl("Password", "Test", email, oldPassword);
+            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            // Log in
+            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl(email, oldPassword);
+            Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
+            string accessToken = loginResponse["accessToken"]?.ToString();
+
+            // Act – change password
+            var (updateStatus, _) = _auth.UpdatePassword(oldPassword, newPassword, accessToken).Result;
+
+            // Assert
+            Assert.That(updateStatus, Is.EqualTo(HttpStatusCode.OK), "Password update should succeed");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void UpdatePassword_ShouldAllowLoginWithNewPassword()
+        {
+            // Arrange – create a test user
+            string email = $"login_test_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
+            string oldPassword = Config.TestUserPassword;
+            string newPassword = "Password123!";
+
+            // Register the user
+            var (registerStatus, _, _) = _auth.RegisterUserWithCurl("Login", "Test", email, oldPassword);
+            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            // Log in
+            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl(email, oldPassword);
+            string accessToken = loginResponse["accessToken"]?.ToString();
+
+            // Change password
+            var (updateStatus, _) = _auth.UpdatePassword(oldPassword, newPassword, accessToken).Result;
+            Assert.That(updateStatus, Is.EqualTo(HttpStatusCode.OK), "Password update should succeed");
+
+            // Act – attempt login with new password
+            var (newLoginStatus, _) = _auth.LoginUserWithCurl(email, newPassword);
+
+            // Assert
+            Assert.That(newLoginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in with new password");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void UpdateProfile_ShouldUpdateFirstName()
+        {
+            // Arrange – create a test user
+            string firstName = "Original";
+            string lastName = "Name";
+            string email = $"first_name_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
+
+            // Register the user
+            var (registerStatus, _, _) = _auth.RegisterUserWithCurl(firstName, lastName, email, Config.TestUserPassword);
+            Assert.That(registerStatus, Is.EqualTo(HttpStatusCode.OK), "User registration should succeed");
+
+            // Log in
+            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl(email, Config.TestUserPassword);
+            string accessToken = loginResponse["accessToken"]?.ToString();
+
+            // Act – update only the first name
+            string newFirstName = "Updated";
+            var (updateStatus, _) = _auth.UpdateProfile(newFirstName, lastName, null, accessToken).Result;
+
+            // Assert
+            Assert.That(updateStatus, Is.EqualTo(HttpStatusCode.OK), "Profile update should succeed");
+
+            // Verify the changes
+            var (profileStatus, userData) = _auth.GetUserProfileWithCurl(accessToken);
+            Assert.That(userData["firstName"]?.ToString(), Is.EqualTo(newFirstName), "First name should be updated");
+            Assert.That(userData["lastName"]?.ToString(), Is.EqualTo(lastName), "Last name should remain unchanged");
+        }
+
+
+        [Test]
         [Category("Regression")]
         public void GetUserProfile_WithInvalidToken_ShouldReturnUnauthorized()
         {

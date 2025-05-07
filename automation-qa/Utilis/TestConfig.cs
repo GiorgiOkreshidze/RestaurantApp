@@ -44,7 +44,7 @@ namespace ApiTests.Utilities
 
             return new TestConfig
             {
-                TestUserEmail = "test@example.com",
+                TestUserEmail = "irina4@epam.com",
                 TestUserPassword = "StrongP@ss123!",
                 AdminUserEmail = "admin@example.com",
                 AdminUserPassword = "AdminP@ss123!",

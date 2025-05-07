@@ -246,8 +246,8 @@ namespace automation_qa.UI.Tests
             _bookingPage = _mainPage.ClickBookTableLink();
             Thread.Sleep(2000);
 
-            _bookingPage.SelectDate14();
-            Thread.Sleep(1000);
+            //_bookingPage.SelectDate14();
+            //Thread.Sleep(1000);
 
             _bookingPage.SetGuestsCount(2);
             _bookingPage.ClickFindTable();

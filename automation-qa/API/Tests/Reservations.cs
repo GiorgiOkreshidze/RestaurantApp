@@ -899,5 +899,245 @@ namespace ApiTests
 
             Console.WriteLine($"Test completed with status code: {statusCode}");
         }
+
+        [Test]
+        [Category("Smoke")]
+        public async Task AddDishToOrder_SimpleTest()
+        {
+            // Arrange - use hard-coded values for simple test
+            string reservationId = TestConfig.Instance.ValidReservationId;
+            string dishId = "c2a82c5a-3dde-4bb0-8906-050fd4ed3d78"; // Example dish ID
+
+            // Act - test the endpoint without authentication
+            var result = await _reservations.AddDishToOrder(reservationId, dishId);
+            HttpStatusCode statusCode = result.StatusCode;
+
+            // Assert - we expect either a 401/403 for auth failure or 200 if auth not required
+            // This just verifies the endpoint exists and responds
+            Assert.That(statusCode, Is.AnyOf(
+                HttpStatusCode.OK,
+                HttpStatusCode.Unauthorized,
+                HttpStatusCode.Forbidden),
+                "Endpoint should respond with expected status code");
+        }
+
+        [Test]
+        [Category("Smoke")]
+        public async Task AddDishToOrder_Unauthorized()
+        {
+            // Arrange
+            string reservationId = TestConfig.Instance.ValidReservationId;
+            string dishId = "c2a82c5a-3dde-4bb0-8906-050fd4ed3d78"; // Example dish ID
+
+            // Act - no token provided
+            var result = await _reservations.AddDishToOrder(reservationId, dishId, null);
+            HttpStatusCode statusCode = result.StatusCode;
+            JObject responseBody = result.ResponseBody;
+
+            // Assert
+            Assert.That(statusCode, Is.AnyOf(HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden),
+                "Should return error without authentication");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task AddDishToOrder_EmptyReservationId_ThrowsException()
+        {
+            // Arrange
+            string reservationId = string.Empty; // Empty reservation ID
+            string dishId = "c2a82c5a-3dde-4bb0-8906-050fd4ed3d78"; // Example dish ID
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _reservations.AddDishToOrder(reservationId, dishId, null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("reservationId"),
+                "Exception should contain the correct parameter name");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task AddDishToOrder_NullReservationId_ThrowsException()
+        {
+            // Arrange
+            string reservationId = null; // Null reservation ID
+            string dishId = "c2a82c5a-3dde-4bb0-8906-050fd4ed3d78"; // Example dish ID
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _reservations.AddDishToOrder(reservationId, dishId, null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("reservationId"),
+                "Exception should contain the correct parameter name");
+        }
+
+        [Test]
+        [Category("Smoke")]
+        public async Task RemoveDishFromOrder_BasicTest()
+        {
+            // Arrange
+            string reservationId = TestConfig.Instance.ValidReservationId;
+            string dishId = "c2a82c5a-3dde-4bb0-8906-050fd4ed3d78"; // Example dish ID
+
+            // Act
+            var result = await _reservations.RemoveDishFromOrder(reservationId, dishId, null);
+
+            // Assert
+            Assert.That(result.StatusCode, Is.AnyOf(HttpStatusCode.OK, HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden),
+                "Should return expected status code");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task RemoveDishFromOrder_InvalidDishId()
+        {
+            // Arrange
+            string reservationId = TestConfig.Instance.ValidReservationId;
+            string dishId = "invalid-dish-id";
+
+            // Act
+            var result = await _reservations.RemoveDishFromOrder(reservationId, dishId, null);
+
+            // Assert
+            Assert.That(result.StatusCode, Is.Not.EqualTo(HttpStatusCode.OK),
+                "Should not return OK for invalid dish ID");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task RemoveDishFromOrder_InvalidReservationId()
+        {
+            // Arrange
+            string reservationId = "invalid-reservation-id";
+            string dishId = "c2a82c5a-3dde-4bb0-8906-050fd4ed3d78";
+
+            // Act
+            var result = await _reservations.RemoveDishFromOrder(reservationId, dishId, null);
+
+            // Assert
+            Assert.That(result.StatusCode, Is.Not.EqualTo(HttpStatusCode.OK),
+                "Should not return OK for invalid reservation ID");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task RemoveDishFromOrder_NullDishId_ThrowsException()
+        {
+            // Arrange
+            string reservationId = TestConfig.Instance.ValidReservationId;
+            string dishId = null;
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _reservations.RemoveDishFromOrder(reservationId, dishId, null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("dishId"),
+                "Exception should contain the correct parameter name");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task RemoveDishFromOrder_NullReservationId_ThrowsException()
+        {
+            // Arrange
+            string reservationId = null;
+            string dishId = "c2a82c5a-3dde-4bb0-8906-050fd4ed3d78";
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _reservations.RemoveDishFromOrder(reservationId, dishId, null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("reservationId"),
+                "Exception should contain the correct parameter name");
+        }
+
+        [Test]
+        [Category("Smoke")]
+        public async Task GetAvailableDishes_BasicTest()
+        {
+            // Arrange
+            string reservationId = TestConfig.Instance.ValidReservationId;
+
+            // Act
+            var result = await _reservations.GetAvailableDishes(reservationId);
+
+            // Assert
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK),
+                "Should return 200 OK for valid reservation ID");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task GetAvailableDishes_InvalidReservationId()
+        {
+            // Arrange
+            string reservationId = "invalid-reservation-id";
+
+            // Act
+            var result = await _reservations.GetAvailableDishes(reservationId);
+
+            // Assert
+            Assert.That(result.StatusCode, Is.Not.EqualTo(HttpStatusCode.OK),
+                "Should not return OK for invalid reservation ID");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task GetAvailableDishes_NullReservationId_ThrowsException()
+        {
+            // Arrange
+            string reservationId = null;
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _reservations.GetAvailableDishes(reservationId));
+
+            Assert.That(exception.ParamName, Is.EqualTo("reservationId"),
+                "Exception should contain the correct parameter name");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task GetAvailableDishes_EmptyReservationId_ThrowsException()
+        {
+            // Arrange
+            string reservationId = string.Empty;
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _reservations.GetAvailableDishes(reservationId));
+
+            Assert.That(exception.ParamName, Is.EqualTo("reservationId"),
+                "Exception should contain the correct parameter name");
+        }
+
+        [Test]
+        [Category("Regression")]
+        public async Task GetAvailableDishes_ResponseStructure()
+        {
+            // Arrange
+            string reservationId = TestConfig.Instance.ValidReservationId;
+
+            // Act
+            var result = await _reservations.GetAvailableDishes(reservationId);
+
+            // Assert
+            // Check that the response is either OK (200) or requires authentication (401)
+            Assert.That(result.StatusCode, Is.AnyOf(HttpStatusCode.OK, HttpStatusCode.Unauthorized),
+                "Should return 200 OK or 401 Unauthorized");
+
+            // If we received 200 OK and there is content, check the structure
+            if (result.StatusCode == HttpStatusCode.OK && result.ResponseBody != null && result.ResponseBody.Count > 0)
+            {
+                var firstDish = result.ResponseBody[0];
+                Assert.That(firstDish["id"], Is.Not.Null, "Dish should have an ID");
+                Assert.That(firstDish["name"], Is.Not.Null, "Dish should have a name");
+            }
+            // If we received 401 Unauthorized, the check passes without additional checks
+            else if (result.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                Assert.Pass("Endpoint requires authorization, which is expected behavior");
+            }
+        }
     }
 }

@@ -246,5 +246,88 @@ namespace ApiTests.Pages
         {
             return await Task.Run(() => ClearCartWithCurl(token));
         }
+
+        /// <summary>
+        /// Updates cart pre-order information using curl
+        /// </summary>
+        /// <summary>
+        /// Updates cart pre-order information using curl
+        /// </summary>
+        public (HttpStatusCode StatusCode, JObject ResponseBody) UpdateCartPreOrderWithCurl(
+            string token,
+            string id = null,
+            string reservationId = null,
+            string address = null,
+            string status = null,
+            string reservationDate = null, // Добавлен отсутствующий параметр
+            string timeSlot = null,
+            string[] dishItems = null)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentNullException(nameof(token), "Token must be provided");
+            }
+            string url = $"{_baseUrl}/cart";
+
+            // Create JSON request body
+            var preOrderData = new JObject();
+
+            // Add optional fields if provided
+            if (!string.IsNullOrEmpty(id))
+                preOrderData["id"] = id;
+            if (!string.IsNullOrEmpty(reservationId))
+                preOrderData["reservationId"] = reservationId;
+            if (!string.IsNullOrEmpty(address))
+                preOrderData["address"] = address;
+            if (!string.IsNullOrEmpty(status))
+                preOrderData["status"] = status;
+            if (!string.IsNullOrEmpty(reservationDate)) // Добавлена проверка для нового параметра
+                preOrderData["reservationDate"] = reservationDate;
+            if (!string.IsNullOrEmpty(timeSlot))
+                preOrderData["timeSlot"] = timeSlot;
+
+            // Add dish items if provided
+            if (dishItems != null && dishItems.Length > 0)
+            {
+                var dishItemsArray = new JArray();
+                foreach (var item in dishItems)
+                {
+                    dishItemsArray.Add(JObject.Parse(item));
+                }
+                preOrderData["dishItems"] = dishItemsArray;
+            }
+
+            string jsonBody = preOrderData.ToString();
+
+            // Execute PUT request with authorization header
+            var (statusCode, responseBody) = _curlHelper.ExecutePutRequestWithAuthForObject(url, jsonBody, token);
+            Console.WriteLine($"UpdateCartPreOrderWithCurl response status: {statusCode}");
+
+            // Output first 100 characters of response or full response if shorter
+            if (responseBody != null)
+            {
+                string responseContent = responseBody.ToString();
+                string preview = responseContent.Length > 100 ? responseContent.Substring(0, 100) + "..." : responseContent;
+                Console.WriteLine($"UpdateCartPreOrderWithCurl response content: {preview}");
+            }
+
+            return (statusCode, responseBody);
+        }
+
+        /// <summary>
+        /// Updates cart pre-order information
+        /// </summary>
+        public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> UpdateCartPreOrder(
+            string token,
+            string id = null,
+            string reservationId = null,
+            string address = null,
+            string status = null,
+            string reservationDate = null, // Добавлен отсутствующий параметр
+            string timeSlot = null,
+            string[] dishItems = null)
+        {
+            return await Task.Run(() => UpdateCartPreOrderWithCurl(token, id, reservationId, address, status, reservationDate, timeSlot, dishItems));
+        }
     }
 }

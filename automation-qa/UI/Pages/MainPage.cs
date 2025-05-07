@@ -11,7 +11,7 @@ namespace automation_qa.UI.Pages
         private readonly WebDriverWait _wait;
 
         private readonly By _headerTitle = By.XPath("//p[@class='fontset-h1 text-green-200']//span[@class='text-primary' and text()='Green']/following-sibling::span[text()=' & Tasty']");
-        private readonly By _viewMenuButton = By.XPath("/html/body/div/div[1]/div/div/a");
+        private readonly By _viewMenuButton = By.XPath("/html/body/div/div[1]/div[2]/div/div/a/button");
         private readonly By _locationSection = By.XPath("//div[contains(@class, 'w-full') and contains(@class, 'mx-auto')]/article[2]/header/p");
         private readonly By _locationCard = By.XPath("//article[2]//div[contains(@class, 'p-6')]//div[contains(@class, 'flex') and contains(@class, 'gap-2.5')]//p");
         private readonly By _locationCards = By.CssSelector("#root > div.w-full.mx-auto.max-w-\\[1440px\\].px-\\[40px\\].pt-\\[4rem\\].pb-\\[2\\.5rem\\] > article:nth-child(2) > div > div");
@@ -204,7 +204,7 @@ namespace automation_qa.UI.Pages
         public void ClickViewMenuButton()
         {
             // Используем абсолютный XPath для кнопки View Menu
-            By viewMenuButtonSelector = By.XPath("/html/body/div/div[1]/div/div/a");
+            By viewMenuButtonSelector = By.XPath("/html/body/div/div[1]/div[2]/div/div/a/button");
 
             var button = _wait.Until(ExpectedConditions.ElementToBeClickable(viewMenuButtonSelector));
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", button);
