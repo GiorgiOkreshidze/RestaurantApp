@@ -443,5 +443,144 @@ namespace ApiTests.Pages
         {
             return await Task.Run(() => CompleteReservationWithCurl(reservationId, token));
         }
+
+        /// <summary>
+        /// Retrieves available dishes for a reservation order using curl
+        /// </summary>
+        public (HttpStatusCode StatusCode, JArray? ResponseBody) GetAvailableDishesWithCurl(string reservationId)
+        {
+            if (string.IsNullOrEmpty(reservationId))
+            {
+                throw new ArgumentNullException(nameof(reservationId), "Reservation ID must be provided");
+            }
+
+            string url = $"{_baseUrl}/reservations/{reservationId}/order/available-dishes";
+
+            var (statusCode, responseBody) = _curlHelper.ExecuteGetRequestForArray(url);
+
+            Console.WriteLine($"GetAvailableDishesWithCurl response status: {statusCode}");
+            Console.WriteLine($"GetAvailableDishesWithCurl response content: {responseBody?.ToString() ?? "No content"}");
+
+            return (statusCode, responseBody);
+        }
+
+        /// <summary>
+        /// Retrieves available dishes for a reservation order
+        /// </summary>
+        public async Task<(HttpStatusCode StatusCode, JArray? ResponseBody)> GetAvailableDishes(string reservationId)
+        {
+            return await Task.Run(() => GetAvailableDishesWithCurl(reservationId));
+        }
+
+        /// <summary>
+        /// Adds a dish to an existing order associated with a reservation using curl
+        /// </summary>
+        public (HttpStatusCode StatusCode, JObject? ResponseBody) AddDishToOrderWithCurl(
+            string reservationId,
+            string dishId,
+            string? token = null)
+        {
+            if (string.IsNullOrEmpty(reservationId))
+            {
+                throw new ArgumentNullException(nameof(reservationId), "Reservation ID must be provided");
+            }
+
+            if (string.IsNullOrEmpty(dishId))
+            {
+                throw new ArgumentNullException(nameof(dishId), "Dish ID must be provided");
+            }
+
+            string url = $"{_baseUrl}/reservations/{reservationId}/order/{dishId}";
+
+            HttpStatusCode statusCode;
+            JObject? responseBody;
+
+            if (token == null)
+            {
+                // Execute request without authorization
+                var (statusCodeStr, responseBodyStr) = _curlHelper.ExecutePostRequest(url, "");
+
+                statusCode = HttpStatusCode.InternalServerError;
+                if (int.TryParse(statusCodeStr, out int statusCodeInt))
+                {
+                    if (Enum.IsDefined(typeof(HttpStatusCode), statusCodeInt))
+                    {
+                        statusCode = (HttpStatusCode)statusCodeInt;
+                    }
+                }
+
+                try
+                {
+                    responseBody = string.IsNullOrEmpty(responseBodyStr) ? null : JObject.Parse(responseBodyStr);
+                }
+                catch (JsonException ex)
+                {
+                    Console.WriteLine($"Error parsing response body: {ex.Message}");
+                    responseBody = null;
+                }
+            }
+            else
+            {
+                // Execute request with authorization
+                var (authStatusCode, authResponseBody) = _curlHelper.ExecutePostRequestWithAuthForObject(url, "", token);
+                statusCode = authStatusCode;
+                responseBody = authResponseBody;
+            }
+
+            Console.WriteLine($"AddDishToOrderWithCurl response status: {statusCode}");
+            Console.WriteLine($"AddDishToOrderWithCurl response content: {responseBody?.ToString() ?? "No content"}");
+
+            return (statusCode, responseBody);
+        }
+
+        /// <summary>
+        /// Adds a dish to an existing order associated with a reservation
+        /// </summary>
+        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> AddDishToOrder(
+            string reservationId,
+            string dishId,
+            string? token = null)
+        {
+            return await Task.Run(() => AddDishToOrderWithCurl(reservationId, dishId, token));
+        }
+
+        /// <summary>
+        /// Removes a dish from an existing order associated with a reservation using curl
+        /// </summary>
+        public (HttpStatusCode StatusCode, JObject? ResponseBody) RemoveDishFromOrderWithCurl(
+            string reservationId,
+            string dishId,
+            string? token = null)
+        {
+            if (string.IsNullOrEmpty(reservationId))
+            {
+                throw new ArgumentNullException(nameof(reservationId), "Reservation ID must be provided");
+            }
+
+            if (string.IsNullOrEmpty(dishId))
+            {
+                throw new ArgumentNullException(nameof(dishId), "Dish ID must be provided");
+            }
+
+            string url = $"{_baseUrl}/reservations/{reservationId}/order/{dishId}";
+
+            var (statusCode, responseBody) = _curlHelper.ExecuteDeleteRequest(url, token);
+
+            Console.WriteLine($"RemoveDishFromOrderWithCurl response status: {statusCode}");
+            Console.WriteLine($"RemoveDishFromOrderWithCurl response content: {responseBody?.ToString() ?? "No content"}");
+
+            return (statusCode, responseBody);
+        }
+
+        /// <summary>
+        /// Removes a dish from an existing order associated with a reservation
+        /// </summary>
+        public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> RemoveDishFromOrder(
+            string reservationId,
+            string dishId,
+            string? token = null)
+        {
+            return await Task.Run(() => RemoveDishFromOrderWithCurl(reservationId, dishId, token));
+        }
     }
 }

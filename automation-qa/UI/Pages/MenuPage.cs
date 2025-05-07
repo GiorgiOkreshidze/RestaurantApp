@@ -9,7 +9,7 @@ namespace automation_qa.UI.Pages
         private readonly IWebDriver _driver;
         private readonly WebDriverWait _wait;
 
-        private readonly By _menuTitle = By.XPath("/html/body/div/div/div[1]/div/h1");
+        private readonly By _menuTitle = By.XPath("//h1[contains(text(), 'Menu')]");
         private readonly By _appetizersFilter = By.XPath("//button[contains(text(), 'Appetizers')]");
         private readonly By _mainCoursesFilter = By.XPath("//button[contains(text(), 'Main Courses')]");
         private readonly By _dessertsFilter = By.XPath("//button[contains(text(), 'Desserts')]");

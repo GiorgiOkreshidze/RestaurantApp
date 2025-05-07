@@ -14,7 +14,7 @@ namespace automation_qa.UI.Pages
         private readonly By _specialityDishesSection = By.XPath("/html/body/div/div[3]/article/header/p");
         private readonly By _dishCards = By.XPath("//article[1]/div/div");
         private readonly By _feedbackSection = By.XPath("/html/body/div/div[4]/div/p");
-        private readonly By _cuisineExperienceFilter = By.XPath("/html/body/div/div[4]/div/div[1]/div[1]/button[2]");
+        private readonly By _cuisineExperienceFilter = By.XPath("/html/body/div/div[4]/div/div[1]/div[1]/button[2]/p");
         private readonly By _mainPageLink = By.XPath("/html/body/div/div[1]/div/a[1]");
 
         public LocationOverviewPage(IWebDriver driver)

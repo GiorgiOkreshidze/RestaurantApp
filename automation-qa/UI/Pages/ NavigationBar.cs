@@ -14,6 +14,7 @@ namespace automation_qa.UI.Pages
         private readonly By _loginLink = By.CssSelector("[data-testid='login-link']");
         private readonly By _createAccountLink = By.CssSelector("a[href='/signup']");
         private readonly By _logoutLink = By.LinkText("Sign Out");
+        private readonly By _reservationsLink = By.XPath("//a[contains(text(), 'Reservations')]");
 
         public NavigationBar(IWebDriver driver)
         {
@@ -61,6 +62,19 @@ namespace automation_qa.UI.Pages
             catch (NoSuchElementException)
             {
                 return false;
+            }
+        }
+
+        public void GoToReservationsPage()
+        {
+            try
+            {
+                _driver.FindElement(_reservationsLink).Click();
+            }
+            catch (NoSuchElementException)
+            {
+                // If the link isn't found, try navigating directly to the URL
+                _driver.Navigate().GoToUrl(_driver.Url.Split('/')[0] + "/reservations");
             }
         }
     }

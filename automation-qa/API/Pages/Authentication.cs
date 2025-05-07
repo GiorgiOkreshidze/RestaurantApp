@@ -278,5 +278,118 @@ namespace ApiTests.Pages
                 userId, firstName, lastName, email, idToken);
             return (statusCode, responseBody);
         }
+
+        /// <summary>
+        /// Uses curl to update the profile info for the currently authenticated user
+        /// </summary>
+        public (HttpStatusCode StatusCode, JObject ResponseBody) UpdateProfileWithCurl(
+            string firstName,
+            string lastName,
+            string base64EncodedImage,
+            string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentNullException(nameof(token), "Authentication token must be provided.");
+            }
+
+            string url = $"{_baseUrl}/users/profile";
+
+            var profileData = new JObject();
+
+            if (!string.IsNullOrEmpty(firstName))
+                profileData["firstName"] = firstName;
+
+            if (!string.IsNullOrEmpty(lastName))
+                profileData["lastName"] = lastName;
+
+            if (!string.IsNullOrEmpty(base64EncodedImage))
+                profileData["base64EncodedImage"] = base64EncodedImage;
+
+            string jsonBody = profileData.ToString();
+
+            var (statusCode, responseBody) = _curlHelper.ExecutePutRequestWithAuthForObject(url, jsonBody, token);
+
+            Console.WriteLine($"UpdateProfile response status: {statusCode}");
+
+            if (responseBody != null)
+            {
+                string responseContent = responseBody.ToString();
+                string preview = responseContent.Length > 100 ? responseContent.Substring(0, 100) + "..." : responseContent;
+                Console.WriteLine($"UpdateProfile response content: {preview}");
+            }
+
+            return (statusCode, responseBody);
+        }
+
+        /// <summary>
+        /// Updates the profile info for the currently authenticated user
+        /// </summary>
+        public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> UpdateProfile(
+            string firstName,
+            string lastName,
+            string base64EncodedImage,
+            string token)
+        {
+            return await Task.Run(() => UpdateProfileWithCurl(firstName, lastName, base64EncodedImage, token));
+        }
+
+        /// <summary>
+        /// Uses curl to update the password for the currently authenticated user
+        /// </summary>
+        public (HttpStatusCode StatusCode, JObject ResponseBody) UpdatePasswordWithCurl(
+            string oldPassword,
+            string newPassword,
+            string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentNullException(nameof(token), "Authentication token must be provided.");
+            }
+
+            if (string.IsNullOrEmpty(oldPassword))
+            {
+                throw new ArgumentNullException(nameof(oldPassword), "Old password must be provided.");
+            }
+
+            if (string.IsNullOrEmpty(newPassword))
+            {
+                throw new ArgumentNullException(nameof(newPassword), "New password must be provided.");
+            }
+
+            string url = $"{_baseUrl}/users/profile/password";
+
+            var passwordData = new
+            {
+                oldPassword,
+                newPassword
+            };
+
+            string jsonBody = JsonConvert.SerializeObject(passwordData);
+
+            var (statusCode, responseBody) = _curlHelper.ExecutePutRequestWithAuthForObject(url, jsonBody, token);
+
+            Console.WriteLine($"UpdatePassword response status: {statusCode}");
+
+            if (responseBody != null)
+            {
+                string responseContent = responseBody.ToString();
+                string preview = responseContent.Length > 100 ? responseContent.Substring(0, 100) + "..." : responseContent;
+                Console.WriteLine($"UpdatePassword response content: {preview}");
+            }
+
+            return (statusCode, responseBody);
+        }
+
+        /// <summary>
+        /// Updates the password for the currently authenticated user
+        /// </summary>
+        public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> UpdatePassword(
+            string oldPassword,
+            string newPassword,
+            string token)
+        {
+            return await Task.Run(() => UpdatePasswordWithCurl(oldPassword, newPassword, token));
+        }
     }
 }
