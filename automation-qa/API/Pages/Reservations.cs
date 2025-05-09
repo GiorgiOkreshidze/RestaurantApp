@@ -92,34 +92,39 @@ namespace ApiTests.Pages
             string? locationId = null,
             string? tableId = null,
             string? date = null,
-            string? startTime = null,
-            string? endTime = null,
-            int guests = 0,
+            string? timeFrom = null,  // Изменено с startTime
+            string? timeTo = null,    // Изменено с endTime
+            int guestsNumber = 0,     // Изменено с guests
             string? name = null,
             string? email = null,
             string? phone = null,
             string? specialRequests = null)
         {
             string url = $"{_baseUrl}/reservations/client";
-            var reservationData = new
+
+            // Создаем структуру в соответствии с ожиданиями API
+            var requestData = new
             {
-                locationId,
-                tableId,
-                date,
-                startTime,
-                endTime,
-                guests,
-                name,
-                email,
-                phone,
-                specialRequests
+                request = new  // Оборачиваем данные в объект с полем request
+                {
+                    locationId,
+                    tableId,
+                    date,
+                    timeFrom,
+                    timeTo,
+                    guestsNumber,
+                    name,
+                    email,
+                    phone,
+                    specialRequests
+                }
             };
 
-            string jsonBody = JsonConvert.SerializeObject(reservationData);
+            string jsonBody = JsonConvert.SerializeObject(requestData);
 
+            // Далее код без изменений
             HttpStatusCode statusCode;
             JObject? responseBody;
-
             if (token == null)
             {
                 (statusCode, responseBody) = _curlHelper.ExecutePostRequestForObject(url, jsonBody);
@@ -138,10 +143,8 @@ namespace ApiTests.Pages
                     responseBody = null;
                 }
             }
-
             Console.WriteLine($"CreateReservationWithCurl response status: {statusCode}");
             Console.WriteLine($"CreateReservationWithCurl response content: {responseBody?.ToString() ?? "No content"}");
-
             return (statusCode, responseBody);
         }
 
@@ -153,21 +156,24 @@ namespace ApiTests.Pages
             string? locationId = null,
             string? tableId = null,
             string? date = null,
-            string? startTime = null,
-            string? endTime = null,
-            int guests = 0,
+            string? timeFrom = null,
+            string? timeTo = null,
+            int guestsNumber = 0,
             string? name = null,
             string? email = null,
             string? phone = null,
             string? specialRequests = null)
         {
-            return await Task.Run(() => CreateReservationWithCurl(token, locationId, tableId, date, startTime, endTime, guests, name, email, phone, specialRequests));
+            return await Task.Run(() => CreateReservationWithCurl(
+                token, locationId, tableId, date, timeFrom, timeTo, guestsNumber,
+        name, email, phone, specialRequests));
         }
 
         /// <summary>
         /// Creates a reservation by waiter using curl
         /// </summary>
         public (HttpStatusCode StatusCode, JObject? ResponseBody) CreateReservationByWaiterWithCurl(
+            string? token = null,
             string? locationId = null,
             string? tableId = null,
             string? date = null,
@@ -180,28 +186,34 @@ namespace ApiTests.Pages
             DateTime? createdAt = null,
             string? waiterId = null,
             string? preorder = null,
-            string? clientType = null,
-            string? token = null)
+            string? clientType = "Walk-in"  // Значение по умолчанию для перечисления
+
+            )
         {
             string url = $"{_baseUrl}/reservations/waiter";
-            var reservationData = new
+
+            // Оборачиваем в поле request, как требует API
+            var requestData = new
             {
-                locationId,
-                tableId,
-                date,
-                timeFrom,
-                timeTo,
-                guestNumber,
-                status,
-                userEmail,
-                userInfo,
-                createdAt = createdAt?.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
-                waiterId,
-                preorder,
-                clientType
+                request = new
+                {
+                    locationId,
+                    tableId,
+                    date,
+                    timeFrom,
+                    timeTo,
+                    guestNumber,
+                    status,
+                    userEmail,
+                    userInfo,
+                    createdAt = createdAt?.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                    waiterId,
+                    preorder,
+                    clientType
+                }
             };
 
-            string jsonBody = JsonConvert.SerializeObject(reservationData);
+            string jsonBody = JsonConvert.SerializeObject(requestData);
 
             HttpStatusCode statusCode;
             JObject? responseBody;
@@ -235,6 +247,7 @@ namespace ApiTests.Pages
         /// Creates a reservation by waiter
         /// </summary>
         public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> CreateReservationByWaiter(
+            string? token = null,
             string? locationId = null,
             string? tableId = null,
             string? date = null,
@@ -247,10 +260,11 @@ namespace ApiTests.Pages
             DateTime? createdAt = null,
             string? waiterId = null,
             string? preorder = null,
-            string? clientType = null,
-            string? token = null)
+            string? clientType = "Walk-in")
         {
-            return await Task.Run(() => CreateReservationByWaiterWithCurl(locationId, tableId, date, timeFrom, timeTo, guestNumber, status, userEmail, userInfo, createdAt, waiterId, preorder, clientType, token));
+            return await Task.Run(() => CreateReservationByWaiterWithCurl(
+                token, locationId, tableId, date, timeFrom, timeTo, guestNumber,
+                status, userEmail, userInfo, createdAt, waiterId, preorder, clientType));
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Создает новый отзыв для бронирования
+        /// Creates a new feedback for a reservation
         /// </summary>
         public (HttpStatusCode StatusCode, JObject ResponseBody) CreateFeedbackWithCurl(
             string reservationId,
@@ -30,7 +30,6 @@ namespace ApiTests.Pages
             string token = null)
         {
             string url = $"{_baseUrl}/feedbacks";
-
             var feedbackData = new
             {
                 reservationId,
@@ -39,11 +38,8 @@ namespace ApiTests.Pages
                 serviceComment,
                 serviceRating
             };
-
             string jsonBody = Newtonsoft.Json.JsonConvert.SerializeObject(feedbackData);
-
             Console.WriteLine($"Creating feedback with curl for reservation: {reservationId}");
-
             if (!string.IsNullOrEmpty(token))
             {
                 return _curlHelper.ExecutePostRequestWithAuthForObject(url, jsonBody, token);
@@ -55,7 +51,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Создает новый отзыв для бронирования
+        /// Creates a new feedback for a reservation
         /// </summary>
         public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> CreateFeedback(
             string reservationId,
