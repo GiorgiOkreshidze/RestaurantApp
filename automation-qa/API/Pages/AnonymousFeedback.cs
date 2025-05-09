@@ -19,13 +19,13 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Проверяет токен анонимного отзыва и возвращает информацию о бронировании, если токен действителен
+        /// Validates an anonymous feedback token and returns reservation information if the token is valid
         /// </summary>
         public (HttpStatusCode StatusCode, JObject ResponseBody) ValidateTokenWithCurl(string token)
         {
             if (string.IsNullOrEmpty(token))
             {
-                throw new ArgumentNullException(nameof(token), "Токен не может быть пустым");
+                throw new ArgumentNullException(nameof(token), "Token cannot be empty");
             }
 
             string url = $"{_baseUrl}/anonymous-feedback/validate-token?token={token}";
@@ -41,7 +41,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Проверяет токен анонимного отзыва и возвращает информацию о бронировании, если токен действителен
+        /// Validates an anonymous feedback token and returns reservation information if the token is valid
         /// </summary>
         public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> ValidateToken(string token)
         {
@@ -49,7 +49,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Отправляет анонимный отзыв для завершенного бронирования
+        /// Submits anonymous feedback for a completed reservation
         /// </summary>
         public (HttpStatusCode StatusCode, JObject ResponseBody) SubmitFeedbackWithCurl(
             string reservationId,
@@ -60,7 +60,7 @@ namespace ApiTests.Pages
         {
             if (string.IsNullOrEmpty(reservationId))
             {
-                throw new ArgumentNullException(nameof(reservationId), "ID бронирования не может быть пустым");
+                throw new ArgumentNullException(nameof(reservationId), "Reservation ID cannot be empty");
             }
 
             string url = $"{_baseUrl}/anonymous-feedback/submit-feedback";
@@ -88,7 +88,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Отправляет анонимный отзыв для завершенного бронирования
+        /// Submits anonymous feedback for a completed reservation
         /// </summary>
         public async Task<(HttpStatusCode StatusCode, JObject ResponseBody)> SubmitFeedback(
             string reservationId,

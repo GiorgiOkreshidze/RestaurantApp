@@ -259,7 +259,7 @@ namespace ApiTests.Pages
             string reservationId = null,
             string address = null,
             string status = null,
-            string reservationDate = null, // Добавлен отсутствующий параметр
+            string reservationDate = null,
             string timeSlot = null,
             string[] dishItems = null)
         {
@@ -281,7 +281,7 @@ namespace ApiTests.Pages
                 preOrderData["address"] = address;
             if (!string.IsNullOrEmpty(status))
                 preOrderData["status"] = status;
-            if (!string.IsNullOrEmpty(reservationDate)) // Добавлена проверка для нового параметра
+            if (!string.IsNullOrEmpty(reservationDate))
                 preOrderData["reservationDate"] = reservationDate;
             if (!string.IsNullOrEmpty(timeSlot))
                 preOrderData["timeSlot"] = timeSlot;
@@ -323,7 +323,7 @@ namespace ApiTests.Pages
             string reservationId = null,
             string address = null,
             string status = null,
-            string reservationDate = null, // Добавлен отсутствующий параметр
+            string reservationDate = null,
             string timeSlot = null,
             string[] dishItems = null)
         {

@@ -23,7 +23,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Отправляет email с отчетом в Excel формате
+        /// Sends an email with a report in Excel format
         /// </summary>
         public (HttpStatusCode StatusCode, JObject? ResponseBody) SendReportEmailWithCurl(string? token = null)
         {
@@ -48,7 +48,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Отправляет email с отчетом в Excel формате
+        /// Sends an email with a report in Excel format
         /// </summary>
         public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> SendReportEmail(string? token = null)
         {
@@ -56,7 +56,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Получает данные отчета на основе предоставленных фильтров
+        /// Gets report data based on provided filters
         /// </summary>
         public (HttpStatusCode StatusCode, JObject? ResponseBody) GetReportDataWithCurl(
             string? startDate = null,
@@ -91,7 +91,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Получает данные отчета на основе предоставленных фильтров
+        /// Gets report data based on provided filters
         /// </summary>
         public async Task<(HttpStatusCode StatusCode, JObject? ResponseBody)> GetReportData(
             string? startDate = null,
@@ -103,7 +103,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Скачивает отчет в указанном формате на основе предоставленных фильтров
+        /// Downloads a report in the specified format based on provided filters
         /// </summary>
         public (HttpStatusCode StatusCode, byte[]? ResponseContent) DownloadReportWithCurl(
             string format,
@@ -114,7 +114,7 @@ namespace ApiTests.Pages
         {
             if (string.IsNullOrEmpty(format))
             {
-                throw new ArgumentNullException(nameof(format), "Формат отчета должен быть указан");
+                throw new ArgumentNullException(nameof(format), "Report format must be specified");
             }
 
             var queryParams = new NameValueCollection();
@@ -158,7 +158,7 @@ namespace ApiTests.Pages
                 byte[] output = new byte[0];
                 using (var memoryStream = new MemoryStream())
                 {
-                    // Читаем вывод как бинарные данные
+                    // Read output as binary data
                     byte[] buffer = new byte[4096];
                     int bytesRead;
                     while ((bytesRead = process.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length)) > 0)
@@ -175,10 +175,10 @@ namespace ApiTests.Pages
                     Console.WriteLine($"Curl error: {error}");
                 }
 
-                // Последние 3 символа - код статуса
+                // Last 3 characters - status code
                 if (output.Length >= 3)
                 {
-                    // Отделяем код статуса от содержимого файла
+                    // Separate status code from file content
                     string statusCodeStr = System.Text.Encoding.UTF8.GetString(output.AsSpan(output.Length - 3, 3));
                     byte[] fileContent = new byte[output.Length - 3];
                     Array.Copy(output, 0, fileContent, 0, output.Length - 3);
@@ -218,7 +218,7 @@ namespace ApiTests.Pages
         }
 
         /// <summary>
-        /// Скачивает отчет в указанном формате на основе предоставленных фильтров
+        /// Downloads a report in the specified format based on provided filters
         /// </summary>
         public async Task<(HttpStatusCode StatusCode, byte[]? ResponseContent)> DownloadReport(
             string format,
