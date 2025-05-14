@@ -92,9 +92,9 @@ namespace ApiTests.Pages
             string? locationId = null,
             string? tableId = null,
             string? date = null,
-            string? timeFrom = null,  // Изменено с startTime
-            string? timeTo = null,    // Изменено с endTime
-            int guestsNumber = 0,     // Изменено с guests
+            string? timeFrom = null,
+            string? timeTo = null,
+            int guestsNumber = 0,
             string? name = null,
             string? email = null,
             string? phone = null,
@@ -102,10 +102,9 @@ namespace ApiTests.Pages
         {
             string url = $"{_baseUrl}/reservations/client";
 
-            // Создаем структуру в соответствии с ожиданиями API
             var requestData = new
             {
-                request = new  // Оборачиваем данные в объект с полем request
+                request = new
                 {
                     locationId,
                     tableId,
@@ -122,7 +121,6 @@ namespace ApiTests.Pages
 
             string jsonBody = JsonConvert.SerializeObject(requestData);
 
-            // Далее код без изменений
             HttpStatusCode statusCode;
             JObject? responseBody;
             if (token == null)
@@ -186,13 +184,12 @@ namespace ApiTests.Pages
             DateTime? createdAt = null,
             string? waiterId = null,
             string? preorder = null,
-            string? clientType = "Walk-in"  // Значение по умолчанию для перечисления
+            string? clientType = "Walk-in"
 
             )
         {
             string url = $"{_baseUrl}/reservations/waiter";
 
-            // Оборачиваем в поле request, как требует API
             var requestData = new
             {
                 request = new

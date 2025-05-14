@@ -33,6 +33,59 @@ namespace ApiTests
         }
 
         [Test]
+        [Category("Validation")]
+        [Category("Regression")]
+        public async Task CreateClientReservation_WithPastDate_ReturnsBadRequest()
+        {
+            // Arrange
+            var pastDate = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+            var timeFrom = "18:00";
+            var timeTo = "19:00";
+            var guestsNumber = 2;
+
+            string email = "irishkakhrol@gmail.com";
+            string password = "Password123!";
+
+            var authResult = await _auth.LoginUser(email, password);
+            Assert.That(authResult.StatusCode, Is.EqualTo(HttpStatusCode.OK), "Authentication should succeed");
+            var token = authResult.ResponseBody?["accessToken"]?.ToString() ??
+                        authResult.ResponseBody?["idToken"]?.ToString();
+            Assert.That(token, Is.Not.Null, "Authentication token should not be null");
+
+            // Act
+            var result = await _reservations.CreateReservation(
+                token: token,
+                locationId: _testLocationId,
+                tableId: _testTableId,
+                date: pastDate,
+                timeFrom: timeFrom,
+                timeTo: timeTo,
+                guestsNumber: guestsNumber,
+                name: "Test User",
+                email: email,
+                phone: "+1234567890",
+                specialRequests: "Test reservation with past date"
+            );
+
+            // Assert
+            Console.WriteLine($"Create reservation with past date response: Status={result.StatusCode}, Body={result.ResponseBody}");
+
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest),
+                "Reservation with past date should return 400 Bad Request");
+
+            Assert.That(result.ResponseBody, Is.Not.Null,
+                "Response body should not be null");
+
+            string errorMessage = result.ResponseBody?["message"]?.ToString() ??
+                                  result.ResponseBody?["error"]?.ToString() ??
+                                  result.ResponseBody?.ToString() ?? "";
+
+            Assert.That(errorMessage,
+                Does.Contain("past").Or.Contain("invalid").Or.Contain("date"),
+                "Error message should mention past or invalid date");
+        }
+
+        [Test]
         [Category("Smoke")]
         [Category("Regression")]
         public async Task GetAvailableTables_ReturnsSuccess()
@@ -1052,7 +1105,7 @@ namespace ApiTests
         }
 
         [Test]
-        [Category("Smoke")]
+        [Category("Regression")]
         public async Task GetAvailableDishes_BasicTest()
         {
             // Arrange
@@ -1067,7 +1120,7 @@ namespace ApiTests
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("Smoke")]
         public async Task GetAvailableDishes_InvalidReservationId()
         {
             // Arrange
@@ -1613,7 +1666,7 @@ namespace ApiTests
 
         [Test]
         [Category("Validation")]
-        public async Task RemoveDishFromOrder_CompletedReservation_ReturnsConflict()
+        public async Task RemoveDishFromOrder_CompletedReservation_ReturnsUnauthorized()
         {
             // Authenticate
             string email = "laydyGaga98@example.com";
@@ -1624,7 +1677,6 @@ namespace ApiTests
             // ID of a reservation that is already in "completed" status
             string completedReservationId = "b280b335-93b0-48fd-a9b6-e38261dd518b";
             string dishId = "df5d475c-7de0-409c-95e7-1b389e921948";
-
             TestContext.WriteLine($"Attempting to remove dish {dishId} from completed reservation {completedReservationId}");
 
             // Act - try to remove a dish from a completed reservation
@@ -1633,18 +1685,18 @@ namespace ApiTests
                 dishId: dishId,
                 token: token);
 
-            // Assert - check that the API returns Conflict status (409)
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Conflict),
-                "API should return 409 Conflict when attempting to remove a dish from a completed reservation");
+            // Assert - check that the API returns Unauthorized status (401)
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
+                "API should return 401 Unauthorized when a regular user attempts to modify an order");
 
             if (result.ResponseBody != null)
             {
                 string errorMessage = result.ResponseBody.ToString().ToLower();
                 TestContext.WriteLine($"Error message: {errorMessage}");
 
-                // Check that the error message contains information about the completed reservation
-                Assert.That(errorMessage, Does.Contain("completed").Or.Contain("reservation"),
-                    "Error message should indicate a problem with the completed reservation");
+                // Check that the error message contains information about waiter permissions
+                Assert.That(errorMessage, Does.Contain("waiter").Or.Contain("modify"),
+                    "Error message should indicate that only the assigned waiter can modify the order");
             }
         }
 

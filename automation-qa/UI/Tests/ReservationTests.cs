@@ -69,11 +69,11 @@ namespace automation_qa.UI.Tests
             try
             {
                 IWebElement noReservationsHeader = Driver.FindElement(By.XPath("/html/body/div/div/div/div/div/p[1]"));
-                Assert.That(noReservationsHeader.Displayed, Is.False, "Сообщение 'No Reservations' не должно отображаться");
+                Assert.That(noReservationsHeader.Displayed, Is.False, "Message 'No Reservations' dont see");
             }
             catch (NoSuchElementException)
             {
-                Assert.Pass("Сообщение 'No Reservations' отсутствует, как и ожидалось");
+                Assert.Pass("Message 'No Reservations' dont see");
             }
         }
 
@@ -85,7 +85,7 @@ namespace automation_qa.UI.Tests
             NavigateToReservationsPage();
 
             var bookTableButtons = Driver.FindElements(By.XPath("/html/body/div/div/div/div/a"));
-            Assert.That(bookTableButtons.Count, Is.EqualTo(0), "Кнопка 'Book a Table' не должна отображаться при отсутствии доступных бронирований");
+            Assert.That(bookTableButtons.Count, Is.EqualTo(0), "dont click 'Book a Table' ");
         }
 
 
@@ -136,7 +136,7 @@ namespace automation_qa.UI.Tests
             NavigateToReservationsPage();
 
             // Step 1: Click the "Book a Table" button to go to the booking page
-            IWebElement bookTableButton = Driver.FindElement(By.XPath("/html/body/div/div/div/div/a"));
+            IWebElement bookTableButton = Driver.FindElement(By.XPath("/html/body/div/header/div/section/div[2]/a[2]"));
             bookTableButton.Click();
             Thread.Sleep(2000);
 
@@ -152,7 +152,7 @@ namespace automation_qa.UI.Tests
             Thread.Sleep(1000);
 
             // Select the 30th day
-            IWebElement date30 = Driver.FindElement(By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[2]/td[1]/button"));
+            IWebElement date30 = Driver.FindElement(By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[4]/td[3]/button"));
             ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].click();", date30);
             Thread.Sleep(1000);
 
@@ -215,7 +215,7 @@ namespace automation_qa.UI.Tests
         [Test]
         [Category("Smoke")]
         [Category("End-to-End")]
-        public void MenuPage_ShouldAddItemsAndSubmitPreOrder()
+        public void Reservation_ShouldAddItemsAndSubmitPreOrder()
         {
             // Arrange - Log in and navigate to the Reservations page
             LoginUser();
@@ -242,13 +242,6 @@ namespace automation_qa.UI.Tests
             ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView(true);", submitButton);
             Thread.Sleep(500);
             ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].click();", submitButton);
-            Thread.Sleep(2000);
-
-            // Step 5: Click the close (X) button to close the cart
-            IWebElement closeButton = Driver.FindElement(By.XPath("/html/body/div[3]/button"));
-            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView(true);", closeButton);
-            Thread.Sleep(500);
-            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].click();", closeButton);
             Thread.Sleep(2000);
         }
 

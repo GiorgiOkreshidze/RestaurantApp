@@ -44,10 +44,10 @@ namespace ApiTests.Utilities
 
             return new TestConfig
             {
-                TestUserEmail = "irina4@epam.com",
-                TestUserPassword = "StrongP@ss123!",
-                AdminUserEmail = "admin@example.com",
-                AdminUserPassword = "AdminP@ss123!",
+                TestUserEmail = "irishkakhrol@gmail.com",
+                TestUserPassword = "Password123!",
+                AdminUserEmail = "admin@admin.com",
+                AdminUserPassword = "Password123!",
                 ValidLocationId = "8c4fc44e-c1a5-42eb-9912-55aeb5111a99",
                 ValidReservationId = "43a479ef-4aa0-4472-b72e-7833f90a591",
                 WaiterEmail = "waiter@restaurant.com",

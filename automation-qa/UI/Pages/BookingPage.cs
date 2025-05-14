@@ -49,13 +49,13 @@ namespace automation_qa.UI.Pages
         private readonly By _successToast = By.XPath("//div[contains(@class, 'Toastify__toast-container--top-right')]//div[contains(@class, 'Toastify__toast--success')]");
         private readonly By _reservationCanceledToast = By.XPath("//div[contains(@class, 'Toastify__toast-container')]//div[contains(text(), 'Reservation canceled successfully')]");
         private readonly By _toastNotification = By.XPath("//div[contains(@class, 'Toastify__toast-container')]//div[contains(@class, 'Toastify__toast-body')]");
-        private readonly By _date14Option = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[1]/td[6]/button");
+        private readonly By _date14Option = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[4]/td[4]/button");
 
 
         private readonly By _increaseGuestsInModalButton = By.XPath("/html/body/div[3]/form/div[1]/div/button[2]");
         private readonly By _confirmEditButton = By.XPath("/html/body/div[3]/form/button");
         private readonly By _requiredFieldsWarning = By.XPath("//div[contains(@class, 'Toastify__toast--warning')]");
-        private readonly By _date13Option = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[1]/td[6]/button");
+        private readonly By _date13Option = By.XPath("/html/body/div[2]/div/div/div/div/table/tbody/tr[4]/td[5]/button");
 
         public BookingPage(IWebDriver driver)
         {
@@ -257,7 +257,7 @@ namespace automation_qa.UI.Pages
             }
             catch (WebDriverTimeoutException)
             {
-                Console.WriteLine($"Не удалось найти кнопку бронирования для стола {index}");
+                Console.WriteLine($"exit click {index}");
 
                 By anyButtonSelector = By.XPath($"//li[{index}]//button");
                 IWebElement anyButton = _driver.FindElement(anyButtonSelector);
@@ -354,13 +354,13 @@ namespace automation_qa.UI.Pages
             {
                 IWebElement successToast = _wait.Until(ExpectedConditions.ElementIsVisible(_successToast));
 
-                Console.WriteLine($"Найдено Toast-уведомление: '{successToast.Text}'");
+                Console.WriteLine($"Find Toast-push: '{successToast.Text}'");
 
                 return successToast.Displayed;
             }
             catch (WebDriverTimeoutException ex)
             {
-                Console.WriteLine($"Не удалось найти Toast-уведомление: {ex.Message}");
+                Console.WriteLine($"Do not find Toast-push: {ex.Message}");
                 return false;
             }
         }

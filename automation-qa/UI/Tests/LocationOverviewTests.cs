@@ -43,7 +43,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("Smoke")]
         public void LocationOverview_ShouldDisplayDishCards()
         {
             Assert.That(_locationPage.AreDishCardsDisplayed(), Is.True, "Dish cards should be displayed on the location page");

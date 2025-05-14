@@ -627,7 +627,7 @@ namespace ApiTests
         [Category("Regression")]
         public void GetUserProfile_WithValidToken_ShouldSucceed()
         {
-            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl("test@example.com", Config.TestUserPassword);
+            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl("irishkakhrol@gmail.com", Config.TestUserPassword);
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
 
             string token = loginResponse["accessToken"].ToString();
@@ -637,14 +637,14 @@ namespace ApiTests
 
             Assert.That(profileStatus, Is.EqualTo(HttpStatusCode.OK), "Should successfully get user profile");
             Assert.That(profile, Is.Not.Null, "User profile should not be null");
-            Assert.That(profile["email"].ToString(), Is.EqualTo("test@example.com"), "User email should match");
+            Assert.That(profile["email"].ToString(), Is.EqualTo("irishkakhrol@gmail.com"), "User email should match");
         }
 
         [Test]
         [Category("Regression")]
         public void GetUserRole_WithValidToken_ShouldReturnCustomerRole()
         {
-            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl("test@example.com", Config.TestUserPassword);
+            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl("irishkakhrol@gmail.com", Config.TestUserPassword);
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "User should be able to log in");
 
             string token = loginResponse["accessToken"].ToString();
@@ -659,7 +659,7 @@ namespace ApiTests
         [Category("Smoke")]
         public void LoginUser_WithValidCredentials_ShouldSucceed()
         {
-            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl("test@example.com", Config.TestUserPassword);
+            var (loginStatus, loginResponse) = _auth.LoginUserWithCurl("irishkakhrol@gmail.com", Config.TestUserPassword);
 
             Assert.That(loginStatus, Is.EqualTo(HttpStatusCode.OK), "Login should succeed");
             Assert.That(loginResponse["accessToken"], Is.Not.Null, "Access token should be returned");

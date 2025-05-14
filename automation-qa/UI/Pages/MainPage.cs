@@ -125,7 +125,6 @@ namespace automation_qa.UI.Pages
             try
             {
                 var cards = _driver.FindElements(_dishCards);
-                // Прокручиваем до первой карточки, если она есть
                 if (cards.Count > 0)
                 {
                     ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", cards[0]);
@@ -138,7 +137,6 @@ namespace automation_qa.UI.Pages
             }
         }
 
-        // Метод для получения количества плашек
         public int GetDishCardsCount()
         {
             try
@@ -155,14 +153,11 @@ namespace automation_qa.UI.Pages
         {
             try
             {
-                // Сначала прокручиваем до раздела с локациями
                 var locationSection = _driver.FindElement(_locationSection);
                 ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", locationSection);
 
-                // Даем время для загрузки элементов после прокрутки
                 Thread.Sleep(1000);
 
-                // Затем ищем карточки локаций
                 var cards = _driver.FindElements(_locationCards);
 
                 Console.WriteLine($"Found {cards.Count} location cards");
@@ -176,7 +171,6 @@ namespace automation_qa.UI.Pages
             }
         }
 
-        // Добавьте этот метод в класс MainPage
         public int GetLocationCardsCount()
         {
             try
@@ -203,13 +197,10 @@ namespace automation_qa.UI.Pages
 
         public void ClickViewMenuButton()
         {
-            // Используем абсолютный XPath для кнопки View Menu
             By viewMenuButtonSelector = By.XPath("/html/body/div/div[1]/div[2]/div/div/a/button");
 
             var button = _wait.Until(ExpectedConditions.ElementToBeClickable(viewMenuButtonSelector));
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", button);
-
-            // Не будем ждать конкретный URL, просто даем время для загрузки страницы
             Thread.Sleep(2000);
         }
     }
