@@ -213,7 +213,7 @@ namespace ApiTests
             string testReservationId = Guid.NewGuid().ToString();
 
             string address = "123 Test Street";
-            string status = "pending";
+            string status = "New";
             string reservationDate = DateTime.Now.ToString("yyyy-MM-dd");
             string timeSlot = "18:00";
 
@@ -295,8 +295,8 @@ namespace ApiTests
             Console.WriteLine($"Update cart (missing dishItems) response status: {statusCode}");
             Console.WriteLine($"Update cart (missing dishItems) response body: {responseBody}");
 
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.InternalServerError),
-                "Updating cart without dish items should return InternalServerError");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
+                "Updating cart with empty reservationId should return BadRequest");
         }
 
         [Test]
@@ -321,8 +321,8 @@ namespace ApiTests
             Console.WriteLine($"Update cart (empty reservationId) response status: {statusCode}");
             Console.WriteLine($"Update cart (empty reservationId) response body: {responseBody}");
 
-            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.InternalServerError),
-                "Updating cart with empty reservationId should return InternalServerError");
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest),
+                "Updating cart with empty reservationId should return BadRequest");
         }
     }
 }

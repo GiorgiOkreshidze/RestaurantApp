@@ -220,22 +220,35 @@ namespace automation_qa.UI.Tests
         {
             string email = "irishkakhrol@gmail.com";
             string password = "Password123!";
-
             _loginPage.Login(email, password);
 
-            Thread.Sleep(2000);
+            Thread.Sleep(5000);
 
-            bool redirectedToMainPage = Driver.Url.Contains("localhost:5173") ||
-                                      Driver.PageSource.Contains("Green & Tasty");
+            string currentUrl = Driver.Url;
+            string pageSource = Driver.PageSource;
 
-            Assert.That(redirectedToMainPage, Is.True, "");
+            Console.WriteLine($"Current URL: {currentUrl}");
+            Console.WriteLine($"Page title: {Driver.Title}");
+
+            bool redirectedToMainPage = currentUrl.Contains("krci-dev.cloudmentor.academy") ||
+                                         currentUrl.Contains("localhost:5173") ||
+                                         pageSource.Contains("Green & Tasty");
+
+            Console.WriteLine($"redirectedToMainPage: {redirectedToMainPage}");
+            Console.WriteLine($"Contains krci-dev.cloudmentor.academy: {currentUrl.Contains("krci-dev.cloudmentor.academy")}");
+            Console.WriteLine($"Contains localhost:5173: {currentUrl.Contains("localhost:5173")}");
+            Console.WriteLine($"Contains Green & Tasty: {pageSource.Contains("Green & Tasty")}");
+
+            Assert.That(redirectedToMainPage, Is.True, "User should be redirected to main page after login");
 
             bool userLoggedIn = _navigationBar.IsUserLoggedIn() ||
-                               Driver.PageSource.Contains("Book a Table") ||
-                               Driver.PageSource.Contains("Reservations");
+                                pageSource.Contains("Book a Table") ||
+                                pageSource.Contains("Reservations");
 
-            Assert.That(userLoggedIn, Is.True, "");
+            Assert.That(userLoggedIn, Is.True, "User should be shown as logged in");
         }
+
+
 
         [Test]
         [Category("Regression")]

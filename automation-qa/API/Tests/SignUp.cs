@@ -467,7 +467,7 @@ namespace ApiTests
         {
             // Act
             var (statusCode, responseBody) = _auth.LoginUserWithCurl(
-                "test@example.com",
+                "irishkakhrol@gmail.com",
                 Config.TestUserPassword
             );
 

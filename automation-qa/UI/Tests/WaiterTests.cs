@@ -171,7 +171,7 @@ namespace automation_qa.UI.Tests
             ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView(true);", customerNameInput);
             Thread.Sleep(1500);
             customerNameInput.Clear();
-            customerNameInput.SendKeys("Roman Zvarych");
+            customerNameInput.SendKeys("Roma Zvarych");
             Thread.Sleep(1000);
 
             // Step 4: Select the first customer from the autocomplete dropdown

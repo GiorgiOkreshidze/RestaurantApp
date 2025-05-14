@@ -23,8 +23,8 @@ namespace automation_qa.UI.Pages
 
         // Action buttons
         private readonly By _cancelButton = By.XPath("/html/body/div/div/div/article[1]/footer/button[1]");
-        private readonly By _editButton = By.XPath("/html/body/div/div/div/article[1]/footer/button[2]");
-        private readonly By _preOrderButton = By.XPath("/html/body/div/div/div/article[1]/footer/button[3]");
+        private readonly By _editButton = By.XPath("/html/body/div/div/div/article/footer/button[2]");
+        private readonly By _preOrderButton = By.XPath("/html/body/div/div/div/article/footer/button[3]");
 
         public ReservationPage(IWebDriver driver)
         {

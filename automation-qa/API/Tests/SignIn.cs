@@ -483,7 +483,7 @@ namespace ApiTests
         public void SignIn_CorrectCredentials_ShouldReturnOK()
         {
             // Act - log in with correct credentials
-            var (statusCode, _) = _auth.LoginUserWithCurl("test@example.com", Config.TestUserPassword);
+            var (statusCode, _) = _auth.LoginUserWithCurl("irishkakhrol@gmail.com", Config.TestUserPassword);
 
             // Assert
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK), "Login with correct credentials should succeed");
@@ -518,14 +518,14 @@ namespace ApiTests
         public void SignIn_TokenContainsUserInfo()
         {
             // Act - log in
-            var (_, response) = _auth.LoginUserWithCurl("test@example.com", Config.TestUserPassword);
+            var (_, response) = _auth.LoginUserWithCurl("irishkakhrol@gmail.com", Config.TestUserPassword);
 
             // Get token and check profile
             string accessToken = response["accessToken"].ToString();
             var (_, profile) = _auth.GetUserProfileWithCurl(accessToken);
 
             // Assert - token contains user info
-            Assert.That(profile["email"].ToString(), Is.EqualTo("test@example.com"),
+            Assert.That(profile["email"].ToString(), Is.EqualTo("irishkakhrol@gmail.com"),
                 "Profile from token should contain correct email");
         }
 
@@ -534,7 +534,7 @@ namespace ApiTests
         public void SignIn_ResponseContainsAccessToken()
         {
             // Act - log in
-            var (_, response) = _auth.LoginUserWithCurl("test@example.com", Config.TestUserPassword);
+            var (_, response) = _auth.LoginUserWithCurl("irishkakhrol@gmail.com", Config.TestUserPassword);
 
             // Assert - check response contains access token
             Assert.That(response.ContainsKey("accessToken"), Is.True,

@@ -51,7 +51,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
-        [Category("Smoke")]
+        [Category("Regression")]
         public void BookingPage_ShouldSelectTime()
         {
             _bookingPage.OpenTimeDropdown();
@@ -61,7 +61,7 @@ namespace automation_qa.UI.Tests
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("Smoke")]
         public void BookingPage_ShouldIncreaseGuestsCount()
         {
             string initialCount = _bookingPage.GetGuestsCount();
