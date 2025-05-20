@@ -49,7 +49,12 @@ Each month, restaurant managers generate a critical report called the **"Green T
 (frontend framework, backend framework, database systems, etc.).*
 
 ---
+## Diagrams
+![Sprint 1 Diagram](https://github.com/user-attachments/assets/5b346d0a-1797-4d41-a3cb-65203edd1938)
 
+![Sprint 2 Diagram](https://github.com/user-attachments/assets/8476cbec-57e5-4d1c-a9c6-c57c85a77828)
+
+---
 ## Getting Started
 
 To get started with this application, clone the repository and follow the setup instructions provided in the installation guide (to be created).
